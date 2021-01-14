@@ -22,10 +22,6 @@ export class DiscoveryTileComponent {
   @Prop() width: number;
   @Prop() height: number;
   data = [];
-  @State()
-  dpCount = 0;
-  @State()
-  gtsCount = 0;
 
   graph: HTMLDivElement;
   private options: EChartsOption;
@@ -40,7 +36,6 @@ export class DiscoveryTileComponent {
   }
 
   componentDidLoad() {
-    console.log('componentDidLoad', this.result)
     const myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
@@ -50,7 +45,6 @@ export class DiscoveryTileComponent {
       this.drawn();
     });
     setTimeout(() => myChart.setOption(this.options));
-    // this.drawn();
   }
 
   private drawn() {
@@ -64,8 +58,6 @@ export class DiscoveryTileComponent {
     GTSLib.flatDeep((gtsList.data as unknown as GTS[]))
       .filter(gts => !!gts.v)
       .forEach((gts, i) => {
-        this.dpCount += gts.v.length;
-        this.gtsCount++;
         series.push(
           {
             type: 'line',
@@ -143,6 +135,6 @@ export class DiscoveryTileComponent {
   render() {
     return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
-      <p>{this.dpCount} points, {this.gtsCount} GTS</p></div>;
+    </div>;
   }
 }

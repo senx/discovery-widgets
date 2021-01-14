@@ -29,6 +29,7 @@
   "dependencies": {
     "@stencil/core": "^2.3.0",
     "@stencil/sass": "^1.4.1",
+    "@storybook/addon-docs": "^6.1.14",
     "apexcharts": "^3.23.1",
     "dayjs": "^1.10.2",
     "echarts": "^5.0.0",

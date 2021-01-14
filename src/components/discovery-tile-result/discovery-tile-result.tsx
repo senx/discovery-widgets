@@ -37,8 +37,6 @@ export class DiscoveryTileComponent {
   }
 
   render() {
-    return <div>
-      {this.getView()}
-    </div>;
+    return <div>{this.getView()}</div>;
   }
 }

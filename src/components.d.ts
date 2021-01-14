@@ -12,6 +12,7 @@ export namespace Components {
         "width": number;
     }
     interface DiscoveryTile {
+        "lang": 'warpscript' | 'flows';
         "type": 'line';
         "url": string;
     }
@@ -56,6 +57,7 @@ declare namespace LocalJSX {
         "width"?: number;
     }
     interface DiscoveryTile {
+        "lang"?: 'warpscript' | 'flows';
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
         "type"?: 'line';
         "url"?: string;

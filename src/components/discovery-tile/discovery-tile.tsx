@@ -9,6 +9,7 @@ import {Utils} from "../../utils/utils";
 export class DiscoveryTileComponent {
   @Prop() url: string;
   @Prop() type: 'line';
+  @Prop() lang: 'warpscript' | 'flows' = 'warpscript';
   @Event() statusHeaders: EventEmitter<string[]>;
   @Element() el: HTMLElement;
 
@@ -29,12 +30,15 @@ export class DiscoveryTileComponent {
 
   componentDidLoad() {
     this.ws = this.el.innerText;
+    if(this.lang === 'flows') {
+      this.ws = "<'\n" + this.ws + "\n'>\n ->FLOWS"
+    }
     this.width = this.el.parentElement.getBoundingClientRect().width;
     this.height = this.el.parentElement.getBoundingClientRect().height;
     if (this.ws && this.ws !== '') {
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;
-        this.headers = res.headers.split('\n').filter(h => h!=='');
+        this.headers = res.headers.split('\n').filter(h => h !== '');
         this.statusHeaders.emit(this.headers);
         console.log(this.headers)
         this.loaded = true;

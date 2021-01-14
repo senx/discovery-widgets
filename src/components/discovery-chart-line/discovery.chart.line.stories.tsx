@@ -4,6 +4,11 @@ export default {
   title: 'Components/Line Chart',
   notes: readme,
   argTypes: {
+    lang: {
+      control: {
+        type: 'select', options: ['warpscript', 'flows']
+      }
+    },
     url: {control: 'text'},
     ws: {control: 'text'}
   },
@@ -18,13 +23,13 @@ export default {
     },
   }
 };
-const Template = ({url, ws}) => `<div style="width: 100%; height: 500px;">
-    <discovery-tile url="${url}" type="line"
-    >${ws}</discovery-tile>
+const Template = ({url, ws, lang}) => `<div style="width: 100%; height: 500px;">
+    <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
 </div>`;
 export const InitialUsage = Template.bind({});
 InitialUsage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
+  lang: 'warpscript',
   ws: `@training/dataset0 $TOKEN AUTHENTICATE 100000000 MAXOPS
   1 4 <% NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
