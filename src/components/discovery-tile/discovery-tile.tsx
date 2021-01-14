@@ -30,7 +30,7 @@ export class DiscoveryTileComponent {
 
   componentDidLoad() {
     this.ws = this.el.innerText;
-    if(this.lang === 'flows') {
+    if (this.lang === 'flows') {
       this.ws = "<'\n" + this.ws + "\n'>\n ->FLOWS"
     }
     this.width = this.el.parentElement.getBoundingClientRect().width;
@@ -52,13 +52,10 @@ export class DiscoveryTileComponent {
 
   render() {
     return <div>
-      {this.loaded
-        ? <div>
-          <p>{this.headers}</p>
-          <div style={{width: this.width + 'px', height: (this.height) + 'px'}}>
-            <discovery-tile-result start={this.start} result={this.result} type={this.type} width={this.width}
-                                   height={this.height}></discovery-tile-result>
-          </div>
+      {this.loaded ?
+        <div style={{width: this.width + 'px', height: (this.height) + 'px'}}>
+          <discovery-tile-result start={this.start} result={this.result} type={this.type} width={this.width}
+                                 height={this.height}></discovery-tile-result>
         </div>
         : <p>Loading ...</p>
       }

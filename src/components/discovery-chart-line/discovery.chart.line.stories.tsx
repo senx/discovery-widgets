@@ -35,3 +35,15 @@ InitialUsage.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
+
+export const SmallArea = ({url, ws, lang}) => `<div style="width: 300px; height: 200px;">
+    <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
+</div>`;
+SmallArea.args = {
+  url: 'https://warp.senx.io/api/v0/exec',
+  lang: 'warpscript',
+  ws: `@training/dataset0 $TOKEN AUTHENTICATE 100000000 MAXOPS
+  1 4 <% NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR`
+};
