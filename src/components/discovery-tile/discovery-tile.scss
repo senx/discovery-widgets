@@ -1,0 +1,10 @@
+:host {
+  & > div {
+    width: 100%;
+    height: 100%;
+  }
+  #ws {
+    color: transparent;
+    font-size: 0;
+  }
+}
