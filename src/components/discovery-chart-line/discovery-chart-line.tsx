@@ -55,7 +55,7 @@ export class DiscoveryLineChartComponent {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
-    const myChart = echarts.init(this.graph, null, {
+    const myChart: ECharts = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
       height: this.height

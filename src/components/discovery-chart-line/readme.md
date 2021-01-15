@@ -7,11 +7,14 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `height` | `height`  |             | `number` | `undefined` |
-| `result` | `result`  |             | `string` | `undefined` |
-| `width`  | `width`   |             | `number` | `undefined` |
+| Property  | Attribute | Description | Type               | Default       |
+| --------- | --------- | ----------- | ------------------ | ------------- |
+| `debug`   | `debug`   |             | `boolean`          | `false`       |
+| `height`  | `height`  |             | `number`           | `undefined`   |
+| `options` | --        |             | `Param`            | `new Param()` |
+| `result`  | `result`  |             | `string`           | `undefined`   |
+| `type`    | `type`    |             | `"area" \| "line"` | `undefined`   |
+| `width`   | `width`   |             | `number`           | `undefined`   |
 
 
 ## Events
