@@ -7,7 +7,7 @@ module.exports = {
   "addons": [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
-    '@storybook/addon-actions',
+    '@storybook/addon-actions'
   ],
  /* webpackFinal: async (config, { configType }) => {
     config.resolve.alias = {

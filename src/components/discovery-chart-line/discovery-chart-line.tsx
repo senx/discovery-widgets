@@ -1,5 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, Watch} from '@stencil/core';
-// @ts-ignore
+import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
 import * as echarts from 'echarts';
 import {EChartsOption} from 'echarts';
 import {GTSLib} from '../../utils/gts.lib';
@@ -8,6 +7,8 @@ import {SeriesOption} from "echarts/lib/util/types";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
 import {ChartType} from "../../model/dataModel";
+import {Param} from "../../model/param";
+import {Logger} from "../../utils/logger";
 
 type ECharts = ReturnType<typeof echarts.init>;
 
@@ -16,39 +17,54 @@ type ECharts = ReturnType<typeof echarts.init>;
   styleUrl: 'discovery-chart-line.scss',
   shadow: true,
 })
-export class DiscoveryTileComponent {
+export class DiscoveryLineChartComponent {
   @Prop() result: string;
   @Prop() type: ChartType;
-  @Element() el: HTMLElement;
-  @Event() draw: EventEmitter<void>;
-
+  @Prop() options: Param = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  data = [];
+  @Prop() debug: boolean = false;
 
+  @Element() el: HTMLElement;
+  @Event() draw: EventEmitter<void>;
+  @State() parsing: boolean = false;
+  @State() rendering: boolean = false;
+
+  data = [];
   graph: HTMLDivElement;
-  private options: EChartsOption;
+  private chartOpts: EChartsOption;
+  private defOptions: Param = new Param();
+  private LOG: Logger;
 
   @Watch('result')
   updateRes() {
     console.log('updateRes', this.result)
-
   }
 
+
   componentWillLoad() {
-    this.options = this.convert(this.result || '[]')
+    this.parsing = true;
+    this.LOG = new Logger(DiscoveryLineChartComponent, this.debug);
+    this.LOG.debug(['componentWillLoad'], {
+      type: this.type,
+      options: this.options,
+    });
+    this.chartOpts = this.convert(this.result || '[]')
   }
 
   componentDidLoad() {
+    this.parsing = false;
+    this.rendering = true;
     const myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
       height: this.height
     });
     myChart.on('finished', () => {
+      this.rendering = false;
       this.drawn();
     });
-    setTimeout(() => myChart.setOption(this.options));
+    setTimeout(() => myChart.setOption(this.chartOpts));
   }
 
   private drawn() {
@@ -56,62 +72,66 @@ export class DiscoveryTileComponent {
   }
 
 
-  convert(data: string) {
-    const gtsList = GTSLib.getData(data);
+  convert(dataStr: string) {
+    const data = GTSLib.getData(dataStr);
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    this.options = {...options};
     const series: any[] = [];
-    GTSLib.flatDeep((gtsList.data as unknown as GTS[]))
-      .filter(gts => !!gts.v)
-      .forEach((gts, i) => {
-        series.push(
-          {
-            type: 'line',
-            name: GTSLib.serializeGtsMetadata(gts),
-            data: gts.v.map(d => [d[0] / 1000, d[d.length - 1]]),
-            animation: false,
-            polyline: true,
-            large: true,
-            showSymbol: false,
-            symbolSize: 1,
-            clip: false,
-            areaStyle: this.type === 'area'? {
-              opacity: 0.8,
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 0,
-                y2: 1,
-                colorStops: [{
-                  offset: 0, color:  Utils.getColor(i) // color at 0% position
-                }, {
-                  offset: 1, color: ColorLib.transparentize(Utils.getColor(i), 0.1) // color at 100% position
-                }],
-                global: false // false by default
-              }
-            }: undefined,
-            showAllSymbol: false,
-            // coordinateSystem: 'cartesian2d',
+    const gtsList = GTSLib.flatDeep((data.data as unknown as GTS[]));
+    this.LOG.debug(['convert'], {options: this.options, gtsList});
+    const gtsCount = gtsList.length;
+    for (let i = 0; i < gtsCount; i++) {
+      const gts = gtsList[i];
+      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
+        const color = ColorLib.getColor(i, this.options.scheme);
+        series.push({
+          type: 'line',
+          name: GTSLib.serializeGtsMetadata(gts),
+          data: gts.v.map(d => [d[0] / 1000, d[d.length - 1]]),
+          animation: false,
+          polyline: true,
+          large: true,
+          showSymbol: false,
+          symbolSize: 1,
+          clip: false,
+          areaStyle: this.type === 'area' ? {
+            opacity: 0.8,
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {offset: 0, color},
+                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+              ],
+              global: false // false by default
+            }
+          } : undefined,
+          showAllSymbol: false,
+          // coordinateSystem: 'cartesian2d',
+          lineStyle: {color},
+          itemStyle: {color},
+          emphasis: {focus: 'series'},
+          /* emphasis: {
+             focus: 'series',
+             blurScope: 'coordinateSystem'
+           },
+          lineStyle: {
             color: Utils.getColor(i),
-            emphasis: {
-              focus: 'series'
-            },
-            /* emphasis: {
-               focus: 'series',
-               blurScope: 'coordinateSystem'
-             },
-            lineStyle: {
-              color: Utils.getColor(i),
-              opacity: 0.3
-            }*/
-          } as SeriesOption);
-      });
+            opacity: 0.3
+          }*/
+        } as SeriesOption);
+      }
+    }
     return {
       progressive: 20000,
       title: {
         //  text: 'ECharts entry example'
       },
       throttle: 70,
-      color: ColorLib.color.WARP10,
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -154,7 +174,9 @@ export class DiscoveryTileComponent {
 
   render() {
     return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
+      {this.parsing ? <p>Parsing data...</p> : ''}
+      {this.rendering ? <p>Rendering data...</p> : ''}
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
-    </div>;
+    </div>
   }
 }

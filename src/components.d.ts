@@ -6,20 +6,27 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ChartType } from "./model/dataModel";
+import { Param } from "./model/param";
 export namespace Components {
     interface DiscoveryChartLine {
+        "debug": boolean;
         "height": number;
+        "options": Param;
         "result": string;
         "type": ChartType;
         "width": number;
     }
     interface DiscoveryTile {
-        "lang": 'warpscript' | 'flows';
+        "debug": boolean;
+        "language": 'warpscript' | 'flows';
+        "options": Param;
         "type": ChartType;
         "url": string;
     }
     interface DiscoveryTileResult {
+        "debug": boolean;
         "height": number;
+        "options": Param;
         "result": string;
         "start": number;
         "type": ChartType;
@@ -53,20 +60,26 @@ declare global {
 }
 declare namespace LocalJSX {
     interface DiscoveryChartLine {
+        "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param;
         "result"?: string;
         "type"?: ChartType;
         "width"?: number;
     }
     interface DiscoveryTile {
-        "lang"?: 'warpscript' | 'flows';
+        "debug"?: boolean;
+        "language"?: 'warpscript' | 'flows';
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
+        "options"?: Param;
         "type"?: ChartType;
         "url"?: string;
     }
     interface DiscoveryTileResult {
+        "debug"?: boolean;
         "height"?: number;
+        "options"?: Param;
         "result"?: string;
         "start"?: number;
         "type"?: ChartType;

@@ -1,23 +1,34 @@
 import {Component, Element, h, Prop, State} from '@stencil/core';
 import {ChartType} from "../../model/dataModel";
+import {Param} from "../../model/param";
+import {Logger} from "../../utils/logger";
 
 @Component({
   tag: 'discovery-tile-result',
   styleUrl: 'discovery-tile-result.scss',
   shadow: true,
 })
-export class DiscoveryTileComponent {
+export class DiscoveryTileResultComponent {
   @Prop() result: string;
   @Prop() type: ChartType;
   @Prop() start: number;
+  @Prop() options: Param = new Param();
+  @Prop() width: number;
+  @Prop() height: number;
+  @Prop() debug: boolean = false;
+
   @Element() el: HTMLElement;
 
   @State() execTime = 0;
-  @Prop() width: number;
-  @Prop() height: number;
 
+  private LOG: Logger;
 
-  componentDidLoad() {
+  componentWillLoad() {
+    this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
+    this.LOG.debug(['componentWillLoad'], {
+      type: this.type,
+      options: this.options,
+    });
   }
 
   drawn() {
@@ -30,10 +41,15 @@ export class DiscoveryTileComponent {
     switch (this.type) {
       case "line":
       case "area":
-        return <discovery-chart-line result={this.result} onDraw={ev => this.drawn()} width={this.width}
-                                     type={this.type}
-                                          height={this.height}
-        ></discovery-chart-line>;
+        return <discovery-chart-line
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          type={this.type}
+          options={this.options}
+          height={this.height}
+          width={this.width}
+          debug={this.debug}
+        />;
       default:
         return '';
     }

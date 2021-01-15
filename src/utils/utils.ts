@@ -1,33 +1,4 @@
-export function format(first: string, middle: string, last: string): string {
-  return (first || '') + (middle ? ` ${middle}` : '') + (last ? ` ${last}` : '');
-}
-
 export class Utils {
-  static WARP10 = [
-    '#ff9900',
-    '#004eff',
-    '#E53935',
-    '#7CB342',
-    '#F4511E',
-    '#039BE5',
-    '#D81B60',
-    '#C0CA33',
-    '#6D4C41',
-    '#8E24AA',
-    '#00ACC1',
-    '#FDD835',
-    '#5E35B1',
-    '#00897B',
-    '#FFB300',
-    '#3949AB',
-    '#43A047',
-    '#1E88E5',
-  ];
-
-  static getColor(i: number) {
-    return Utils.WARP10[i % Utils.WARP10.length];
-  }
-
 
   static httpPost(theUrl, payload) {
     return new Promise((resolve, reject) => {
@@ -44,4 +15,21 @@ export class Utils {
     });
   }
 
+  static mergeDeep<T>(base: T, ext: any) {
+    const obj = {...base} as T;
+    const extended = {...ext} as T;
+    for (const prop in extended || {}) {
+      // If property is an object, merge properties
+      if (Object.prototype.toString.call(extended[prop]) === '[object Object]') {
+        obj[prop] = Utils.mergeDeep<T>(obj[prop], extended[prop]);
+      } else {
+        obj[prop] = extended[prop];
+      }
+    }
+    return obj as T;
+  }
+
+  static fraction2r(rl0, rl1, v) {
+    return v * (rl1 - rl0);
+  }
 }
