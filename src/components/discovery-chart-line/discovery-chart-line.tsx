@@ -1,4 +1,5 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Prop, Watch} from '@stencil/core';
+// @ts-ignore
 import * as echarts from 'echarts';
 import {EChartsOption} from 'echarts';
 import {GTSLib} from '../../utils/gts.lib';
@@ -6,6 +7,7 @@ import {GTS} from "../../model/GTS";
 import {SeriesOption} from "echarts/lib/util/types";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
+import {ChartType} from "../../model/dataModel";
 
 type ECharts = ReturnType<typeof echarts.init>;
 
@@ -16,6 +18,7 @@ type ECharts = ReturnType<typeof echarts.init>;
 })
 export class DiscoveryTileComponent {
   @Prop() result: string;
+  @Prop() type: ChartType;
   @Element() el: HTMLElement;
   @Event() draw: EventEmitter<void>;
 
@@ -31,6 +34,7 @@ export class DiscoveryTileComponent {
     console.log('updateRes', this.result)
 
   }
+
   componentWillLoad() {
     this.options = this.convert(this.result || '[]')
   }
@@ -69,6 +73,22 @@ export class DiscoveryTileComponent {
             showSymbol: false,
             symbolSize: 1,
             clip: false,
+            areaStyle: this.type === 'area'? {
+              opacity: 0.8,
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0, color:  Utils.getColor(i) // color at 0% position
+                }, {
+                  offset: 1, color: ColorLib.transparentize(Utils.getColor(i), 0.1) // color at 100% position
+                }],
+                global: false // false by default
+              }
+            }: undefined,
             showAllSymbol: false,
             // coordinateSystem: 'cartesian2d',
             color: Utils.getColor(i),
@@ -106,7 +126,7 @@ export class DiscoveryTileComponent {
       },
       toolbox: {
         feature: {
-          saveAsImage: {}
+          //  saveAsImage: {}
         }
       },
       legend: {

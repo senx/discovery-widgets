@@ -16,7 +16,7 @@
  */
 
 import {Param} from './param';
-
+export type ChartType = 'line' | 'area';
 export class DataModel {
   data: any[] | string;
   params?: Param[];

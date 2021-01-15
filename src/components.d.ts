@@ -5,22 +5,24 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ChartType } from "./model/dataModel";
 export namespace Components {
     interface DiscoveryChartLine {
         "height": number;
         "result": string;
+        "type": ChartType;
         "width": number;
     }
     interface DiscoveryTile {
         "lang": 'warpscript' | 'flows';
-        "type": 'line';
+        "type": ChartType;
         "url": string;
     }
     interface DiscoveryTileResult {
         "height": number;
         "result": string;
         "start": number;
-        "type": 'line';
+        "type": ChartType;
         "width": number;
     }
 }
@@ -54,19 +56,20 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "result"?: string;
+        "type"?: ChartType;
         "width"?: number;
     }
     interface DiscoveryTile {
         "lang"?: 'warpscript' | 'flows';
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
-        "type"?: 'line';
+        "type"?: ChartType;
         "url"?: string;
     }
     interface DiscoveryTileResult {
         "height"?: number;
         "result"?: string;
         "start"?: number;
-        "type"?: 'line';
+        "type"?: ChartType;
         "width"?: number;
     }
     interface IntrinsicElements {

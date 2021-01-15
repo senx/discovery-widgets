@@ -1,5 +1,6 @@
 import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import {Utils} from "../../utils/utils";
+import {ChartType} from "../../model/dataModel";
 
 @Component({
   tag: 'discovery-tile',
@@ -8,7 +9,7 @@ import {Utils} from "../../utils/utils";
 })
 export class DiscoveryTileComponent {
   @Prop() url: string;
-  @Prop() type: 'line';
+  @Prop() type: ChartType;
   @Prop() lang: 'warpscript' | 'flows' = 'warpscript';
   @Event() statusHeaders: EventEmitter<string[]>;
   @Element() el: HTMLElement;

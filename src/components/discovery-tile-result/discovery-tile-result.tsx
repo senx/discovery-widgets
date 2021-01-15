@@ -1,4 +1,5 @@
 import {Component, Element, h, Prop, State} from '@stencil/core';
+import {ChartType} from "../../model/dataModel";
 
 @Component({
   tag: 'discovery-tile-result',
@@ -7,7 +8,7 @@ import {Component, Element, h, Prop, State} from '@stencil/core';
 })
 export class DiscoveryTileComponent {
   @Prop() result: string;
-  @Prop() type: 'line';
+  @Prop() type: ChartType;
   @Prop() start: number;
   @Element() el: HTMLElement;
 
@@ -28,7 +29,9 @@ export class DiscoveryTileComponent {
   getView() {
     switch (this.type) {
       case "line":
+      case "area":
         return <discovery-chart-line result={this.result} onDraw={ev => this.drawn()} width={this.width}
+                                     type={this.type}
                                           height={this.height}
         ></discovery-chart-line>;
       default:
