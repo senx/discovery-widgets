@@ -8,6 +8,14 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ChartType } from "./model/types";
 import { Param } from "./model/param";
 export namespace Components {
+    interface DiscoveryAnnotation {
+        "debug": boolean;
+        "height": number;
+        "options": Param;
+        "result": string;
+        "type": ChartType;
+        "width": number;
+    }
     interface DiscoveryChartLine {
         "debug": boolean;
         "height": number;
@@ -34,6 +42,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLDiscoveryAnnotationElement extends Components.DiscoveryAnnotation, HTMLStencilElement {
+    }
+    var HTMLDiscoveryAnnotationElement: {
+        prototype: HTMLDiscoveryAnnotationElement;
+        new (): HTMLDiscoveryAnnotationElement;
+    };
     interface HTMLDiscoveryChartLineElement extends Components.DiscoveryChartLine, HTMLStencilElement {
     }
     var HTMLDiscoveryChartLineElement: {
@@ -53,12 +67,22 @@ declare global {
         new (): HTMLDiscoveryTileResultElement;
     };
     interface HTMLElementTagNameMap {
+        "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-chart-line": HTMLDiscoveryChartLineElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
     }
 }
 declare namespace LocalJSX {
+    interface DiscoveryAnnotation {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param;
+        "result"?: string;
+        "type"?: ChartType;
+        "width"?: number;
+    }
     interface DiscoveryChartLine {
         "debug"?: boolean;
         "height"?: number;
@@ -86,6 +110,7 @@ declare namespace LocalJSX {
         "width"?: number;
     }
     interface IntrinsicElements {
+        "discovery-annotation": DiscoveryAnnotation;
         "discovery-chart-line": DiscoveryChartLine;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
@@ -95,6 +120,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-chart-line": LocalJSX.DiscoveryChartLine & JSXBase.HTMLAttributes<HTMLDiscoveryChartLineElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;

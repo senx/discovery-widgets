@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -66,9 +66,9 @@ export class DiscoveryTileComponent {
 
 
   render() {
-    return <div>
+    return <Host>
       {this.loaded ?
-        <div style={{width: this.width + 'px', height: (this.height) + 'px'}}>
+        <div style={{width: '100%', height: 'auto'}}>
           <discovery-tile-result
             start={this.start}
             result={this.result}
@@ -82,6 +82,6 @@ export class DiscoveryTileComponent {
         : <p>Requesting data...</p>
       }
       <pre id="ws"><slot/></pre>
-    </div>;
+    </Host>;
   }
 }

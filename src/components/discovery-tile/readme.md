@@ -7,13 +7,13 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type                      | Default        |
-| ---------- | ---------- | ----------- | ------------------------- | -------------- |
-| `debug`    | `debug`    |             | `boolean`                 | `false`        |
-| `language` | `language` |             | `"flows" \| "warpscript"` | `'warpscript'` |
-| `options`  | --         |             | `Param`                   | `new Param()`  |
-| `type`     | `type`     |             | `"area" \| "line"`        | `undefined`    |
-| `url`      | `url`      |             | `string`                  | `undefined`    |
+| Property   | Attribute  | Description | Type                                                                      | Default        |
+| ---------- | ---------- | ----------- | ------------------------------------------------------------------------- | -------------- |
+| `debug`    | `debug`    |             | `boolean`                                                                 | `false`        |
+| `language` | `language` |             | `"flows" \| "warpscript"`                                                 | `'warpscript'` |
+| `options`  | --         |             | `Param`                                                                   | `new Param()`  |
+| `type`     | `type`     |             | `"area" \| "line" \| "spline" \| "step" \| "step-after" \| "step-before"` | `undefined`    |
+| `url`      | `url`      |             | `string`                                                                  | `undefined`    |
 
 
 ## Events

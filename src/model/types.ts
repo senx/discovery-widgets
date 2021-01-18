@@ -1,6 +1,6 @@
-export type ChartType = 'line' | 'area' | 'spline' | 'step' | 'step-after' | 'step-before';
+import * as echarts from "echarts";
+
+export type ChartType = 'line' | 'area' | 'spline' | 'step' | 'step-after' | 'step-before' | 'annotation';
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
-export function stringLiteralArray<T extends string>(...args: T[]): T[] {
-  return args;
-}
+export type ECharts = ReturnType<typeof echarts.init>;

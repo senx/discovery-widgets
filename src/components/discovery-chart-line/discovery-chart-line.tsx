@@ -6,11 +6,9 @@ import {GTS} from "../../model/GTS";
 import {SeriesOption} from "echarts/lib/util/types";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
-import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
-
-type ECharts = ReturnType<typeof echarts.init>;
+import {ChartType, ECharts} from "../../model/types";
 
 @Component({
   tag: 'discovery-chart-line',
@@ -18,6 +16,7 @@ type ECharts = ReturnType<typeof echarts.init>;
   shadow: true,
 })
 export class DiscoveryLineChartComponent {
+
   @Prop() result: string;
   @Prop() type: ChartType;
   @Prop() options: Param = new Param();
@@ -30,8 +29,7 @@ export class DiscoveryLineChartComponent {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
 
-  data = [];
-  graph: HTMLDivElement;
+  private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
@@ -40,7 +38,6 @@ export class DiscoveryLineChartComponent {
   updateRes() {
     console.log('updateRes', this.result)
   }
-
 
   componentWillLoad() {
     this.parsing = true;
@@ -51,29 +48,6 @@ export class DiscoveryLineChartComponent {
     });
     this.chartOpts = this.convert(this.result || '[]')
   }
-
-  componentDidLoad() {
-    this.parsing = false;
-    this.rendering = true;
-    const myChart: ECharts = echarts.init(this.graph, null, {
-      renderer: 'svg',
-      width: this.width,
-      height: this.height
-    });
-    myChart.on('finished', () => {
-      this.rendering = false;
-      this.drawn();
-    });
-    /*  myChart.on('mouseover', 'series', function (params) {
-        console.log(params);
-      });*/
-    setTimeout(() => myChart.setOption(this.chartOpts));
-  }
-
-  private drawn() {
-    this.draw.emit();
-  }
-
 
   convert(dataStr: string) {
     const data = GTSLib.getData(dataStr);
@@ -138,8 +112,8 @@ export class DiscoveryLineChartComponent {
           type: 'cross'
         },
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        position: function (pos, params, el, elRect, size) {
-          var obj = {top: 10};
+        position:  (pos, params, el, elRect, size) => {
+          const obj = {top: 10};
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
           return obj;
         }
@@ -172,14 +146,6 @@ export class DiscoveryLineChartComponent {
     } as EChartsOption;
   }
 
-  render() {
-    return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
-      {this.parsing ? <p>Parsing data...</p> : ''}
-      {this.rendering ? <p>Rendering data...</p> : ''}
-      <div ref={(el) => this.graph = el as HTMLDivElement}/>
-    </div>
-  }
-
   private getStepShape() {
     switch (this.type) {
       case "line":
@@ -193,5 +159,32 @@ export class DiscoveryLineChartComponent {
       case "step-after":
         return 'end';
     }
+  }
+
+  componentDidLoad() {
+    this.parsing = false;
+    this.rendering = true;
+    const myChart: ECharts = echarts.init(this.graph, null, {
+      renderer: 'svg',
+      width: this.width,
+      height: this.height
+    });
+    myChart.on('finished', () => {
+      this.rendering = false;
+      this.drawn();
+    });
+    setTimeout(() => myChart.setOption(this.chartOpts));
+  }
+
+  private drawn() {
+    this.draw.emit();
+  }
+
+  render() {
+    return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
+      {this.parsing ? <p>Parsing data...</p> : ''}
+      {this.rendering ? <p>Rendering data...</p> : ''}
+      <div ref={(el) => this.graph = el as HTMLDivElement}/>
+    </div>
   }
 }

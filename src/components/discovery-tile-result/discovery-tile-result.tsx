@@ -1,4 +1,4 @@
-import {Component, Element, h, Prop, State} from '@stencil/core';
+import {Component, Element, h, Host, Prop, State} from '@stencil/core';
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -54,12 +54,22 @@ export class DiscoveryTileResultComponent {
           width={this.width}
           debug={this.debug}
         />;
+      case 'annotation':
+        return <discovery-annotation
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          type={this.type}
+          options={this.options}
+          height={this.height}
+          width={this.width}
+          debug={this.debug}
+        />;
       default:
         return '';
     }
   }
 
   render() {
-    return <div>{this.getView()}</div>;
+    return <Host>{this.getView()}</Host>;
   }
 }
