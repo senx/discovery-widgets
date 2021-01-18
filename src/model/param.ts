@@ -14,6 +14,8 @@
  *  limitations under the License.
  *
  */
+import {ChartType, TimeMode, TimeUnit} from "./types";
+
 export class Param {
   scheme = 'WARP10';
   bgColor?: string;
@@ -26,7 +28,7 @@ export class Param {
   stacked = false;
   key?: string;
   unit?: string;
-  type?: string;
+  type?: ChartType;
   showRangeSelector?: boolean;
   autoRefresh?: number;
   showControls = true;
@@ -35,10 +37,10 @@ export class Param {
   expandAnnotation = false;
   showGTSTree?: boolean;
   foldGTSTree?: boolean;
-  timeMode?: 'timestamp' | 'date' | 'custom' | 'duration';
+  timeMode?: TimeMode;
   showDots = false;
   delta?: number;
-  timeUnit: 'us' | 'ms' | 'ns' = 'us';
+  timeUnit: TimeUnit = 'us';
   minColor?: string;
   maxColor?: string;
   startColor?: string;

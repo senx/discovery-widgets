@@ -6,7 +6,7 @@ import {GTS} from "../../model/GTS";
 import {SeriesOption} from "echarts/lib/util/types";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
-import {ChartType} from "../../model/dataModel";
+import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 
@@ -64,6 +64,9 @@ export class DiscoveryLineChartComponent {
       this.rendering = false;
       this.drawn();
     });
+    /*  myChart.on('mouseover', 'series', function (params) {
+        console.log(params);
+      });*/
     setTimeout(() => myChart.setOption(this.chartOpts));
   }
 
@@ -90,11 +93,13 @@ export class DiscoveryLineChartComponent {
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [d[0] / 1000, d[d.length - 1]]),
           animation: false,
-          polyline: true,
+          polyline: false,
           large: true,
           showSymbol: false,
           symbolSize: 1,
+          smooth: this.type === 'spline' ? 0.6 : undefined,
           clip: false,
+          step: this.getStepShape(),
           areaStyle: this.type === 'area' ? {
             opacity: 0.8,
             color: {
@@ -111,18 +116,13 @@ export class DiscoveryLineChartComponent {
             }
           } : undefined,
           showAllSymbol: false,
-          // coordinateSystem: 'cartesian2d',
           lineStyle: {color},
           itemStyle: {color},
-          emphasis: {focus: 'series'},
-          /* emphasis: {
-             focus: 'series',
-             blurScope: 'coordinateSystem'
-           },
-          lineStyle: {
-            color: Utils.getColor(i),
-            opacity: 0.3
-          }*/
+          // emphasis: {focus: 'series'},
+          emphasis: {
+            focus: 'series',
+            blurScope: 'coordinateSystem'
+          },
         } as SeriesOption);
       }
     }
@@ -162,7 +162,7 @@ export class DiscoveryLineChartComponent {
         {
           type: 'slider',
           height: '20px',
-          show: false
+          show: !!this.options.showRangeSelector
         },
         {
           type: 'inside'
@@ -178,5 +178,20 @@ export class DiscoveryLineChartComponent {
       {this.rendering ? <p>Rendering data...</p> : ''}
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
     </div>
+  }
+
+  private getStepShape() {
+    switch (this.type) {
+      case "line":
+      case "area":
+      case "spline":
+        return undefined;
+      case "step":
+        return 'middle';
+      case "step-before":
+        return 'start';
+      case "step-after":
+        return 'end';
+    }
   }
 }

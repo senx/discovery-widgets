@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ChartType } from "./model/dataModel";
+import { ChartType } from "./model/types";
 import { Param } from "./model/param";
 export namespace Components {
     interface DiscoveryChartLine {

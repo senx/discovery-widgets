@@ -1,6 +1,6 @@
 import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import {Utils} from "../../utils/utils";
-import {ChartType} from "../../model/dataModel";
+import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 

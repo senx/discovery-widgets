@@ -1,5 +1,5 @@
 import {Component, Element, h, Prop, State} from '@stencil/core';
-import {ChartType} from "../../model/dataModel";
+import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 
@@ -41,6 +41,10 @@ export class DiscoveryTileResultComponent {
     switch (this.type) {
       case "line":
       case "area":
+      case "spline":
+      case 'step':
+      case 'step-after':
+      case 'step-before':
         return <discovery-chart-line
           result={this.result}
           onDraw={ev => this.drawn()}
