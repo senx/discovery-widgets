@@ -79,7 +79,7 @@ export class DiscoveryTileComponent {
             debug={this.debug}
           />
         </div>
-        : <p>Requesting data...</p>
+        : <discovery-spinner>Requesting data...</discovery-spinner>
       }
       <pre id="ws"><slot/></pre>
     </Host>;

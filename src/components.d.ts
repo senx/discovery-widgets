@@ -24,6 +24,9 @@ export namespace Components {
         "type": ChartType;
         "width": number;
     }
+    interface DiscoverySpinner {
+        "message": string;
+    }
     interface DiscoveryTile {
         "debug": boolean;
         "language": 'warpscript' | 'flows';
@@ -54,6 +57,12 @@ declare global {
         prototype: HTMLDiscoveryChartLineElement;
         new (): HTMLDiscoveryChartLineElement;
     };
+    interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
+    }
+    var HTMLDiscoverySpinnerElement: {
+        prototype: HTMLDiscoverySpinnerElement;
+        new (): HTMLDiscoverySpinnerElement;
+    };
     interface HTMLDiscoveryTileElement extends Components.DiscoveryTile, HTMLStencilElement {
     }
     var HTMLDiscoveryTileElement: {
@@ -69,6 +78,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-chart-line": HTMLDiscoveryChartLineElement;
+        "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
     }
@@ -92,6 +102,9 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "width"?: number;
     }
+    interface DiscoverySpinner {
+        "message"?: string;
+    }
     interface DiscoveryTile {
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
@@ -112,6 +125,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "discovery-annotation": DiscoveryAnnotation;
         "discovery-chart-line": DiscoveryChartLine;
+        "discovery-spinner": DiscoverySpinner;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
     }
@@ -122,6 +136,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-chart-line": LocalJSX.DiscoveryChartLine & JSXBase.HTMLAttributes<HTMLDiscoveryChartLineElement>;
+            "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;
         }

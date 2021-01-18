@@ -1,11 +1,12 @@
 import readme from '../discovery-tile/readme.md';
+
 export default {
   title: 'Components/Line Chart',
   notes: readme,
   argTypes: {
     type: {
       control: {
-        type: 'select', options:  ['line', 'area', 'spline', 'step', 'step-after', 'step-before']
+        type: 'select', options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before']
       }
     },
     lang: {
@@ -27,8 +28,10 @@ export default {
     },
   }
 };
-const Template = ({url, ws, lang, type}) => `<div style="width: 100%; height: 500px;">
+const Template = ({url, ws, lang, type}) => `<div class="uk-card uk-card-body">
+<div style="width: 100%; height: 500px;">
     <discovery-tile url="${url}" type="${type}" lang="${lang}" debug="true">${ws}</discovery-tile>
+</div>
 </div>`;
 export const InitialUsage = Template.bind({});
 InitialUsage.args = {
