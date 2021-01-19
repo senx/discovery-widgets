@@ -1,0 +1,15 @@
+:root {
+  /* Colors */
+  --w10-blue: #004eff;
+  --w10-orange: #ff9900;
+  --w10-black: #000000;
+  --w10-charcoal: #404040;
+  --w10-charcoal-trans: #404040cc;
+  --w10-grey: #a0a0a0;
+  --w10-lightgrey: #c0c0c0;
+  --w10-white: #ffffff;
+  --w10-danger: #dc3545;
+
+  --warp-view-font-color: var(--w10-black);
+  --warp-view-spinner-color: var(--w10-orange);
+}

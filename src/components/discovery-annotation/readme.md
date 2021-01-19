@@ -1,4 +1,4 @@
-# discovery-chart-line
+# discovery-annotation
 
 
 
@@ -37,9 +37,9 @@
 ### Graph
 ```mermaid
 graph TD;
-  discovery-chart-line --> discovery-spinner
-  discovery-tile-result --> discovery-chart-line
-  style discovery-chart-line fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-annotation --> discovery-spinner
+  discovery-tile-result --> discovery-annotation
+  style discovery-annotation fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

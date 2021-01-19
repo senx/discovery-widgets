@@ -49,7 +49,10 @@ export class DiscoveryTileComponent {
   componentDidLoad() {
     this.ws = this.el.innerText;
     if (this.language === 'flows') {
-      this.ws = "<'\n" + this.ws + "\n'>\n ->FLOWS"
+      this.ws = `<'
+${this.ws}
+'>
+FLOWS`;
     }
     if (this.ws && this.ws !== '') {
       Utils.httpPost(this.url, this.ws).then((res: any) => {

@@ -6,7 +6,6 @@ import {EChartsOption} from "echarts";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
-import {GTS} from "../../model/GTS";
 import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
 
@@ -59,14 +58,15 @@ export class DiscoveryAnnotation {
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
     const series: any[] = [];
-    const gtsList = GTSLib.flatDeep((data.data as unknown as GTS[]));
+    const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     this.LOG.debug(['convert'], {options: this.options, gtsList});
     const gtsCount = gtsList.length;
     let linesCount = 1;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (!GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        const color = ColorLib.getColor(i, this.options.scheme);
+        const c = ColorLib.getColor(gts.id, this.options.scheme);
+        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         this.displayExpander = i > 1;
         if (this.expanded) linesCount++;
         series.push({
@@ -121,11 +121,23 @@ export class DiscoveryAnnotation {
           //  saveAsImage: {}
         }
       },
+
       xAxis: {
         type: 'time',
         lineHeight: 10,
-        axisTick: {show: true},
-        axisLabel: {show: true},
+        axisLine: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        },
+        axisLabel: {
+          color: Utils.getLabelColor(this.el)
+        },
+        axisTick: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        },
       },
       yAxis: {
         show: true,
@@ -137,7 +149,16 @@ export class DiscoveryAnnotation {
         splitNumber: linesCount,
         interval: 1,
         boundaryGap: [0, 0],
-
+        splitLine: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        }
       },
       dataZoom: [
         this.options.showRangeSelector ? {

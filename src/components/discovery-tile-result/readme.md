@@ -7,15 +7,15 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                                                                      | Default       |
-| --------- | --------- | ----------- | ------------------------------------------------------------------------- | ------------- |
-| `debug`   | `debug`   |             | `boolean`                                                                 | `false`       |
-| `height`  | `height`  |             | `number`                                                                  | `undefined`   |
-| `options` | --        |             | `Param`                                                                   | `new Param()` |
-| `result`  | `result`  |             | `string`                                                                  | `undefined`   |
-| `start`   | `start`   |             | `number`                                                                  | `undefined`   |
-| `type`    | `type`    |             | `"area" \| "line" \| "spline" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
-| `width`   | `width`   |             | `number`                                                                  | `undefined`   |
+| Property  | Attribute | Description | Type                                                                                      | Default       |
+| --------- | --------- | ----------- | ----------------------------------------------------------------------------------------- | ------------- |
+| `debug`   | `debug`   |             | `boolean`                                                                                 | `false`       |
+| `height`  | `height`  |             | `number`                                                                                  | `undefined`   |
+| `options` | --        |             | `Param`                                                                                   | `new Param()` |
+| `result`  | `result`  |             | `string`                                                                                  | `undefined`   |
+| `start`   | `start`   |             | `number`                                                                                  | `undefined`   |
+| `type`    | `type`    |             | `"annotation" \| "area" \| "line" \| "spline" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
+| `width`   | `width`   |             | `number`                                                                                  | `undefined`   |
 
 
 ## Dependencies
@@ -27,11 +27,15 @@
 ### Depends on
 
 - [discovery-chart-line](../discovery-chart-line)
+- [discovery-annotation](../discovery-annotation)
 
 ### Graph
 ```mermaid
 graph TD;
   discovery-tile-result --> discovery-chart-line
+  discovery-tile-result --> discovery-annotation
+  discovery-chart-line --> discovery-spinner
+  discovery-annotation --> discovery-spinner
   discovery-tile --> discovery-tile-result
   style discovery-tile-result fill:#f9f,stroke:#333,stroke-width:4px
 ```

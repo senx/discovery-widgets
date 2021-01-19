@@ -32,4 +32,17 @@ export class Utils {
   static fraction2r(rl0, rl1, v) {
     return v * (rl1 - rl0);
   }
+
+  static getLabelColor(el: HTMLElement) {
+    return Utils.getCSSColor(el, '--warp-view-chart-label-color', '#8e8e8e').trim();
+  }
+
+  static getGridColor(el: HTMLElement) {
+    return Utils.getCSSColor(el, '--warp-view-chart-grid-color', '#8e8e8e').trim();
+  }
+
+  static getCSSColor(el: HTMLElement, property: string, defColor: string) {
+    const color = getComputedStyle(el).getPropertyValue(property).trim();
+    return color === '' ? defColor : color;
+  }
 }

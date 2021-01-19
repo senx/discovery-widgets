@@ -9,7 +9,7 @@ export default {
         type: 'select', options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before']
       }
     },
-    lang: {
+    language: {
       control: {
         type: 'select', options: ['warpscript', 'flows']
       }
@@ -28,20 +28,34 @@ export default {
     },
   }
 };
-const Template = ({url, ws, lang, type}) => `<div class="uk-card uk-card-body">
+const Template = ({url, ws, language, type}) => `<div class="uk-card uk-card-body">
 <div style="width: 100%; height: 500px;">
-    <discovery-tile url="${url}" type="${type}" lang="${lang}" debug="true">${ws}</discovery-tile>
+    <discovery-tile url="${url}" type="${type}" language="${language}" debug="true">${ws}</discovery-tile>
 </div>
 </div>`;
 export const InitialUsage = Template.bind({});
 InitialUsage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
-  lang: 'warpscript',
+  language: 'warpscript',
   type: 'line',
-  ws: `@training/dataset0 $TOKEN AUTHENTICATE 100000000 MAXOPS
-  1 4 <% DROP NEWGTS 'g' STORE
+  ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
+};
+export const FlowsSample = Template.bind({});
+FlowsSample.args = {
+  ...InitialUsage.args,
+  language: 'flows',
+  ws: `l = [];
+FOR(1,4, () => {
+  g = NEWGTS();
+  FOR(1,10, (i) => {
+    ts = (RAND() + i) * STU() + NOW();
+    g = ADDVALUE(g, ts, NaN, NaN, NaN, RAND());
+  });
+  l = APPEND(l, [ g ])
+}, false);
+return l`
 };
 
 export const SimpleLineChart = Template.bind({});
@@ -113,3 +127,14 @@ amzairAaaTestXM1.args = {
   ...InitialUsage.args,
   ws: `@amzair/aaaTestXM1`
 };
+
+export const customStyle = ({url, ws, lang}) => `<div style="width: 100%; height: 500px;background-color: #404040">
+<style>
+:root {
+    --warp-view-chart-grid-color:blue;
+    --warp-view-chart-label-color: red;
+    }
+</style>
+    <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
+</div>`;
+customStyle.args = {...InitialUsage.args};

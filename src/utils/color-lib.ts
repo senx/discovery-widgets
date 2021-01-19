@@ -212,7 +212,7 @@ export class ColorLib {
     return ColorLib.color[scheme].map((c, i) => [i, c]);
   }
 
-  static hexToRgb(hex) {
+  static hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? [
       parseInt(result[1], 16),

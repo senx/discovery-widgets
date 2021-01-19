@@ -2,7 +2,6 @@ import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@s
 import * as echarts from 'echarts';
 import {EChartsOption} from 'echarts';
 import {GTSLib} from '../../utils/gts.lib';
-import {GTS} from "../../model/GTS";
 import {SeriesOption} from "echarts/lib/util/types";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
@@ -55,26 +54,27 @@ export class DiscoveryLineChartComponent {
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
     const series: any[] = [];
-    const gtsList = GTSLib.flatDeep((data.data as unknown as GTS[]));
+    const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     this.LOG.debug(['convert'], {options: this.options, gtsList});
     const gtsCount = gtsList.length;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        const color = ColorLib.getColor(i, this.options.scheme);
+        const c = ColorLib.getColor(gts.id, this.options.scheme);
+        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+        const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
+
         series.push({
           type: 'line',
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [d[0] / 1000, d[d.length - 1]]),
           animation: false,
-          polyline: false,
           large: true,
           showSymbol: false,
-          symbolSize: 1,
-          smooth: this.type === 'spline' ? 0.6 : undefined,
+          smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
           clip: false,
-          step: this.getStepShape(),
-          areaStyle: this.type === 'area' ? {
+          step: this.getStepShape(type),
+          areaStyle: type === 'area' || type === 'spline-area' ? {
             opacity: 0.8,
             color: {
               type: 'linear',
@@ -91,12 +91,7 @@ export class DiscoveryLineChartComponent {
           } : undefined,
           showAllSymbol: false,
           lineStyle: {color},
-          itemStyle: {color},
-          // emphasis: {focus: 'series'},
-          emphasis: {
-            focus: 'series',
-            blurScope: 'coordinateSystem'
-          },
+          itemStyle: {color}
         } as SeriesOption);
       }
     }
@@ -112,7 +107,7 @@ export class DiscoveryLineChartComponent {
           type: 'cross'
         },
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        position:  (pos, params, el, elRect, size) => {
+        position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
           return obj;
@@ -129,9 +124,41 @@ export class DiscoveryLineChartComponent {
         show: false
       },
       xAxis: {
-        type: 'time'
+        type: 'time',
+        axisLine: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        },
+        axisLabel: {
+          color: Utils.getLabelColor(this.el)
+        },
+        axisTick: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        },
       },
-      yAxis: {},
+      yAxis: {
+        splitLine: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        },
+        axisLabel: {
+          color: Utils.getLabelColor(this.el)
+        },
+        axisTick: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el)
+          }
+        }
+      },
       dataZoom: [
         {
           type: 'slider',
@@ -146,8 +173,8 @@ export class DiscoveryLineChartComponent {
     } as EChartsOption;
   }
 
-  private getStepShape() {
-    switch (this.type) {
+  private getStepShape(type: ChartType) {
+    switch (type) {
       case "line":
       case "area":
       case "spline":

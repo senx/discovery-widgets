@@ -11,7 +11,7 @@ export class DiscoverySpinner {
   render() {
     return (
       <Host>
-        <p><div class="loader"></div> <slot></slot></p>
+       <div class="loader"/> <slot/>
       </Host>
     );
   }

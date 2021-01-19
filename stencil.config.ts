@@ -1,6 +1,7 @@
-import { Config } from '@stencil/core';
-import { sass } from '@stencil/sass';
+import {Config} from '@stencil/core';
+import {sass} from '@stencil/sass';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
+
 export const config: Config = {
   plugins: [
     sass()
@@ -13,7 +14,7 @@ export const config: Config = {
     ]
   },
   namespace: 'discovery',
-  globalStyle: 'src/components/style.scss',
+  globalStyle: './src/global/variables.css',
   outputTargets: [
     {
       type: 'dist',

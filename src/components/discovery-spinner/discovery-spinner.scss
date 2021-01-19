@@ -1,18 +1,21 @@
+@import "../style";
+
 :host {
+  color: var(--warp-view-font-color);
+
   .loader {
     font-size: 10px;
     display: inline-block;
-  //  margin: 50px auto;
     text-indent: -9999em;
     width: 12px;
     height: 11px;
     border-radius: 50%;
-    background: #000000;
-    background: -moz-linear-gradient(left, #000000 10%, rgba(0,0,0, 0) 42%);
-    background: -webkit-linear-gradient(left, #000000 10%, rgba(0,0,0, 0) 42%);
-    background: -o-linear-gradient(left, #000000 10%, rgba(0,0,0, 0) 42%);
-    background: -ms-linear-gradient(left, #000000 10%, rgba(0,0,0, 0) 42%);
-    background: linear-gradient(to right, #000000 10%, rgba(0,0,0, 0) 42%);
+    background: var(--warp-view-spinner-color);
+    background: -moz-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
+    background: -webkit-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
+    background: -o-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
+    background: -ms-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
+    background: linear-gradient(to right, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
     position: relative;
     -webkit-animation: load3 1.4s infinite linear;
     animation: load3 1.4s infinite linear;
@@ -20,16 +23,18 @@
     -ms-transform: translateZ(0);
     transform: translateZ(0);
   }
+
   .loader:before {
     width: 50%;
     height: 50%;
-    background: #000000;
+    background: var(--warp-view-spinner-color);
     border-radius: 100% 0 0 0;
     position: absolute;
     top: 0;
     left: 0;
     content: '';
   }
+
   .loader:after {
     background: #ffffff;
     width: 75%;
@@ -43,6 +48,7 @@
     bottom: 0;
     right: 0;
   }
+
   @-webkit-keyframes load3 {
     0% {
       -webkit-transform: rotate(0deg);

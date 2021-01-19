@@ -3,7 +3,7 @@ export default {
   title: 'Components/Annotation',
   notes: readme,
   argTypes: {
-    lang: {
+    language: {
       control: {
         type: 'select', options: ['warpscript', 'flows']
       }
@@ -22,13 +22,13 @@ export default {
     },
   }
 };
-const Template = ({url, ws, lang, type}) => `<div style="width: 100%; height: 500px;">
-    <discovery-tile url="${url}" type="${type}" lang="${lang}" debug="true">${ws}</discovery-tile>
+const Template = ({url, ws, language, type}) => `<div style="width: 100%; height: 500px;">
+    <discovery-tile url="${url}" type="${type}" language="${language}" debug="true">${ws}</discovery-tile>
 </div>`;
 export const InitialUsage = Template.bind({});
 InitialUsage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
-  lang: 'warpscript',
+  language: 'warpscript',
   type: 'annotation',
   ws: `0 5 <% 'j' STORE
   NEWGTS 'serie' $j TOSTRING + RENAME 'gts' STORE
