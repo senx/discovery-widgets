@@ -1,34 +1,12 @@
-import readme from '../discovery-tile/readme.md';
+import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
+
 export default {
-  title: 'Components/Annotation',
-  notes: readme,
-  argTypes: {
-    language: {
-      control: {
-        type: 'select', options: ['warpscript', 'flows']
-      }
-    },
-    url: {control: 'text'},
-    ws: {control: 'text'}
-  },
-  parameters: {
-    actions: {
-      handles: ['statusHeaders discovery-tile'],
-    },
-    docs: {
-      description: {
-        component: readme
-      }
-    },
-  }
+  ...tile,
+  title: 'Components/Annotation'
 };
-const Template = ({url, ws, language, type}) => `<div style="width: 100%; height: 500px;">
-    <discovery-tile url="${url}" type="${type}" language="${language}" debug="true">${ws}</discovery-tile>
-</div>`;
-export const InitialUsage = Template.bind({});
+export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
-  url: 'https://warp.senx.io/api/v0/exec',
-  language: 'warpscript',
+  ...Usage.args,
   type: 'annotation',
   ws: `0 5 <% 'j' STORE
   NEWGTS 'serie' $j TOSTRING + RENAME 'gts' STORE
@@ -40,7 +18,7 @@ InitialUsage.args = {
 %> FOR`
 };
 
-export const TestCase1 = Template.bind({});
+export const TestCase1 = Usage.bind({});
 TestCase1.args = {
   ...InitialUsage.args,
   ws: `"2000-01-01T00:00:00.0Z" TOTIMESTAMP 'start' STORE
@@ -63,7 +41,7 @@ TestCase1.args = {
 
                 %> FOR`
 }
-export const TestCase2 = Template.bind({});
+export const TestCase2 = Usage.bind({});
 TestCase2.args = {
   ...InitialUsage.args,
   ws: `"2000-01-01T00:00:00.0Z" TOTIMESTAMP 'start' STORE
@@ -89,7 +67,7 @@ $h 2 % 0 ==
 NEWGTS 'emptyone, stack top' RENAME`
 }
 
-export const SwitchToTimestamp = Template.bind({});
+export const SwitchToTimestamp = Usage.bind({});
 SwitchToTimestamp.args = {
   ...InitialUsage.args,
   ws: `NEWGTS 'boolannotation, not ordered' RENAME

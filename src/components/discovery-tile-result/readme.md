@@ -7,15 +7,15 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                                                                                      | Default       |
-| --------- | --------- | ----------- | ----------------------------------------------------------------------------------------- | ------------- |
-| `debug`   | `debug`   |             | `boolean`                                                                                 | `false`       |
-| `height`  | `height`  |             | `number`                                                                                  | `undefined`   |
-| `options` | --        |             | `Param`                                                                                   | `new Param()` |
-| `result`  | `result`  |             | `string`                                                                                  | `undefined`   |
-| `start`   | `start`   |             | `number`                                                                                  | `undefined`   |
-| `type`    | `type`    |             | `"annotation" \| "area" \| "line" \| "spline" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
-| `width`   | `width`   |             | `number`                                                                                  | `undefined`   |
+| Property  | Attribute | Description | Type                                                                                                       | Default       |
+| --------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `debug`   | `debug`   |             | `boolean`                                                                                                  | `false`       |
+| `height`  | `height`  |             | `number`                                                                                                   | `undefined`   |
+| `options` | --        |             | `Param`                                                                                                    | `new Param()` |
+| `result`  | `result`  |             | `string`                                                                                                   | `undefined`   |
+| `start`   | `start`   |             | `number`                                                                                                   | `undefined`   |
+| `type`    | `type`    |             | `"annotation" \| "area" \| "line" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
+| `width`   | `width`   |             | `number`                                                                                                   | `undefined`   |
 
 
 ## Dependencies

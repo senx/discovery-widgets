@@ -1,48 +1,19 @@
-import readme from '../discovery-tile/readme.md';
+import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
 
 export default {
-  title: 'Components/Line Chart',
-  notes: readme,
-  argTypes: {
-    type: {
-      control: {
-        type: 'select', options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before']
-      }
-    },
-    language: {
-      control: {
-        type: 'select', options: ['warpscript', 'flows']
-      }
-    },
-    url: {control: 'text'},
-    ws: {control: 'text'}
-  },
-  parameters: {
-    actions: {
-      handles: ['statusHeaders discovery-tile'],
-    },
-    docs: {
-      description: {
-        component: readme
-      }
-    },
-  }
+  ...tile,
+  title: 'Components/Line Chart'
 };
-const Template = ({url, ws, language, type}) => `<div class="uk-card uk-card-body">
-<div style="width: 100%; height: 500px;">
-    <discovery-tile url="${url}" type="${type}" language="${language}" debug="true">${ws}</discovery-tile>
-</div>
-</div>`;
-export const InitialUsage = Template.bind({});
+
+export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
-  url: 'https://warp.senx.io/api/v0/exec',
-  language: 'warpscript',
+  ...Usage.args,
   type: 'line',
   ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
-export const FlowsSample = Template.bind({});
+export const FlowsSample = Usage.bind({});
 FlowsSample.args = {
   ...InitialUsage.args,
   language: 'flows',
@@ -58,7 +29,7 @@ FOR(1,4, () => {
 return l`
 };
 
-export const SimpleLineChart = Template.bind({});
+export const SimpleLineChart = Usage.bind({});
 SimpleLineChart.args = {
   ...InitialUsage.args,
   ws: `[
@@ -82,7 +53,7 @@ SimpleLineChart.args = {
 ]`
 }
 
-export const RealUseCase = Template.bind({});
+export const RealUseCase = Usage.bind({});
 RealUseCase.args = {
   ...InitialUsage.args,
   ws: `@training/dataset0
@@ -91,22 +62,22 @@ false RESETS
 [ SWAP mapper.delta 1 0 0 ] MAP`
 }
 
-export const SplineChart = Template.bind({});
+export const SplineChart = Usage.bind({});
 SplineChart.args = {
   ...InitialUsage.args,
   type: 'spline'
 }
-export const StepChart = Template.bind({});
+export const StepChart = Usage.bind({});
 StepChart.args = {
   ...InitialUsage.args,
   type: 'step'
 }
-export const StepBeforeChart = Template.bind({});
+export const StepBeforeChart = Usage.bind({});
 StepBeforeChart.args = {
   ...InitialUsage.args,
   type: 'step-before'
 }
-export const StepAfterChart = Template.bind({});
+export const StepAfterChart = Usage.bind({});
 StepAfterChart.args = {
   ...InitialUsage.args,
   type: 'step-after'
@@ -122,19 +93,9 @@ SmallArea.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
-export const amzairAaaTestXM1 = Template.bind({});
+export const amzairAaaTestXM1 = Usage.bind({});
 amzairAaaTestXM1.args = {
   ...InitialUsage.args,
   ws: `@amzair/aaaTestXM1`
 };
 
-export const customStyle = ({url, ws, lang}) => `<div style="width: 100%; height: 500px;background-color: #404040">
-<style>
-:root {
-    --warp-view-chart-grid-color:blue;
-    --warp-view-chart-label-color: red;
-    }
-</style>
-    <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
-</div>`;
-customStyle.args = {...InitialUsage.args};
