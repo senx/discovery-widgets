@@ -16,6 +16,14 @@ export namespace Components {
         "type": ChartType;
         "width": number;
     }
+    interface DiscoveryBar {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": string;
+        "type": ChartType;
+        "width": number;
+    }
     interface DiscoveryChartLine {
         "debug": boolean;
         "height": number;
@@ -51,6 +59,12 @@ declare global {
         prototype: HTMLDiscoveryAnnotationElement;
         new (): HTMLDiscoveryAnnotationElement;
     };
+    interface HTMLDiscoveryBarElement extends Components.DiscoveryBar, HTMLStencilElement {
+    }
+    var HTMLDiscoveryBarElement: {
+        prototype: HTMLDiscoveryBarElement;
+        new (): HTMLDiscoveryBarElement;
+    };
     interface HTMLDiscoveryChartLineElement extends Components.DiscoveryChartLine, HTMLStencilElement {
     }
     var HTMLDiscoveryChartLineElement: {
@@ -77,6 +91,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
+        "discovery-bar": HTMLDiscoveryBarElement;
         "discovery-chart-line": HTMLDiscoveryChartLineElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-tile": HTMLDiscoveryTileElement;
@@ -85,6 +100,15 @@ declare global {
 }
 declare namespace LocalJSX {
     interface DiscoveryAnnotation {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: string;
+        "type"?: ChartType;
+        "width"?: number;
+    }
+    interface DiscoveryBar {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
@@ -124,6 +148,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "discovery-annotation": DiscoveryAnnotation;
+        "discovery-bar": DiscoveryBar;
         "discovery-chart-line": DiscoveryChartLine;
         "discovery-spinner": DiscoverySpinner;
         "discovery-tile": DiscoveryTile;
@@ -135,6 +160,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
+            "discovery-bar": LocalJSX.DiscoveryBar & JSXBase.HTMLAttributes<HTMLDiscoveryBarElement>;
             "discovery-chart-line": LocalJSX.DiscoveryChartLine & JSXBase.HTMLAttributes<HTMLDiscoveryChartLineElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;

@@ -45,14 +45,10 @@ export class DiscoveryAnnotation {
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(this, this.debug);
-    if(typeof this.options === 'string') {
+    if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-
-    this.LOG.debug(['componentWillLoad'], {
-      type: this.type,
-      options: this.options,
-    });
+    this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.options});
     this.chartOpts = this.convert(this.result || '[]')
   }
 
@@ -96,11 +92,12 @@ export class DiscoveryAnnotation {
         //  text: 'ECharts entry example'
       },
       grid: {
-        height: this.height - 50,
+        height: this.height - 10,
         right: 0,
-        bottom: 30,
-        top: 20,
-        left: 20
+        bottom: 0,
+        top: 10,
+        left: 0,
+        containLabel: true
       },
       throttle: 70,
       tooltip: {

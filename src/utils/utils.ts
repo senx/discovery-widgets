@@ -1,3 +1,6 @@
+import {GTSLib} from "./gts.lib";
+import {Param} from "../model/param";
+
 export class Utils {
 
   static httpPost(theUrl, payload) {

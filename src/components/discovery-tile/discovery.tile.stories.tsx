@@ -9,7 +9,7 @@ export default {
     type: {
       control: {
         type: 'select',
-        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation']
+        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar']
       }
     },
     language: {

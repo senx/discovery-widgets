@@ -1,21 +1,24 @@
 import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
-import * as echarts from 'echarts';
-import {EChartsOption} from 'echarts';
-import {GTSLib} from '../../utils/gts.lib';
-import {SeriesOption} from "echarts/lib/util/types";
-import {ColorLib} from "../../utils/color-lib";
-import {Utils} from "../../utils/utils";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
 import {ChartType, ECharts} from "../../model/types";
+import {Param} from "../../model/param";
+import * as echarts from "echarts";
+import {EChartsOption} from "echarts";
+import {Logger} from "../../utils/logger";
+import {GTSLib} from "../../utils/gts.lib";
+import {Utils} from "../../utils/utils";
+import {ColorLib} from "../../utils/color-lib";
+import {SeriesOption} from "echarts/lib/util/types";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc)
 
 @Component({
-  tag: 'discovery-chart-line',
-  styleUrl: 'discovery-chart-line.scss',
+  tag: 'discovery-bar',
+  styleUrl: 'discovery-bar.scss',
   shadow: true,
 })
-export class DiscoveryLineChartComponent {
-
+export class DiscoveryBarComponent {
   @Prop() result: string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
@@ -40,7 +43,7 @@ export class DiscoveryLineChartComponent {
 
   componentWillLoad() {
     this.parsing = true;
-    this.LOG = new Logger(DiscoveryLineChartComponent, this.debug);
+    this.LOG = new Logger(DiscoveryBarComponent, this.debug);
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
@@ -49,69 +52,107 @@ export class DiscoveryLineChartComponent {
       options: this.options,
     });
     this.chartOpts = this.convert(this.result || '[]')
+    this.LOG.debug(['componentWillLoad', 'convert'], {
+      chartOpts: this.chartOpts
+    });
+  }
+
+  private getCommonSeriesParam(color) {
+    return {
+      type: 'bar',
+      stack: (this.options as Param).stacked ? 'total' : undefined,
+      animation: false,
+      large: true,
+      clip: false,
+      lineStyle: {color},
+      itemStyle: {
+        opacity: 0.8,
+        color: {
+          type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+          colorStops: [
+            {offset: 0, color},
+            {offset: 1, color: ColorLib.transparentize(color, 0.4)}
+          ],
+          global: false // false by default
+        }
+      }
+    } as SeriesOption
   }
 
   convert(dataStr: string) {
     const data = GTSLib.getData(dataStr);
+
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
     const series: any[] = [];
-    const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
+    let gtsList = [];
+    if (GTSLib.isArray(data.data)) {
+      data.data = GTSLib.flatDeep(data.data as any[]);
+      this.LOG.debug(['convert', 'isArray']);
+      if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
+        this.LOG.debug(['convert', 'isArray 2']);
+        gtsList = GTSLib.flattenGtsIdArray(data.data as any[], 0).res;
+      } else {
+        this.LOG.debug(['convert', 'isArray 3']);
+        gtsList = data.data as any[];
+      }
+    } else {
+      this.LOG.debug(['convert', 'not array']);
+      gtsList = [data.data];
+    }
     this.LOG.debug(['convert'], {options: this.options, gtsList});
     const gtsCount = gtsList.length;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        const c = ColorLib.getColor(gts.id, this.options.scheme);
+        const c = ColorLib.getColor(gts.id | i, this.options.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
-
         series.push({
-          type: 'line',
+          ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / 1000, d[d.length - 1]]),
-          animation: false,
-          large: true,
-          showSymbol: this.options.showDots,
-          smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
-          clip: false,
-          step: DiscoveryLineChartComponent.getStepShape(type),
-          areaStyle: type === 'area' || type === 'spline-area' ? {
-            opacity: 0.8,
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {offset: 0, color},
-                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
-              ],
-              global: false // false by default
+          data: gts.v.map(d => {
+            let ts: number | string = Math.round(d[0] / 1000);
+            if ((this.options as Param).timeMode || 'date' === 'date') {
+              ts = dayjs.utc(ts).toISOString()
             }
-          } : undefined,
-          showAllSymbol: false,
-          lineStyle: {color},
-          itemStyle: {color}
+            console.log(!!(this.options as Param).horizontal)
+            if(!!(this.options as Param).horizontal) {
+              return[d[d.length - 1], ts];
+            } else {
+              return [ts, d[d.length - 1]]
+            }
+          })
         } as SeriesOption);
+      } else {
+        this.options.timeMode = 'custom';
+        this.LOG.debug(['convert', 'gts'], gts);
+        (gts.columns || []).forEach((label, index) => {
+          const c = ColorLib.getColor(gts.id | index, (this.options as Param).scheme);
+          const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+          series.push({
+            ...this.getCommonSeriesParam(color),
+            name: label,
+            data: gts.rows.map(r => {
+              if(!!(this.options as Param).horizontal) {
+                return [ r[index + 1], r[0]];
+              } else {
+                return [r[0], r[index + 1]]
+              }
+            })
+          } as SeriesOption);
+        });
       }
     }
     return {
-      progressive: 20000,
       grid: {
         left: 0, top: 10, bottom: 0, right: 0,
         containLabel: true
       },
-      title: {
-        //  text: 'ECharts entry example'
-      },
-      throttle: 70,
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'cross'
+          type: 'shadow'
         },
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
@@ -131,7 +172,7 @@ export class DiscoveryLineChartComponent {
         show: false
       },
       xAxis: {
-        type: 'time',
+        type: !!(this.options as Param).horizontal? 'value' : 'category',
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -144,9 +185,10 @@ export class DiscoveryLineChartComponent {
           lineStyle: {
             color: Utils.getGridColor(this.el)
           }
-        },
+        }
       },
       yAxis: {
+        type: !!(this.options as Param).horizontal? 'category': 'value',
         splitLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -221,4 +263,5 @@ export class DiscoveryLineChartComponent {
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
     </div>
   }
+
 }

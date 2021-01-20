@@ -68,6 +68,16 @@ export class DiscoveryTileResultComponent {
           width={this.width}
           debug={this.debug}
         />;
+      case 'bar':
+        return <discovery-bar
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          type={this.type}
+          options={this.options}
+          height={this.height}
+          width={this.width}
+          debug={this.debug}
+        />;
       default:
         return '';
     }
