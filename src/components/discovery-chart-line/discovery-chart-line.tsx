@@ -33,6 +33,7 @@ export class DiscoveryLineChartComponent {
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
+  private divider: number = 1000;
 
   @Watch('result')
   updateRes() {
@@ -50,6 +51,7 @@ export class DiscoveryLineChartComponent {
       type: this.type,
       options: this.options,
     });
+    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
   }
 
@@ -71,7 +73,7 @@ export class DiscoveryLineChartComponent {
         series.push({
           type: 'line',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / 1000, d[d.length - 1]]),
+          data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
           animation: false,
           large: true,
           showSymbol: this.options.showDots,

@@ -73,7 +73,7 @@ backgroundAndIndividualLineColors.args = {
   ...Usage.args,ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 30 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR STACKTOLIST 'data' STORE
-  { 'data' $data 'params' [ { 'datasetColor' '#21918c' } { 'datasetColor' '#7e03a8' } { 'type' 'area' 'datasetColor' '#e31a1c' } { 'datasetColor' 'white' } ] }
+  { 'data' $data 'params' [ { 'datasetColor' '#dc3545' } { 'datasetColor' '#ff9900' } { 'type' 'area' 'datasetColor' '#90d743' } { 'datasetColor' 'white' } ] }
   `,
-  options: {...options, bgColor: '#0d1117'}
+  options: {...options, bgColor: '#404040'}
 }

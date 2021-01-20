@@ -36,6 +36,7 @@ export class DiscoveryBarComponent {
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
+  private divider: number = 1000;
 
   @Watch('result')
   updateRes() {
@@ -52,13 +53,11 @@ export class DiscoveryBarComponent {
       this.options = JSON.parse(this.options);
     }
     this.result = GTSLib.getData(this.result);
+    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
-    });
-    this.LOG.debug(['componentWillLoad', 'convert'], {
-      chartOpts: this.chartOpts
     });
   }
 
@@ -115,7 +114,7 @@ export class DiscoveryBarComponent {
           ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => {
-            let ts: number | string = Math.round(d[0] / 1000);
+            let ts: number | string = Math.round(d[0] / this.divider);
             if ((this.options as Param).timeMode || 'date' === 'date') {
               ts = dayjs.utc(ts).toISOString()
             }

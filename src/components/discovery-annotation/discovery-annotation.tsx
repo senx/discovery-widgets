@@ -37,6 +37,7 @@ export class DiscoveryAnnotation {
   private expanded: boolean = false;
   private displayExpander: boolean = false;
   private myChart: ECharts;
+  private divider: number = 1000;
 
   @Watch('result')
   updateRes() {
@@ -51,6 +52,7 @@ export class DiscoveryAnnotation {
       this.options = JSON.parse(this.options);
     }
     this.result = GTSLib.getData(this.result);
+    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.options});
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
   }
@@ -74,7 +76,7 @@ export class DiscoveryAnnotation {
         series.push({
           type: 'scatter',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / 1000, (this.expanded ? i : 0) + 0.5]),
+          data: gts.v.map(d => [d[0] / this.divider, (this.expanded ? i : 0) + 0.5]),
           animation: false,
           large: true,
           showSymbol: true,
