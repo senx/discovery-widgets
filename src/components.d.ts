@@ -11,7 +11,7 @@ export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
         "height": number;
-        "options": Param;
+        "options": Param | string;
         "result": string;
         "type": ChartType;
         "width": number;
@@ -19,7 +19,7 @@ export namespace Components {
     interface DiscoveryChartLine {
         "debug": boolean;
         "height": number;
-        "options": Param;
+        "options": Param | string;
         "result": string;
         "type": ChartType;
         "width": number;
@@ -30,14 +30,14 @@ export namespace Components {
     interface DiscoveryTile {
         "debug": boolean;
         "language": 'warpscript' | 'flows';
-        "options": Param;
+        "options": Param | string;
         "type": ChartType;
         "url": string;
     }
     interface DiscoveryTileResult {
         "debug": boolean;
         "height": number;
-        "options": Param;
+        "options": Param | string;
         "result": string;
         "start": number;
         "type": ChartType;
@@ -88,7 +88,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
-        "options"?: Param;
+        "options"?: Param | string;
         "result"?: string;
         "type"?: ChartType;
         "width"?: number;
@@ -97,7 +97,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
-        "options"?: Param;
+        "options"?: Param | string;
         "result"?: string;
         "type"?: ChartType;
         "width"?: number;
@@ -109,14 +109,14 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
-        "options"?: Param;
+        "options"?: Param | string;
         "type"?: ChartType;
         "url"?: string;
     }
     interface DiscoveryTileResult {
         "debug"?: boolean;
         "height"?: number;
-        "options"?: Param;
+        "options"?: Param | string;
         "result"?: string;
         "start"?: number;
         "type"?: ChartType;

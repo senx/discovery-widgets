@@ -1,5 +1,7 @@
 import readme from './readme.md';
+import {Param} from "../../model/param";
 
+const options = new Param()
 export default {
   title: 'Components/Tile',
   notes: readme,
@@ -16,7 +18,8 @@ export default {
       }
     },
     url: {control: 'text'},
-    ws: {control: 'text'}
+    ws: {control: 'text'},
+    options: {control: 'object'}
   },
   parameters: {
     actions: {
@@ -29,9 +32,11 @@ export default {
     },
   }
 };
-const Template = ({url, ws, language, type}) => `<div class="card" style="width: 100%;min-height: 500px">
+const Template = ({url, ws, language, type, options}) => `<div class="card" style="width: 100%;min-height: 500px">
     <div class="card-body">
-        <discovery-tile url="${url}" type="${type}" language="${language}" debug="true">${ws}</discovery-tile>
+        <discovery-tile url="${url}" type="${type}" language="${language}"
+        debug="true" options='${JSON.stringify(options)}'
+        >${ws}</discovery-tile>
     </div>
 </div>`;
 
@@ -42,16 +47,23 @@ Usage.args = {
   type: 'line',
   ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
-  $g %> FOR`
-};
+  $g %> FOR`,
+  options: new Param()
+}
 
-export const customStyle = ({url, ws, lang}) => `<div style="width: 100%; height: 500px;background-color: #404040">
+export const customStyle = ({url, ws, lang, options}) => `<div style="width: 100%; height: 500px;background-color: #404040">
 <style>
 :root {
     --warp-view-chart-grid-color:blue;
     --warp-view-chart-label-color: red;
     }
 </style>
-    <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
+    <discovery-tile url="${url}" type="line" lang="${lang}" options="${options}">${ws}</discovery-tile>
 </div>`;
 customStyle.args = {...Usage.args};
+
+export const colorSchemeAndOptions = Template.bind({});
+colorSchemeAndOptions.args = {
+  ...Usage.args,
+  options: {...options, scheme: 'INFERNO'}
+}

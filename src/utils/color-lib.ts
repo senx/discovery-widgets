@@ -191,6 +191,9 @@ export class ColorLib {
   };
 
   static getColor(i: number, scheme: string) {
+    if(!ColorLib.color[scheme]) {
+      scheme = 'WARP10';
+    }
     return ColorLib.color[scheme][i % ColorLib.color[scheme].length];
   }
 

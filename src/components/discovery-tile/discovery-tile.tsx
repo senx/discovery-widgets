@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -12,7 +12,7 @@ import {Logger} from "../../utils/logger";
 export class DiscoveryTileComponent {
   @Prop() url: string;
   @Prop() type: ChartType;
-  @Prop() options: Param = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() debug: boolean = false;
 
@@ -34,8 +34,23 @@ export class DiscoveryTileComponent {
   private LOG: Logger;
   private ws: string;
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    if (typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+    }
+    this.LOG.debug(['optionsUpdate'], {
+      options: this.options,
+      newValue, oldValue
+    });
+
+  }
+
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
+    if (typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+    }
     this.LOG.debug(['componentWillLoad'], {
       url: this.url,
       type: this.type,

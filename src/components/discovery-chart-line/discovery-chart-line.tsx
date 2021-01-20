@@ -18,7 +18,7 @@ export class DiscoveryLineChartComponent {
 
   @Prop() result: string;
   @Prop() type: ChartType;
-  @Prop() options: Param = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -41,6 +41,9 @@ export class DiscoveryLineChartComponent {
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLineChartComponent, this.debug);
+    if(typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+    }
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -97,6 +100,7 @@ export class DiscoveryLineChartComponent {
     }
     return {
       progressive: 20000,
+    //  grid: {left: '5%',top: 10, bottom: 30, right:'5%'},
       title: {
         //  text: 'ECharts entry example'
       },

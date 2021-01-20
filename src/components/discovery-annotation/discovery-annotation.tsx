@@ -17,7 +17,7 @@ import {SeriesOption} from "echarts/lib/util/types";
 export class DiscoveryAnnotation {
   @Prop() result: string;
   @Prop() type: ChartType;
-  @Prop() options: Param = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @State()
   @Prop() height: number;
@@ -44,7 +44,11 @@ export class DiscoveryAnnotation {
 
   componentWillLoad() {
     this.parsing = true;
-    this.LOG = new Logger(DiscoveryAnnotation, this.debug);
+    this.LOG = new Logger(this, this.debug);
+    if(typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+    }
+
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -93,7 +97,6 @@ export class DiscoveryAnnotation {
       },
       grid: {
         height: this.height - 50,
-        width: '100%',
         right: 0,
         bottom: 30,
         top: 20,
@@ -117,7 +120,6 @@ export class DiscoveryAnnotation {
           //  saveAsImage: {}
         }
       },
-
       xAxis: {
         type: 'time',
         axisLine: {

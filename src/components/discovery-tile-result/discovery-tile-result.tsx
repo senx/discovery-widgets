@@ -12,7 +12,7 @@ export class DiscoveryTileResultComponent {
   @Prop() result: string;
   @Prop() type: ChartType;
   @Prop() start: number;
-  @Prop() options: Param = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -25,6 +25,9 @@ export class DiscoveryTileResultComponent {
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
+    if(typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+    }
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
