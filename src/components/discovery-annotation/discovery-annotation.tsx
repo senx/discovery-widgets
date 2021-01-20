@@ -92,10 +92,10 @@ export class DiscoveryAnnotation {
         //  text: 'ECharts entry example'
       },
       grid: {
-        height: this.height - 10,
+        height: this.height - 30,
         right: 0,
-        bottom: 0,
-        top: 10,
+        top: 20,
+        bottom: 10,
         left: 0,
         containLabel: true
       },
