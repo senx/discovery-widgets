@@ -36,7 +36,7 @@ export class DiscoveryTileComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    if (typeof this.options === 'string') {
+    if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
     this.LOG.debug(['optionsUpdate'], {
@@ -48,15 +48,15 @@ export class DiscoveryTileComponent {
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
-    if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
-    }
     this.LOG.debug(['componentWillLoad'], {
       url: this.url,
       type: this.type,
       options: this.options,
       language: this.language,
     });
+    if (!!this.options && typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+    }
 
     const {h, w} = Utils.getContentBounds(this.el.parentElement);
     this.width = w;

@@ -8,6 +8,7 @@ import {Utils} from "../../utils/utils";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {ChartType, ECharts} from "../../model/types";
+import {DataModel} from "../../model/dataModel";
 
 @Component({
   tag: 'discovery-chart-line',
@@ -16,7 +17,7 @@ import {ChartType, ECharts} from "../../model/types";
 })
 export class DiscoveryLineChartComponent {
 
-  @Prop() result: string;
+  @Prop() result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
@@ -44,15 +45,15 @@ export class DiscoveryLineChartComponent {
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
+    this.result = GTSLib.getData(this.result);
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
     });
-    this.chartOpts = this.convert(this.result || '[]')
+    this.chartOpts = this.convert(this.result as DataModel || new DataModel());
   }
 
-  convert(dataStr: string) {
-    const data = GTSLib.getData(dataStr);
+  convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};

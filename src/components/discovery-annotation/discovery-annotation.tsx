@@ -8,6 +8,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
+import {DataModel} from "../../model/dataModel";
 
 @Component({
   tag: 'discovery-annotation',
@@ -15,7 +16,7 @@ import {SeriesOption} from "echarts/lib/util/types";
   shadow: true,
 })
 export class DiscoveryAnnotation {
-  @Prop() result: string;
+  @Prop() result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
@@ -40,6 +41,7 @@ export class DiscoveryAnnotation {
   @Watch('result')
   updateRes() {
     console.log('updateRes', this.result)
+    this.result = GTSLib.getData(this.result);
   }
 
   componentWillLoad() {
@@ -48,12 +50,12 @@ export class DiscoveryAnnotation {
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
+    this.result = GTSLib.getData(this.result);
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.options});
-    this.chartOpts = this.convert(this.result || '[]')
+    this.chartOpts = this.convert(this.result as DataModel || new DataModel())
   }
 
-  convert(dataStr: string) {
-    const data = GTSLib.getData(dataStr);
+  convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
@@ -201,7 +203,7 @@ export class DiscoveryAnnotation {
 
   private toggle() {
     this.expanded = !this.expanded;
-    this.chartOpts = this.convert(this.result || '[]')
+    this.chartOpts = this.convert(this.result as DataModel || new DataModel())
     setTimeout(() => {
       this.myChart.resize({
         width: this.width,

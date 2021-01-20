@@ -58,7 +58,8 @@ export const customStyle = ({url, ws, lang, options}) => `<div style="width: 100
     --warp-view-chart-label-color: red;
     }
 </style>
-    <discovery-tile url="${url}" type="line" lang="${lang}" options="${options}">${ws}</discovery-tile>
+    <discovery-tile url="${url}" type="line" lang="${lang}"
+    options='${JSON.stringify(options)}'>${ws}</discovery-tile>
 </div>`;
 customStyle.args = {...Usage.args};
 
@@ -66,4 +67,13 @@ export const colorSchemeAndOptions = Template.bind({});
 colorSchemeAndOptions.args = {
   ...Usage.args,
   options: {...options, scheme: 'INFERNO'}
+}
+export const backgroundAndIndividualLineColors = Template.bind({});
+backgroundAndIndividualLineColors.args = {
+  ...Usage.args,ws: `1 4 <% DROP NEWGTS 'g' STORE
+  1 30 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR STACKTOLIST 'data' STORE
+  { 'data' $data 'params' [ { 'datasetColor' '#21918c' } { 'datasetColor' '#7e03a8' } { 'type' 'area' 'datasetColor' '#e31a1c' } { 'datasetColor' 'white' } ] }
+  `,
+  options: {...options, bgColor: '#0d1117'}
 }

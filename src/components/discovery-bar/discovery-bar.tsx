@@ -10,6 +10,7 @@ import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
+import {DataModel} from "../../model/dataModel";
 
 dayjs.extend(utc)
 
@@ -19,7 +20,7 @@ dayjs.extend(utc)
   shadow: true,
 })
 export class DiscoveryBarComponent {
-  @Prop() result: string;
+  @Prop() result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
@@ -38,6 +39,9 @@ export class DiscoveryBarComponent {
 
   @Watch('result')
   updateRes() {
+    if (typeof this.result === 'string') {
+      this.result = JSON.parse(this.result);
+    }
     console.log('updateRes', this.result)
   }
 
@@ -47,11 +51,12 @@ export class DiscoveryBarComponent {
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
+    this.result = GTSLib.getData(this.result);
+    this.chartOpts = this.convert(this.result as DataModel || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
     });
-    this.chartOpts = this.convert(this.result || '[]')
     this.LOG.debug(['componentWillLoad', 'convert'], {
       chartOpts: this.chartOpts
     });
@@ -79,9 +84,7 @@ export class DiscoveryBarComponent {
     } as SeriesOption
   }
 
-  convert(dataStr: string) {
-    const data = GTSLib.getData(dataStr);
-
+  convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};

@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { DataModel } from "./model/dataModel";
 import { ChartType } from "./model/types";
 import { Param } from "./model/param";
 export namespace Components {
@@ -12,7 +13,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
-        "result": string;
+        "result": DataModel | string;
         "type": ChartType;
         "width": number;
     }
@@ -20,7 +21,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
-        "result": string;
+        "result": DataModel | string;
         "type": ChartType;
         "width": number;
     }
@@ -28,7 +29,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
-        "result": string;
+        "result": DataModel | string;
         "type": ChartType;
         "width": number;
     }
@@ -46,7 +47,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
-        "result": string;
+        "result": DataModel | string;
         "start": number;
         "type": ChartType;
         "width": number;
@@ -104,7 +105,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
-        "result"?: string;
+        "result"?: DataModel | string;
         "type"?: ChartType;
         "width"?: number;
     }
@@ -113,7 +114,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
-        "result"?: string;
+        "result"?: DataModel | string;
         "type"?: ChartType;
         "width"?: number;
     }
@@ -122,7 +123,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
-        "result"?: string;
+        "result"?: DataModel | string;
         "type"?: ChartType;
         "width"?: number;
     }
@@ -141,7 +142,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "options"?: Param | string;
-        "result"?: string;
+        "result"?: DataModel | string;
         "start"?: number;
         "type"?: ChartType;
         "width"?: number;
