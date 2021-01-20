@@ -81,10 +81,6 @@ export class DiscoveryAnnotation {
           clip: true,
           showAllSymbol: true,
           itemStyle: {color},
-          emphasis: {
-            focus: 'series',
-            blurScope: 'coordinateSystem'
-          },
         } as SeriesOption);
       }
     }
@@ -124,7 +120,6 @@ export class DiscoveryAnnotation {
 
       xAxis: {
         type: 'time',
-        lineHeight: 10,
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)

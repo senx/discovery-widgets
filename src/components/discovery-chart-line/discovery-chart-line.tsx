@@ -73,7 +73,7 @@ export class DiscoveryLineChartComponent {
           showSymbol: false,
           smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
           clip: false,
-          step: this.getStepShape(type),
+          step: DiscoveryLineChartComponent.getStepShape(type),
           areaStyle: type === 'area' || type === 'spline-area' ? {
             opacity: 0.8,
             color: {
@@ -173,7 +173,7 @@ export class DiscoveryLineChartComponent {
     } as EChartsOption;
   }
 
-  private getStepShape(type: ChartType) {
+  private static getStepShape(type: ChartType) {
     switch (type) {
       case "line":
       case "area":

@@ -45,4 +45,15 @@ export class Utils {
     const color = getComputedStyle(el).getPropertyValue(property).trim();
     return color === '' ? defColor : color;
   }
+
+  static getContentBounds(el: HTMLElement): { w: number, h: number } {
+    return {
+      h: el.clientHeight
+        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-top'), 10)
+        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-bottom'), 10),
+      w: el.clientWidth
+        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-left'), 10)
+        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-right'), 10)
+    }
+  }
 }

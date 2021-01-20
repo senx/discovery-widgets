@@ -42,8 +42,10 @@ export class DiscoveryTileComponent {
       options: this.options,
       language: this.language,
     });
-    this.width = this.el.parentElement.getBoundingClientRect().width;
-    this.height = this.el.parentElement.getBoundingClientRect().height;
+
+    const {h, w} = Utils.getContentBounds(this.el.parentElement);
+    this.width = w;
+    this.height = h;
   }
 
   componentDidLoad() {

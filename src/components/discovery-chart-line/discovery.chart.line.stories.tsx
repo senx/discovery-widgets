@@ -83,8 +83,10 @@ StepAfterChart.args = {
   type: 'step-after'
 }
 
-export const SmallArea = ({url, ws, lang}) => `<div style="width: 300px; height: 200px;">
-    <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
+export const SmallArea = ({url, ws, lang}) => `<div class="card" style="width: 300px; height: 200px;">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
+    </div>
 </div>`;
 SmallArea.args = {
   ...InitialUsage.args,

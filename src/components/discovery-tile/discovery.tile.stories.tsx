@@ -6,7 +6,8 @@ export default {
   argTypes: {
     type: {
       control: {
-        type: 'select', options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation']
+        type: 'select',
+        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation']
       }
     },
     language: {
@@ -28,9 +29,10 @@ export default {
     },
   }
 };
-const Template = ({url, ws, language, type}) => `
-<div style="width: 100%; height: 500px;">
-    <discovery-tile url="${url}" type="${type}" language="${language}" debug="true">${ws}</discovery-tile>
+const Template = ({url, ws, language, type}) => `<div class="card" style="width: 100%;min-height: 500px">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="${type}" language="${language}" debug="true">${ws}</discovery-tile>
+    </div>
 </div>`;
 
 export const Usage = Template.bind({});

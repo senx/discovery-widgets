@@ -14,8 +14,10 @@ export default {
     },
   }
 };
-const Template = ({message}) => `<div style="width: 100%; height: 500px;">
+const Template = ({message}) => `<div class="card" style="width: 100%;">
+  <div class="card-body">
     <discovery-spinner>${message}</discovery-spinner>
+  </div>
 </div>`;
 export const InitialUsage = Template.bind({});
 InitialUsage.args = {
