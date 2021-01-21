@@ -3,6 +3,7 @@ import {Utils} from "../../utils/utils";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
+import {GTSLib} from "../../utils/gts.lib";
 
 @Component({
   tag: 'discovery-tile',
@@ -26,7 +27,7 @@ export class DiscoveryTileComponent {
   @State() result = '[]';
   @State() width: number;
   @State() height: number;
-  @State() headers: string[];
+  @State() headers: any;
   @State() start: number;
 
   private LOG: Logger;
@@ -72,7 +73,16 @@ FLOWS`;
     if (this.ws && this.ws !== '') {
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;
-        this.headers = res.headers.split('\n').filter(h => h !== '');
+        this.headers = {};
+        res.headers.split('\n')
+          .filter(h => h !== '' && h.toLowerCase().startsWith('x-warp10'))
+          .forEach(h => {
+            const header = h.split(':');
+            this.headers[header[0].trim()] = header[1].trim();
+          });
+        this.headers['statusText'] = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
+fetched ${this.headers['x-warp10-fetched']} datapoints
+and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.statusHeaders.emit(this.headers);
         this.loaded = true;
         this.start = new Date().getTime();

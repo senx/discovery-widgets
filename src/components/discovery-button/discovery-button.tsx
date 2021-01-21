@@ -72,11 +72,7 @@ export class DiscoveryButtonComponent {
   }
 
   render() {
-    return (
-      <Host>
-        <button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/>
-      </Host>
-    );
+    return <Host><button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/></Host>;
   }
 
 }

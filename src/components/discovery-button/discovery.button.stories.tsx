@@ -12,6 +12,14 @@ InitialUsage.args = {
   ws: `{ 'data' <% 2 2 + %> 'globalParams' { 'button' { 'label' 'Execute' } } }`
 };
 
+
+export const JustAMacro = Usage.bind({});
+JustAMacro.args = {
+  ...Usage.args,
+  type: 'button',
+  ws: `<% 2 2 + %>`
+};
+
 export const CustomStyle = ({url, ws, language, type, options}) => `
 <style>
 * {

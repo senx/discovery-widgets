@@ -1,0 +1,16 @@
+:host {
+  display: block;
+
+  .images-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+
+    .responsive {
+      max-width: 100%;
+    }
+  }
+}
