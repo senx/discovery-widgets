@@ -51,9 +51,9 @@ export class JsonLib {
   }
 
   private number() {
-    let string = '';
+    let str = '';
     if (this.ch === '-') {
-      string = '-';
+      str = '-';
       this.check('-');
     }
     if (this.ch === 'I') {
@@ -68,39 +68,39 @@ export class JsonLib {
       return -Infinity;
     }
     while (this.ch >= '0' && this.ch <= '9') {
-      string += this.ch;
+      str += this.ch;
       this.next();
     }
     if (this.ch === '.') {
-      string += '.';
+      str += '.';
       while (this.next() && this.ch >= '0' && this.ch <= '9') {
-        string += this.ch;
+        str += this.ch;
       }
     }
     if (this.ch === 'e' || this.ch === 'E') {
-      string += this.ch;
+      str += this.ch;
       this.next();
       if (this.ch === '-' || this.ch === '+') {
-        string += this.ch;
+        str += this.ch;
         this.next();
       }
       while (this.ch >= '0' && this.ch <= '9') {
-        string += this.ch;
+        str += this.ch;
         this.next();
       }
     }
-    return +string;
+    return +str;
   }
 
   private string() {
     let hex;
-    let string = '';
+    let str = '';
     let uffff;
     if (this.ch === '"') {
       while (this.next()) {
         if (this.ch === '"') {
           this.next();
-          return string;
+          return str;
         }
         if (this.ch === '\\') {
           this.next();
@@ -113,14 +113,14 @@ export class JsonLib {
               }
               uffff = uffff * 16 + hex;
             }
-            string += String.fromCharCode(uffff);
+            str += String.fromCharCode(uffff);
           } else if (this.escapee[this.ch]) {
-            string += this.escapee[this.ch];
+            str += this.escapee[this.ch];
           } else {
             break;
           }
         } else {
-          string += this.ch;
+          str += this.ch;
         }
       }
     }

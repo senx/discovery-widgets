@@ -7,9 +7,9 @@ export class Utils {
     return new Promise((resolve, reject) => {
       const xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = () => {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
           resolve({data: xmlHttp.responseText, headers: xmlHttp.getAllResponseHeaders()});
-        } else if (xmlHttp.readyState == 4 && xmlHttp.status >= 400) {
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
           reject(xmlHttp.statusText)
         }
       }
