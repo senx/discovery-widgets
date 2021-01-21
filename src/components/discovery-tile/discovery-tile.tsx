@@ -15,22 +15,18 @@ export class DiscoveryTileComponent {
   @Prop() options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() debug: boolean = false;
+  @Prop() unit: string = '';
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Element() el: HTMLElement;
 
-  @State()
-  private loaded = false;
-  @State()
-  private result = '[]';
-  @State()
-  private width: number;
-  @State()
-  private height: number;
-  @State()
-  private headers: string[];
-  @State()
-  private start: number;
+  @State() loaded = false;
+  @State() result = '[]';
+  @State() width: number;
+  @State() height: number;
+  @State() headers: string[];
+  @State() start: number;
+
   private LOG: Logger;
   private ws: string;
 
@@ -96,6 +92,7 @@ FLOWS`;
             width={this.width}
             height={this.height}
             options={this.options}
+            unit={this.unit}
             debug={this.debug}
           />
         </div>

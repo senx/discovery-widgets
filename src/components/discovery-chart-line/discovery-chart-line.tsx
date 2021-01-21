@@ -23,9 +23,12 @@ export class DiscoveryLineChartComponent {
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
+  @Prop() unit: string = '';
 
   @Element() el: HTMLElement;
+
   @Event() draw: EventEmitter<void>;
+
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
 

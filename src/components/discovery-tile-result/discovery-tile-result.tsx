@@ -19,11 +19,13 @@ export class DiscoveryTileResultComponent {
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
+  @Prop() unit: string = '';
 
   @Element() el: HTMLElement;
 
   @State() execTime = 0;
   @State() bgColor: string;
+  @State() fontColor: string;
 
   private LOG: Logger;
 
@@ -48,11 +50,19 @@ export class DiscoveryTileResultComponent {
 
   componentDidLoad() {
     setTimeout(() => {
+      let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000000');
+      fontColor =  ((this.options as Param) || {fontColor}).fontColor || fontColor;
+
       let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
       bgColor =  ((this.options as Param) || {bgColor: bgColor}).bgColor || bgColor;
-      const dm = ((this.result as unknown as DataModel) || {globalParams: {bgColor: bgColor}}).globalParams || {bgColor: bgColor};
-      bgColor = dm.bgColor;
-      this.bgColor = bgColor
+
+      const dm = ((this.result as unknown as DataModel) || {globalParams: {
+        bgColor, fontColor
+      }}).globalParams || {bgColor, fontColor};
+
+      this.bgColor = dm.bgColor
+      this.fontColor = dm.fontColor
+
     })
   }
 
@@ -75,6 +85,7 @@ export class DiscoveryTileResultComponent {
           result={this.result}
           onDraw={ev => this.drawn()}
           type={this.type}
+          unit={this.unit}
           options={this.options}
           height={this.height}
           width={this.width}
@@ -85,6 +96,7 @@ export class DiscoveryTileResultComponent {
           result={this.result}
           onDraw={ev => this.drawn()}
           type={this.type}
+          unit={this.unit}
           options={this.options}
           height={this.height}
           width={this.width}
@@ -95,6 +107,18 @@ export class DiscoveryTileResultComponent {
           result={this.result}
           onDraw={ev => this.drawn()}
           type={this.type}
+          unit={this.unit}
+          options={this.options}
+          height={this.height}
+          width={this.width}
+          debug={this.debug}
+        />;
+      case 'display':
+        return <discovery-display
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          type={this.type}
+          unit={this.unit}
           options={this.options}
           height={this.height}
           width={this.width}
@@ -106,6 +130,6 @@ export class DiscoveryTileResultComponent {
   }
 
   render() {
-    return <div style={{backgroundColor: this.bgColor, padding: '5px'}}>{this.getView()}</div>;
+    return <div style={{backgroundColor: this.bgColor, padding: '5px', color: this.fontColor}}>{this.getView()}</div>;
   }
 }

@@ -32,6 +32,7 @@
     "dayjs": "^1.10.2",
     "echarts": "^5.0.0",
     "echarts-gl": "^2.0.0-rc.3",
+    "fitty": "^2.3.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32"
   },

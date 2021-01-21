@@ -20,18 +20,19 @@ export class DiscoveryAnnotation {
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
-  @State()
-  @Prop() height: number;
+  @State() @Prop() height: number;
   @Prop() debug: boolean = false;
+  @Prop() unit: string;
 
   @Element() el: HTMLElement;
+
   @Event() draw: EventEmitter<void>;
+
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
+  @State() chartOpts: EChartsOption;
 
   private graph: HTMLDivElement;
-  @State()
-  private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
   private expanded: boolean = false;

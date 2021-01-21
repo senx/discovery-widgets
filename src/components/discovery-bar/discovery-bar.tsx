@@ -26,9 +26,12 @@ export class DiscoveryBarComponent {
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
+  @Prop() unit: string;
 
   @Element() el: HTMLElement;
+
   @Event() draw: EventEmitter<void>;
+
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
 
@@ -40,9 +43,7 @@ export class DiscoveryBarComponent {
 
   @Watch('result')
   updateRes() {
-    if (typeof this.result === 'string') {
-      this.result = JSON.parse(this.result);
-    }
+    this.result = GTSLib.getData(this.result);
     console.log('updateRes', this.result)
   }
 

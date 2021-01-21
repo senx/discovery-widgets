@@ -9,7 +9,7 @@ export default {
     type: {
       control: {
         type: 'select',
-        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar']
+        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display']
       }
     },
     language: {
@@ -19,6 +19,7 @@ export default {
     },
     url: {control: 'text'},
     ws: {control: 'text'},
+    unit: {control: 'text'},
     options: {control: 'object'}
   },
   parameters: {
@@ -32,9 +33,10 @@ export default {
     },
   }
 };
-const Template = ({url, ws, language, type, options}) => `<div class="card" style="width: 100%;min-height: 500px">
+const Template = ({url, ws, language, type, options, unit}) => `<div class="card" style="width: 100%;min-height: 500px">
     <div class="card-body">
         <discovery-tile url="${url}" type="${type}" language="${language}"
+        unit="${unit?unit:''}"
         debug="true" options='${JSON.stringify(options)}'
         >${ws}</discovery-tile>
     </div>
@@ -51,7 +53,7 @@ Usage.args = {
   options: new Param()
 }
 
-export const customStyle = ({url, ws, lang, options}) => `<div style="width: 100%; height: 500px;background-color: #404040">
+export const customStyle = ({url, ws, lang, options, unit}) => `<div style="width: 100%; height: 500px;background-color: #404040">
 <style>
 :root {
     --warp-view-chart-grid-color:blue;
@@ -59,6 +61,7 @@ export const customStyle = ({url, ws, lang, options}) => `<div style="width: 100
     }
 </style>
     <discovery-tile url="${url}" type="line" lang="${lang}"
+        unit="${unit}"
     options='${JSON.stringify(options)}'>${ws}</discovery-tile>
 </div>`;
 customStyle.args = {...Usage.args};

@@ -15,6 +15,7 @@ export namespace Components {
         "options": Param | string;
         "result": DataModel | string;
         "type": ChartType;
+        "unit": string;
         "width": number;
     }
     interface DiscoveryBar {
@@ -23,6 +24,7 @@ export namespace Components {
         "options": Param | string;
         "result": DataModel | string;
         "type": ChartType;
+        "unit": string;
         "width": number;
     }
     interface DiscoveryChartLine {
@@ -31,6 +33,16 @@ export namespace Components {
         "options": Param | string;
         "result": DataModel | string;
         "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
+    interface DiscoveryDisplay {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
         "width": number;
     }
     interface DiscoverySpinner {
@@ -41,6 +53,7 @@ export namespace Components {
         "language": 'warpscript' | 'flows';
         "options": Param | string;
         "type": ChartType;
+        "unit": string;
         "url": string;
     }
     interface DiscoveryTileResult {
@@ -50,6 +63,7 @@ export namespace Components {
         "result": DataModel | string;
         "start": number;
         "type": ChartType;
+        "unit": string;
         "width": number;
     }
 }
@@ -71,6 +85,12 @@ declare global {
     var HTMLDiscoveryChartLineElement: {
         prototype: HTMLDiscoveryChartLineElement;
         new (): HTMLDiscoveryChartLineElement;
+    };
+    interface HTMLDiscoveryDisplayElement extends Components.DiscoveryDisplay, HTMLStencilElement {
+    }
+    var HTMLDiscoveryDisplayElement: {
+        prototype: HTMLDiscoveryDisplayElement;
+        new (): HTMLDiscoveryDisplayElement;
     };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
@@ -94,6 +114,7 @@ declare global {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-bar": HTMLDiscoveryBarElement;
         "discovery-chart-line": HTMLDiscoveryChartLineElement;
+        "discovery-display": HTMLDiscoveryDisplayElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
@@ -107,6 +128,7 @@ declare namespace LocalJSX {
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
+        "unit"?: string;
         "width"?: number;
     }
     interface DiscoveryBar {
@@ -116,6 +138,7 @@ declare namespace LocalJSX {
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
+        "unit"?: string;
         "width"?: number;
     }
     interface DiscoveryChartLine {
@@ -125,6 +148,17 @@ declare namespace LocalJSX {
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryDisplay {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
         "width"?: number;
     }
     interface DiscoverySpinner {
@@ -136,6 +170,7 @@ declare namespace LocalJSX {
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
         "options"?: Param | string;
         "type"?: ChartType;
+        "unit"?: string;
         "url"?: string;
     }
     interface DiscoveryTileResult {
@@ -145,12 +180,14 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "start"?: number;
         "type"?: ChartType;
+        "unit"?: string;
         "width"?: number;
     }
     interface IntrinsicElements {
         "discovery-annotation": DiscoveryAnnotation;
         "discovery-bar": DiscoveryBar;
         "discovery-chart-line": DiscoveryChartLine;
+        "discovery-display": DiscoveryDisplay;
         "discovery-spinner": DiscoverySpinner;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
@@ -163,6 +200,7 @@ declare module "@stencil/core" {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-bar": LocalJSX.DiscoveryBar & JSXBase.HTMLAttributes<HTMLDiscoveryBarElement>;
             "discovery-chart-line": LocalJSX.DiscoveryChartLine & JSXBase.HTMLAttributes<HTMLDiscoveryChartLineElement>;
+            "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;
