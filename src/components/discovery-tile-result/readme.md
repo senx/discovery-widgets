@@ -26,7 +26,7 @@
 
 ### Depends on
 
-- [discovery-chart-line](../discovery-chart-line)
+- [discovery-chart-line](src/components/discovery-line)
 - [discovery-annotation](../discovery-annotation)
 
 ### Graph

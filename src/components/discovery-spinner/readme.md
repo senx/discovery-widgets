@@ -17,7 +17,7 @@
 ### Used by
 
  - [discovery-annotation](../discovery-annotation)
- - [discovery-chart-line](../discovery-chart-line)
+ - [discovery-chart-line](src/components/discovery-line)
  - [discovery-tile](../discovery-tile)
 
 ### Graph

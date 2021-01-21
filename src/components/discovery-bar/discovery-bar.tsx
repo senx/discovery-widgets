@@ -8,11 +8,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
-import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
 import {DataModel} from "../../model/dataModel";
-
-dayjs.extend(utc)
 
 @Component({
   tag: 'discovery-bar',
@@ -117,7 +113,7 @@ export class DiscoveryBarComponent {
           data: gts.v.map(d => {
             let ts: number | string = Math.round(d[0] / this.divider);
             if ((this.options as Param).timeMode || 'date' === 'date') {
-              ts = dayjs.utc(ts).toISOString()
+              ts = GTSLib.toISOString(ts, this.divider, (this.options as Param).timeZone);
             }
             console.log(!!(this.options as Param).horizontal)
             if(!!(this.options as Param).horizontal) {

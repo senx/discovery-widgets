@@ -27,7 +27,7 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
-    interface DiscoveryChartLine {
+    interface DiscoveryDisplay {
         "debug": boolean;
         "height": number;
         "options": Param | string;
@@ -36,7 +36,7 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
-    interface DiscoveryDisplay {
+    interface DiscoveryLine {
         "debug": boolean;
         "height": number;
         "options": Param | string;
@@ -80,17 +80,17 @@ declare global {
         prototype: HTMLDiscoveryBarElement;
         new (): HTMLDiscoveryBarElement;
     };
-    interface HTMLDiscoveryChartLineElement extends Components.DiscoveryChartLine, HTMLStencilElement {
-    }
-    var HTMLDiscoveryChartLineElement: {
-        prototype: HTMLDiscoveryChartLineElement;
-        new (): HTMLDiscoveryChartLineElement;
-    };
     interface HTMLDiscoveryDisplayElement extends Components.DiscoveryDisplay, HTMLStencilElement {
     }
     var HTMLDiscoveryDisplayElement: {
         prototype: HTMLDiscoveryDisplayElement;
         new (): HTMLDiscoveryDisplayElement;
+    };
+    interface HTMLDiscoveryLineElement extends Components.DiscoveryLine, HTMLStencilElement {
+    }
+    var HTMLDiscoveryLineElement: {
+        prototype: HTMLDiscoveryLineElement;
+        new (): HTMLDiscoveryLineElement;
     };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
@@ -113,8 +113,8 @@ declare global {
     interface HTMLElementTagNameMap {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-bar": HTMLDiscoveryBarElement;
-        "discovery-chart-line": HTMLDiscoveryChartLineElement;
         "discovery-display": HTMLDiscoveryDisplayElement;
+        "discovery-line": HTMLDiscoveryLineElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
@@ -141,7 +141,7 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
-    interface DiscoveryChartLine {
+    interface DiscoveryDisplay {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
@@ -151,7 +151,7 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
-    interface DiscoveryDisplay {
+    interface DiscoveryLine {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
@@ -186,8 +186,8 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "discovery-annotation": DiscoveryAnnotation;
         "discovery-bar": DiscoveryBar;
-        "discovery-chart-line": DiscoveryChartLine;
         "discovery-display": DiscoveryDisplay;
+        "discovery-line": DiscoveryLine;
         "discovery-spinner": DiscoverySpinner;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
@@ -199,8 +199,8 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-bar": LocalJSX.DiscoveryBar & JSXBase.HTMLAttributes<HTMLDiscoveryBarElement>;
-            "discovery-chart-line": LocalJSX.DiscoveryChartLine & JSXBase.HTMLAttributes<HTMLDiscoveryChartLineElement>;
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
+            "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;

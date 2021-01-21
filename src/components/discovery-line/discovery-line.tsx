@@ -11,11 +11,11 @@ import {ChartType, ECharts} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
 
 @Component({
-  tag: 'discovery-chart-line',
-  styleUrl: 'discovery-chart-line.scss',
+  tag: 'discovery-line',
+  styleUrl: 'discovery-line.scss',
   shadow: true,
 })
-export class DiscoveryLineChartComponent {
+export class DiscoveryLineComponent {
 
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
@@ -45,7 +45,7 @@ export class DiscoveryLineChartComponent {
 
   componentWillLoad() {
     this.parsing = true;
-    this.LOG = new Logger(DiscoveryLineChartComponent, this.debug);
+    this.LOG = new Logger(DiscoveryLineComponent, this.debug);
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
@@ -82,7 +82,7 @@ export class DiscoveryLineChartComponent {
           showSymbol: this.options.showDots,
           smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
           clip: false,
-          step: DiscoveryLineChartComponent.getStepShape(type),
+          step: DiscoveryLineComponent.getStepShape(type),
           areaStyle: type === 'area' || type === 'spline-area' ? {
             opacity: 0.8,
             color: {

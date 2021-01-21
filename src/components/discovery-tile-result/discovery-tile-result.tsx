@@ -81,7 +81,7 @@ export class DiscoveryTileResultComponent {
       case 'step':
       case 'step-after':
       case 'step-before':
-        return <discovery-chart-line
+        return <discovery-line
           result={this.result}
           onDraw={ev => this.drawn()}
           type={this.type}
