@@ -14,12 +14,12 @@
  *  limitations under the License.
  *
  */
-import {ChartType, TimeMode, TimeUnit} from "./types";
-
+import {ChartType, MapParams, TimeMode, TimeUnit} from "./types";
 export class Param {
   scheme = 'WARP10';
   bgColor?: string;
   datasetColor?: string;
+  fillColor?: string;
   fontColor?: string;
   timeZone = 'UTC';
   unit?: string;
@@ -72,25 +72,5 @@ export class Param {
   button?: {
     label: string
   };
-  map?: {
-    tiles?: string[];
-    heatRadius?: number;
-    heatBlur?: number;
-    heatOpacity?: number;
-    heatControls?: boolean;
-    mapType?: string;
-    showTimeSlider?: boolean;
-    showTimeRange?: boolean;
-    timeSliderMin?: number;
-    timeSliderMax?: number;
-    timeSliderStep?: number;
-    timeSliderMode?: 'timestamp' | 'date' | 'custom';
-    timeStart?: number,
-    timeSpan?: number,
-    startLat?: number;
-    startLong?: number;
-    startZoom?: number;
-    timeSpanList?: any[],
-    animate?: boolean;
-  };
+  map?: MapParams;
 }

@@ -11,7 +11,7 @@ import {Utils} from "../../utils/utils";
   styleUrl: 'discovery-image.scss',
   shadow: true,
 })
-export class DiscoveryImage {
+export class DiscoveryImageComponent {
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
@@ -32,7 +32,7 @@ export class DiscoveryImage {
 
   componentWillLoad() {
     this.parsing = true;
-    this.LOG = new Logger(DiscoveryImage, this.debug);
+    this.LOG = new Logger(DiscoveryImageComponent, this.debug);
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }

@@ -69,7 +69,6 @@ export namespace Components {
         "options": Param | string;
         "result": DataModel | string;
         "type": ChartType;
-        "unit": string;
         "width": number;
     }
     interface DiscoverySpinner {
@@ -239,7 +238,6 @@ declare namespace LocalJSX {
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
-        "unit"?: string;
         "width"?: number;
     }
     interface DiscoverySpinner {

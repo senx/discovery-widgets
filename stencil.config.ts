@@ -4,7 +4,11 @@ import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export const config: Config = {
   plugins: [
-    sass()
+    sass({
+      injectGlobalPaths: [
+        '~leaflet/dist/leaflet.css'
+      ]
+    })
   ],
   enableCache: true,
   buildEs5: true,
@@ -14,6 +18,7 @@ export const config: Config = {
     ]
   },
   namespace: 'discovery',
+  globalStyle: './src/styles.css',
   outputTargets: [
     {
       type: 'dist',
