@@ -1,4 +1,4 @@
-import {Component, Element, h, Host, Prop, State} from '@stencil/core';
+import {Component, Element, h, Prop, State} from '@stencil/core';
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -20,6 +20,7 @@ export class DiscoveryTileResultComponent {
   @Prop() height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
+  @Prop() url: string;
 
   @Element() el: HTMLElement;
 
@@ -31,7 +32,6 @@ export class DiscoveryTileResultComponent {
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
-    console.log( typeof this.options, this.options)
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -119,6 +119,37 @@ export class DiscoveryTileResultComponent {
           onDraw={ev => this.drawn()}
           type={this.type}
           unit={this.unit}
+          options={this.options}
+          height={this.height}
+          width={this.width}
+          debug={this.debug}
+        />;
+      case 'map':
+        return <discovery-map
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          type={this.type}
+          options={this.options}
+          height={this.height}
+          width={this.width}
+          debug={this.debug}
+        />;
+      case 'image':
+        return <discovery-image
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          type={this.type}
+          options={this.options}
+          height={this.height}
+          width={this.width}
+          debug={this.debug}
+        />;
+      case 'button':
+        return <discovery-button
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          url={this.url}
+          type={this.type}
           options={this.options}
           height={this.height}
           width={this.width}

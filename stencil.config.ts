@@ -14,7 +14,6 @@ export const config: Config = {
     ]
   },
   namespace: 'discovery',
-  globalStyle: './src/global/variables.css',
   outputTargets: [
     {
       type: 'dist',

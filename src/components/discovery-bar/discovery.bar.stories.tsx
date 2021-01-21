@@ -34,7 +34,7 @@ StackedBarChart.args = {
 false RESETS
 [ SWAP bucketizer.last $NOW 1 m 0 ] BUCKETIZE
 [ SWAP mapper.delta 1 0 0 ] MAP 'values' STORE
-{ 'data' $values 'globalParams' { 'stacked' true } }`
+{ 'data' $values 'globalParams' { 'bar' { 'stacked' true } } }`
 }
 
 export const ChartWithCustomData = Usage.bind({});
@@ -60,7 +60,7 @@ HorizontalStackedBarChart.args = {
 false RESETS
 [ SWAP bucketizer.last $NOW 1 m 0 ] BUCKETIZE
 [ SWAP mapper.delta 1 0 0 ] MAP 'values' STORE
-{ 'data' $values 'globalParams' { 'horizontal' true 'stacked' true } }`
+{ 'data' $values 'globalParams' { 'bar' { 'horizontal' true 'stacked' true } } }`
 }
 export const HorizontalStackedBarChartWithCustomData = Usage.bind({});
 HorizontalStackedBarChartWithCustomData.args = {
@@ -74,6 +74,6 @@ HorizontalStackedBarChartWithCustomData.args = {
   [ 'label Z' 14 45 78 12 ]
 ]
 } 'values' STORE
-{ 'data' $values 'globalParams' { 'horizontal' true 'stacked' true } }`
+{ 'data' $values 'globalParams' { 'bar' { 'horizontal' true 'stacked' true } } }`
 }
 

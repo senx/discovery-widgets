@@ -7,11 +7,3 @@ $w10-grey: #a0a0a0;
 $w10-lightgrey: #c0c0c0;
 $w10-white: #ffffff;
 $w10-danger: #dc3545;
-:host {
-  /* Colors */
-  --warp-view-font-color: #{$w10-black};
-  --warp-view-spinner-color: #{$w10-orange};
-  --warp-view-chart-grid-color: #{$w10-black};
-  --warp-view-chart-label-color: #{$w10-black};
-  --warp-view-bg-color: transparent;
-}

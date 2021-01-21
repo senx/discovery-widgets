@@ -27,6 +27,15 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryButton {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "url": string;
+        "width": number;
+    }
     interface DiscoveryDisplay {
         "debug": boolean;
         "height": number;
@@ -36,7 +45,25 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryImage {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoveryLine {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
+    interface DiscoveryMap {
         "debug": boolean;
         "height": number;
         "options": Param | string;
@@ -64,6 +91,7 @@ export namespace Components {
         "start": number;
         "type": ChartType;
         "unit": string;
+        "url": string;
         "width": number;
     }
 }
@@ -80,17 +108,35 @@ declare global {
         prototype: HTMLDiscoveryBarElement;
         new (): HTMLDiscoveryBarElement;
     };
+    interface HTMLDiscoveryButtonElement extends Components.DiscoveryButton, HTMLStencilElement {
+    }
+    var HTMLDiscoveryButtonElement: {
+        prototype: HTMLDiscoveryButtonElement;
+        new (): HTMLDiscoveryButtonElement;
+    };
     interface HTMLDiscoveryDisplayElement extends Components.DiscoveryDisplay, HTMLStencilElement {
     }
     var HTMLDiscoveryDisplayElement: {
         prototype: HTMLDiscoveryDisplayElement;
         new (): HTMLDiscoveryDisplayElement;
     };
+    interface HTMLDiscoveryImageElement extends Components.DiscoveryImage, HTMLStencilElement {
+    }
+    var HTMLDiscoveryImageElement: {
+        prototype: HTMLDiscoveryImageElement;
+        new (): HTMLDiscoveryImageElement;
+    };
     interface HTMLDiscoveryLineElement extends Components.DiscoveryLine, HTMLStencilElement {
     }
     var HTMLDiscoveryLineElement: {
         prototype: HTMLDiscoveryLineElement;
         new (): HTMLDiscoveryLineElement;
+    };
+    interface HTMLDiscoveryMapElement extends Components.DiscoveryMap, HTMLStencilElement {
+    }
+    var HTMLDiscoveryMapElement: {
+        prototype: HTMLDiscoveryMapElement;
+        new (): HTMLDiscoveryMapElement;
     };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
@@ -113,8 +159,11 @@ declare global {
     interface HTMLElementTagNameMap {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-bar": HTMLDiscoveryBarElement;
+        "discovery-button": HTMLDiscoveryButtonElement;
         "discovery-display": HTMLDiscoveryDisplayElement;
+        "discovery-image": HTMLDiscoveryImageElement;
         "discovery-line": HTMLDiscoveryLineElement;
+        "discovery-map": HTMLDiscoveryMapElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
@@ -141,7 +190,29 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
+    interface DiscoveryButton {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "onExecResult"?: (event: CustomEvent<any[]>) => void;
+        "onStatusError"?: (event: CustomEvent<any>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "url"?: string;
+        "width"?: number;
+    }
     interface DiscoveryDisplay {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryImage {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
@@ -161,12 +232,23 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
+    interface DiscoveryMap {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
     interface DiscoverySpinner {
         "message"?: string;
     }
     interface DiscoveryTile {
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
+        "onStatusError"?: (event: CustomEvent<any>) => void;
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
         "options"?: Param | string;
         "type"?: ChartType;
@@ -181,13 +263,17 @@ declare namespace LocalJSX {
         "start"?: number;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
         "width"?: number;
     }
     interface IntrinsicElements {
         "discovery-annotation": DiscoveryAnnotation;
         "discovery-bar": DiscoveryBar;
+        "discovery-button": DiscoveryButton;
         "discovery-display": DiscoveryDisplay;
+        "discovery-image": DiscoveryImage;
         "discovery-line": DiscoveryLine;
+        "discovery-map": DiscoveryMap;
         "discovery-spinner": DiscoverySpinner;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
@@ -199,8 +285,11 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-bar": LocalJSX.DiscoveryBar & JSXBase.HTMLAttributes<HTMLDiscoveryBarElement>;
+            "discovery-button": LocalJSX.DiscoveryButton & JSXBase.HTMLAttributes<HTMLDiscoveryButtonElement>;
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
+            "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
+            "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;

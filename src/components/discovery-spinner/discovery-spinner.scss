@@ -1,7 +1,7 @@
 @import "../style";
 
 :host {
-  color: var(--warp-view-font-color);
+  color: var(--warp-view-font-color, $w10-black);
 
   .loader {
     font-size: 10px;
@@ -10,12 +10,12 @@
     width: 12px;
     height: 11px;
     border-radius: 50%;
-    background: var(--warp-view-spinner-color);
-    background: -moz-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
-    background: -webkit-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
-    background: -o-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
-    background: -ms-linear-gradient(left, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
-    background: linear-gradient(to right, var(--warp-view-spinner-color) 10%, rgba(0, 0, 0, 0) 42%);
+    background: var(--warp-view-spinner-color, $w10-orange);
+    background: -moz-linear-gradient(left, var(--warp-view-spinner-color, $w10-orange) 10%, rgba(0, 0, 0, 0) 42%);
+    background: -webkit-linear-gradient(left, var(--warp-view-spinner-color, $w10-orange) 10%, rgba(0, 0, 0, 0) 42%);
+    background: -o-linear-gradient(left, var(--warp-view-spinner-color, $w10-orange) 10%, rgba(0, 0, 0, 0) 42%);
+    background: -ms-linear-gradient(left, var(--warp-view-spinner-color, $w10-orange) 10%, rgba(0, 0, 0, 0) 42%);
+    background: linear-gradient(to right, var(--warp-view-spinner-color, $w10-orange) 10%, rgba(0, 0, 0, 0) 42%);
     position: relative;
     -webkit-animation: load3 1.4s infinite linear;
     animation: load3 1.4s infinite linear;
@@ -27,7 +27,7 @@
   .loader:before {
     width: 50%;
     height: 50%;
-    background: var(--warp-view-spinner-color);
+    background: var(--warp-view-spinner-color, $w10-orange);
     border-radius: 100% 0 0 0;
     position: absolute;
     top: 0;

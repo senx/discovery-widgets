@@ -109,6 +109,7 @@ export class DiscoveryDisplayComponent {
         minSize: 14
       });
       this.fitties.fit();
+      this.draw.emit();
     }
   }
 

@@ -18,6 +18,8 @@ export class DiscoveryTileComponent {
   @Prop() unit: string = '';
 
   @Event() statusHeaders: EventEmitter<string[]>;
+  @Event() statusError: EventEmitter<any>;
+
   @Element() el: HTMLElement;
 
   @State() loaded = false;
@@ -75,6 +77,7 @@ FLOWS`;
         this.loaded = true;
         this.start = new Date().getTime();
       }).catch(e => {
+        this.statusError.emit(e);
         console.error(e)
       })
     }
@@ -86,6 +89,7 @@ FLOWS`;
       {this.loaded ?
         <div style={{width: '100%', height: 'auto'}}>
           <discovery-tile-result
+            url={this.url}
             start={this.start}
             result={this.result}
             type={this.type}

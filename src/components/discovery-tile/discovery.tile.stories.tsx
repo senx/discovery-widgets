@@ -1,6 +1,13 @@
 import readme from './readme.md';
 import {Param} from "../../model/param";
+import {action, configureActions} from '@storybook/addon-actions';
 
+configureActions({
+  depth: 10,
+  // Limit the number of items logged into the actions panel
+  limit: 5,
+  allowFunction: true
+});
 const options = new Param()
 export default {
   title: 'Components/Tile',
@@ -20,27 +27,32 @@ export default {
     url: {control: 'text'},
     ws: {control: 'text'},
     unit: {control: 'text'},
-    options: {control: 'object'}
+    options: {control: 'object'},
+    onDraw: {action: 'clicked'}
   },
-  parameters: {
-    actions: {
-      handles: ['statusHeaders discovery-tile'],
-    },
-    docs: {
-      description: {
-        component: readme
-      }
-    },
-  }
+  parameters: {docs: {description: {component: readme}}}
 };
+
+[
+  'statusHeaders',
+  'statusError',
+  'execResult',
+  'draw',
+].forEach(evt => {
+  window.addEventListener(evt, (e: CustomEvent) => {
+    action(evt)(e.detail)
+  });
+})
+// @ts-ignore
 const Template = ({url, ws, language, type, options, unit}) => `<div class="card" style="width: 100%;min-height: 500px">
-    <div class="card-body">
-        <discovery-tile url="${url}" type="${type}" language="${language}"
-        unit="${unit?unit:''}"
-        debug="true" options='${JSON.stringify(options)}'
-        >${ws}</discovery-tile>
-    </div>
-</div>`;
+      <div class="card-body">
+          <discovery-tile url="${url}" type="${type}" language="${language}"
+          unit="${unit ? unit : ''}"
+          @draw="${event => console.error('foo', 'bar', event)}"
+          debug="true" options='${JSON.stringify(options)}'
+          >${ws}</discovery-tile>
+      </div>
+  </div>`;
 
 export const Usage = Template.bind({});
 Usage.args = {
@@ -56,7 +68,7 @@ Usage.args = {
 export const customStyle = ({url, ws, lang, options, unit}) => `<div style="width: 100%; height: 500px;background-color: #404040">
 <style>
 :root {
-    --warp-view-chart-grid-color:blue;
+    --warp-view-chart-grid-color: blue;
     --warp-view-chart-label-color: red;
     }
 </style>
@@ -73,7 +85,7 @@ colorSchemeAndOptions.args = {
 }
 export const backgroundAndIndividualLineColors = Template.bind({});
 backgroundAndIndividualLineColors.args = {
-  ...Usage.args,ws: `1 4 <% DROP NEWGTS 'g' STORE
+  ...Usage.args, ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 30 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR STACKTOLIST 'data' STORE
   { 'data' $data 'params' [ { 'datasetColor' '#dc3545' } { 'datasetColor' '#ff9900' } { 'type' 'area' 'datasetColor' '#90d743' } { 'datasetColor' 'white' } ] }

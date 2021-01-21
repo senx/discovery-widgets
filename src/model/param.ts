@@ -21,15 +21,17 @@ export class Param {
   bgColor?: string;
   datasetColor?: string;
   fontColor?: string;
-  borderColor?: string;
-  showlegend = false;
-  responsive?: boolean;
-  horizontal = false;
-  stacked = false;
-  key?: string;
+  timeZone = 'UTC';
   unit?: string;
   type?: ChartType;
   showRangeSelector?: boolean;
+  timeMode?: TimeMode;
+  showDots = false;
+  timeUnit: TimeUnit = 'us';
+  borderColor?: string;
+  showlegend = false;
+  responsive?: boolean;
+  key?: string;
   autoRefresh?: number;
   showControls = true;
   showErrors = true;
@@ -37,10 +39,7 @@ export class Param {
   expandAnnotation = false;
   showGTSTree?: boolean;
   foldGTSTree?: boolean;
-  timeMode?: TimeMode;
-  showDots = false;
   delta?: number;
-  timeUnit: TimeUnit = 'us';
   minColor?: string;
   maxColor?: string;
   startColor?: string;
@@ -49,8 +48,30 @@ export class Param {
   split?: 'Y' | 'M' | 'D' | 'h' | 'm' | 's';
   popupButtonValidateClass?: string;
   popupButtonValidateLabel?: string;
-  timeZone = 'UTC';
+  bounds?: {
+    minDate?: number;
+    maxDate?: number;
+    yRanges?: [number, number];
+  };
+  histo?: {
+    histnorm: 'percent' | 'probability' | 'density' | 'probability density';
+    histfunc: 'count' | 'sum' | 'avg' | 'min' | 'max';
+  };
+  maxValue: number;
+  isRefresh?: boolean;
+  elemsCount?: number;
+  windowed?: number;
   properties?: any;
+
+
+// components specific params
+  bar?: {
+    horizontal: boolean,
+    stacked: boolean,
+  };
+  button?: {
+    label: string
+  };
   map?: {
     tiles?: string[];
     heatRadius?: number;
@@ -71,23 +92,5 @@ export class Param {
     startZoom?: number;
     timeSpanList?: any[],
     animate?: boolean;
-  } = {
-    tiles: [],
-    showTimeSlider: false,
-    showTimeRange: false,
-    timeSliderMode: 'timestamp'
   };
-  bounds: {
-    minDate?: number;
-    maxDate?: number;
-    yRanges?: [number, number];
-  } = {};
-  histo?: {
-    histnorm: 'percent' | 'probability' | 'density' | 'probability density';
-    histfunc: 'count' | 'sum' | 'avg' | 'min' | 'max';
-  };
-  maxValue: number;
-  isRefresh?: boolean;
-  elemsCount?: number;
-  windowed?: number;
 }

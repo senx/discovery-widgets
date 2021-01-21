@@ -61,7 +61,7 @@ export class DiscoveryBarComponent {
   private getCommonSeriesParam(color) {
     return {
       type: 'bar',
-      stack: (this.options as Param).stacked ? 'total' : undefined,
+      stack: ((this.options as Param).bar || {stacked: false}).stacked ? 'total' : undefined,
       animation: false,
       large: true,
       clip: false,
@@ -115,8 +115,7 @@ export class DiscoveryBarComponent {
             if ((this.options as Param).timeMode || 'date' === 'date') {
               ts = GTSLib.toISOString(ts, this.divider, (this.options as Param).timeZone);
             }
-            console.log(!!(this.options as Param).horizontal)
-            if(!!(this.options as Param).horizontal) {
+            if(!!((this.options as Param).bar || {horizontal: false}).horizontal) {
               return[d[d.length - 1], ts];
             } else {
               return [ts, d[d.length - 1]]
@@ -133,7 +132,7 @@ export class DiscoveryBarComponent {
             ...this.getCommonSeriesParam(color),
             name: label,
             data: gts.rows.map(r => {
-              if(!!(this.options as Param).horizontal) {
+              if(!!((this.options as Param).bar || {horizontal: false}).horizontal) {
                 return [ r[index + 1], r[0]];
               } else {
                 return [r[0], r[index + 1]]
@@ -171,7 +170,7 @@ export class DiscoveryBarComponent {
         show: false
       },
       xAxis: {
-        type: !!(this.options as Param).horizontal? 'value' : 'category',
+        type: !!((this.options as Param).bar || {horizontal: false}).horizontal? 'value' : 'category',
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -187,7 +186,7 @@ export class DiscoveryBarComponent {
         }
       },
       yAxis: {
-        type: !!(this.options as Param).horizontal? 'category': 'value',
+        type: !!((this.options as Param).bar || {horizontal: false}).horizontal? 'category': 'value',
         splitLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
