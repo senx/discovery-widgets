@@ -49,7 +49,7 @@ const Template = ({url, ws, language, type, options, unit}) => `<div class="card
           <discovery-tile url="${url}" type="${type}" language="${language}"
           unit="${unit ? unit : ''}"
           @draw="${event => console.error('foo', 'bar', event)}"
-          debug="true" options='${JSON.stringify(options)}'
+          debug options='${JSON.stringify(options)}'
           >${ws}</discovery-tile>
       </div>
   </div>`;

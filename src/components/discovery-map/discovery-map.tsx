@@ -100,6 +100,7 @@ export class DiscoveryMapComponent {
 
     this.pointslayer = [];
     this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, [], this.options.scheme) || [];
+    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params},  [], this.options.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
@@ -242,7 +243,7 @@ export class DiscoveryMapComponent {
     const m = marker !== '' ? marker : 'circle';
     return Leaflet.icon({
       // tslint:disable-next-line:max-line-length
-      iconUrl: `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=17&size=40&hoffset=${m === 'circle' ? 0 : -1}&voffset=-4&color=fff&background=${c}`,
+      iconUrl: `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}-solid&iconSize=14&size=40&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`,
       iconAnchor: this.iconAnchor,
       popupAnchor: this.popupAnchor
     });
@@ -272,6 +273,7 @@ export class DiscoveryMapComponent {
             v = 0;
           }
           const radius = 50 * v / ((gts.maxValue || 1) - (gts.minValue || 0));
+          console.log('weightedDots', gts.borderColor, gts.color)
           const marker = Leaflet.circleMarker(
             p, {
               radius: radius === 0 ? 1 : radius,
@@ -288,6 +290,7 @@ export class DiscoveryMapComponent {
         size = (gts.path || []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
+          console.log('dots', gts.borderColor, gts.color)
           const marker = Leaflet.circleMarker(
             g, {
               radius: gts.baseRadius || MapLib.BASE_RADIUS,

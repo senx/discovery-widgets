@@ -4,11 +4,7 @@ import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export const config: Config = {
   plugins: [
-    sass({
-      injectGlobalPaths: [
-        '~leaflet/dist/leaflet.css'
-      ]
-    })
+    sass()
   ],
   enableCache: true,
   buildEs5: true,
