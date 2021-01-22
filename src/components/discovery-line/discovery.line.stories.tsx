@@ -101,3 +101,19 @@ amzairAaaTestXM1.args = {
   ws: `@amzair/aaaTestXM1`
 };
 
+export const amzairAaaTestXM2 = Usage.bind({});
+amzairAaaTestXM2.args = {
+  ...InitialUsage.args,
+  ws: `@amzair/aaaTestXM2`
+};
+
+export const multiYAxis = Usage.bind({});
+multiYAxis.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'i' STORE NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND $i 2 * * ADDVALUE DROP %> FOR
+  $g
+%> FOR STACKTOLIST 'data' STORE
+{ 'data' $data 'params' [ { 'yAxis' 0 } { 'yAxis' 0 } { 'yAxis' 1 } { 'yAxis' 2 } ] }
+`
+};

@@ -29,9 +29,18 @@ export class Param {
   showDots = false;
   timeUnit: TimeUnit = 'us';
   borderColor?: string;
+  minColor?: string;
+  maxColor?: string;
+  startColor?: string;
+  endColor?: string;
+  numColorSteps?: number;
+  maxValue: number;
+  key?: string;
+  properties?: any;
+  yAxis?: number;
+  xAxis?: number;
   showlegend = false;
   responsive?: boolean;
-  key?: string;
   autoRefresh?: number;
   showControls = true;
   showErrors = true;
@@ -40,11 +49,6 @@ export class Param {
   showGTSTree?: boolean;
   foldGTSTree?: boolean;
   delta?: number;
-  minColor?: string;
-  maxColor?: string;
-  startColor?: string;
-  endColor?: string;
-  numColorSteps?: number;
   split?: 'Y' | 'M' | 'D' | 'h' | 'm' | 's';
   popupButtonValidateClass?: string;
   popupButtonValidateLabel?: string;
@@ -53,15 +57,9 @@ export class Param {
     maxDate?: number;
     yRanges?: [number, number];
   };
-  histo?: {
-    histnorm: 'percent' | 'probability' | 'density' | 'probability density';
-    histfunc: 'count' | 'sum' | 'avg' | 'min' | 'max';
-  };
-  maxValue: number;
   isRefresh?: boolean;
   elemsCount?: number;
   windowed?: number;
-  properties?: any;
 
 
 // components specific params
@@ -73,4 +71,8 @@ export class Param {
     label: string
   };
   map?: MapParams;
+  histo?: {
+    histnorm: 'percent' | 'probability' | 'density' | 'probability density';
+    histfunc: 'count' | 'sum' | 'avg' | 'min' | 'max';
+  };
 }

@@ -9,6 +9,8 @@ import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {ChartType, ECharts} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
+import {CartesianAxisOption} from "echarts/lib/coord/cartesian/AxisModel";
+import {GridOption} from "echarts/lib/coord/cartesian/GridModel";
 
 @Component({
   tag: 'discovery-line',
@@ -62,49 +64,11 @@ export class DiscoveryLineComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
-    const series: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     this.LOG.debug(['convert'], {options: this.options, gtsList});
     const gtsCount = gtsList.length;
-    for (let i = 0; i < gtsCount; i++) {
-      const gts = gtsList[i];
-      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        const c = ColorLib.getColor(gts.id, this.options.scheme);
-        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
-
-        series.push({
-          type: 'line',
-          name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
-          animation: false,
-          large: true,
-          showSymbol: this.options.showDots,
-          smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
-          clip: false,
-          step: DiscoveryLineComponent.getStepShape(type),
-          areaStyle: type === 'area' || type === 'spline-area' ? {
-            opacity: 0.8,
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {offset: 0, color},
-                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
-              ],
-              global: false // false by default
-            }
-          } : undefined,
-          showAllSymbol: false,
-          lineStyle: {color},
-          itemStyle: {color}
-        } as SeriesOption);
-      }
-    }
-    return {
+    let multiY = false;
+    const opts: EChartsOption = {
       progressive: 20000,
       grid: {
         left: 0, top: 10, bottom: 0, right: 0,
@@ -116,9 +80,7 @@ export class DiscoveryLineComponent {
       throttle: 70,
       tooltip: {
         trigger: 'axis',
-        axisPointer: {
-          type: 'cross'
-        },
+        axisPointer: {type: 'cross'},
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
@@ -131,59 +93,105 @@ export class DiscoveryLineComponent {
           //  saveAsImage: {}
         }
       },
-      legend: {
-        bottom: 10,
-        left: 'center',
-        show: false
-      },
+      legend: {bottom: 10, left: 'center', show: false},
       xAxis: {
         type: 'time',
-        axisLine: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        },
-        axisLabel: {
-          color: Utils.getLabelColor(this.el)
-        },
-        axisTick: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        },
-      },
-      yAxis: {
-        splitLine: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        },
-        axisLine: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        },
-        axisLabel: {
-          color: Utils.getLabelColor(this.el)
-        },
-        axisTick: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        }
+        axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
+        axisLabel: {color: Utils.getLabelColor(this.el)},
+        axisTick: {lineStyle: {color: Utils.getGridColor(this.el)}},
       },
       dataZoom: [
-        {
-          type: 'slider',
-          height: '20px',
-          show: !!this.options.showRangeSelector
-        },
-        {
-          type: 'inside'
-        }
+        {type: 'slider', height: '20px', show: !!this.options.showRangeSelector},
+        {type: 'inside'}
       ],
-      series: series
-    } as EChartsOption;
+      series: []
+    };
+
+    for (let i = 0; i < gtsCount; i++) {
+      const gts = gtsList[i];
+      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
+        const c = ColorLib.getColor(gts.id, this.options.scheme);
+        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+        const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
+        const s = {
+          type: 'line',
+          name: GTSLib.serializeGtsMetadata(gts),
+          data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
+          animation: false,
+          large: true,
+          showSymbol: this.options.showDots,
+          smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
+          clip: false,
+          step: DiscoveryLineComponent.getStepShape(type),
+          areaStyle: type === 'area' || type === 'spline-area' ? {
+            opacity: 0.8,
+            color: {
+              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                {offset: 0, color},
+                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+              ],
+              global: false // false by default
+            }
+          } : undefined,
+          showAllSymbol: false,
+          lineStyle: {color},
+          itemStyle: {color}
+        } as SeriesOption;
+        if (!!data.params) {
+          if (!!data.params[i] && data.params[i].yAxis !== undefined) {
+            multiY = true;
+            console.log('data.params[i].yAxis', data.params[i].yAxis)
+            if (data.params[i].yAxis > 0) {
+              (s as any).yAxisIndex = data.params[i].yAxis;
+              const y = this.getYAxis(color);
+              (y as any).position = 'right';
+              if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
+              (opts.yAxis as any)[data.params[i].yAxis] = y;
+            } else {
+              const y = this.getYAxis(color);
+              (y as any).position = 'left';
+              if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
+              (opts.yAxis as any)[0] = y;
+            }
+            console.log('opts.yAxis', opts.yAxis)
+          } else if (multiY) {
+            const y = this.getYAxis();
+            (y as any).position = 'left';
+            if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
+            (opts.yAxis as any)[0] = y;
+          }
+        }
+        (opts.series as any[]).push(s);
+      }
+    }
+    if (!multiY) {
+      opts.yAxis = this.getYAxis();
+    } else {
+      const yAxis = [...GTSLib.cleanArray(opts.yAxis as any[])];
+      opts.yAxis = [];
+      let i = 0;
+      yAxis.forEach((y: CartesianAxisOption) => {
+        if (y.position === 'right') {
+          y.offset = 80 * i;
+          i++;
+        }
+        (opts.yAxis as any).push(y);
+      });
+      (opts.grid as GridOption).right = 80 * (i -1);
+    }
+    this.LOG.debug(['convert'], {opts});
+    return opts as EChartsOption;
+  }
+
+  private getYAxis(color?: string): CartesianAxisOption {
+    return {
+      type: 'value',
+      splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
+      axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      axisLabel: {color: color || Utils.getLabelColor(this.el)},
+      axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}}
+    }
   }
 
   private static getStepShape(type: ChartType) {
