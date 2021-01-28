@@ -76,6 +76,7 @@ export class DiscoveryTileResultComponent {
     switch (this.type) {
       case "line":
       case "area":
+      case "scatter":
       case "spline-area":
       case "spline":
       case 'step':

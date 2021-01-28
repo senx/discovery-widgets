@@ -114,12 +114,12 @@ export class DiscoveryLineComponent {
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
         const s = {
-          type: 'line',
+          type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter': 'line',
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
           animation: false,
           large: true,
-          showSymbol: this.options.showDots,
+          showSymbol: this.type === 'scatter' || this.options.showDots,
           smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
           clip: false,
           step: DiscoveryLineComponent.getStepShape(type),

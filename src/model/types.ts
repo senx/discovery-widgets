@@ -3,6 +3,7 @@ import * as echarts from "echarts";
 export type ChartType =
   'line'
   | 'area'
+  | 'scatter'
   | 'spline-area'
   | 'spline'
   | 'step'
