@@ -117,3 +117,13 @@ multiYAxis.args = {
 { 'data' $data 'params' [ { 'yAxis' 0 } { 'yAxis' 0 } { 'yAxis' 1 } { 'yAxis' 2 } ] }
 `
 };
+export const multiXAxis = Usage.bind({});
+multiXAxis.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'i' STORE NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + 1 d * NOW + $i w - NaN NaN NaN RAND $i 2 * * ADDVALUE DROP %> FOR
+  $g
+%> FOR STACKTOLIST 'data' STORE
+{ 'data' $data 'params' [ { 'xAxis' 0 } { 'xAxis' 1 } { 'xAxis' 1 } { 'xAxis' 2 } ] }
+`
+};

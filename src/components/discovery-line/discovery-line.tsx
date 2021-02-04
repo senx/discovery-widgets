@@ -68,6 +68,7 @@ export class DiscoveryLineComponent {
     this.LOG.debug(['convert'], {options: this.options, gtsList});
     const gtsCount = gtsList.length;
     let multiY = false;
+    let multiX = false;
     const opts: EChartsOption = {
       progressive: 20000,
       grid: {
@@ -94,12 +95,6 @@ export class DiscoveryLineComponent {
         }
       },
       legend: {bottom: 10, left: 'center', show: false},
-      xAxis: {
-        type: 'time',
-        axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
-        axisLabel: {color: Utils.getLabelColor(this.el)},
-        axisTick: {lineStyle: {color: Utils.getGridColor(this.el)}},
-      },
       dataZoom: [
         {type: 'slider', height: '20px', show: !!this.options.showRangeSelector},
         {type: 'inside'}
@@ -114,7 +109,7 @@ export class DiscoveryLineComponent {
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
         const s = {
-          type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter': 'line',
+          type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
           animation: false,
@@ -139,6 +134,7 @@ export class DiscoveryLineComponent {
           itemStyle: {color}
         } as SeriesOption;
         if (!!data.params) {
+          // multi Y
           if (!!data.params[i] && data.params[i].yAxis !== undefined) {
             multiY = true;
             console.log('data.params[i].yAxis', data.params[i].yAxis)
@@ -161,10 +157,36 @@ export class DiscoveryLineComponent {
             if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
             (opts.yAxis as any)[0] = y;
           }
+
+          // multi X
+          if (!!data.params[i] && data.params[i].xAxis !== undefined) {
+            multiX = true;
+            console.log('data.params[i].xAxis', data.params[i].xAxis)
+            if (data.params[i].xAxis > 0) {
+              (s as any).xAxisIndex = data.params[i].xAxis;
+              const x = this.getXAxis(color);
+              (x as any).position = 'top';
+              if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+              (opts.xAxis as CartesianAxisOption)[data.params[i].xAxis] = x;
+            } else {
+              const x = this.getXAxis(color);
+              (x as any).position = 'bottom';
+              if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+              (opts.xAxis as CartesianAxisOption)[0] = x;
+            }
+            console.log('opts.xAxis', opts.xAxis)
+          } else if (multiX) {
+            const x = this.getXAxis();
+            (x as any).position = 'bottom';
+            if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+            (opts.xAxis as CartesianAxisOption)[0] = x;
+          }
+
         }
         (opts.series as any[]).push(s);
       }
     }
+    // multi Y
     if (!multiY) {
       opts.yAxis = this.getYAxis();
     } else {
@@ -178,7 +200,23 @@ export class DiscoveryLineComponent {
         }
         (opts.yAxis as any).push(y);
       });
-      (opts.grid as GridOption).right = 80 * (i -1);
+      (opts.grid as GridOption).right = 80 * (i - 1);
+    }
+    // multi X
+    if (!multiX) {
+      opts.xAxis = this.getXAxis();
+    } else {
+      const xAxis = [...GTSLib.cleanArray(opts.xAxis as any[])];
+      opts.xAxis = [];
+      let i = 0;
+      xAxis.forEach((x: CartesianAxisOption) => {
+        if (x.position === 'top') {
+          x.offset = 30 * i;
+          i++;
+        }
+        (opts.xAxis as any).push(x);
+      });
+      (opts.grid as GridOption).top = 30 * (i -1);
     }
     this.LOG.debug(['convert'], {opts});
     return opts as EChartsOption;
@@ -191,6 +229,15 @@ export class DiscoveryLineComponent {
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
       axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}}
+    }
+  }
+
+  private getXAxis(color?: string): CartesianAxisOption {
+    return {
+      type: 'time',
+      axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      axisLabel: {color: color || Utils.getLabelColor(this.el)},
+      axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
     }
   }
 

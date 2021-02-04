@@ -58,7 +58,7 @@ export class DiscoveryTileComponent {
     }
 
     const {h, w} = Utils.getContentBounds(this.el.parentElement);
-    this.width = w;
+    this.width = w - 15;
     this.height = h;
   }
 
