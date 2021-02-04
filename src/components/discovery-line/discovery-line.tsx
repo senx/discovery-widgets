@@ -39,10 +39,16 @@ export class DiscoveryLineComponent {
   private defOptions: Param = new Param();
   private LOG: Logger;
   private divider: number = 1000;
+  private myChart: ECharts;
 
   @Watch('result')
-  updateRes() {
-    console.log('updateRes', this.result)
+  updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
+      if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+        this.result = GTSLib.getData(this.result);
+        console.log('updateRes', this.result)
+        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        setTimeout(() => this.myChart.setOption(this.chartOpts));
+      }
   }
 
   componentWillLoad() {
@@ -259,16 +265,16 @@ export class DiscoveryLineComponent {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
-    const myChart: ECharts = echarts.init(this.graph, null, {
+    this.myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
       height: this.height
     });
-    myChart.on('finished', () => {
+    this.myChart.on('finished', () => {
       this.rendering = false;
       this.drawn();
     });
-    setTimeout(() => myChart.setOption(this.chartOpts));
+    setTimeout(() => this.myChart.setOption(this.chartOpts));
   }
 
   private drawn() {

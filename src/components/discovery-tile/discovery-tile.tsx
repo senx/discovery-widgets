@@ -17,6 +17,7 @@ export class DiscoveryTileComponent {
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
+  @Prop() autoRefresh: number = -1;
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter<any>;
@@ -32,6 +33,7 @@ export class DiscoveryTileComponent {
 
   private LOG: Logger;
   private ws: string;
+  private timer: any;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -42,7 +44,6 @@ export class DiscoveryTileComponent {
       options: this.options,
       newValue, oldValue
     });
-
   }
 
   componentWillLoad() {
@@ -63,6 +64,17 @@ export class DiscoveryTileComponent {
   }
 
   componentDidLoad() {
+    this.exec();
+  }
+
+  disconnectedCallback() {
+    this.LOG.debug(['disconnectedCallback'], 'disconnected');
+    if (this.timer) {
+      window.clearInterval(this.timer);
+    }
+  }
+
+  exec(refresh= false) {
     this.ws = this.el.innerText;
     if (this.language === 'flows') {
       this.ws = `<'
@@ -86,6 +98,15 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.statusHeaders.emit(this.headers);
         this.loaded = true;
         this.start = new Date().getTime();
+        if (this.autoRefresh !== (this.options as Param).autoRefresh) {
+          this.autoRefresh = (this.options as Param).autoRefresh;
+          if (this.timer) {
+            window.clearInterval(this.timer);
+          }
+          if (this.autoRefresh && this.autoRefresh > 0) {
+            this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
+          }
+        }
       }).catch(e => {
         this.statusError.emit(e);
         console.error(e)

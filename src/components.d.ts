@@ -75,6 +75,7 @@ export namespace Components {
         "message": string;
     }
     interface DiscoveryTile {
+        "autoRefresh": number;
         "debug": boolean;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
@@ -244,6 +245,7 @@ declare namespace LocalJSX {
         "message"?: string;
     }
     interface DiscoveryTile {
+        "autoRefresh"?: number;
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
         "onStatusError"?: (event: CustomEvent<any>) => void;

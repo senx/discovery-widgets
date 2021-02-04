@@ -64,6 +64,11 @@ Usage.args = {
   $g %> FOR`,
   options: new Param()
 }
+export const AutoRefresh = Template.bind({});
+AutoRefresh.args = {
+  ...Usage.args,
+  options: { ... new Param(), autoRefresh: 5}
+}
 
 export const customStyle = ({url, ws, lang, options, unit}) => `<div style="width: 100%; height: 500px;background-color: #404040">
 <style>

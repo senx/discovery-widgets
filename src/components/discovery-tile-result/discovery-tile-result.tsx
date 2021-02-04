@@ -1,4 +1,4 @@
-import {Component, Element, h, Prop, State} from '@stencil/core';
+import {Component, Element, h, Prop, State, Watch} from '@stencil/core';
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -29,6 +29,13 @@ export class DiscoveryTileResultComponent {
   @State() fontColor: string;
 
   private LOG: Logger;
+/*
+  @Watch('result')
+  resultUpdate(newValue: DataModel | string, oldValue: DataModel | string) {
+    if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      this.result = GTSLib.getData(this.result);
+    }
+  }*/
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
