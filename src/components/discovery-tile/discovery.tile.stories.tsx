@@ -74,7 +74,7 @@ AutoRefresh.args = {
   options: { ... new Param(), autoRefresh: 5}
 }
 
-export const customStyle = ({url, ws, lang, options, unit, title}) => `<div style="width: 100%; height: 500px;background-color: #404040">
+export const customStyle = ({url, ws, lang, options, unit, title}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
 <style>
 :root {
     --warp-view-chart-grid-color: blue;

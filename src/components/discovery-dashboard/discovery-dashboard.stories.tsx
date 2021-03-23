@@ -1,4 +1,3 @@
-
 import {Param} from "../../model/param";
 import {action, configureActions} from '@storybook/addon-actions';
 
@@ -31,7 +30,7 @@ export default {
 const Template = ({url, ws, language, type, options, unit, title}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
 <discovery-dashboard url="${url}"
-dashboard-title="${title?title: ''}"
+dashboard-title="${title ? title : ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
 debug options='${JSON.stringify(options)}'
 >${ws}</discovery-dashboard>
@@ -49,7 +48,7 @@ Usage.args = {
          'data' 'Hello Discovery'
        }
        {
-         'type' 'line'
+         'type' 'area'
          'w' 4 'h' 2 'x' 0 'y' 1
          'data' [
            NEWGTS 'data' RENAME
@@ -83,4 +82,33 @@ Usage.args = {
      ]
    }`,
   options: new Param()
+}
+export const CustomStyle = ({url, ws, options, title}) => `<div>
+<style>
+:root {
+    --warp-view-chart-grid-color: blue;
+    --warp-view-chart-label-color: red;
+    --warp-view-font-color: white;
+    }
+</style>
+    <div class="card" style="width: 100%;min-height: 500px; background-color: #404040">
+        <div class="card-body">
+            <discovery-dashboard url="${url}"
+                dashboard-title="${title ? title : ''}"
+                @draw="${event => console.error('foo', 'bar', event)}"
+                debug options='${JSON.stringify(options)}'
+            >${ws}</discovery-dashboard>
+        </div>
+    </div>
+</div>
+`;
+CustomStyle.args = {
+  ...Usage.args,
+  options: {...Usage.args.options, scheme: 'BELIZE'}
+}
+
+export const withAutoRefresh = Usage.bind({});
+withAutoRefresh.args = {
+  ...Usage.args,
+  options: {autoRefresh: 2}
 }

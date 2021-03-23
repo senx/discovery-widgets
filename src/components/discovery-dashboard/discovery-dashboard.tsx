@@ -124,13 +124,13 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                   ? <discovery-tile url={t.endpoint || this.url}
                                     type={t.type as ChartType}
                                     chart-title={t.title}
-                                    options={JSON.stringify(t.options)}
+                                    options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                   >{t.macro + ' EVAL'}</discovery-tile>
                   : <discovery-tile-result
                     url={t.endpoint || this.url}
-                    result={this.sanityze(t.data)}
+                    result={DiscoveryDashboardComponent.sanityze(t.data)}
                     type={t.type as ChartType}
-                    options={t.options}
+                    options={DiscoveryDashboardComponent.merge(this.options, t.options)}
                     debug={this.debug}
                     chart-title={t.title}
                   />
@@ -143,8 +143,15 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     </Host>;
   }
 
-  private sanityze(data: string | DataModel) {
+  private static sanityze(data: string | DataModel) {
     if (typeof data === 'string') return '["' + data + '"]';
     else return data
+  }
+
+  private static merge(options: Param | string, options2: Param) {
+    if (typeof options === 'string') {
+      options = JSON.parse(options);
+    }
+    return {...new Param(), ...options as Param, ...options2}
   }
 }
