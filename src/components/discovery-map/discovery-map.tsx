@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType, MapParams} from "../../model/types";
 import {Param} from "../../model/param";
@@ -61,6 +61,16 @@ export class DiscoveryMapComponent {
   private firstDraw: boolean = true;
   private mapOpts: MapParams;
 
+
+  @Watch('result')
+  updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
+    if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      this.result = GTSLib.getData(this.result);
+      console.log('updateRes', this.result)
+      this.drawMap(this.result as DataModel || new DataModel(), true);
+    }
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryMapComponent, this.debug);
@@ -81,7 +91,7 @@ export class DiscoveryMapComponent {
     this.drawMap(this.result as DataModel || new DataModel());
   }
 
-  drawMap(data: DataModel) {
+  drawMap(data: DataModel, isRefresh = false) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
@@ -112,13 +122,17 @@ export class DiscoveryMapComponent {
       if (map.subdomains) {
         mapOpts.subdomains = map.subdomains;
       }
-      this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
+      if(!isRefresh) {
+        this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
+      }
       if (!!this.map) {
         this.LOG.debug(['displayMap'], 'map exists');
         this.pathDataLayer.clearLayers();
         this.positionDataLayer.clearLayers();
         this.geoJsonLayer.clearLayers();
-        this.tileLayerGroup.clearLayers();
+        if(!isRefresh) {
+          this.tileLayerGroup.clearLayers();
+        }
       } else {
         this.map = Leaflet.map(this.mapElement, {
           preferCanvas: true,
@@ -142,7 +156,9 @@ export class DiscoveryMapComponent {
         });
       }
     }
-    this.tilesLayer.addTo(this.tileLayerGroup);
+    if(!isRefresh) {
+      this.tilesLayer.addTo(this.tileLayerGroup);
+    }
     const pathDataSize = (this.pathData || []).length;
     for (let i = 0; i < pathDataSize; i++) {
       const path = this.pathData[i];
