@@ -39,11 +39,8 @@ export default {
   'statusError',
   'execResult',
   'draw',
-].forEach(evt => {
-  window.addEventListener(evt, (e: CustomEvent) => {
-    action(evt)(e.detail)
-  });
-})
+].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
+
 // @ts-ignore
 const Template = ({url, ws, language, type, options, unit, title}) => `<div class="card" style="width: 100%;min-height: 500px">
       <div class="card-body">

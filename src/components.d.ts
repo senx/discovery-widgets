@@ -36,6 +36,13 @@ export namespace Components {
         "url": string;
         "width": number;
     }
+    interface DiscoveryDashboard {
+        "autoRefresh": number;
+        "dashboardTitle": string;
+        "debug": boolean;
+        "options": Param | string;
+        "url": string;
+    }
     interface DiscoveryDisplay {
         "debug": boolean;
         "height": number;
@@ -116,6 +123,12 @@ declare global {
         prototype: HTMLDiscoveryButtonElement;
         new (): HTMLDiscoveryButtonElement;
     };
+    interface HTMLDiscoveryDashboardElement extends Components.DiscoveryDashboard, HTMLStencilElement {
+    }
+    var HTMLDiscoveryDashboardElement: {
+        prototype: HTMLDiscoveryDashboardElement;
+        new (): HTMLDiscoveryDashboardElement;
+    };
     interface HTMLDiscoveryDisplayElement extends Components.DiscoveryDisplay, HTMLStencilElement {
     }
     var HTMLDiscoveryDisplayElement: {
@@ -162,6 +175,7 @@ declare global {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-bar": HTMLDiscoveryBarElement;
         "discovery-button": HTMLDiscoveryButtonElement;
+        "discovery-dashboard": HTMLDiscoveryDashboardElement;
         "discovery-display": HTMLDiscoveryDisplayElement;
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-line": HTMLDiscoveryLineElement;
@@ -203,6 +217,15 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "url"?: string;
         "width"?: number;
+    }
+    interface DiscoveryDashboard {
+        "autoRefresh"?: number;
+        "dashboardTitle"?: string;
+        "debug"?: boolean;
+        "onStatusError"?: (event: CustomEvent<any>) => void;
+        "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
+        "options"?: Param | string;
+        "url"?: string;
     }
     interface DiscoveryDisplay {
         "debug"?: boolean;
@@ -274,6 +297,7 @@ declare namespace LocalJSX {
         "discovery-annotation": DiscoveryAnnotation;
         "discovery-bar": DiscoveryBar;
         "discovery-button": DiscoveryButton;
+        "discovery-dashboard": DiscoveryDashboard;
         "discovery-display": DiscoveryDisplay;
         "discovery-image": DiscoveryImage;
         "discovery-line": DiscoveryLine;
@@ -290,6 +314,7 @@ declare module "@stencil/core" {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-bar": LocalJSX.DiscoveryBar & JSXBase.HTMLAttributes<HTMLDiscoveryBarElement>;
             "discovery-button": LocalJSX.DiscoveryButton & JSXBase.HTMLAttributes<HTMLDiscoveryButtonElement>;
+            "discovery-dashboard": LocalJSX.DiscoveryDashboard & JSXBase.HTMLAttributes<HTMLDiscoveryDashboardElement>;
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
