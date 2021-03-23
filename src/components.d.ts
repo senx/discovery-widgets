@@ -76,6 +76,7 @@ export namespace Components {
     }
     interface DiscoveryTile {
         "autoRefresh": number;
+        "chartTitle": string;
         "debug": boolean;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
@@ -84,6 +85,7 @@ export namespace Components {
         "url": string;
     }
     interface DiscoveryTileResult {
+        "chartTitle": string;
         "debug": boolean;
         "height": number;
         "options": Param | string;
@@ -246,6 +248,7 @@ declare namespace LocalJSX {
     }
     interface DiscoveryTile {
         "autoRefresh"?: number;
+        "chartTitle"?: string;
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
         "onStatusError"?: (event: CustomEvent<any>) => void;
@@ -256,6 +259,7 @@ declare namespace LocalJSX {
         "url"?: string;
     }
     interface DiscoveryTileResult {
+        "chartTitle"?: string;
         "debug"?: boolean;
         "height"?: number;
         "options"?: Param | string;

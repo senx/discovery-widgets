@@ -12,6 +12,7 @@ import {GTSLib} from "../../utils/gts.lib";
 })
 export class DiscoveryTileComponent {
   @Prop() url: string;
+  @Prop() chartTitle: string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
@@ -129,6 +130,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             options={this.options}
             unit={this.unit}
             debug={this.debug}
+            chart-title={this.chartTitle}
           />
         </div>
         : <discovery-spinner>Requesting data...</discovery-spinner>

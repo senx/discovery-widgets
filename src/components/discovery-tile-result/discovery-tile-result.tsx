@@ -1,4 +1,4 @@
-import {Component, Element, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, h, Prop, State} from '@stencil/core';
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -21,6 +21,7 @@ export class DiscoveryTileResultComponent {
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
   @Prop() url: string;
+  @Prop() chartTitle: string;
 
   @Element() el: HTMLElement;
 
@@ -29,13 +30,16 @@ export class DiscoveryTileResultComponent {
   @State() fontColor: string;
 
   private LOG: Logger;
-/*
-  @Watch('result')
-  resultUpdate(newValue: DataModel | string, oldValue: DataModel | string) {
-    if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      this.result = GTSLib.getData(this.result);
-    }
-  }*/
+  private wrapper: HTMLDivElement;
+  private innerHeight: number;
+
+  /*
+    @Watch('result')
+    resultUpdate(newValue: DataModel | string, oldValue: DataModel | string) {
+      if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+        this.result = GTSLib.getData(this.result);
+      }
+    }*/
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
@@ -58,18 +62,20 @@ export class DiscoveryTileResultComponent {
   componentDidLoad() {
     setTimeout(() => {
       let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000000');
-      fontColor =  ((this.options as Param) || {fontColor}).fontColor || fontColor;
+      fontColor = ((this.options as Param) || {fontColor}).fontColor || fontColor;
 
       let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-      bgColor =  ((this.options as Param) || {bgColor: bgColor}).bgColor || bgColor;
+      bgColor = ((this.options as Param) || {bgColor: bgColor}).bgColor || bgColor;
 
-      const dm = ((this.result as unknown as DataModel) || {globalParams: {
-        bgColor, fontColor
-      }}).globalParams || {bgColor, fontColor};
+      const dm = ((this.result as unknown as DataModel) || {
+        globalParams: {
+          bgColor, fontColor
+        }
+      }).globalParams || {bgColor, fontColor};
 
       this.bgColor = dm.bgColor
       this.fontColor = dm.fontColor
-
+      this.innerHeight =  Utils.getContentBounds(this.wrapper.parentElement).h - 10;
     })
   }
 
@@ -95,7 +101,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.height}
+          height={this.innerHeight}
           width={this.width}
           debug={this.debug}
         />;
@@ -106,7 +112,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.height}
+          height={this.innerHeight}
           width={this.width}
           debug={this.debug}
         />;
@@ -117,7 +123,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.height}
+          height={this.innerHeight}
           width={this.width}
           debug={this.debug}
         />;
@@ -128,7 +134,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.height}
+          height={this.innerHeight}
           width={this.width}
           debug={this.debug}
         />;
@@ -138,7 +144,7 @@ export class DiscoveryTileResultComponent {
           onDraw={ev => this.drawn()}
           type={this.type}
           options={this.options}
-          height={this.height}
+          height={this.innerHeight}
           width={this.width}
           debug={this.debug}
         />;
@@ -148,7 +154,7 @@ export class DiscoveryTileResultComponent {
           onDraw={ev => this.drawn()}
           type={this.type}
           options={this.options}
-          height={this.height}
+          height={this.innerHeight}
           width={this.width}
           debug={this.debug}
         />;
@@ -159,7 +165,7 @@ export class DiscoveryTileResultComponent {
           url={this.url}
           type={this.type}
           options={this.options}
-          height={this.height}
+          height={this.innerHeight}
           width={this.width}
           debug={this.debug}
         />;
@@ -169,6 +175,11 @@ export class DiscoveryTileResultComponent {
   }
 
   render() {
-    return <div style={{backgroundColor: this.bgColor, padding: '5px', color: this.fontColor}}>{this.getView()}</div>;
+    return <div class="discovery-tile" style={{backgroundColor: this.bgColor, color: this.fontColor, height: this.height + 'px'}}>
+      {this.chartTitle ? <h2>{this.chartTitle}</h2> : ''}
+      <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el as HTMLDivElement}>
+        {this.getView()}
+      </div>
+    </div>;
   }
 }
