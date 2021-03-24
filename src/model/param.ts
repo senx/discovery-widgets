@@ -35,6 +35,7 @@ export class Param {
   endColor?: string;
   numColorSteps?: number;
   maxValue: number;
+  minValue: number;
   key?: string;
   properties?: any;
   yAxis?: number;

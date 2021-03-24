@@ -220,21 +220,6 @@ export class DiscoveryBarComponent {
     } as EChartsOption;
   }
 
-  private static getStepShape(type: ChartType) {
-    switch (type) {
-      case "line":
-      case "area":
-      case "spline":
-        return undefined;
-      case "step":
-        return 'middle';
-      case "step-before":
-        return 'start';
-      case "step-after":
-        return 'end';
-    }
-  }
-
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;

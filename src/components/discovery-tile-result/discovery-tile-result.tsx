@@ -33,14 +33,6 @@ export class DiscoveryTileResultComponent {
   private wrapper: HTMLDivElement;
   private innerHeight: number;
 
-  /*
-    @Watch('result')
-    resultUpdate(newValue: DataModel | string, oldValue: DataModel | string) {
-      if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-        this.result = GTSLib.getData(this.result);
-      }
-    }*/
-
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {
@@ -164,6 +156,17 @@ export class DiscoveryTileResultComponent {
           onDraw={ev => this.drawn()}
           url={this.url}
           type={this.type}
+          options={this.options}
+          height={this.innerHeight}
+          width={this.width}
+          debug={this.debug}
+        />;
+      case 'gauge':
+        return <discovery-gauge
+          result={this.result}
+          onDraw={ev => this.drawn()}
+          type={this.type}
+          unit={this.unit}
           options={this.options}
           height={this.innerHeight}
           width={this.width}

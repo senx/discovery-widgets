@@ -36,7 +36,7 @@
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate",
+    "gen": "stencil generate",
     "storybook.run": "start-storybook -p 6006 -s www",
     "storybook": "npm-run-all --parallel build:dev storybook.run",
     "dev": "npm run storybook",

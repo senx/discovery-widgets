@@ -54,6 +54,15 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryGauge {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoveryImage {
         "debug": boolean;
         "height": number;
@@ -137,6 +146,12 @@ declare global {
         prototype: HTMLDiscoveryDisplayElement;
         new (): HTMLDiscoveryDisplayElement;
     };
+    interface HTMLDiscoveryGaugeElement extends Components.DiscoveryGauge, HTMLStencilElement {
+    }
+    var HTMLDiscoveryGaugeElement: {
+        prototype: HTMLDiscoveryGaugeElement;
+        new (): HTMLDiscoveryGaugeElement;
+    };
     interface HTMLDiscoveryImageElement extends Components.DiscoveryImage, HTMLStencilElement {
     }
     var HTMLDiscoveryImageElement: {
@@ -179,6 +194,7 @@ declare global {
         "discovery-button": HTMLDiscoveryButtonElement;
         "discovery-dashboard": HTMLDiscoveryDashboardElement;
         "discovery-display": HTMLDiscoveryDisplayElement;
+        "discovery-gauge": HTMLDiscoveryGaugeElement;
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-map": HTMLDiscoveryMapElement;
@@ -232,6 +248,16 @@ declare namespace LocalJSX {
         "url"?: string;
     }
     interface DiscoveryDisplay {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryGauge {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
@@ -303,6 +329,7 @@ declare namespace LocalJSX {
         "discovery-button": DiscoveryButton;
         "discovery-dashboard": DiscoveryDashboard;
         "discovery-display": DiscoveryDisplay;
+        "discovery-gauge": DiscoveryGauge;
         "discovery-image": DiscoveryImage;
         "discovery-line": DiscoveryLine;
         "discovery-map": DiscoveryMap;
@@ -320,6 +347,7 @@ declare module "@stencil/core" {
             "discovery-button": LocalJSX.DiscoveryButton & JSXBase.HTMLAttributes<HTMLDiscoveryButtonElement>;
             "discovery-dashboard": LocalJSX.DiscoveryDashboard & JSXBase.HTMLAttributes<HTMLDiscoveryDashboardElement>;
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
+            "discovery-gauge": LocalJSX.DiscoveryGauge & JSXBase.HTMLAttributes<HTMLDiscoveryGaugeElement>;
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
