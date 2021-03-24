@@ -38,6 +38,8 @@ export namespace Components {
     }
     interface DiscoveryDashboard {
         "autoRefresh": number;
+        "cellHeight": number;
+        "cols": number;
         "dashboardTitle": string;
         "debug": boolean;
         "options": Param | string;
@@ -220,6 +222,8 @@ declare namespace LocalJSX {
     }
     interface DiscoveryDashboard {
         "autoRefresh"?: number;
+        "cellHeight"?: number;
+        "cols"?: number;
         "dashboardTitle"?: string;
         "debug"?: boolean;
         "onStatusError"?: (event: CustomEvent<any>) => void;

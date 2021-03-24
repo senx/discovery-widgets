@@ -1,4 +1,4 @@
-# discovery-annotation
+# discovery-display
 
 
 
@@ -14,7 +14,7 @@
 | `options` | `options` |             | `Param \| string`                                                                                                                                                             | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                         | `undefined`   |
 | `type`    | `type`    |             | `"annotation" \| "area" \| "bar" \| "button" \| "display" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
-| `unit`    | `unit`    |             | `string`                                                                                                                                                                      | `undefined`   |
+| `unit`    | `unit`    |             | `string`                                                                                                                                                                      | `''`          |
 | `width`   | `width`   |             | `number`                                                                                                                                                                      | `undefined`   |
 
 
@@ -38,9 +38,9 @@
 ### Graph
 ```mermaid
 graph TD;
-  discovery-annotation --> discovery-spinner
-  discovery-tile-result --> discovery-annotation
-  style discovery-annotation fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-display --> discovery-spinner
+  discovery-tile-result --> discovery-display
+  style discovery-display fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

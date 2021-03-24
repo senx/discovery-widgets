@@ -18,6 +18,8 @@ export class DiscoveryDashboardComponent {
   @Prop() options: Param | string = new Param();
   @Prop() debug: boolean = false;
   @Prop() autoRefresh: number = -1;
+  @Prop() cellHeight: number = 220;
+  @Prop() cols: number = 12;
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
@@ -111,32 +113,40 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   render() {
     return <Host>
       {this.loaded ?
-        <div class="discovery-dashboard-wrapper" style={{width: '100%', height: 'auto'}}>
-          {this.result.tiles.map((t) =>
-            <div class="discovery-dashboard-tile"
-                 style={{
-                   gridColumn: (t.x + 1) + ' / ' + (t.x + t.w),
-                   gridRow: (t.y + 1) + ' / ' + (t.y + t.h),
-                 }}
-            >
-              <div>
-                {t.macro
-                  ? <discovery-tile url={t.endpoint || this.url}
-                                    type={t.type as ChartType}
-                                    chart-title={t.title}
-                                    options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
-                  >{t.macro + ' EVAL'}</discovery-tile>
-                  : <discovery-tile-result
-                    url={t.endpoint || this.url}
-                    result={DiscoveryDashboardComponent.sanityze(t.data)}
-                    type={t.type as ChartType}
-                    options={DiscoveryDashboardComponent.merge(this.options, t.options)}
-                    debug={this.debug}
-                    chart-title={t.title}
-                  />
-                }</div>
-            </div>)
-          }</div>
+        <div class="discovery-dashboard-main">
+          {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
+          {this.result.description ? <p>{this.result.description}</p> : ''}
+          <div class="discovery-dashboard-wrapper" style={{
+            width: '100%', height: 'auto',
+            gridAutoRows: 'minmax(' + this.cellHeight + 'px, auto)',
+            gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
+          }}>
+            {this.result.tiles.map((t) =>
+              <div class="discovery-dashboard-tile"
+                   style={{
+                     gridColumn: (t.x + 1) + ' / ' + (t.x + t.w),
+                     gridRow: (t.y + 1) + ' / ' + (t.y + t.h),
+                   }}
+              >
+                <div>
+                  {t.macro
+                    ? <discovery-tile url={t.endpoint || this.url}
+                                      type={t.type as ChartType}
+                                      chart-title={t.title}
+                                      options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                    >{t.macro + ' EVAL'}</discovery-tile>
+                    : <discovery-tile-result
+                      url={t.endpoint || this.url}
+                      result={DiscoveryDashboardComponent.sanityze(t.data)}
+                      type={t.type as ChartType}
+                      options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                      debug={this.debug}
+                      chart-title={t.title}
+                    />
+                  }</div>
+              </div>)
+            }</div>
+        </div>
         : <discovery-spinner>Requesting data...</discovery-spinner>
       }
       <pre id="ws"><slot/></pre>

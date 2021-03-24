@@ -27,11 +27,12 @@ export default {
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
 // @ts-ignore
-const Template = ({url, ws, language, type, options, unit, title}) => `<div class="card" style="width: 100%;min-height: 500px">
+const Template = ({url, ws, options, title}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
 <discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
+cols="8"
 debug options='${JSON.stringify(options)}'
 >${ws}</discovery-dashboard>
 </div>
@@ -41,6 +42,8 @@ export const Usage = Template.bind({});
 Usage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
   ws: `{
+  'title' 'My Dashboard'
+  'description' 'Dashboard over 8 columns (default is 12)'
      'tiles' [
        {
          'type' 'display'
@@ -112,3 +115,4 @@ withAutoRefresh.args = {
   ...Usage.args,
   options: {autoRefresh: 2}
 }
+

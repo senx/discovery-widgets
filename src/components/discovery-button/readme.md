@@ -1,4 +1,4 @@
-# discovery-annotation
+# discovery-button
 
 
 
@@ -14,15 +14,17 @@
 | `options` | `options` |             | `Param \| string`                                                                                                                                                             | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                         | `undefined`   |
 | `type`    | `type`    |             | `"annotation" \| "area" \| "bar" \| "button" \| "display" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
-| `unit`    | `unit`    |             | `string`                                                                                                                                                                      | `undefined`   |
+| `url`     | `url`     |             | `string`                                                                                                                                                                      | `undefined`   |
 | `width`   | `width`   |             | `number`                                                                                                                                                                      | `undefined`   |
 
 
 ## Events
 
-| Event  | Description | Type                |
-| ------ | ----------- | ------------------- |
-| `draw` |             | `CustomEvent<void>` |
+| Event         | Description | Type                 |
+| ------------- | ----------- | -------------------- |
+| `draw`        |             | `CustomEvent<void>`  |
+| `execResult`  |             | `CustomEvent<any[]>` |
+| `statusError` |             | `CustomEvent<any>`   |
 
 
 ## Dependencies
@@ -31,16 +33,11 @@
 
  - [discovery-tile-result](../discovery-tile-result)
 
-### Depends on
-
-- [discovery-spinner](../discovery-spinner)
-
 ### Graph
 ```mermaid
 graph TD;
-  discovery-annotation --> discovery-spinner
-  discovery-tile-result --> discovery-annotation
-  style discovery-annotation fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-tile-result --> discovery-button
+  style discovery-button fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

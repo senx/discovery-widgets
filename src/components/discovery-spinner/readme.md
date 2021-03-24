@@ -17,14 +17,22 @@
 ### Used by
 
  - [discovery-annotation](../discovery-annotation)
- - [discovery-chart-line](src/components/discovery-line)
+ - [discovery-bar](../discovery-bar)
+ - [discovery-dashboard](../discovery-dashboard)
+ - [discovery-display](../discovery-display)
+ - [discovery-image](../discovery-image)
+ - [discovery-line](../discovery-line)
  - [discovery-tile](../discovery-tile)
 
 ### Graph
 ```mermaid
 graph TD;
   discovery-annotation --> discovery-spinner
-  discovery-chart-line --> discovery-spinner
+  discovery-bar --> discovery-spinner
+  discovery-dashboard --> discovery-spinner
+  discovery-display --> discovery-spinner
+  discovery-image --> discovery-spinner
+  discovery-line --> discovery-spinner
   discovery-tile --> discovery-spinner
   style discovery-spinner fill:#f9f,stroke:#333,stroke-width:4px
 ```
