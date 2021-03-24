@@ -1,5 +1,8 @@
 :host {
   display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
 
   .expander {
     position: absolute;
@@ -7,5 +10,10 @@
     left: 0;
     width: 35px;
     z-index: 9;
+    margin: 5px;
+  }
+
+  .chart-area {
+    padding-top: 20px;
   }
 }

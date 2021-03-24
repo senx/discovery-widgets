@@ -196,7 +196,7 @@ export class DiscoveryAnnotation {
       {this.displayExpander
         ? <button class="expander" onClick={e => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
-      <div style={{width: this.width + 'px', height: this.height + 'px'}}>
+      <div class="chart-area" style={{width: this.width + 'px', height: this.height + 'px'}}>
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.graph = el as HTMLDivElement}/>
