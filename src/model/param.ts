@@ -29,8 +29,8 @@ export class Param {
   showDots = false;
   timeUnit: TimeUnit = 'us';
   borderColor?: string;
-  minColor?: string;
-  maxColor?: string;
+  minColorValue?: string;
+  maxColorValue?: string;
   startColor?: string;
   endColor?: string;
   numColorSteps?: number;

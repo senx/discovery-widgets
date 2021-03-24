@@ -283,22 +283,22 @@ export class MapLib {
     if (!MapLib.validateWeightedDotsPositionArray(posArray, params)) {
       return;
     }
-    if (!params.minColor || !params.maxColor || !params.startColor || !params.endColor) {
+    if (!params.minColorValue || !params.maxColorValue || !params.startColor || !params.endColor) {
       MapLib.LOG.error(['validateWeightedColoredDotsPositionArray'], 'When using ' +
-        '\'weightedColoredDots\' rendering, \'maxColorValue\', \'minColorValue\', \'startColor\' ' +
+        '\'coloredWeightedDots\' rendering, \'maxColorValue\', \'minColorValue\', \'startColor\' ' +
         'and \'endColor\' parameters are compulsory');
       posArray.render = undefined;
       return;
     }
 
-    posArray.maxColorValue = params.maxColor;
-    posArray.minColorValue = params.minColor;
+    posArray.maxColorValue = params.maxColorValue;
+    posArray.minColorValue = params.minColorValue;
 
     if (typeof posArray.minColorValue !== 'number' ||
       typeof posArray.maxColorValue !== 'number' ||
       posArray.minColorValue >= posArray.maxColorValue) {
       MapLib.LOG.error(['validateWeightedColoredDotsPositionArray'], ['When using ' +
-      'weightedColoredDots\' rendering, \'maxColorValue\' and \'minColorValue\' must be numbers ' +
+      'coloredWeightedDots\' rendering, \'maxColorValue\' and \'minColorValue\' must be numbers ' +
       'and \'maxColorValue\' must be greater than \'minColorValue\'', {
         maxColorValue: posArray.maxColorValue,
         minColorValue: posArray.minColorValue,
@@ -312,7 +312,7 @@ export class MapLib {
       || !re.test(params.startColor)
       || !re.test(params.endColor)) {
       MapLib.LOG.error(['validateWeightedColoredDotsPositionArray'], ['When using ' +
-      'weightedColoredDots\' rendering, \'startColor\' and \'endColor\' parameters must be RGB ' +
+      'coloredWeightedDots\' rendering, \'startColor\' and \'endColor\' parameters must be RGB ' +
       'colors in #rrggbb format', {
         startColor: params.startColor,
         endColor: params.endColor,
