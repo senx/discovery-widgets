@@ -1,3 +1,18 @@
 :host {
-  display: block;
+  & > div {
+    width: 100%;
+    height: 100%;
+    & > div {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .wv-tooltip {
+    max-width: 300px;
+
+    div {
+      word-wrap: anywhere;
+    }
+  }
 }
