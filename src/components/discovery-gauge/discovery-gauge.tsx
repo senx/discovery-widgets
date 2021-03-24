@@ -40,7 +40,6 @@ export class DiscoveryGauge {
   @Watch('result')
   updateRes() {
     this.result = GTSLib.getData(this.result);
-    console.log('updateRes', this.result)
   }
 
   componentWillLoad() {
@@ -209,7 +208,6 @@ export class DiscoveryGauge {
   }
 
   autoFontSize(size: number) {
-    console.log('this.height', 'autoFontSize', this.el.getBoundingClientRect().height);
     if (this.el.getBoundingClientRect().height > 0) {
       const count = Math.ceil(size / 2);
       return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 5) / (count > 1?count * 4: 1) ;
