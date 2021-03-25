@@ -36,11 +36,20 @@ export class DiscoveryBarComponent {
   private defOptions: Param = new Param();
   private LOG: Logger;
   private divider: number = 1000;
+  private myChart: ECharts;
 
   @Watch('result')
   updateRes() {
-    this.result = GTSLib.getData(this.result);
-    console.log('updateRes', this.result)
+    this.chartOpts = this.convert(GTSLib.getData(this.result));
+    const series = [];
+    setTimeout(() => {
+      (this.chartOpts.series as SeriesOption[]).forEach(s => {
+        s.animation = true;
+        series.push(s);
+      })
+      this.chartOpts.series = series;
+      this.myChart.setOption(this.chartOpts)
+    });
   }
 
   componentWillLoad() {
@@ -115,8 +124,8 @@ export class DiscoveryBarComponent {
             if ((this.options as Param).timeMode || 'date' === 'date') {
               ts = GTSLib.toISOString(ts, this.divider, (this.options as Param).timeZone);
             }
-            if(!!((this.options as Param).bar || {horizontal: false}).horizontal) {
-              return[d[d.length - 1], ts];
+            if (!!((this.options as Param).bar || {horizontal: false}).horizontal) {
+              return [d[d.length - 1], ts];
             } else {
               return [ts, d[d.length - 1]]
             }
@@ -132,8 +141,8 @@ export class DiscoveryBarComponent {
             ...this.getCommonSeriesParam(color),
             name: label,
             data: gts.rows.map(r => {
-              if(!!((this.options as Param).bar || {horizontal: false}).horizontal) {
-                return [ r[index + 1], r[0]];
+              if (!!((this.options as Param).bar || {horizontal: false}).horizontal) {
+                return [r[index + 1], r[0]];
               } else {
                 return [r[0], r[index + 1]]
               }
@@ -170,7 +179,7 @@ export class DiscoveryBarComponent {
         show: false
       },
       xAxis: {
-        type: !!((this.options as Param).bar || {horizontal: false}).horizontal? 'value' : 'category',
+        type: !!((this.options as Param).bar || {horizontal: false}).horizontal ? 'value' : 'category',
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -186,7 +195,7 @@ export class DiscoveryBarComponent {
         }
       },
       yAxis: {
-        type: !!((this.options as Param).bar || {horizontal: false}).horizontal? 'category': 'value',
+        type: !!((this.options as Param).bar || {horizontal: false}).horizontal ? 'category' : 'value',
         splitLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -223,16 +232,16 @@ export class DiscoveryBarComponent {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
-    const myChart: ECharts = echarts.init(this.graph, null, {
+    this.myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
       height: this.height
     });
-    myChart.on('finished', () => {
+    this.myChart.on('finished', () => {
       this.rendering = false;
       this.drawn();
     });
-    setTimeout(() => myChart.setOption(this.chartOpts));
+    setTimeout(() => this.myChart.setOption(this.chartOpts));
   }
 
   private drawn() {

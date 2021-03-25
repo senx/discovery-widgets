@@ -2,7 +2,7 @@ import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
 
 export default {
   ...tile,
-  title: 'Components/Display'
+  title: 'UI/Display'
 };
 
 export const InitialUsage = Usage.bind({});

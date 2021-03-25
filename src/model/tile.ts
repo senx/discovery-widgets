@@ -11,5 +11,6 @@ export class Tile {
   title?: string;
   macro?: string;
   endpoint?: string;
+  unit?: string;
   options: Param = new Param();
 }

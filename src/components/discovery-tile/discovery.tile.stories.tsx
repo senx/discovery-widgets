@@ -10,13 +10,13 @@ configureActions({
 });
 const options = new Param()
 export default {
-  title: 'Components/Tile',
+  title: 'UI/Tile',
   notes: readme,
   argTypes: {
     type: {
       control: {
         type: 'select',
-        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display']
+        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display', 'gauge', 'circle']
       }
     },
     language: {

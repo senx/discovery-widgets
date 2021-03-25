@@ -20,6 +20,7 @@
  - [discovery-bar](../discovery-bar)
  - [discovery-dashboard](../discovery-dashboard)
  - [discovery-display](../discovery-display)
+ - [discovery-gauge](../discovery-gauge)
  - [discovery-image](../discovery-image)
  - [discovery-line](../discovery-line)
  - [discovery-tile](../discovery-tile)
@@ -31,6 +32,7 @@ graph TD;
   discovery-bar --> discovery-spinner
   discovery-dashboard --> discovery-spinner
   discovery-display --> discovery-spinner
+  discovery-gauge --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-line --> discovery-spinner
   discovery-tile --> discovery-spinner

@@ -1,8 +1,9 @@
 import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
+import {Param} from "../../model/param";
 
 export default {
   ...tile,
-  title: 'Components/Line'
+  title: 'Charts/Line'
 };
 
 export const InitialUsage = Usage.bind({});
@@ -126,4 +127,17 @@ multiXAxis.args = {
 %> FOR STACKTOLIST 'data' STORE
 { 'data' $data 'params' [ { 'xAxis' 0 } { 'xAxis' 1 } { 'xAxis' 1 } { 'xAxis' 2 } ] }
 `
+};
+
+export const AutoRefresh = Usage.bind({});
+AutoRefresh.args = {
+  ...InitialUsage.args,
+  type: 'line',
+  ws: `NEWGTS 'g' STORE
+  1 1000 <%
+    'ts' STORE
+    NOW $ts STU * 50.0 / - 'ts' STORE
+    $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ADDVALUE DROP %> FOR
+  $g`,
+  options: {...new Param(), autoRefresh: 1}
 };

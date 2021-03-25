@@ -36,10 +36,12 @@ export class DiscoveryGauge {
   private defOptions: Param = new Param();
   private LOG: Logger;
   private divider: number = 1000;
+  private myChart: ECharts;
 
   @Watch('result')
   updateRes() {
-    this.result = GTSLib.getData(this.result);
+    this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
+    this.drawChart();
   }
 
   componentWillLoad() {
@@ -48,9 +50,8 @@ export class DiscoveryGauge {
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-    this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel())
+    this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -61,28 +62,31 @@ export class DiscoveryGauge {
   private getCommonSeriesParam(color) {
     return {
       type: 'gauge',
-      animation: false,
+      animation: true,
       large: true,
       clip: false,
       startAngle: 180,
       endAngle: 0,
       lineStyle: {color},
+      pointer: {
+        icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+        length: '12%',
+        width: '10%',
+        offsetCenter: [0, '-78%'],
+        itemStyle: {color: color}
+      },
       title: {
         fontSize: 12,
         offsetCenter: [0, 10],
         color: Utils.getLabelColor(this.el)
       },
-      pointer: {show: false},
       splitLine: {show: false},
       axisLabel: {show: false},
       splitNumber: 4, // The number of split segments on the axis
       axisTick: {
         distance: 0,
         splitNumber: 4,
-        lineStyle: {
-          width: 1,
-          color: Utils.getGridColor(this.el)
-        }
+        lineStyle: {width: 1, color: Utils.getGridColor(this.el)}
       },
       axisLine: {roundCap: false, lineStyle: {width: 20}},
       itemStyle: {
@@ -166,7 +170,7 @@ export class DiscoveryGauge {
         }
       }
     }
-    const radius = Math.round(100 / Math.ceil(gtsCount / 2));
+    const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * (this.type === 'gauge' ? 1 : 0.8);
     let floor = 1;
     dataStruct.forEach((d, i) => {
       if (i % 2 === 0) {
@@ -179,15 +183,15 @@ export class DiscoveryGauge {
         name: d.key,
         min: d.min,
         max: Math.max(d.max, overallMax),
-        startAngle: 180,
-        endAngle: 0,
+        startAngle: this.type === 'gauge' ? 180 : 270,
+        endAngle: this.type === 'gauge' ? 0 : -90,
         progress: {show: true, roundCap: false, width: 20},
         data: [{value: d.value, name: d.key}],
         radius: radius + '%',
         detail: {
           formatter: '{value}' + (this.unit || ''),
           fontSize: 12,
-          offsetCenter: [0, '-30%'],
+          offsetCenter: [0, this.type === 'gauge' ? '-20%' : 0],
           color: Utils.getLabelColor(this.el)
         },
         center: [(gtsCount === 1 ? '50' : i % 2 === 0 ? '25' : '75') + '%', (radius * (floor - 1) - radius / 2 + 10) + '%']
@@ -210,7 +214,7 @@ export class DiscoveryGauge {
   autoFontSize(size: number) {
     if (this.el.getBoundingClientRect().height > 0) {
       const count = Math.ceil(size / 2);
-      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 5) / (count > 1?count * 4: 1) ;
+      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 5) / (count > 1 ? count * 4 : 1);
     } else {
       return 12;
     }
@@ -219,28 +223,16 @@ export class DiscoveryGauge {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
-    const myChart: ECharts = echarts.init(this.graph, null, {
+    this.myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
       height: this.height
     });
-    myChart.on('finished', () => {
+    this.myChart.on('finished', () => {
       this.rendering = false;
       this.drawn();
     });
-    const series = [];
-    setTimeout(() => {
-      (this.chartOpts.series as SeriesOption[]).forEach(s => {
-        s.detail.fontSize = this.autoFontSize((this.chartOpts.series as SeriesOption[]).length);
-        series.push(s);
-      })
-      this.chartOpts.series = series;
-      myChart.setOption(this.chartOpts)
-    });
-  }
-
-  private drawn() {
-    this.draw.emit();
+   this.drawChart();
   }
 
   render() {
@@ -251,4 +243,19 @@ export class DiscoveryGauge {
     </div>
   }
 
+  private drawChart() {
+    const series = [];
+    setTimeout(() => {
+      (this.chartOpts.series as SeriesOption[]).forEach(s => {
+        s.detail.fontSize = this.autoFontSize((this.chartOpts.series as SeriesOption[]).length);
+        series.push(s);
+      })
+      this.chartOpts.series = series;
+      this.myChart.setOption(this.chartOpts)
+    });
+  }
+
+  private drawn() {
+    this.draw.emit();
+  }
 }

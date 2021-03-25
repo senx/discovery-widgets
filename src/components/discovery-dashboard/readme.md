@@ -10,6 +10,8 @@
 | Property         | Attribute         | Description | Type              | Default       |
 | ---------------- | ----------------- | ----------- | ----------------- | ------------- |
 | `autoRefresh`    | `auto-refresh`    |             | `number`          | `-1`          |
+| `cellHeight`     | `cell-height`     |             | `number`          | `220`         |
+| `cols`           | `cols`            |             | `number`          | `12`          |
 | `dashboardTitle` | `dashboard-title` |             | `string`          | `undefined`   |
 | `debug`          | `debug`           |             | `boolean`         | `false`       |
 | `options`        | `options`         |             | `Param \| string` | `new Param()` |
@@ -47,11 +49,13 @@ graph TD;
   discovery-tile-result --> discovery-map
   discovery-tile-result --> discovery-image
   discovery-tile-result --> discovery-button
+  discovery-tile-result --> discovery-gauge
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
   discovery-display --> discovery-spinner
   discovery-image --> discovery-spinner
+  discovery-gauge --> discovery-spinner
   style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

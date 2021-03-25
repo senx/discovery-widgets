@@ -2,7 +2,7 @@ import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
 
 export default {
   ...tile,
-  title: 'Components/Scatter'
+  title: 'Charts/Scatter'
 };
 
 export const InitialUsage = Usage.bind({});

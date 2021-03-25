@@ -162,6 +162,7 @@ export class DiscoveryTileResultComponent {
           debug={this.debug}
         />;
       case 'gauge':
+      case 'circle':
         return <discovery-gauge
           result={this.result}
           onDraw={ev => this.drawn()}

@@ -1,8 +1,9 @@
 import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
+import {Param} from "../../model/param";
 
 export default {
   ...tile,
-  title: 'Components/Bar'
+  title: 'Charts/Bar'
 };
 
 export const InitialUsage = Usage.bind({});
@@ -77,3 +78,14 @@ HorizontalStackedBarChartWithCustomData.args = {
 { 'data' $values 'globalParams' { 'bar' { 'horizontal' true 'stacked' true } } }`
 }
 
+export const BarChartWithAutoRefresh = Usage.bind({});
+BarChartWithAutoRefresh.args = {
+  ...InitialUsage.args,
+  type: 'bar',
+  ws: `NOW 'now' STORE
+1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g
+%> FOR`,
+  options: {...new Param(), autoRefresh: 1}
+}

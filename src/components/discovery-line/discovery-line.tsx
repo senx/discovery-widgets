@@ -47,7 +47,15 @@ export class DiscoveryLineComponent {
         this.result = GTSLib.getData(this.result);
         console.log('updateRes', this.result)
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts));
+        const series = [];
+        setTimeout(() => {
+        /*  (this.chartOpts.series as SeriesOption[]).forEach(s => {
+          // /  s.animation = true;
+            series.push(s);
+          })
+          this.chartOpts.series = series;*/
+          this.myChart.setOption(this.chartOpts)
+        });
       }
   }
 

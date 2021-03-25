@@ -138,6 +138,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                       url={t.endpoint || this.url}
                       result={DiscoveryDashboardComponent.sanityze(t.data)}
                       type={t.type as ChartType}
+                      unit={t.unit}
                       options={DiscoveryDashboardComponent.merge(this.options, t.options)}
                       debug={this.debug}
                       chart-title={t.title}

@@ -1,4 +1,4 @@
-# discovery-image
+# discovery-gauge
 
 
 
@@ -14,7 +14,7 @@
 | `options` | `options` |             | `Param \| string`                                                                                                                                                                        | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                    | `undefined`   |
 | `type`    | `type`    |             | `"annotation" \| "area" \| "bar" \| "button" \| "display" \| "gauge" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
-| `unit`    | `unit`    |             | `string`                                                                                                                                                                                 | `''`          |
+| `unit`    | `unit`    |             | `string`                                                                                                                                                                                 | `undefined`   |
 | `width`   | `width`   |             | `number`                                                                                                                                                                                 | `undefined`   |
 
 
@@ -38,9 +38,9 @@
 ### Graph
 ```mermaid
 graph TD;
-  discovery-image --> discovery-spinner
-  discovery-tile-result --> discovery-image
-  style discovery-image fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-gauge --> discovery-spinner
+  discovery-tile-result --> discovery-gauge
+  style discovery-gauge fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

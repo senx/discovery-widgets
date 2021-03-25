@@ -1,7 +1,7 @@
 import readme from '../discovery-tile/readme.md';
 
 export default {
-  title: 'Utils/Spinner',
+  title: 'UI/Spinner',
   notes: readme,
   argTypes: {
     message: {control: 'text'}

@@ -9,7 +9,7 @@ configureActions({
 });
 const options = new Param()
 export default {
-  title: 'Components/Dashboard',
+  title: 'UI/Dashboard',
   argTypes: {
     url: {control: 'text'},
     ws: {control: 'text'},

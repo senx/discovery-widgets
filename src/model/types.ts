@@ -15,6 +15,7 @@ export type ChartType =
   | 'image'
   | 'map'
   | 'gauge'
+  | 'circle'
   | 'button';
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';

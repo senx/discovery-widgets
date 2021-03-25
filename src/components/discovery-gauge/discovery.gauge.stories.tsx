@@ -1,8 +1,9 @@
 import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
+import {Param} from "../../model/param";
 
 export default {
   ...tile,
-  title: 'Components/Gauge'
+  title: 'Charts/Gauge'
 };
 
 export const InitialUsage = Usage.bind({});
@@ -39,13 +40,31 @@ export const SingleValueAndCustomStyle =  ({url, ws, lang, options, unit, title}
     }
 </style>
     <discovery-tile url="${url}" type="gauge" lang="${lang}"
-        unit="°C" chart-title="${title}"
+        unit="${unit || ''}" chart-title="${title}"
     options='${JSON.stringify(options)}'>${ws}</discovery-tile>
 </div>`;
 SingleValueAndCustomStyle.args = {
   ...InitialUsage.args,
   title: 'My Gauge',
+  unit: '°C',
   options: {...Usage.args.options, scheme: 'VIRIDIS'},
   ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] }`
 }
 
+export const CircularGauge = Usage.bind({});
+CircularGauge.args = {
+  ...InitialUsage.args,
+  title: 'My Gauge',
+  unit: '°C',
+  type: 'circle',
+  ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] }`
+}
+export const CircularGaugeWithAutoRefresh = Usage.bind({});
+CircularGaugeWithAutoRefresh.args = {
+  ...InitialUsage.args,
+  title: 'My Gauge',
+  unit: '%',
+  type: 'circle',
+  ws: `{ 'data' RAND 100 * ROUND 'params' [ { 'maxValue' 100 } ] }`,
+  options: { ... new Param(), autoRefresh: 1}
+}

@@ -2,7 +2,7 @@ import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
 
 export default {
   ...tile,
-  title: 'Components/Area',
+  title: 'Charts/Area',
 };
 export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
