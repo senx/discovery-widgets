@@ -133,7 +133,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             chart-title={this.chartTitle}
           />
         </div>
-        : <discovery-spinner>Requesting data...</discovery-spinner>
+        : <div class="discovery-tile-spinner">
+          <discovery-spinner>Requesting data...</discovery-spinner>
+        </div>
       }
       <pre id="ws"><slot/></pre>
     </Host>;

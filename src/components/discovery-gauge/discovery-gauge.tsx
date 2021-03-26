@@ -228,7 +228,7 @@ export class DiscoveryGauge {
       width: this.width,
       height: this.height
     });
-    this.myChart.on('finished', () => {
+    this.myChart.on('rendered', () => {
       this.rendering = false;
       this.drawn();
     });
@@ -237,9 +237,9 @@ export class DiscoveryGauge {
 
   render() {
     return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
-      {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
-      {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
+      {this.parsing ? <div class="discovery-chart-spinner"><discovery-spinner>Parsing data...</discovery-spinner></div> : ''}
+      {this.rendering ? <div class="discovery-chart-spinner"><discovery-spinner>Rendering data...</discovery-spinner></div> : ''}
     </div>
   }
 

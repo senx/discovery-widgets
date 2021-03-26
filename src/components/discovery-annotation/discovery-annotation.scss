@@ -16,4 +16,16 @@
   .chart-area {
     padding-top: 20px;
   }
+
+  .discovery-chart-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    z-index: 900;
+  }
 }

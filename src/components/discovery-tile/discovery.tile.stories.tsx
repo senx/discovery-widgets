@@ -16,7 +16,7 @@ export default {
     type: {
       control: {
         type: 'select',
-        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display', 'gauge', 'circle']
+        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display', 'gauge', 'circle', 'map' ]
       }
     },
     language: {
@@ -45,8 +45,8 @@ export default {
 const Template = ({url, ws, language, type, options, unit, title}) => `<div class="card" style="width: 100%;min-height: 500px">
       <div class="card-body">
           <discovery-tile url="${url}" type="${type}" language="${language}"
-          unit="${unit?unit: ''}"
-          chart-title="${title?title: ''}"
+          unit="${unit || ''}"
+          chart-title="${title || ''}"
           @draw="${event => console.error('foo', 'bar', event)}"
           debug options='${JSON.stringify(options)}'
           >${ws}</discovery-tile>
@@ -82,7 +82,7 @@ export const customStyle = ({url, ws, lang, options, unit, title}) => `<div styl
     }
 </style>
     <discovery-tile url="${url}" type="line" lang="${lang}"
-        unit="${unit}" title="${title}"
+        unit="${unit || ''}" title="${title || ''}"
     options='${JSON.stringify(options)}'>${ws}</discovery-tile>
 </div>`;
 customStyle.args = {...Usage.args};

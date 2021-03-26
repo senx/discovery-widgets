@@ -18,7 +18,7 @@ import {DataModel} from "../../model/dataModel";
 export class DiscoveryAnnotation {
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({ mutable: true }) options: Param | string = new Param();
   @Prop() width: number;
   @State() @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -31,24 +31,31 @@ export class DiscoveryAnnotation {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() chartOpts: EChartsOption;
+  @State() expanded: boolean = false;
 
   private graph: HTMLDivElement;
   private defOptions: Param = new Param();
   private LOG: Logger;
-  private expanded: boolean = false;
   private displayExpander: boolean = false;
   private myChart: ECharts;
   private divider: number = 1000;
 
   @Watch('result')
   updateRes() {
-    console.log('updateRes', this.result)
-    this.result = GTSLib.getData(this.result);
+    this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
+    this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
+    setTimeout(() => {
+      this.myChart.resize({
+        width: this.width,
+        height: this.height,
+      });
+      this.myChart.setOption(this.chartOpts);
+    });
   }
 
   componentWillLoad() {
     this.parsing = true;
-    this.LOG = new Logger(this, this.debug);
+    this.LOG = new Logger(DiscoveryAnnotation, this.debug);
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
@@ -69,7 +76,7 @@ export class DiscoveryAnnotation {
     let linesCount = 1;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
-      if (!GTSLib.isGtsToPlot(gts) && !!gts.v) {
+      if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
         const c = ColorLib.getColor(gts.id, this.options.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         this.displayExpander = i > 1;
@@ -93,6 +100,7 @@ export class DiscoveryAnnotation {
     this.LOG.debug(['convert'], {expanded: this.expanded, series, height: this.height, linesCount});
     return {
       progressive: 20000,
+      animation: false,
       title: {
         //  text: 'ECharts entry example'
       },
@@ -168,7 +176,7 @@ export class DiscoveryAnnotation {
           type: 'inside'
         }
       ],
-      series: series
+      series
     } as EChartsOption;
   }
 
@@ -180,7 +188,7 @@ export class DiscoveryAnnotation {
       width: this.width,
       height: this.height
     });
-    this.myChart.on('finished', () => {
+    this.myChart.on('rendered', () => {
       this.rendering = false;
       this.drawn();
     });
@@ -194,11 +202,16 @@ export class DiscoveryAnnotation {
   render() {
     return <Host>
       {this.displayExpander
-        ? <button class="expander" onClick={e => this.toggle()} title="collapse/expand">+/-</button>
+        ?
+        <button class="expander" onClick={e => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
       <div class="chart-area" style={{width: this.width + 'px', height: this.height + 'px'}}>
-        {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
-        {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
+        {this.parsing ? <div class="discovery-chart-spinner">
+          <discovery-spinner>Parsing data...</discovery-spinner>
+        </div> : ''}
+        {this.rendering ? <div class="discovery-chart-spinner">
+          <discovery-spinner>Rendering data...</discovery-spinner>
+        </div> : ''}
         <div ref={(el) => this.graph = el as HTMLDivElement}/>
       </div>
     </Host>

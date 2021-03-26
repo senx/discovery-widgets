@@ -1,4 +1,6 @@
 import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
+import {Param} from "../../model/param";
+import {ColorLib, Colors} from "../../utils/color-lib";
 
 export default {
   ...tile,
@@ -78,4 +80,40 @@ SwitchToTimestamp.args = {
 0 NaN NaN NaN T ADDVALUE
 'g' STORE
 $g CLONE 'boolannotation, sorted' RENAME SORT`
+}
+
+export const WithAutoRefresh = Usage.bind({});
+WithAutoRefresh.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <%     'ts' STORE
+   $g NOW RAND 10 * $ts + STU * - NaN NaN NaN T ADDVALUE DROP
+   %> FOR
+     $g
+%> FOR`,
+  options: {...new Param(), autoRefresh: 1}
+}
+
+export const WithCustomStyle =  ({url, ws, lang, options, unit, title}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
+<style>
+:root {
+    --warp-view-chart-grid-color: #35b779;
+    --warp-view-chart-label-color: #35b779;
+   --warp-view-font-color: white;
+    --warp-view-bg-color: #404040;
+    }
+</style>
+    <discovery-tile url="${url}" type="annotation" lang="${lang}"
+        unit="${unit || ''}" chart-title="${title || ''}"
+    options='${JSON.stringify(options)}'>${ws}</discovery-tile>
+</div>`;
+WithCustomStyle.args = {
+  ...InitialUsage.args,
+  options: {...Usage.args.options, scheme: Colors.VIRIDIS},
+  ws: `1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <%     'ts' STORE
+   $g NOW RAND 10 * $ts + STU * - NaN NaN NaN T ADDVALUE DROP
+   %> FOR
+     $g
+%> FOR`
 }
