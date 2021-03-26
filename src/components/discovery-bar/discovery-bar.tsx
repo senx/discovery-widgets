@@ -68,6 +68,7 @@ export class DiscoveryBarComponent {
   }
 
   private getCommonSeriesParam(color) {
+    const isHorizontal = !!(this.options as Param).bar && !!(this.options as Param).bar.horizontal;
     return {
       type: 'bar',
       stack: ((this.options as Param).bar || {stacked: false}).stacked ? 'total' : undefined,
@@ -78,7 +79,7 @@ export class DiscoveryBarComponent {
       itemStyle: {
         opacity: 0.8,
         color: {
-          type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+          type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
           colorStops: [
             {offset: 0, color},
             {offset: 1, color: ColorLib.transparentize(color, 0.4)}
