@@ -14,8 +14,7 @@ InitialUsage.args = {
 };
 export const  GeoJSON = Usage.bind({});
 GeoJSON.args = {
-  ...Usage.args,
-  type: 'map',
+  ...InitialUsage.args,
   ws: `<'
 {
 "data" : [
@@ -100,11 +99,37 @@ JSON->`
 
 export const AutoRefresh = Usage.bind({});
 AutoRefresh.args = {
-  ...Usage.args,
-  type: 'map',
+  ...InitialUsage.args,
   ws: ` NEWGTS 'g' STORE
 1 6 <% 'ts' STORE $g $ts RAND RAND RAND RAND ADDVALUE DROP %> FOR
 $g
   `,
   options: {... Usage.options, autoRefresh: 2}
+}
+
+export const CustomTilesThroughGlobalParams = Usage.bind({});
+CustomTilesThroughGlobalParams.args = {
+  ...InitialUsage.args,
+  ws: `
+      NEWGTS 'g' STORE
+0 100 <% 'ts' STORE $g NOW $ts 10000 - * RAND RAND RAND RAND ADDVALUE DROP %> FOR
+{
+  'data' $g
+  'globalParams' {
+    'map' {
+      'mapType' 'NONE'
+      'tiles' [ 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png' ]
+    }
+  }
+}`
+}
+
+export const CustomTilesThroughOptions = Usage.bind({});
+CustomTilesThroughOptions.args = {
+  ...InitialUsage.args,
+  ws: `
+      NEWGTS 'g' STORE
+0 100 <% 'ts' STORE $g NOW $ts 10000 - * RAND RAND RAND RAND ADDVALUE DROP %> FOR
+$g`,
+  options: {... Usage.options, map: { mapType: 'NONE', tiles: [ 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png' ] }}
 }

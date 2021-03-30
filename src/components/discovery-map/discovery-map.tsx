@@ -64,7 +64,7 @@ export class DiscoveryMapComponent {
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
-    if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       console.log('updateRes', this.result)
       this.drawMap(this.result as DataModel || new DataModel(), true);
@@ -93,7 +93,7 @@ export class DiscoveryMapComponent {
 
   drawMap(data: DataModel, isRefresh = false) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    options = Utils.mergeDeep<Param>(this.options as Param, data.globalParams || {});
     this.options = {...options};
     if (!!this.map) {
       this.map.invalidateSize(true);
@@ -110,7 +110,7 @@ export class DiscoveryMapComponent {
 
     this.pointslayer = [];
     this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, [], this.options.scheme) || [];
-    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params},  [], this.options.scheme) || [];
+    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.options.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
@@ -122,42 +122,45 @@ export class DiscoveryMapComponent {
       if (map.subdomains) {
         mapOpts.subdomains = map.subdomains;
       }
-      if(!isRefresh) {
+      if (!isRefresh) {
         this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
       }
-      if (!!this.map) {
-        this.LOG.debug(['displayMap'], 'map exists');
-        this.pathDataLayer.clearLayers();
-        this.positionDataLayer.clearLayers();
-        this.geoJsonLayer.clearLayers();
-        if(!isRefresh) {
-          this.tileLayerGroup.clearLayers();
-        }
-      } else {
-        this.map = Leaflet.map(this.mapElement, {
-          preferCanvas: true,
-          layers: [this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer],
-          zoomAnimation: true,
-          maxZoom: 24
-        });
-        this.geoJsonLayer.bringToBack();
-        this.tilesLayer.bringToBack(); // TODO: tester
-        this.map.on('load', () => this.LOG.debug(['displayMap', 'load'], this.map.getCenter().lng, this.currentLong, this.map.getZoom()));
-        this.map.on('zoomend', () => {
-          if (!this.firstDraw) {
-            this.currentZoom = this.map.getZoom();
-          }
-        });
-        this.map.on('moveend', () => {
-          if (!this.firstDraw) {
-            this.currentLat = this.map.getCenter().lat;
-            this.currentLong = this.map.getCenter().lng;
-          }
-        });
-      }
+
     }
-    if(!isRefresh) {
-      this.tilesLayer.addTo(this.tileLayerGroup);
+    if (!!this.map) {
+      this.LOG.debug(['displayMap'], 'map exists');
+      this.pathDataLayer.clearLayers();
+      this.positionDataLayer.clearLayers();
+      this.geoJsonLayer.clearLayers();
+      if (!isRefresh) {
+        this.tileLayerGroup.clearLayers();
+      }
+    } else {
+      this.map = Leaflet.map(this.mapElement, {
+        preferCanvas: true,
+        layers: [this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer],
+        zoomAnimation: true,
+        maxZoom: 24
+      });
+      this.geoJsonLayer.bringToBack();
+      if (this.tilesLayer) {
+        this.tilesLayer.bringToBack(); // TODO: tester
+        if (!isRefresh) {
+          this.tilesLayer.addTo(this.tileLayerGroup);
+        }
+      }
+      this.map.on('load', () => this.LOG.debug(['displayMap', 'load'], this.map.getCenter().lng, this.currentLong, this.map.getZoom()));
+      this.map.on('zoomend', () => {
+        if (!this.firstDraw) {
+          this.currentZoom = this.map.getZoom();
+        }
+      });
+      this.map.on('moveend', () => {
+        if (!this.firstDraw) {
+          this.currentLat = this.map.getCenter().lat;
+          this.currentLong = this.map.getCenter().lng;
+        }
+      });
     }
     const pathDataSize = (this.pathData || []).length;
     for (let i = 0; i < pathDataSize; i++) {
