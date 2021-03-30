@@ -95,7 +95,7 @@ export class DiscoveryBarComponent {
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
     const series: any[] = [];
-    let gtsList = [];
+    let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG.debug(['convert', 'isArray']);
