@@ -1,6 +1,6 @@
 {
   "name": "@senx/discovery-widgets",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Discovery Widgets Elements",
   "keywords": [
     "web",
@@ -57,7 +57,8 @@
     "storybook-events-logger": "^2.0.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.10","@babel/plugin-proposal-class-properties": "~7.10.1",
+    "@babel/core": "^7.13.10",
+    "@babel/plugin-proposal-class-properties": "~7.10.1",
     "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-typescript": "^7.13.0",
