@@ -31,6 +31,7 @@ export class DiscoveryTileResultComponent {
 
   private LOG: Logger;
   private wrapper: HTMLDivElement;
+  private title: HTMLDivElement;
   private innerHeight: number;
 
   componentWillLoad() {
@@ -67,7 +68,7 @@ export class DiscoveryTileResultComponent {
 
       this.bgColor = dm.bgColor
       this.fontColor = dm.fontColor
-      this.innerHeight =  Utils.getContentBounds(this.wrapper.parentElement).h - 10;
+      this.innerHeight =  Utils.getContentBounds(this.wrapper.parentElement).h - Utils.getContentBounds(this.title).h;
     })
   }
 
@@ -180,7 +181,7 @@ export class DiscoveryTileResultComponent {
 
   render() {
     return <div class="discovery-tile" style={{backgroundColor: this.bgColor, color: this.fontColor, height: this.height + 'px'}}>
-      {this.chartTitle ? <h2>{this.chartTitle}</h2> : ''}
+      {this.chartTitle ? <h2 ref={(el) => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
       <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el as HTMLDivElement}>
         {this.getView()}
       </div>

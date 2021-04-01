@@ -52,7 +52,7 @@ Usage.args = {
        }
        {
          'type' 'area'
-         'w' 4 'h' 2 'x' 0 'y' 1
+         'w' 4 'h' 2 'x' 0 'y' 0
          'data' [
            NEWGTS 'data' RENAME
            0.0 'v' STORE
@@ -63,7 +63,8 @@ Usage.args = {
        }
        {
          'type' 'line'
-         'w' 4 'h' 2 'x' 5 'y' 1
+         'title' 'Title'
+         'w' 4 'h' 2 'x' 5 'y' 0
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'macro' <%
            NEWGTS 'macro' RENAME
@@ -75,7 +76,7 @@ Usage.args = {
        }
        {
          'type' 'annotation'
-         'w' 9 'h' 1 'x' 0 'y' 2
+         'w' 9 'h' 1 'x' 0 'y' 1
          'data' [
            NEWGTS 'annot1' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
            NEWGTS 'annot2' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
