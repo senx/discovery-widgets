@@ -47,7 +47,7 @@ export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => 
 </div>`;
 WithCustomStyle.args = {
   ...Usage.args,
-  options: {...Usage.args.options, scheme: Colors.ATLANTIS},
+  options: {...Usage.args.options, scheme: Colors.CHARTANA},
   type: 'area',
   ws: `@training/dataset0 $TOKEN AUTHENTICATE 100000000 MAXOPS
   1 4 <% DROP NEWGTS 'g' STORE

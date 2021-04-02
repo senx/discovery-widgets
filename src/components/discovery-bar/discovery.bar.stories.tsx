@@ -97,11 +97,11 @@ export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => 
     --warp-view-chart-grid-color: #35b779;
     --warp-view-chart-label-color: #35b779;
    --warp-view-font-color: white;
-    --warp-view-bg-color: #404040;
+    --warp-view-bg-color: #1C1E25;
     }
 </style>
     <discovery-tile url="${url}" type="${type}" lang="${lang}"
-        unit="${unit || ''}" chart-title="${title || ''}"
+        unit="${unit || ''}" chart-title="${title || ''}" debug
     options='${JSON.stringify(options)}'>${ws}</discovery-tile>
 </div>`;
 WithCustomStyle.args = {
@@ -113,4 +113,17 @@ WithCustomStyle.args = {
   1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g
 %> FOR`
+};
+
+export const  CustomStyleAndAutoRefresh= WithCustomStyle.bind({});
+CustomStyleAndAutoRefresh.args = {
+  ...Usage.args,
+  type: 'bar',
+  options: {...Usage.args.options, scheme: Colors.CHARTANA, autoRefresh: 10},
+  ws: `NEWGTS 'g' STORE
+  1 200 <%
+    'ts' STORE
+    NOW $ts STU * 50.0 / - ABS 'ts' STORE
+    $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ABS ADDVALUE DROP %> FOR
+  $g`
 };

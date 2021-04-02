@@ -41,15 +41,7 @@ export class DiscoveryBarComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    const series = [];
-    setTimeout(() => {
-      (this.chartOpts.series as SeriesOption[]).forEach(s => {
-        s.animation = true;
-        series.push(s);
-      })
-      this.chartOpts.series = series;
-      this.myChart.setOption(this.chartOpts)
-    });
+    setTimeout(() => this.myChart.setOption(this.chartOpts));
   }
 
   componentWillLoad() {
@@ -78,11 +70,12 @@ export class DiscoveryBarComponent {
       lineStyle: {color},
       itemStyle: {
         opacity: 0.8,
+        borderColor: color,
         color: {
           type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
           colorStops: [
-            {offset: 0, color},
-            {offset: 1, color: ColorLib.transparentize(color, 0.4)}
+            {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+            {offset: 1, color: ColorLib.transparentize(color, 0.3)}
           ],
           global: false // false by default
         }
@@ -121,9 +114,9 @@ export class DiscoveryBarComponent {
           ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => {
-            let ts: number | string = Math.round(d[0] / this.divider);
+            let ts: number | string = d[0];
             if ((this.options as Param).timeMode || 'date' === 'date') {
-              ts = GTSLib.toISOString(ts, this.divider, (this.options as Param).timeZone);
+              ts = GTSLib.toISOString(d[0], this.divider, (this.options as Param).timeZone);
             }
             if (!!((this.options as Param).bar || {horizontal: false}).horizontal) {
               return [d[d.length - 1], ts];
@@ -152,6 +145,7 @@ export class DiscoveryBarComponent {
         });
       }
     }
+    this.LOG.debug(['convert', 'series'], series);
     return {
       grid: {
         left: 0, top: 10, bottom: 0, right: 0,
