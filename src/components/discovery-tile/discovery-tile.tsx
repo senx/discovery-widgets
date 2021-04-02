@@ -76,6 +76,7 @@ export class DiscoveryTileComponent {
   }
 
   exec(refresh= false) {
+   if(!refresh) this.loaded = true;
     this.ws = this.el.innerText;
     if (this.language === 'flows') {
       this.ws = `<'
@@ -97,7 +98,6 @@ FLOWS`;
 fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.statusHeaders.emit(this.headers);
-        this.loaded = true;
         this.start = new Date().getTime();
         if (this.autoRefresh !== (this.options as Param).autoRefresh) {
           this.autoRefresh = (this.options as Param).autoRefresh;
@@ -108,8 +108,10 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
           }
         }
+        this.loaded = true;
       }).catch(e => {
         this.statusError.emit(e);
+        this.loaded = true;
         console.error(e)
       })
     }

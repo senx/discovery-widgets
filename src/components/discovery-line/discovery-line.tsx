@@ -47,15 +47,7 @@ export class DiscoveryLineComponent {
         this.result = GTSLib.getData(this.result);
         console.log('updateRes', this.result)
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        const series = [];
-        setTimeout(() => {
-        /*  (this.chartOpts.series as SeriesOption[]).forEach(s => {
-          // /  s.animation = true;
-            series.push(s);
-          })
-          this.chartOpts.series = series;*/
-          this.myChart.setOption(this.chartOpts)
-        });
+        setTimeout(() => this.myChart.setOption(this.chartOpts));
       }
   }
 
@@ -175,7 +167,6 @@ export class DiscoveryLineComponent {
           // multi X
           if (!!data.params[i] && data.params[i].xAxis !== undefined) {
             multiX = true;
-            console.log('data.params[i].xAxis', data.params[i].xAxis)
             if (data.params[i].xAxis > 0) {
               (s as any).xAxisIndex = data.params[i].xAxis;
               const x = this.getXAxis(color);
@@ -188,7 +179,6 @@ export class DiscoveryLineComponent {
               if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
               (opts.xAxis as CartesianAxisOption)[0] = x;
             }
-            console.log('opts.xAxis', opts.xAxis)
           } else if (multiX) {
             const x = this.getXAxis();
             (x as any).position = 'bottom';
