@@ -68,7 +68,7 @@ export class DiscoveryTileResultComponent {
 
       this.bgColor = dm.bgColor
       this.fontColor = dm.fontColor
-      this.innerHeight =  Utils.getContentBounds(this.wrapper.parentElement).h - Utils.getContentBounds(this.title).h;
+      this.innerHeight =  Utils.getContentBounds(this.wrapper.parentElement).h - (this.title? Utils.getContentBounds(this.title).h : 10);
     })
   }
 

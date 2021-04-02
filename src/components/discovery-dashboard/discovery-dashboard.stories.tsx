@@ -98,7 +98,7 @@ export const CustomStyle = ({url, ws, options, title}) => `<div>
     <div class="card" style="width: 100%;min-height: 500px; background-color: #404040">
         <div class="card-body">
             <discovery-dashboard url="${url}"
-                dashboard-title="${title ? title : ''}"
+                dashboard-title="${title ? title : ''}" cols="8"
                 @draw="${event => console.error('foo', 'bar', event)}"
                 debug options='${JSON.stringify(options)}'
             >${ws}</discovery-dashboard>
