@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property      | Attribute      | Description | Type                                                                                                                                                                                     | Default        |
-| ------------- | -------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `autoRefresh` | `auto-refresh` |             | `number`                                                                                                                                                                                 | `-1`           |
-| `chartTitle`  | `chart-title`  |             | `string`                                                                                                                                                                                 | `undefined`    |
-| `debug`       | `debug`        |             | `boolean`                                                                                                                                                                                | `false`        |
-| `language`    | `language`     |             | `"flows" \| "warpscript"`                                                                                                                                                                | `'warpscript'` |
-| `options`     | `options`      |             | `Param \| string`                                                                                                                                                                        | `new Param()`  |
-| `type`        | `type`         |             | `"annotation" \| "area" \| "bar" \| "button" \| "display" \| "gauge" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`    |
-| `unit`        | `unit`         |             | `string`                                                                                                                                                                                 | `''`           |
-| `url`         | `url`          |             | `string`                                                                                                                                                                                 | `undefined`    |
+| Property      | Attribute      | Description | Type                                                                                                                                                                                                 | Default        |
+| ------------- | -------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `autoRefresh` | `auto-refresh` |             | `number`                                                                                                                                                                                             | `-1`           |
+| `chartTitle`  | `chart-title`  |             | `string`                                                                                                                                                                                             | `undefined`    |
+| `debug`       | `debug`        |             | `boolean`                                                                                                                                                                                            | `false`        |
+| `language`    | `language`     |             | `"flows" \| "warpscript"`                                                                                                                                                                            | `'warpscript'` |
+| `options`     | `options`      |             | `Param \| string`                                                                                                                                                                                    | `new Param()`  |
+| `type`        | `type`         |             | `"annotation" \| "area" \| "bar" \| "button" \| "circle" \| "display" \| "gauge" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`    |
+| `unit`        | `unit`         |             | `string`                                                                                                                                                                                             | `''`           |
+| `url`         | `url`          |             | `string`                                                                                                                                                                                             | `undefined`    |
 
 
 ## Events

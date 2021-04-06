@@ -7,14 +7,14 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                                                                                                                                                                                     | Default       |
-| --------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `debug`   | `debug`   |             | `boolean`                                                                                                                                                                                | `false`       |
-| `height`  | `height`  |             | `number`                                                                                                                                                                                 | `undefined`   |
-| `options` | `options` |             | `Param \| string`                                                                                                                                                                        | `new Param()` |
-| `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                    | `undefined`   |
-| `type`    | `type`    |             | `"annotation" \| "area" \| "bar" \| "button" \| "display" \| "gauge" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
-| `width`   | `width`   |             | `number`                                                                                                                                                                                 | `undefined`   |
+| Property  | Attribute | Description | Type                                                                                                                                                                                                 | Default       |
+| --------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `debug`   | `debug`   |             | `boolean`                                                                                                                                                                                            | `false`       |
+| `height`  | `height`  |             | `number`                                                                                                                                                                                             | `undefined`   |
+| `options` | `options` |             | `Param \| string`                                                                                                                                                                                    | `new Param()` |
+| `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                | `undefined`   |
+| `type`    | `type`    |             | `"annotation" \| "area" \| "bar" \| "button" \| "circle" \| "display" \| "gauge" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
+| `width`   | `width`   |             | `number`                                                                                                                                                                                             | `undefined`   |
 
 
 ## Events
