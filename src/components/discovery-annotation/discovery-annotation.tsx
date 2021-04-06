@@ -106,10 +106,10 @@ export class DiscoveryAnnotation {
       },
       grid: {
         height: this.height - 30,
-        right: 0,
+        right: 10,
         top: 20,
         bottom: 10,
-        left: 0,
+        left: 10,
         containLabel: true
       },
       throttle: 70,
@@ -203,7 +203,7 @@ export class DiscoveryAnnotation {
     return <Host>
       {this.displayExpander
         ?
-        <button class="expander" onClick={e => this.toggle()} title="collapse/expand">+/-</button>
+        <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
       <div class="chart-area" style={{width: this.width + 'px', height: this.height + 'px'}}>
         {this.parsing ? <div class="discovery-chart-spinner">

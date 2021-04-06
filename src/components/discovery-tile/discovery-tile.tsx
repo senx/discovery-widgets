@@ -14,11 +14,11 @@ export class DiscoveryTileComponent {
   @Prop() url: string;
   @Prop() chartTitle: string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
-  @Prop() autoRefresh: number = -1;
+  @Prop({mutable: true}) autoRefresh: number = -1;
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter<any>;

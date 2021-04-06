@@ -74,7 +74,8 @@ export class ColorLib {
     ECTOPLASM: ['#006466', '#065a60', '#0b525b', '#144552', '#1b3a4b', '#212f45', '#272640', '#312244', '#3e1f47', '#4d194d'],
     T_MAX_400_FILM: ['#f8f9fa', '#e9ecef', '#dee2e6', '#ced4da', '#adb5bd', '#6c757d', '#495057', '#343a40', '#212529'],
     MATRIX: ['#025f27', '#025f27', '#0d7635', '#228c49', '#37a266', '#4eb485', '#68c2a3', '#88d1bc'],
-    CHARTANA: ['#77BE69', '#FADE2B', '#F24865', '#5694F2', '#FF9830', '#B876D9'],
+    CHARTANA: ['#77BE69', '#FADE2B', '#F24865', '#5694F2',
+      '#FF9830', '#B876D9'],
   };
 
   static getColor(i: number, scheme: string) {
@@ -300,9 +301,8 @@ export class ColorLib {
       (1 - percentage) * color1[1] + percentage * color2[1],
       (1 - percentage) * color1[2] + percentage * color2[2]
     ];
-    const color3Str = '#' + ColorLib.int_to_hex(color3[0]) + ColorLib.int_to_hex(color3[1]) + ColorLib.int_to_hex(color3[2]);
     // return hex
-    return color3Str;
+    return '#' + ColorLib.int_to_hex(color3[0]) + ColorLib.int_to_hex(color3[1]) + ColorLib.int_to_hex(color3[2]);
   }
 
   /*

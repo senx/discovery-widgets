@@ -91,6 +91,7 @@ export class DiscoveryGauge {
       axisLine: {roundCap: false, lineStyle: {width: 20}},
       itemStyle: {
         opacity: 0.8,
+        borderColor: color,
         color: {
           type: 'linear', x: 0, y: 0, x2: 1, y2: 1,
           colorStops: [
@@ -108,6 +109,7 @@ export class DiscoveryGauge {
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
     const series: any[] = [];
+    // noinspection JSUnusedAssignment
     let gtsList = [];
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
@@ -170,7 +172,7 @@ export class DiscoveryGauge {
         }
       }
     }
-    const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * (this.type === 'gauge' ? 1 : 0.8);
+    const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * 0.8;
     let floor = 1;
     dataStruct.forEach((d, i) => {
       if (i % 2 === 0) {
@@ -199,7 +201,7 @@ export class DiscoveryGauge {
     });
     return {
       grid: {
-        left: 0, top: 10, bottom: 0, right: 0,
+        left: 10, top: 10, bottom: 10, right: 10,
         containLabel: true
       },
       legend: {
@@ -214,7 +216,7 @@ export class DiscoveryGauge {
   autoFontSize(size: number) {
     if (this.el.getBoundingClientRect().height > 0) {
       const count = Math.ceil(size / 2);
-      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 5) / (count > 1 ? count * 4 : 1);
+      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 6) / (count > 1 ? count * 4 : 1);
     } else {
       return 12;
     }
@@ -225,7 +227,7 @@ export class DiscoveryGauge {
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
-      width: this.width,
+      width: undefined,
       height: this.height
     });
     this.myChart.on('rendered', () => {
@@ -236,7 +238,7 @@ export class DiscoveryGauge {
   }
 
   render() {
-    return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
+    return <div style={{height: this.height + 'px'}}>
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
       {this.parsing ? <div class="discovery-chart-spinner"><discovery-spinner>Parsing data...</discovery-spinner></div> : ''}
       {this.rendering ? <div class="discovery-chart-spinner"><discovery-spinner>Rendering data...</discovery-spinner></div> : ''}

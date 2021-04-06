@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -17,9 +17,9 @@ dayjs.extend(relativeTime)
   shadow: true,
 })
 export class DiscoveryDisplayComponent {
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -39,6 +39,13 @@ export class DiscoveryDisplayComponent {
   private timer: any;
   private fitties: FittyInstance;
 
+  @Watch('result')
+  updateRes() {
+    this.result = GTSLib.getData(this.result);
+    this.message = this.convert(this.result as DataModel || new DataModel());
+    this.flexFont();
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryDisplayComponent, this.debug);
@@ -55,6 +62,7 @@ export class DiscoveryDisplayComponent {
   }
 
   componentDidLoad() {
+    this.height = Utils.getContentBounds(this.el.parentElement).h;
     this.parsing = false;
     this.flexFont();
   }
@@ -69,6 +77,7 @@ export class DiscoveryDisplayComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams) as Param;
     this.options = {...options};
+    this.LOG.debug(['convert'], 'dataModel', dataModel);
 
     let display: any;
     if (dataModel.data) {
@@ -76,7 +85,7 @@ export class DiscoveryDisplayComponent {
     } else {
       display = GTSLib.isArray(dataModel) ? dataModel[0] : dataModel;
     }
-    if (display.hasOwnProperty('text')) {
+    if (display && display.hasOwnProperty('text')) {
       if (display.hasOwnProperty('url')) {
         display = `<a href="${display.url}" target="_blank">${display.text}</a>`;
       } else {

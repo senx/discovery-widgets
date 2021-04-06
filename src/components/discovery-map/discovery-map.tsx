@@ -42,14 +42,11 @@ export class DiscoveryMapComponent {
   private map: Leaflet.Map;
   private pointslayer = [];
   private bounds: Leaflet.LatLngBounds;
-  private annotationsMarkers = [];
-  private positionArraysMarkers = [];
   private currentZoom: number;
   private currentLat: number;
   private currentLong: number;
   private iconAnchor: Leaflet.PointExpression = [20, 38];
   private popupAnchor: Leaflet.PointExpression = [0, -50];
-  private heatLayer: any;
   private pathData: any[] = [];
   private positionData: any[] = [];
   private geoJson: any[] = [];
@@ -66,7 +63,6 @@ export class DiscoveryMapComponent {
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
-      console.log('updateRes', this.result)
       this.drawMap(this.result as DataModel || new DataModel(), true);
     }
   }
@@ -88,10 +84,12 @@ export class DiscoveryMapComponent {
   }
 
   componentDidLoad() {
+    this.height = Utils.getContentBounds(this.el.parentElement).h;
     this.drawMap(this.result as DataModel || new DataModel());
   }
 
   drawMap(data: DataModel, isRefresh = false) {
+    // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(this.options as Param, data.globalParams || {});
     this.options = {...options};
@@ -103,11 +101,7 @@ export class DiscoveryMapComponent {
     this.LOG.debug(['drawMap', 'this.options'], {...this.options});
     dataList = data.data as any[];
     params = data.params;
-    const flattenGTS = GTSLib.flatDeep(dataList);
-    const size = flattenGTS.length;
-
     this.mapOpts = this.options.map || {};
-
     this.pointslayer = [];
     this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, [], this.options.scheme) || [];
     this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.options.scheme) || [];
@@ -292,7 +286,6 @@ export class DiscoveryMapComponent {
             v = 0;
           }
           const radius = 50 * v / ((gts.maxValue || 1) - (gts.minValue || 0));
-          console.log('weightedDots', gts.borderColor, gts.color)
           const marker = Leaflet.circleMarker(
             p, {
               radius: radius === 0 ? 1 : radius,
@@ -309,7 +302,6 @@ export class DiscoveryMapComponent {
         size = (gts.path || []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
-          console.log('dots', gts.borderColor, gts.color)
           const marker = Leaflet.circleMarker(
             g, {
               radius: gts.baseRadius || MapLib.BASE_RADIUS,

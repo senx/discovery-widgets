@@ -7,7 +7,7 @@ configureActions({
   limit: 5,
   allowFunction: true
 });
-const options = new Param()
+
 export default {
   title: 'UI/Dashboard',
   argTypes: {
@@ -76,12 +76,96 @@ Usage.args = {
        }
        {
          'type' 'annotation'
-         'w' 9 'h' 1 'x' 0 'y' 1
+         'w' 9 'h' 1 'x' 0 'y' 2
          'data' [
            NEWGTS 'annot1' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
            NEWGTS 'annot2' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
            NEWGTS 'annot3' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
          ]
+       }
+       {
+          'type' 'circle'
+          'unit' '%25'
+          'w' 2 'h' 2 'x' 0 'y' 1
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'params' [
+      {
+        'maxValue' 100
+        'datasetColor'
+        <% $v 33 < %> <% '#77BE69' %>
+        <% $v 66 < %> <% '#FF9830' %>
+        <% '#F24865' %> 2 SWITCH
+      }
+    ]
+  }
+       }
+       {
+          'type' 'display'
+          'unit' '%25'
+          'w' 2 'h' 2 'x' 1 'y' 1
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'globalParams' {
+      'bgColor'
+      <% $v 33 < %> <% '#77BE69' %>
+      <% $v 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+          'type' 'gauge'
+          'unit' '%25'
+          'w' 2 'h' 2 'x' 2 'y' 1
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'params' [
+      {
+        'maxValue' 100
+        'datasetColor'
+        <% $v 33 < %> <% '#77BE69' %>
+        <% $v 66 < %> <% '#FF9830' %>
+        <% '#F24865' %> 2 SWITCH
+      }
+    ]
+  }
+       }
+       {
+         'type' 'bar'
+         'w' 4 'h' 2 'x' 3 'y' 1
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'data' [
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 5
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         ]
+       }
+       {
+         'type' 'map'
+         'w' 3 'h' 2 'x' 6 'y' 1
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'data'
+           NEWGTS 'g' STORE
+0 10 <% 'ts' STORE $g NOW $ts 10000 - * RAND 10 * RAND 10 * RAND RAND ADDVALUE DROP %> FOR
+{
+  'data' $g
+  'globalParams' {
+    'map' {
+      'mapType' 'STADIA_DARK'
+    }
+  }
+}
        }
      ]
    }`,

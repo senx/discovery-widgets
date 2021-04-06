@@ -68,3 +68,24 @@ CircularGaugeWithAutoRefresh.args = {
   ws: `{ 'data' RAND 100 * ROUND 'params' [ { 'maxValue' 100 } ] }`,
   options: { ... new Param(), autoRefresh: 1}
 }
+export const CircularGaugeWithAutoRefreshAndColorChange = Usage.bind({});
+CircularGaugeWithAutoRefreshAndColorChange.args = {
+  ...InitialUsage.args,
+  title: 'My Gauge',
+  unit: '%',
+  type: 'circle',
+  ws: `RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'params' [
+      {
+        'maxValue' 100
+        'datasetColor'
+        <% $v 33 < %> <% '#77BE69' %>
+        <% $v 66 < %> <% '#FF9830' %>
+        <% '#F24865' %> 2 SWITCH
+      }
+    ]
+  }`,
+  options: { ... new Param(), autoRefresh: 5}
+}

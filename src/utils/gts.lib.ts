@@ -98,6 +98,7 @@ export class GTSLib {
         return false;
       }
       for (const j in p) {
+        // noinspection JSUnfilteredForInLoop
         if (typeof p[j] !== 'number') {
           return false;
         }
@@ -115,6 +116,7 @@ export class GTSLib {
         return false;
       }
       for (const j in p) {
+        // noinspection JSUnfilteredForInLoop
         if (typeof p[j] !== 'number') {
           return false;
         }
@@ -132,6 +134,7 @@ export class GTSLib {
         return false;
       }
       for (const j in p) {
+        // noinspection JSUnfilteredForInLoop
         if (typeof p[j] !== 'number') {
           return false;
         }
@@ -302,8 +305,9 @@ export class GTSLib {
       return data[0] as DataModel;
     } else if (GTSLib.isArray(data)) {
       return {data: data as GTS[]} as DataModel;
+    } else {
+      return {data: JSON.parse(`[${data}]`)};
     }
-    return new DataModel();
   }
 
   static getDivider(timeUnit: string): number {

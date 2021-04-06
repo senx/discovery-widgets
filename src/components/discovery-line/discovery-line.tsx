@@ -45,7 +45,6 @@ export class DiscoveryLineComponent {
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
       if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
         this.result = GTSLib.getData(this.result);
-        console.log('updateRes', this.result)
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => this.myChart.setOption(this.chartOpts));
       }
@@ -78,9 +77,10 @@ export class DiscoveryLineComponent {
     const opts: EChartsOption = {
       progressive: 20000,
       grid: {
-        left: 0, top: 10, bottom: 0, right: 0,
+        left: 10, top: 10, bottom: 10, right: 10,
         containLabel: true
       },
+      responsive: true,
       title: {
         //  text: 'ECharts entry example'
       },
@@ -143,7 +143,6 @@ export class DiscoveryLineComponent {
           // multi Y
           if (!!data.params[i] && data.params[i].yAxis !== undefined) {
             multiY = true;
-            console.log('data.params[i].yAxis', data.params[i].yAxis)
             if (data.params[i].yAxis > 0) {
               (s as any).yAxisIndex = data.params[i].yAxis;
               const y = this.getYAxis(color);
@@ -156,7 +155,6 @@ export class DiscoveryLineComponent {
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[0] = y;
             }
-            console.log('opts.yAxis', opts.yAxis)
           } else if (multiY) {
             const y = this.getYAxis();
             (y as any).position = 'left';
@@ -260,13 +258,14 @@ export class DiscoveryLineComponent {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
-      height: this.height
+      height: this.height,
     });
     this.myChart.on('finished', () => {
       this.rendering = false;

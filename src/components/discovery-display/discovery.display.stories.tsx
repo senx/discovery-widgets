@@ -1,4 +1,5 @@
 import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
+import {Param} from "../../model/param";
 
 export default {
   ...tile,
@@ -75,3 +76,26 @@ displayOnlyText.args = {
   'globalParams' { 'bgColor' '#f57f17' 'fontColor' '#bc5100' }
 }`
 }
+
+
+export const WithAutoRefreshAndColorChange = Usage.bind({});
+WithAutoRefreshAndColorChange.args = {
+  ...InitialUsage.args,
+  title: 'My Usage',
+  type: 'display',
+  unit: '%',
+  ws: `RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'globalParams' {
+      'bgColor'
+      <% $v 33 < %> <% '#77BE69' %>
+      <% $v 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }`,
+  options: { ... new Param(), autoRefresh: 5}
+}
+

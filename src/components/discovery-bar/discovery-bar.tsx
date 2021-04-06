@@ -148,7 +148,7 @@ export class DiscoveryBarComponent {
     this.LOG.debug(['convert', 'series'], series);
     return {
       grid: {
-        left: 0, top: 10, bottom: 0, right: 0,
+        left: 10, top: 10, bottom: 10, right: 10,
         containLabel: true
       },
       tooltip: {
@@ -225,12 +225,13 @@ export class DiscoveryBarComponent {
   }
 
   componentDidLoad() {
+    this.height = Utils.getContentBounds(this.el.parentElement).h;
     this.parsing = false;
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
       width: this.width,
-      height: this.height
+      height: this.height ? this.height - 10 : undefined
     });
     this.myChart.on('finished', () => {
       this.rendering = false;
