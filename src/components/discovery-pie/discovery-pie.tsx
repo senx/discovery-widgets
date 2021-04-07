@@ -65,7 +65,7 @@ export class DiscoveryPieComponent {
       animation: true,
       large: true,
       clip: false,
-      radius: '50%',
+      radius: this.type === 'pie' ? '50%' : ['40%', '70%'],
       label: {
         color: Utils.getLabelColor(this.el)
       },
