@@ -108,7 +108,7 @@ export class DiscoveryBarComponent {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        const c = ColorLib.getColor(gts.id | i, this.options.scheme);
+        const c = ColorLib.getColor(gts.id || i, this.options.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         series.push({
           ...this.getCommonSeriesParam(color),
@@ -129,7 +129,7 @@ export class DiscoveryBarComponent {
         this.options.timeMode = 'custom';
         this.LOG.debug(['convert', 'gts'], gts);
         (gts.columns || []).forEach((label, index) => {
-          const c = ColorLib.getColor(gts.id | index, (this.options as Param).scheme);
+          const c = ColorLib.getColor(gts.id || index, (this.options as Param).scheme);
           const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
           series.push({
             ...this.getCommonSeriesParam(color),
