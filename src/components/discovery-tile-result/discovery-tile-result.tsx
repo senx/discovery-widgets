@@ -167,6 +167,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'pie':
       case 'doughnut':
+      case 'rose':
         return <discovery-pie
           result={this.result}
           onDraw={() => this.drawn()}

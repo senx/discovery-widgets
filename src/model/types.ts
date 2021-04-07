@@ -18,6 +18,7 @@ export type ChartType =
   | 'circle'
   | 'pie'
   | 'doughnut'
+  | 'rose'
   | 'button';
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
