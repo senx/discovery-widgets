@@ -89,6 +89,13 @@ export namespace Components {
         "type": ChartType;
         "width": number;
     }
+    interface DiscoveryPageable {
+        "data": { name: string, values: any[], headers: string[] };
+        "debug": boolean;
+        "elemsCount": number;
+        "options": Param;
+        "windowed": number;
+    }
     interface DiscoveryPie {
         "debug": boolean;
         "height": number;
@@ -100,6 +107,15 @@ export namespace Components {
     }
     interface DiscoverySpinner {
         "message": string;
+    }
+    interface DiscoveryTabular {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
     }
     interface DiscoveryTile {
         "autoRefresh": number;
@@ -179,6 +195,12 @@ declare global {
         prototype: HTMLDiscoveryMapElement;
         new (): HTMLDiscoveryMapElement;
     };
+    interface HTMLDiscoveryPageableElement extends Components.DiscoveryPageable, HTMLStencilElement {
+    }
+    var HTMLDiscoveryPageableElement: {
+        prototype: HTMLDiscoveryPageableElement;
+        new (): HTMLDiscoveryPageableElement;
+    };
     interface HTMLDiscoveryPieElement extends Components.DiscoveryPie, HTMLStencilElement {
     }
     var HTMLDiscoveryPieElement: {
@@ -190,6 +212,12 @@ declare global {
     var HTMLDiscoverySpinnerElement: {
         prototype: HTMLDiscoverySpinnerElement;
         new (): HTMLDiscoverySpinnerElement;
+    };
+    interface HTMLDiscoveryTabularElement extends Components.DiscoveryTabular, HTMLStencilElement {
+    }
+    var HTMLDiscoveryTabularElement: {
+        prototype: HTMLDiscoveryTabularElement;
+        new (): HTMLDiscoveryTabularElement;
     };
     interface HTMLDiscoveryTileElement extends Components.DiscoveryTile, HTMLStencilElement {
     }
@@ -213,8 +241,10 @@ declare global {
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-map": HTMLDiscoveryMapElement;
+        "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
+        "discovery-tabular": HTMLDiscoveryTabularElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
     }
@@ -312,6 +342,13 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "width"?: number;
     }
+    interface DiscoveryPageable {
+        "data"?: { name: string, values: any[], headers: string[] };
+        "debug"?: boolean;
+        "elemsCount"?: number;
+        "options"?: Param;
+        "windowed"?: number;
+    }
     interface DiscoveryPie {
         "debug"?: boolean;
         "height"?: number;
@@ -324,6 +361,16 @@ declare namespace LocalJSX {
     }
     interface DiscoverySpinner {
         "message"?: string;
+    }
+    interface DiscoveryTabular {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
     }
     interface DiscoveryTile {
         "autoRefresh"?: number;
@@ -359,8 +406,10 @@ declare namespace LocalJSX {
         "discovery-image": DiscoveryImage;
         "discovery-line": DiscoveryLine;
         "discovery-map": DiscoveryMap;
+        "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
         "discovery-spinner": DiscoverySpinner;
+        "discovery-tabular": DiscoveryTabular;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
     }
@@ -378,8 +427,10 @@ declare module "@stencil/core" {
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
+            "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
+            "discovery-tabular": LocalJSX.DiscoveryTabular & JSXBase.HTMLAttributes<HTMLDiscoveryTabularElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;
         }

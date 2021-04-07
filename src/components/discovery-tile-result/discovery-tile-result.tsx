@@ -178,6 +178,17 @@ export class DiscoveryTileResultComponent {
           width={this.innerWidth}
           debug={this.debug}
         />;
+      case 'tabular':
+        return <discovery-tabular
+          result={this.result}
+          onDraw={() => this.drawn()}
+          type={this.type}
+          unit={this.unit}
+          options={this.options}
+          height={this.innerHeight}
+          width={this.innerWidth}
+          debug={this.debug}
+        />;
       default:
         return '';
     }

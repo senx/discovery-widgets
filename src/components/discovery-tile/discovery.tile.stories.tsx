@@ -18,7 +18,7 @@ export default {
         type: 'select',
         options: [
           'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
-          'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut' ]
+          'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular' ]
       }
     },
     language: {
