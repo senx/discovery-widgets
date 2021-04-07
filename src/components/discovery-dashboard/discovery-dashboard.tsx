@@ -123,7 +123,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             {this.result.tiles.map((t) =>
               <div class="discovery-dashboard-tile"
                    style={{
-                     gridColumn: (t.x + 1) + ' / ' + (t.x + t.w),
+                     gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
                      gridRow: (t.y + 1) + ' / ' + (t.y + t.h),
                    }}
               >
