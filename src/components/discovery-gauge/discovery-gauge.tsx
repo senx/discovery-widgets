@@ -68,13 +68,14 @@ export class DiscoveryGauge {
       startAngle: 180,
       endAngle: 0,
       lineStyle: {color},
-      pointer: {
-        icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
-        length: '12%',
-        width: '10%',
-        offsetCenter: [0, '-78%'],
-        itemStyle: {color: color}
-      },
+      pointer: {show: false},
+      /*      pointer: {
+              icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+              length: '12%',
+              width: '10%',
+              offsetCenter: [0, '-78%'],
+              itemStyle: {color: color}
+            },*/
       title: {
         fontSize: 12,
         offsetCenter: [0, 10],
@@ -196,7 +197,10 @@ export class DiscoveryGauge {
           offsetCenter: [0, this.type === 'gauge' ? '-20%' : 0],
           color: Utils.getLabelColor(this.el)
         },
-        center: [(gtsCount === 1 ? '50' : i % 2 === 0 ? '25' : '75') + '%', (radius * (floor - 1) - radius / 2 + 10) + '%']
+        center: [
+          (gtsCount === 1 ? '50' : i % 2 === 0 ? '25' : '75') + '%',
+          (gtsCount === 1 ?  (this.type === 'gauge' ? '65': '50') : (radius * (floor - 1) - radius / 2 + 10)) + '%'
+        ]
       })
     });
     return {
@@ -234,14 +238,18 @@ export class DiscoveryGauge {
       this.rendering = false;
       this.drawn();
     });
-   this.drawChart();
+    this.drawChart();
   }
 
   render() {
     return <div style={{height: this.height + 'px'}}>
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
-      {this.parsing ? <div class="discovery-chart-spinner"><discovery-spinner>Parsing data...</discovery-spinner></div> : ''}
-      {this.rendering ? <div class="discovery-chart-spinner"><discovery-spinner>Rendering data...</discovery-spinner></div> : ''}
+      {this.parsing ? <div class="discovery-chart-spinner">
+        <discovery-spinner>Parsing data...</discovery-spinner>
+      </div> : ''}
+      {this.rendering ? <div class="discovery-chart-spinner">
+        <discovery-spinner>Rendering data...</discovery-spinner>
+      </div> : ''}
     </div>
   }
 
