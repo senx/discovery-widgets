@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property      | Attribute      | Description | Type                                                                                                                                                                                                 | Default        |
-| ------------- | -------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `autoRefresh` | `auto-refresh` |             | `number`                                                                                                                                                                                             | `-1`           |
-| `chartTitle`  | `chart-title`  |             | `string`                                                                                                                                                                                             | `undefined`    |
-| `debug`       | `debug`        |             | `boolean`                                                                                                                                                                                            | `false`        |
-| `language`    | `language`     |             | `"flows" \| "warpscript"`                                                                                                                                                                            | `'warpscript'` |
-| `options`     | `options`      |             | `Param \| string`                                                                                                                                                                                    | `new Param()`  |
-| `type`        | `type`         |             | `"annotation" \| "area" \| "bar" \| "button" \| "circle" \| "display" \| "gauge" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`    |
-| `unit`        | `unit`         |             | `string`                                                                                                                                                                                             | `''`           |
-| `url`         | `url`          |             | `string`                                                                                                                                                                                             | `undefined`    |
+| Property      | Attribute      | Description | Type                                                                                                                                                                                                                                               | Default        |
+| ------------- | -------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `autoRefresh` | `auto-refresh` |             | `number`                                                                                                                                                                                                                                           | `-1`           |
+| `chartTitle`  | `chart-title`  |             | `string`                                                                                                                                                                                                                                           | `undefined`    |
+| `debug`       | `debug`        |             | `boolean`                                                                                                                                                                                                                                          | `false`        |
+| `language`    | `language`     |             | `"flows" \| "warpscript"`                                                                                                                                                                                                                          | `'warpscript'` |
+| `options`     | `options`      |             | `Param \| string`                                                                                                                                                                                                                                  | `new Param()`  |
+| `type`        | `type`         |             | `"annotation" \| "area" \| "bar" \| "button" \| "circle" \| "display" \| "doughnut" \| "gauge" \| "image" \| "line" \| "map" \| "pie" \| "rose" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before" \| "tabular"` | `undefined`    |
+| `unit`        | `unit`         |             | `string`                                                                                                                                                                                                                                           | `''`           |
+| `url`         | `url`          |             | `string`                                                                                                                                                                                                                                           | `undefined`    |
 
 
 ## Events
@@ -51,12 +51,17 @@ graph TD;
   discovery-tile-result --> discovery-image
   discovery-tile-result --> discovery-button
   discovery-tile-result --> discovery-gauge
+  discovery-tile-result --> discovery-pie
+  discovery-tile-result --> discovery-tabular
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
   discovery-display --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-gauge --> discovery-spinner
+  discovery-pie --> discovery-spinner
+  discovery-tabular --> discovery-spinner
+  discovery-tabular --> discovery-pageable
   discovery-dashboard --> discovery-tile
   style discovery-tile fill:#f9f,stroke:#333,stroke-width:4px
 ```

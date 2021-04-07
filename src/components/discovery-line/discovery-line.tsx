@@ -19,9 +19,9 @@ import {GridOption} from "echarts/lib/coord/cartesian/GridModel";
 })
 export class DiscoveryLineComponent {
 
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -43,11 +43,11 @@ export class DiscoveryLineComponent {
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
-      if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-        this.result = GTSLib.getData(this.result);
-        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts));
-      }
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      this.result = GTSLib.getData(this.result);
+      this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+      setTimeout(() => this.myChart.setOption(this.chartOpts));
+    }
   }
 
   componentWillLoad() {
@@ -218,7 +218,7 @@ export class DiscoveryLineComponent {
         }
         (opts.xAxis as any).push(x);
       });
-      (opts.grid as GridOption).top = 30 * (i -1);
+      (opts.grid as GridOption).top = 30 * (i - 1);
     }
     this.LOG.debug(['convert'], {opts});
     return opts as EChartsOption;

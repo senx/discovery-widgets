@@ -23,6 +23,8 @@
  - [discovery-gauge](../discovery-gauge)
  - [discovery-image](../discovery-image)
  - [discovery-line](../discovery-line)
+ - [discovery-pie](../discovery-pie)
+ - [discovery-tabular](../discovery-tabular)
  - [discovery-tile](../discovery-tile)
 
 ### Graph
@@ -35,6 +37,8 @@ graph TD;
   discovery-gauge --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-line --> discovery-spinner
+  discovery-pie --> discovery-spinner
+  discovery-tabular --> discovery-spinner
   discovery-tile --> discovery-spinner
   style discovery-spinner fill:#f9f,stroke:#333,stroke-width:4px
 ```

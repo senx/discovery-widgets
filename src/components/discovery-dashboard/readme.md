@@ -50,12 +50,17 @@ graph TD;
   discovery-tile-result --> discovery-image
   discovery-tile-result --> discovery-button
   discovery-tile-result --> discovery-gauge
+  discovery-tile-result --> discovery-pie
+  discovery-tile-result --> discovery-tabular
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
   discovery-display --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-gauge --> discovery-spinner
+  discovery-pie --> discovery-spinner
+  discovery-tabular --> discovery-spinner
+  discovery-tabular --> discovery-pageable
   style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

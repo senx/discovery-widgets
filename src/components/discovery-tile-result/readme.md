@@ -7,18 +7,18 @@
 
 ## Properties
 
-| Property     | Attribute     | Description | Type                                                                                                                                                                                                 | Default       |
-| ------------ | ------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `chartTitle` | `chart-title` |             | `string`                                                                                                                                                                                             | `undefined`   |
-| `debug`      | `debug`       |             | `boolean`                                                                                                                                                                                            | `false`       |
-| `height`     | `height`      |             | `number`                                                                                                                                                                                             | `undefined`   |
-| `options`    | `options`     |             | `Param \| string`                                                                                                                                                                                    | `new Param()` |
-| `result`     | `result`      |             | `DataModel \| string`                                                                                                                                                                                | `undefined`   |
-| `start`      | `start`       |             | `number`                                                                                                                                                                                             | `undefined`   |
-| `type`       | `type`        |             | `"annotation" \| "area" \| "bar" \| "button" \| "circle" \| "display" \| "gauge" \| "image" \| "line" \| "map" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before"` | `undefined`   |
-| `unit`       | `unit`        |             | `string`                                                                                                                                                                                             | `''`          |
-| `url`        | `url`         |             | `string`                                                                                                                                                                                             | `undefined`   |
-| `width`      | `width`       |             | `number`                                                                                                                                                                                             | `undefined`   |
+| Property     | Attribute     | Description | Type                                                                                                                                                                                                                                               | Default       |
+| ------------ | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `chartTitle` | `chart-title` |             | `string`                                                                                                                                                                                                                                           | `undefined`   |
+| `debug`      | `debug`       |             | `boolean`                                                                                                                                                                                                                                          | `false`       |
+| `height`     | `height`      |             | `number`                                                                                                                                                                                                                                           | `undefined`   |
+| `options`    | `options`     |             | `Param \| string`                                                                                                                                                                                                                                  | `new Param()` |
+| `result`     | `result`      |             | `DataModel \| string`                                                                                                                                                                                                                              | `undefined`   |
+| `start`      | `start`       |             | `number`                                                                                                                                                                                                                                           | `undefined`   |
+| `type`       | `type`        |             | `"annotation" \| "area" \| "bar" \| "button" \| "circle" \| "display" \| "doughnut" \| "gauge" \| "image" \| "line" \| "map" \| "pie" \| "rose" \| "scatter" \| "spline" \| "spline-area" \| "step" \| "step-after" \| "step-before" \| "tabular"` | `undefined`   |
+| `unit`       | `unit`        |             | `string`                                                                                                                                                                                                                                           | `''`          |
+| `url`        | `url`         |             | `string`                                                                                                                                                                                                                                           | `undefined`   |
+| `width`      | `width`       |             | `number`                                                                                                                                                                                                                                           | `undefined`   |
 
 
 ## Dependencies
@@ -38,6 +38,8 @@
 - [discovery-image](../discovery-image)
 - [discovery-button](../discovery-button)
 - [discovery-gauge](../discovery-gauge)
+- [discovery-pie](../discovery-pie)
+- [discovery-tabular](../discovery-tabular)
 
 ### Graph
 ```mermaid
@@ -50,12 +52,17 @@ graph TD;
   discovery-tile-result --> discovery-image
   discovery-tile-result --> discovery-button
   discovery-tile-result --> discovery-gauge
+  discovery-tile-result --> discovery-pie
+  discovery-tile-result --> discovery-tabular
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
   discovery-display --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-gauge --> discovery-spinner
+  discovery-pie --> discovery-spinner
+  discovery-tabular --> discovery-spinner
+  discovery-tabular --> discovery-pageable
   discovery-dashboard --> discovery-tile-result
   discovery-tile --> discovery-tile-result
   style discovery-tile-result fill:#f9f,stroke:#333,stroke-width:4px
