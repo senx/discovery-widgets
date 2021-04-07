@@ -133,3 +133,71 @@ CustomTilesThroughOptions.args = {
 $g`,
   options: {... Usage.options, map: { mapType: 'NONE', tiles: [ 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png' ] }}
 }
+
+
+export const WeightedDots = Usage.bind({});
+WeightedDots.args = {
+  ...InitialUsage.args,
+  ws: `// Variables
+            'wfOAm3Oihi2uKpzdXS3LMjKC766IoAWl9xQRtRQV380EaGrNsYnC8CGDwn3aTPQAQq3Oc.YtxpaPfjwHEpLdOzr7bokRM4.QtaZZP0cwpc6NmDX0fIrEchZBl0LruJh._1p5bTI_iyo' 'token' STORE
+            // Actual code
+            $token AUTHENTICATE
+    10000000 MAXOPS
+    [
+    $token
+    '~(military.bases|sighting.ufo)' { 'country' '~(us|United States)' }
+    [ 1900 01 01 ] TSELEMENTS-> ISO8601
+    [ 2021 01 01 ] TSELEMENTS-> ISO8601
+    ] FETCH 'gts' STORE
+
+    // extract sightings
+    [ $gts [] 'sighting.ufo' filter.byclass ] FILTER MERGE DEDUP 'sightings' STORE
+    [ $gts [] 'military.bases' filter.byclass ] FILTER MERGE DEDUP 'bases' STORE
+    [ $sightings <%
+        'point' STORE
+        // get datapoint's location
+        $point [ 4 5 ] SUBLIST FLATTEN 'loc' STORE
+        // compute HHCode
+        $loc 0 GET $loc 1 GET ->HHCODE 'hhcode' STORE
+        // new datapoint return with the HHCode as value
+        [ $point 0 GET $loc 0 GET $loc 1 GET NaN $hhcode ]
+    %> MACROMAPPER 0 0 0 ] MAP 0 GET 'hhcodeGTS' STORE
+                            // Sum same HHCodes
+                            $hhcodeGTS VALUEHISTOGRAM 'repartition' STORE
+                            // create a new GTS
+                            NEWGTS 'count.by.location' RENAME 'locGTS' STORE
+                            // For each HHCode
+                            $repartition <%
+      'value' STORE 'key' STORE
+      // convert HHCode to lat/long
+      $key HHCODE-> [ 'lat' 'long' ] STORE
+      // Add the sighting count per location as value
+      $locGTS NOW $lat $long NaN $value ADDVALUE DROP
+    %> FOREACH
+                            // display
+                            [ $locGTS mapper.tostring 0 0 0 ] MAP 'ufo' STORE
+                            [
+                            {
+                            'key' 'sightings'
+                            'render' 'weightedDots'
+                            "color" "#31C0F6cc"
+                            "borderColor" "#31C0F6"
+                            "maxValue" $repartition VALUELIST MAX
+                            "minValue" 0
+                            }
+
+                            {
+                            'key' 'bases'
+                            'render' 'dots'
+                            "color" "#f44336"
+                            "line" false
+                            }
+                            ] 'params' STORE
+                            { 'data' [ $ufo $bases ] 'params' $params 'globalParams' {
+                                "map" {
+                                "startLat" 39.8364989
+                                "startLong" -98.3276331
+                                "startZoom" 5
+                                }
+                                } }`,
+}

@@ -124,6 +124,7 @@ export class MapLib {
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
+      this.LOG.debug(['toLeafletMapPaths'], gts, data.params ? data.params[i] : '');
       let params = (data.params || [])[i];
       if (!params) {
         params = {};
@@ -131,7 +132,6 @@ export class MapLib {
       if (GTSLib.isGtsToPlotOnMap(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0) {
         const path: any = {};
         MapLib.extractCommonParameters(path, params, i, scheme);
-
         path.path = MapLib.gtsToPath(gts);
         if (!!params.render) {
           path.render = params.render;

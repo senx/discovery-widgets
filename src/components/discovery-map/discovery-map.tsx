@@ -99,6 +99,7 @@ export class DiscoveryMapComponent {
     let dataList: any[];
     let params: any[];
     this.LOG.debug(['drawMap', 'this.options'], {...this.options});
+    data.data = GTSLib.flatDeep(data.data as any[]);
     dataList = data.data as any[];
     params = data.params;
     this.mapOpts = this.options.map || {};
@@ -163,11 +164,13 @@ export class DiscoveryMapComponent {
         this.updateGtsPath(path);
       }
     }
+    this.LOG.debug(['displayMap'], 'pathData', this.pathData);
     const positionsSize = (this.positionData || []).length;
     for (let i = 0; i < positionsSize; i++) {
       this.updatePositionArray(this.positionData[i]);
     }
-    (this.mapOpts.tiles || []).forEach(t => { // TODO to test
+    this.LOG.debug(['displayMap'], 'positionData', this.positionData);
+    (this.mapOpts.tiles || []).forEach(t => {
       this.LOG.debug(['displayMap'], t);
       this.tileLayerGroup.addLayer(Leaflet.tileLayer(t, {
         subdomains: 'abcd',
