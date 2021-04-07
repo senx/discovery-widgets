@@ -89,6 +89,15 @@ export namespace Components {
         "type": ChartType;
         "width": number;
     }
+    interface DiscoveryPie {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoverySpinner {
         "message": string;
     }
@@ -170,6 +179,12 @@ declare global {
         prototype: HTMLDiscoveryMapElement;
         new (): HTMLDiscoveryMapElement;
     };
+    interface HTMLDiscoveryPieElement extends Components.DiscoveryPie, HTMLStencilElement {
+    }
+    var HTMLDiscoveryPieElement: {
+        prototype: HTMLDiscoveryPieElement;
+        new (): HTMLDiscoveryPieElement;
+    };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
     var HTMLDiscoverySpinnerElement: {
@@ -198,6 +213,7 @@ declare global {
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-map": HTMLDiscoveryMapElement;
+        "discovery-pie": HTMLDiscoveryPieElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
@@ -296,6 +312,16 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "width"?: number;
     }
+    interface DiscoveryPie {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
     interface DiscoverySpinner {
         "message"?: string;
     }
@@ -333,6 +359,7 @@ declare namespace LocalJSX {
         "discovery-image": DiscoveryImage;
         "discovery-line": DiscoveryLine;
         "discovery-map": DiscoveryMap;
+        "discovery-pie": DiscoveryPie;
         "discovery-spinner": DiscoverySpinner;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
@@ -351,6 +378,7 @@ declare module "@stencil/core" {
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
+            "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;

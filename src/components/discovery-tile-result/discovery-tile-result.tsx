@@ -165,6 +165,18 @@ export class DiscoveryTileResultComponent {
           width={this.innerWidth}
           debug={this.debug}
         />;
+      case 'pie':
+      case 'doughnut':
+        return <discovery-pie
+          result={this.result}
+          onDraw={() => this.drawn()}
+          type={this.type}
+          unit={this.unit}
+          options={this.options}
+          height={this.innerHeight}
+          width={this.innerWidth}
+          debug={this.debug}
+        />;
       default:
         return '';
     }
