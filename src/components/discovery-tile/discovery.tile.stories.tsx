@@ -16,7 +16,9 @@ export default {
     type: {
       control: {
         type: 'select',
-        options: ['line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display', 'gauge', 'circle', 'map' ]
+        options: [
+          'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
+          'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut' ]
       }
     },
     language: {
