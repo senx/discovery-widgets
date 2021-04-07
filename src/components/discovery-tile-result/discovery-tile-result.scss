@@ -11,9 +11,10 @@
     align-items: stretch;
 
     h2 {
-      padding: 5px 0;
+      padding: 5px;
       margin: 0;
       flex-shrink: 1;
+      text-align: center;
       color: var(--warp-view-font-color);
     }
 
