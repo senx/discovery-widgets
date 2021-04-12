@@ -17,6 +17,7 @@ export type ChartType =
   | 'gauge'
   | 'circle'
   | 'pie'
+  | 'plot'
   | 'doughnut'
   | 'rose'
   | 'tabular'

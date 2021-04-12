@@ -105,6 +105,15 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryPlot {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoverySpinner {
         "message": string;
     }
@@ -207,6 +216,12 @@ declare global {
         prototype: HTMLDiscoveryPieElement;
         new (): HTMLDiscoveryPieElement;
     };
+    interface HTMLDiscoveryPlotElement extends Components.DiscoveryPlot, HTMLStencilElement {
+    }
+    var HTMLDiscoveryPlotElement: {
+        prototype: HTMLDiscoveryPlotElement;
+        new (): HTMLDiscoveryPlotElement;
+    };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
     var HTMLDiscoverySpinnerElement: {
@@ -243,6 +258,7 @@ declare global {
         "discovery-map": HTMLDiscoveryMapElement;
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
+        "discovery-plot": HTMLDiscoveryPlotElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-tabular": HTMLDiscoveryTabularElement;
         "discovery-tile": HTMLDiscoveryTileElement;
@@ -359,6 +375,16 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
+    interface DiscoveryPlot {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
     interface DiscoverySpinner {
         "message"?: string;
     }
@@ -408,6 +434,7 @@ declare namespace LocalJSX {
         "discovery-map": DiscoveryMap;
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
+        "discovery-plot": DiscoveryPlot;
         "discovery-spinner": DiscoverySpinner;
         "discovery-tabular": DiscoveryTabular;
         "discovery-tile": DiscoveryTile;
@@ -429,6 +456,7 @@ declare module "@stencil/core" {
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
+            "discovery-plot": LocalJSX.DiscoveryPlot & JSXBase.HTMLAttributes<HTMLDiscoveryPlotElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-tabular": LocalJSX.DiscoveryTabular & JSXBase.HTMLAttributes<HTMLDiscoveryTabularElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;

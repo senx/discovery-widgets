@@ -243,7 +243,7 @@ export class DiscoveryLineComponent {
     }
   }
 
-  private static getStepShape(type: ChartType) {
+  static getStepShape(type: ChartType) {
     switch (type) {
       case "line":
       case "area":
