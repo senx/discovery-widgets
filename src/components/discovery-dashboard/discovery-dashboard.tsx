@@ -79,6 +79,7 @@ export class DiscoveryDashboardComponent {
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         const result = JSON.parse(res.data as string);
         this.result = result.length > 0 ? result[0] : new Dashboard();
+        this.options = {...this.options as Param, ...this.result.options};
         this.headers = {};
         res.headers.split('\n')
           .filter(h => h !== '' && h.toLowerCase().startsWith('x-warp10'))

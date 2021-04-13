@@ -202,10 +202,10 @@ withAutoRefresh.args = {
 }
 
 
-export const Raspi1 = Usage.bind({});
-Raspi1.args = {
+export const Raspi1WithGeneralOptions = Usage.bind({});
+Raspi1WithGeneralOptions.args = {
   ...Usage.args,
-  options: {...Usage.args.options, scheme: 'BELIZE'},
+  options: {},
   ws: `
 // Variables
 '9MnLoloG1kgCdf4fZi.FmpBYcngX0Xr_NHskCI6cQn.hK2SmNIYoP5lD8VHThFA9wq0FU5rE2geBdC62LnplZpDqudWu4KtDogsBM9PglhqP9lHjI5aIPjJzanaiFdwpAcMOZHre7TF' 'token' STORE
@@ -214,6 +214,7 @@ Raspi1.args = {
 {
   'title' 'Raspi-1'
   'description' 'Raspi-1'
+  'options' { 'scheme' 'CHARTANA' }
   'autoRefresh' 30
   'tiles' [
     {
