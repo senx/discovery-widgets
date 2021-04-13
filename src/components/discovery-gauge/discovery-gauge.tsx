@@ -219,8 +219,8 @@ export class DiscoveryGauge {
 
   autoFontSize(size: number) {
     if (this.el.getBoundingClientRect().height > 0) {
-      const count = Math.ceil(size / 2);
-      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 6) / (count > 1 ? count * 4 : 1);
+      const count = size > 1;
+      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 10) / (count  ? 4 : 1);
     } else {
       return 12;
     }
