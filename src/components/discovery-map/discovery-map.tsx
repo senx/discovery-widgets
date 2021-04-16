@@ -110,7 +110,10 @@ export class DiscoveryMapComponent {
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
       this.LOG.debug(['displayMap'], 'map', map);
-      const mapOpts: TileLayerOptions = {maxZoom: 24, maxNativeZoom: 19};
+      const mapOpts: TileLayerOptions = {
+        maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
+        maxZoom: this.mapOpts.maxZoom || 40
+      };
       if (map.attribution) {
         mapOpts.attribution = map.attribution;
       }
@@ -135,7 +138,7 @@ export class DiscoveryMapComponent {
         preferCanvas: true,
         layers: [this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer],
         zoomAnimation: true,
-        maxZoom: 24
+        maxZoom: this.mapOpts.maxZoom || 19
       });
       this.geoJsonLayer.bringToBack();
       if (this.tilesLayer) {
@@ -172,10 +175,22 @@ export class DiscoveryMapComponent {
     this.LOG.debug(['displayMap'], 'positionData', this.positionData);
     (this.mapOpts.tiles || []).forEach(t => {
       this.LOG.debug(['displayMap'], t);
+      const tile: { url?: string, subdomains: string, maxNativeZoom: number, maxZoom: number } = {
+        subdomains: 'abcd',
+        maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
+        maxZoom: this.mapOpts.maxZoom || 19
+      };
+      if (typeof t === 'string') {
+        tile.url = t;
+      } else if (typeof t === 'object') {
+        tile.url = t.url;
+        tile.maxZoom = this.mapOpts.maxZoom || 19;
+        tile.maxNativeZoom = t.maxNativeZoom || this.mapOpts.maxNativeZoom || 19;
+      }
       this.tileLayerGroup.addLayer(Leaflet.tileLayer(t, {
         subdomains: 'abcd',
-        maxNativeZoom: 19,
-        maxZoom: 40
+        maxNativeZoom: tile.maxNativeZoom || 19,
+        maxZoom: this.mapOpts.maxZoom || 19
       }));
     });
     const geoJsonSize = (this.geoJson || []).length;

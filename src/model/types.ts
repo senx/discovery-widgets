@@ -26,7 +26,7 @@ export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
 export type ECharts = ReturnType<typeof echarts.init>;
 export type MapParams = {
-  tiles?: string[];
+  tiles?: any[] ;
   heatRadius?: number;
   heatBlur?: number;
   heatOpacity?: number;
@@ -46,4 +46,6 @@ export type MapParams = {
   timeSpanList?: any[],
   animate?: boolean;
   marker?: string;
+  maxNativeZoom?: number;
+  maxZoom?: number;
 };
