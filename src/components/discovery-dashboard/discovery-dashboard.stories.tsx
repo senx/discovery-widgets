@@ -1,5 +1,6 @@
 import {Param} from "../../model/param";
 import {action, configureActions} from '@storybook/addon-actions';
+import {ColorLib} from "../../utils/color-lib";
 
 configureActions({
   depth: 10,
@@ -27,12 +28,12 @@ export default {
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
 // @ts-ignore
-const Template = ({url, ws, options, title}) => `<div class="card" style="width: 100%;min-height: 500px">
+const Template = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
 <discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
-cols="8"
+cols="${cols}" cell-height="${cellHeight}"
 debug options='${JSON.stringify(options)}'
 >${ws}</discovery-dashboard>
 </div>
@@ -41,6 +42,8 @@ debug options='${JSON.stringify(options)}'
 export const Usage = Template.bind({});
 Usage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
+  cols: 8,
+  cellHeight: 220,
   ws: `{
   'title' 'My Dashboard'
   'description' 'Dashboard over 8 columns (default is 12)'
@@ -52,7 +55,7 @@ Usage.args = {
        }
        {
          'type' 'area'
-         'w' 3 'h' 2 'x' 0 'y' 0
+         'w' 3 'h' 1 'x' 0 'y' 0
          'data' [
            NEWGTS 'data' RENAME
            0.0 'v' STORE
@@ -64,7 +67,7 @@ Usage.args = {
        {
          'type' 'line'
          'title' 'Title'
-         'w' 3 'h' 2 'x' 5 'y' 0
+         'w' 3 'h' 1 'x' 5 'y' 0
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'macro' <%
            NEWGTS 'macro' RENAME
@@ -86,7 +89,7 @@ Usage.args = {
        {
           'type' 'circle'
           'unit' '%25'
-          'w' 1 'h' 2 'x' 0 'y' 1
+          'w' 1 'h' 1 'x' 0 'y' 1
           'data'
             RAND 100 * ROUND 'v' STORE
   {
@@ -105,7 +108,7 @@ Usage.args = {
        {
           'type' 'display'
           'unit' '%25'
-          'w' 1 'h' 2 'x' 1 'y' 1
+          'w' 1 'h' 1 'x' 1 'y' 1
           'data'
             RAND 100 * ROUND 'v' STORE
   {
@@ -123,7 +126,7 @@ Usage.args = {
        {
           'type' 'gauge'
           'unit' '%25'
-          'w' 1 'h' 2 'x' 2 'y' 1
+          'w' 1 'h' 1 'x' 2 'y' 1
           'data'
             RAND 100 * ROUND 'v' STORE
   {
@@ -141,7 +144,7 @@ Usage.args = {
        }
        {
          'type' 'bar'
-         'w' 3 'h' 2 'x' 3 'y' 1
+         'w' 3 'h' 1 'x' 3 'y' 1
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'data' [
            NEWGTS 'data' RENAME
@@ -153,7 +156,7 @@ Usage.args = {
        }
        {
          'type' 'map'
-         'w' 2 'h' 2 'x' 6 'y' 1
+         'w' 2 'h' 1 'x' 6 'y' 1
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'data'
            NEWGTS 'g' STORE
@@ -202,6 +205,61 @@ withAutoRefresh.args = {
 }
 
 
+export const differentSizesAndPositionAndCustomCellHeight = Usage.bind({});
+differentSizesAndPositionAndCustomCellHeight.args = {
+  ...Usage.args,
+  cols: 12,
+  cellHeight: 110,
+  ws: `
+  {
+    'title' 'Test'
+    'tiles' [
+      {
+        'type' 'display'
+        'x' 0 'y' 0 'w' 1 'h' 1
+        'data' '1x1'
+      }
+      {
+        'type' 'display'
+        'x' 1 'y' 0 'w' 2 'h' 2
+        'data' '2x2'
+      }
+      {
+        'type' 'display'
+        'x' 3 'y' 0 'w' 1 'h' 2
+        'data' '1x2'
+      }
+      {
+        'type' 'display'
+        'x' 4 'y' 1 'w' 2 'h' 1
+        'data' '2x1'
+      }
+      {
+        'type' 'display'
+        'x' 6 'y' 0 'w' 6 'h' 2
+        'data' '6x2'
+      }
+      {
+        'type' 'display'
+        'x' 0 'y' 1 'w' 1 'h' 1
+        'data' '1x1'
+      }
+      {
+        'type' 'display'
+        'x' 1 'y' 2 'w' 2 'h' 2
+        'data' '2x2'
+      }
+      {
+        'type' 'display'
+        'x' 3 'y' 2 'w' 1 'h' 2
+        'data' '1x2'
+      }
+    ]
+  }
+  `,
+  options: {...Usage.args.options, scheme: ColorLib.color.CHARTANA}
+}
+
 export const Raspi1WithGeneralOptions = Usage.bind({});
 Raspi1WithGeneralOptions.args = {
   ...Usage.args,
@@ -219,7 +277,7 @@ Raspi1WithGeneralOptions.args = {
   'tiles' [
     {
       'title' 'Disks'
-      'x' 0 'y' 0 'w' 3 'h' 2
+      'x' 0 'y' 0 'w' 3 'h' 1
       'type' 'gauge' 'unit' 'Gb'
       'data' [ $token '~linux.df.bytes.(capacity|free)' { 'hname' $hname 'device' '~/dev/.*' } NOW -1 ] FETCH
         [ SWAP bucketizer.last NOW 0 1 ] BUCKETIZE [ 'device' 'mountpoint' ] PARTITION  'gts' STORE
@@ -244,7 +302,7 @@ Raspi1WithGeneralOptions.args = {
     }
     {
         'title' 'Network'
-        'x' 0 'y' 1 'w' 3 'h' 2
+        'x' 0 'y' 1 'w' 3 'h' 1
         'type' 'area'
         'data' [ $token '~linux.proc.net.dev.(receive|transmit).bytes' { 'hname' $hname 'iface' 'eth0' } NOW $duration TOLONG ] FETCH
           false RESETS 'gts' STORE
@@ -256,7 +314,7 @@ Raspi1WithGeneralOptions.args = {
     }
     {
         'title' 'Load'
-        'x' 3 'y' 1 'w' 9 'h' 2
+        'x' 3 'y' 1 'w' 9 'h' 1
         'type' 'area'
         'data' <%
           [ $token '~linux.proc.stat.userhz.(user|nice|system|idle|iowait)' { 'hname' $hname 'cpu' 'cpu' } NOW $duration TOLONG ] FETCH
@@ -291,7 +349,7 @@ Raspi1WithGeneralOptions.args = {
     }
     {
       'title' 'RAM/Swap'
-      'x' 3 'y' 0 'w' 9 'h' 2
+      'x' 3 'y' 0 'w' 9 'h' 1
       'type' 'area'
       'data' [ $token '~linux.proc.meminfo.(MemFree|SwapFree)' { 'hname' $hname } NOW  $duration TOLONG ] FETCH
         [ SWAP bucketizer.mean NOW 1 h 0 ] BUCKETIZE

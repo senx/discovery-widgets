@@ -107,6 +107,17 @@ $g
   options: {... Usage.options, autoRefresh: 2}
 }
 
+export const AutoRefreshWithRealData = Usage.bind({});
+AutoRefreshWithRealData.args = {
+  ...InitialUsage.args,
+  ws: `[
+  'yaw2XlsczxtKdzZpxYA5DXvE0w9sRQHjJPnyJ2MVZrjf1HK7bH82rkVfuhdkxYuLT1kGGC6DpsFskCTfReqgVsN4nFbpZqLlmgDRncN9oJtEHTkYMDDiQADNpyE5OHww90Ia3SYge3ORSk.NwvjOX.'
+  'fr.bibus.bus' {}
+  NOW 30 m
+] FETCH`,
+  options: {... Usage.options, autoRefresh: 2}
+}
+
 export const CustomTilesThroughGlobalParams = Usage.bind({});
 CustomTilesThroughGlobalParams.args = {
   ...InitialUsage.args,

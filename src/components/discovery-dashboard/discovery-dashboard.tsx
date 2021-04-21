@@ -125,7 +125,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               <div class="discovery-dashboard-tile"
                    style={{
                      gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
-                     gridRow: (t.y + 1) + ' / ' + (t.y + t.h),
+                     gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
                    }}
               >
                 <div>
