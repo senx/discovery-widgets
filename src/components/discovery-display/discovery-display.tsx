@@ -21,7 +21,7 @@ export class DiscoveryDisplayComponent {
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
-  @Prop() height: number;
+  @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
 
@@ -108,6 +108,7 @@ export class DiscoveryDisplayComponent {
   }
 
   flexFont() {
+    this.height = Utils.getContentBounds(this.el.parentElement).h;
     if (!!this.wrapper) {
       this.LOG.debug(['flexFont'], this.height);
       if (this.fitties) {

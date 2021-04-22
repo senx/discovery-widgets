@@ -20,7 +20,7 @@ export class DiscoveryMapComponent {
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
-  @Prop() height: number;
+  @State()  @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
 
   @Element() el: HTMLElement;
@@ -91,13 +91,14 @@ export class DiscoveryMapComponent {
   drawMap(data: DataModel, isRefresh = false) {
     // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(this.options as Param, data.globalParams || {});
+    options = Utils.mergeDeep<Param>(options, data.globalParams || {});
     this.options = {...options};
     if (!!this.map) {
       this.map.invalidateSize(true);
     }
     let dataList: any[];
     let params: any[];
+    this.LOG.debug(['drawMap', 'this.height'], this.height);
     this.LOG.debug(['drawMap', 'this.options'], {...this.options});
     data.data = GTSLib.flatDeep(data.data as any[]);
     dataList = data.data as any[];
@@ -496,13 +497,9 @@ export class DiscoveryMapComponent {
   }
 
   render() {
-    return (
-      <Host>
-        <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
+    return <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
           <div ref={(el) => this.mapElement = el as HTMLDivElement}/>
-        </div>
-      </Host>
-    );
+        </div>;
   }
 
 }

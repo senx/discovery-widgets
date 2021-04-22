@@ -204,6 +204,270 @@ withAutoRefresh.args = {
   options: {autoRefresh: 2}
 }
 
+export const polymorphic = Usage.bind({});
+polymorphic.args = {
+  ...Usage.args,
+  cols: 12,
+  cellHeight: 110,
+  ws: `
+  RAND 100 * ROUND 'value' STORE
+  {
+  'title' 'My Polymorphic Dashboard'
+  'description' 'Change over a random value each 10 seconds with 1 second tile refresh'
+     'tiles' [
+       {
+         'type' 'area'
+         'w' 6 'h' 3 'x' 0 'y' 2
+         'data' { 'data' [
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 500
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         ] 'params' [ {
+      'datasetColor'
+      <% $value 33 < %> <% '#77BE69' %>
+      <% $value 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+    } ]
+         }
+       }
+       {
+       'type' 'rose'
+       'w' 2 'h' 2 'x' 1 'y' 0
+         'options' { 'scheme' 'ECTOPLASM'  'autoRefresh' 1 }
+       'macro' <% NOW 'now' STORE
+1 4 <% 'i' STORE NEWGTS 'serie #' $i TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g
+%> FOR %>
+}
+       <% $value 50.0 <= %>
+       <%
+       {
+         'type' 'line'
+         'title' 'Value <= 50'
+         'w' 5 'h' 2 'x' 3 'y' 0
+         'options' {  'autoRefresh' 1 }
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'macro' <%
+           NEWGTS 'macro' RENAME
+           0.0 'v' STORE
+           1 500
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         %>
+       }
+        {
+         'type' 'scatter'
+         'title' 'Value <= 50'
+         'options' { 'scheme' 'ECTOPLASM' 'autoRefresh' 1 }
+         'w' 5 'h' 2 'x' 8 'y' 0
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'macro' <%  NEWGTS 0.0 'v' STORE 1 50 <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %> FOR %>
+       }
+       %>
+       <%
+       {
+         'type' 'bar'
+         'title' 'Value > 50'
+         'w' 9 'h' 2 'x' 3 'y' 0
+         'options' { 'scheme' 'CTHULHU'  'autoRefresh' 1 }
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'macro' <%
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 30
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         %>
+       }
+       %>
+       IFTE
+
+       {
+          'type' 'gauge'
+          'unit' '%25'
+          'w' 1 'h' 1 'x' 0 'y' 0
+          'data'  {
+    'data' $value
+    'params' [
+      {
+        'maxValue' 100
+        'datasetColor'
+        <% $value 33 < %> <% '#77BE69' %>
+        <% $value 66 < %> <% '#FF9830' %>
+        <% '#F24865' %> 2 SWITCH
+      }
+    ]
+  }
+       }
+       {
+          'type' 'display'
+          'unit' '%25'
+          'w' 1 'h' 1 'x' 0 'y' 1
+          'data'
+  {
+    'data' $value
+    'globalParams' {
+      'bgColor'
+      <% $value 33 < %> <% '#77BE69' %>
+      <% $value 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+         'type' 'map'
+         'w' 6 'h' 3 'x' 6 'y' 2
+         'options' { 'scheme' 'VIRIDIS' 'map' { 'mapType' 'STADIA' } 'autoRefresh' 1 }
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'macro' <%
+         NEWGTS 'mapgts' STORE
+         0 10 <% 'ts' STORE $mapgts NOW $ts 10000 - * RAND 10 * RAND 10 * RAND RAND ADDVALUE DROP %> FOR
+         $mapgts %>
+       }
+     ]
+   }`,
+  options: {autoRefresh: 10}
+}
+
+export const staticPolymorphic = Usage.bind({});
+staticPolymorphic.args = {
+  ...polymorphic.args,
+  ws: `
+  18 'value' STORE
+  {
+  'title' 'My Polymorphic Dashboard'
+  'description' 'Change over a random value each 5 seconds'
+     'tiles' [
+       {
+         'type' 'area'
+         'w' 6 'h' 3 'x' 0 'y' 2
+         'data' { 'data' [
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 500
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         ] 'params' [ {
+      'datasetColor'
+      <% $value 33 < %> <% '#77BE69' %>
+      <% $value 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+    } ]
+         }
+       }
+       {
+       'type' 'rose'
+       'w' 2 'h' 2 'x' 1 'y' 0
+         'options' { 'scheme' 'ECTOPLASM' }
+       'data' [ NOW 'now' STORE
+1 4 <% 'i' STORE NEWGTS 'serie #' $i TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g
+%> FOR ]
+}
+       <% $value 50.0 <= %>
+       <%
+       {
+         'type' 'line'
+         'title' 'Value <= 50'
+         'w' 4 'h' 2 'x' 3 'y' 0
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'macro' <%
+           NEWGTS 'macro' RENAME
+           0.0 'v' STORE
+           1 500
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         %>
+       }
+        {
+         'type' 'scatter'
+         'title' 'Value <= 50'
+         'options' { 'scheme' 'ECTOPLASM' }
+         'w' 5 'h' 2 'x' 7 'y' 0
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'data' [ NEWGTS 0.0 'v' STORE 1 50 <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %> FOR ]
+       }
+       %>
+       <%
+       {
+         'type' 'bar'
+         'title' 'Value > 50'
+         'w' 9 'h' 2 'x' 3 'y' 0
+         'options' { 'scheme' 'CTHULHU' }
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'data' [
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 30
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         ]
+       }
+       %>
+       IFTE
+
+       {
+          'type' 'gauge'
+          'unit' '%25'
+          'w' 1 'h' 1 'x' 0 'y' 0
+          'data'  {
+    'data' $value
+    'params' [
+      {
+        'maxValue' 100
+        'datasetColor'
+        <% $value 33 < %> <% '#77BE69' %>
+        <% $value 66 < %> <% '#FF9830' %>
+        <% '#F24865' %> 2 SWITCH
+      }
+    ]
+  }
+       }
+       {
+          'type' 'display'
+          'unit' '%25'
+          'w' 1 'h' 1 'x' 0 'y' 1
+          'data'
+  {
+    'data' $value
+    'globalParams' {
+      'bgColor'
+      <% $value 33 < %> <% '#77BE69' %>
+      <% $value 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+         'type' 'map'
+         'w' 6 'h' 3 'x' 6 'y' 2
+         'options' { 'scheme' 'VIRIDIS' }
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'data'
+           NEWGTS 'g' STORE
+0 10 <% 'ts' STORE $g NOW $ts 10000 - * RAND 10 * RAND 10 * RAND RAND ADDVALUE DROP %> FOR
+{
+  'data' $g
+  'globalParams' {
+    'map' {
+      'mapType' 'STADIA'
+    }
+  }
+}
+       }
+     ]
+   }`,
+
+  options: {autoRefresh: -1}
+}
 
 export const differentSizesAndPositionAndCustomCellHeight = Usage.bind({});
 differentSizesAndPositionAndCustomCellHeight.args = {

@@ -76,10 +76,11 @@ export class DiscoveryDashboardComponent {
   exec(refresh = false) {
     this.ws = this.el.innerText;
     if (this.ws && this.ws !== '') {
+      this.loaded = false;
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         const result = JSON.parse(res.data as string);
-        this.result = result.length > 0 ? result[0] : new Dashboard();
-        this.options = {...this.options as Param, ...this.result.options};
+        const tmpResult = result.length > 0 ? result[0] : new Dashboard();
+        this.options = {...this.options as Param, ...tmpResult.options};
         this.headers = {};
         res.headers.split('\n')
           .filter(h => h !== '' && h.toLowerCase().startsWith('x-warp10'))
@@ -102,9 +103,10 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
           }
         }
+        this.result = {... tmpResult};
       }).catch(e => {
         this.statusError.emit(e);
-        console.error(e)
+        this.LOG.error(['exec'], e);
       })
     }
   }
@@ -127,8 +129,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                      gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
                      gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
                    }}
-              >
-                <div>
+              ><div>
                   {t.macro
                     ? <discovery-tile url={t.endpoint || this.url}
                                       type={t.type as ChartType}
