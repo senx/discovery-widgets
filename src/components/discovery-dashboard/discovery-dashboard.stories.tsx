@@ -180,6 +180,8 @@ export const CustomStyle = ({url, ws, options, title}) => `<div>
     --warp-view-chart-grid-color: blue;
     --warp-view-chart-label-color: red;
     --warp-view-font-color: white;
+    --warp-view-tile-border: none;
+    --warp-view-tile-shadow: none;
     }
 </style>
     <div class="card" style="width: 100%;min-height: 500px; background-color: #404040">
