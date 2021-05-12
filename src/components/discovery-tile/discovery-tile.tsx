@@ -78,6 +78,7 @@ export class DiscoveryTileComponent {
   exec(refresh= false) {
    if(!refresh) this.loaded = true;
     this.ws = this.el.innerText;
+    this.LOG.debug(['exec'], this.ws);
     if (this.language === 'flows') {
       this.ws = `<'
 ${this.ws}

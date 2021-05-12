@@ -8,6 +8,10 @@
   #ws {
     color: transparent;
     font-size: 0;
+  /*  display: none;*/
+  /*  visibility: hidden; */
+    height: 0;
+    overflow: hidden;
   }
 
   .discovery-tile-spinner {

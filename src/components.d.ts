@@ -117,6 +117,18 @@ export namespace Components {
     interface DiscoverySpinner {
         "message": string;
     }
+    interface DiscoverySvg {
+        "chartTitle": string;
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "start": number;
+        "type": ChartType;
+        "unit": string;
+        "url": string;
+        "width": number;
+    }
     interface DiscoveryTabular {
         "debug": boolean;
         "height": number;
@@ -228,6 +240,12 @@ declare global {
         prototype: HTMLDiscoverySpinnerElement;
         new (): HTMLDiscoverySpinnerElement;
     };
+    interface HTMLDiscoverySvgElement extends Components.DiscoverySvg, HTMLStencilElement {
+    }
+    var HTMLDiscoverySvgElement: {
+        prototype: HTMLDiscoverySvgElement;
+        new (): HTMLDiscoverySvgElement;
+    };
     interface HTMLDiscoveryTabularElement extends Components.DiscoveryTabular, HTMLStencilElement {
     }
     var HTMLDiscoveryTabularElement: {
@@ -260,6 +278,7 @@ declare global {
         "discovery-pie": HTMLDiscoveryPieElement;
         "discovery-plot": HTMLDiscoveryPlotElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
+        "discovery-svg": HTMLDiscoverySvgElement;
         "discovery-tabular": HTMLDiscoveryTabularElement;
         "discovery-tile": HTMLDiscoveryTileElement;
         "discovery-tile-result": HTMLDiscoveryTileResultElement;
@@ -388,6 +407,19 @@ declare namespace LocalJSX {
     interface DiscoverySpinner {
         "message"?: string;
     }
+    interface DiscoverySvg {
+        "chartTitle"?: string;
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "start"?: number;
+        "type"?: ChartType;
+        "unit"?: string;
+        "url"?: string;
+        "width"?: number;
+    }
     interface DiscoveryTabular {
         "debug"?: boolean;
         "height"?: number;
@@ -436,6 +468,7 @@ declare namespace LocalJSX {
         "discovery-pie": DiscoveryPie;
         "discovery-plot": DiscoveryPlot;
         "discovery-spinner": DiscoverySpinner;
+        "discovery-svg": DiscoverySvg;
         "discovery-tabular": DiscoveryTabular;
         "discovery-tile": DiscoveryTile;
         "discovery-tile-result": DiscoveryTileResult;
@@ -458,6 +491,7 @@ declare module "@stencil/core" {
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
             "discovery-plot": LocalJSX.DiscoveryPlot & JSXBase.HTMLAttributes<HTMLDiscoveryPlotElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
+            "discovery-svg": LocalJSX.DiscoverySvg & JSXBase.HTMLAttributes<HTMLDiscoverySvgElement>;
             "discovery-tabular": LocalJSX.DiscoveryTabular & JSXBase.HTMLAttributes<HTMLDiscoveryTabularElement>;
             "discovery-tile": LocalJSX.DiscoveryTile & JSXBase.HTMLAttributes<HTMLDiscoveryTileElement>;
             "discovery-tile-result": LocalJSX.DiscoveryTileResult & JSXBase.HTMLAttributes<HTMLDiscoveryTileResultElement>;

@@ -21,6 +21,7 @@ export type ChartType =
   | 'doughnut'
   | 'rose'
   | 'tabular'
+  | 'svg'
   | 'button';
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
