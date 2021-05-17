@@ -8,11 +8,11 @@ import {ChartType} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
 
 @Component({
-  tag: 'discovery-dashboard',
-  styleUrl: 'discovery-dashboard.scss',
+  tag: 'discovery-scada',
+  styleUrl: 'discovery-scada.scss',
   shadow: true,
 })
-export class DiscoveryDashboardComponent {
+export class DiscoveryScadaComponent {
   @Prop() url: string;
   @Prop() dashboardTitle: string;
   @Prop() options: Param | string = new Param();
@@ -27,6 +27,7 @@ export class DiscoveryDashboardComponent {
   @Element() el: HTMLElement;
   @State() width: number;
   @State() height: number;
+  @State() scadaHeight: number = 0;
   @State() result: Dashboard;
   @State() headers: any;
   @State() loaded = false;
@@ -48,7 +49,7 @@ export class DiscoveryDashboardComponent {
   }
 
   componentWillLoad() {
-    this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
+    this.LOG = new Logger(DiscoveryScadaComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {
       url: this.url,
       options: this.options,
@@ -79,7 +80,7 @@ export class DiscoveryDashboardComponent {
       this.loaded = false;
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         const result = JSON.parse(res.data as string);
-        const tmpResult = result.length > 0 ? result[0] : new Dashboard();
+        const tmpResult: Dashboard = result.length > 0 ? result[0] : new Dashboard();
         this.options = {...this.options as Param, ...tmpResult.options};
         this.headers = {};
         res.headers.split('\n')
@@ -103,7 +104,19 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
           }
         }
-        this.result = {... tmpResult};
+        const tiles = tmpResult.tiles;  // items array
+        if (tiles.length > 0) {
+          let y = 0;
+          let h = 0;
+          tiles.forEach(item => {
+            if (item.y >= y) {
+              y = item.y;
+              h = Math.max(y + item.h, h);
+            }
+          });
+          this.scadaHeight = h;
+        }
+        this.result = {...tmpResult};
       }).catch(e => {
         this.statusError.emit(e);
         this.LOG.error(['exec'], e);
@@ -115,33 +128,35 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   render() {
     return <Host>
       {this.loaded ?
-        <div class="discovery-dashboard-main">
+        <div class="discovery-scada-main">
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
-          <div class="discovery-dashboard-wrapper" style={{
-            width: '100%', height: 'auto',
-            gridAutoRows: 'minmax(' + this.cellHeight + 'px, auto)',
-            gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
-          }}>
+          <div class="discovery-scada-wrapper"
+               style={{height: this.scadaHeight + 'px'}}
+          >
             {this.result.tiles.map((t) =>
-              <div class="discovery-dashboard-tile"
+              <div class="discovery-scada-tile"
                    style={{
-                     gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
-                     gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
+                     left: t.x + 'px',
+                     width: t.w + 'px',
+                     height: t.h + 'px',
+                     top: t.y + 'px',
+                     zIndex: '' + (t.z || 0)
                    }}
-              ><div>
+              >
+                <div>
                   {t.macro
                     ? <discovery-tile url={t.endpoint || this.url}
                                       type={t.type as ChartType}
                                       chart-title={t.title}
-                                      options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                                      options={JSON.stringify(DiscoveryScadaComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result
                       url={t.endpoint || this.url}
-                      result={DiscoveryDashboardComponent.sanitize(t.data)}
+                      result={DiscoveryScadaComponent.sanitize(t.data)}
                       type={t.type as ChartType}
                       unit={t.unit}
-                      options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                      options={DiscoveryScadaComponent.merge(this.options, t.options)}
                       debug={this.debug}
                       chart-title={t.title}
                     />

@@ -7,6 +7,7 @@ export class Tile {
   h: number;
   x: number;
   y: number;
+  z?: number;
   data?: string|DataModel;
   title?: string;
   macro?: string;

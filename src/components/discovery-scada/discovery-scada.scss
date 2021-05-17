@@ -9,21 +9,24 @@
     font-size: 0;
   }
 
-  .discovery-dashboard-main {
+  .discovery-scada-main {
     width: 100%;
-    height: 100%;
+    height: auto;
     text-align: center;
     color: var(--warp-view-font-color);
-    background: var(--warp-view-dashboard-background);
+    background: var(--warp-view-scada-background);
     background-size: cover;
 
-    .discovery-dashboard-wrapper {
-      display: grid;
-      grid-gap: 10px;
+    .discovery-scada-wrapper {
+      position: relative;
+      height: 100%;
 
-      .discovery-dashboard-tile {
+      .discovery-scada-tile {
         width: 100%;
         height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
         border:  var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
         box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
         overflow-y: auto;

@@ -114,6 +114,15 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryScada {
+        "autoRefresh": number;
+        "cellHeight": number;
+        "cols": number;
+        "dashboardTitle": string;
+        "debug": boolean;
+        "options": Param | string;
+        "url": string;
+    }
     interface DiscoverySpinner {
         "message": string;
     }
@@ -234,6 +243,12 @@ declare global {
         prototype: HTMLDiscoveryPlotElement;
         new (): HTMLDiscoveryPlotElement;
     };
+    interface HTMLDiscoveryScadaElement extends Components.DiscoveryScada, HTMLStencilElement {
+    }
+    var HTMLDiscoveryScadaElement: {
+        prototype: HTMLDiscoveryScadaElement;
+        new (): HTMLDiscoveryScadaElement;
+    };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
     var HTMLDiscoverySpinnerElement: {
@@ -277,6 +292,7 @@ declare global {
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
         "discovery-plot": HTMLDiscoveryPlotElement;
+        "discovery-scada": HTMLDiscoveryScadaElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-svg": HTMLDiscoverySvgElement;
         "discovery-tabular": HTMLDiscoveryTabularElement;
@@ -404,6 +420,17 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
+    interface DiscoveryScada {
+        "autoRefresh"?: number;
+        "cellHeight"?: number;
+        "cols"?: number;
+        "dashboardTitle"?: string;
+        "debug"?: boolean;
+        "onStatusError"?: (event: CustomEvent<any>) => void;
+        "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
+        "options"?: Param | string;
+        "url"?: string;
+    }
     interface DiscoverySpinner {
         "message"?: string;
     }
@@ -467,6 +494,7 @@ declare namespace LocalJSX {
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
         "discovery-plot": DiscoveryPlot;
+        "discovery-scada": DiscoveryScada;
         "discovery-spinner": DiscoverySpinner;
         "discovery-svg": DiscoverySvg;
         "discovery-tabular": DiscoveryTabular;
@@ -490,6 +518,7 @@ declare module "@stencil/core" {
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
             "discovery-plot": LocalJSX.DiscoveryPlot & JSXBase.HTMLAttributes<HTMLDiscoveryPlotElement>;
+            "discovery-scada": LocalJSX.DiscoveryScada & JSXBase.HTMLAttributes<HTMLDiscoveryScadaElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-svg": LocalJSX.DiscoverySvg & JSXBase.HTMLAttributes<HTMLDiscoverySvgElement>;
             "discovery-tabular": LocalJSX.DiscoveryTabular & JSXBase.HTMLAttributes<HTMLDiscoveryTabularElement>;

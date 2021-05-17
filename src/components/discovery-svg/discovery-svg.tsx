@@ -8,7 +8,7 @@ import {Utils} from "../../utils/utils";
 
 @Component({
   tag: 'discovery-svg',
-  styleUrl: 'discovery.svg.scss',
+  styleUrl: 'discovery-svg.scss',
   shadow: true,
 })
 export class DiscoverySvgComponent {
@@ -35,11 +35,6 @@ export class DiscoverySvgComponent {
 
   private LOG: Logger;
   private defOptions: Param = new Param();
-
-  private wrapper: HTMLDivElement;
-  private title: HTMLDivElement;
-  private innerHeight: number;
-  private innerWidth: number;
 
   @Watch('result')
   updateRes() {
