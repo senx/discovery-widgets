@@ -1,4 +1,4 @@
-# discovery-tile-result
+# discovery-svg
 
 
 
@@ -21,59 +21,29 @@
 | `width`      | `width`       |             | `number`                                                                                                                                                                                                                                                              | `undefined`   |
 
 
+## Events
+
+| Event  | Description | Type                |
+| ------ | ----------- | ------------------- |
+| `draw` |             | `CustomEvent<void>` |
+
+
 ## Dependencies
 
 ### Used by
 
- - [discovery-dashboard](../discovery-dashboard)
- - [discovery-scada](../discovery-scada)
- - [discovery-tile](../discovery-tile)
+ - [discovery-tile-result](../discovery-tile-result)
 
 ### Depends on
 
-- [discovery-line](../discovery-line)
-- [discovery-annotation](../discovery-annotation)
-- [discovery-bar](../discovery-bar)
-- [discovery-display](../discovery-display)
-- [discovery-map](../discovery-map)
-- [discovery-image](../discovery-image)
-- [discovery-button](../discovery-button)
-- [discovery-gauge](../discovery-gauge)
-- [discovery-pie](../discovery-pie)
-- [discovery-tabular](../discovery-tabular)
-- [discovery-plot](../discovery-plot)
-- [discovery-svg](../discovery-svg)
+- [discovery-spinner](../discovery-spinner)
 
 ### Graph
 ```mermaid
 graph TD;
-  discovery-tile-result --> discovery-line
-  discovery-tile-result --> discovery-annotation
-  discovery-tile-result --> discovery-bar
-  discovery-tile-result --> discovery-display
-  discovery-tile-result --> discovery-map
-  discovery-tile-result --> discovery-image
-  discovery-tile-result --> discovery-button
-  discovery-tile-result --> discovery-gauge
-  discovery-tile-result --> discovery-pie
-  discovery-tile-result --> discovery-tabular
-  discovery-tile-result --> discovery-plot
-  discovery-tile-result --> discovery-svg
-  discovery-line --> discovery-spinner
-  discovery-annotation --> discovery-spinner
-  discovery-bar --> discovery-spinner
-  discovery-display --> discovery-spinner
-  discovery-image --> discovery-spinner
-  discovery-gauge --> discovery-spinner
-  discovery-pie --> discovery-spinner
-  discovery-tabular --> discovery-spinner
-  discovery-tabular --> discovery-pageable
-  discovery-plot --> discovery-spinner
   discovery-svg --> discovery-spinner
-  discovery-dashboard --> discovery-tile-result
-  discovery-scada --> discovery-tile-result
-  discovery-tile --> discovery-tile-result
-  style discovery-tile-result fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-tile-result --> discovery-svg
+  style discovery-svg fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

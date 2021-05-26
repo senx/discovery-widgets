@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property      | Attribute      | Description | Type                                                                                                                                                                                                                                                         | Default        |
-| ------------- | -------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
-| `autoRefresh` | `auto-refresh` |             | `number`                                                                                                                                                                                                                                                     | `-1`           |
-| `chartTitle`  | `chart-title`  |             | `string`                                                                                                                                                                                                                                                     | `undefined`    |
-| `debug`       | `debug`        |             | `boolean`                                                                                                                                                                                                                                                    | `false`        |
-| `language`    | `language`     |             | `"flows" \| "warpscript"`                                                                                                                                                                                                                                    | `'warpscript'` |
-| `options`     | `options`      |             | `Param \| string`                                                                                                                                                                                                                                            | `new Param()`  |
-| `type`        | `type`         |             | `"line" \| "area" \| "scatter" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "circle" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "button"` | `undefined`    |
-| `unit`        | `unit`         |             | `string`                                                                                                                                                                                                                                                     | `''`           |
-| `url`         | `url`          |             | `string`                                                                                                                                                                                                                                                     | `undefined`    |
+| Property      | Attribute      | Description | Type                                                                                                                                                                                                                                                                  | Default        |
+| ------------- | -------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `autoRefresh` | `auto-refresh` |             | `number`                                                                                                                                                                                                                                                              | `-1`           |
+| `chartTitle`  | `chart-title`  |             | `string`                                                                                                                                                                                                                                                              | `undefined`    |
+| `debug`       | `debug`        |             | `boolean`                                                                                                                                                                                                                                                             | `false`        |
+| `language`    | `language`     |             | `"flows" \| "warpscript"`                                                                                                                                                                                                                                             | `'warpscript'` |
+| `options`     | `options`      |             | `Param \| string`                                                                                                                                                                                                                                                     | `new Param()`  |
+| `type`        | `type`         |             | `"line" \| "area" \| "scatter" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "circle" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "button"` | `undefined`    |
+| `unit`        | `unit`         |             | `string`                                                                                                                                                                                                                                                              | `''`           |
+| `url`         | `url`          |             | `string`                                                                                                                                                                                                                                                              | `undefined`    |
 
 
 ## Events
@@ -32,6 +32,7 @@
 ### Used by
 
  - [discovery-dashboard](../discovery-dashboard)
+ - [discovery-scada](../discovery-scada)
 
 ### Depends on
 
@@ -54,6 +55,7 @@ graph TD;
   discovery-tile-result --> discovery-pie
   discovery-tile-result --> discovery-tabular
   discovery-tile-result --> discovery-plot
+  discovery-tile-result --> discovery-svg
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
@@ -64,7 +66,9 @@ graph TD;
   discovery-tabular --> discovery-spinner
   discovery-tabular --> discovery-pageable
   discovery-plot --> discovery-spinner
+  discovery-svg --> discovery-spinner
   discovery-dashboard --> discovery-tile
+  discovery-scada --> discovery-tile
   style discovery-tile fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

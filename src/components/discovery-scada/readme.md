@@ -1,4 +1,4 @@
-# discovery-dashboard
+# discovery-scada
 
 
 
@@ -37,9 +37,9 @@
 ### Graph
 ```mermaid
 graph TD;
-  discovery-dashboard --> discovery-tile
-  discovery-dashboard --> discovery-tile-result
-  discovery-dashboard --> discovery-spinner
+  discovery-scada --> discovery-tile
+  discovery-scada --> discovery-tile-result
+  discovery-scada --> discovery-spinner
   discovery-tile --> discovery-tile-result
   discovery-tile --> discovery-spinner
   discovery-tile-result --> discovery-line
@@ -65,7 +65,7 @@ graph TD;
   discovery-tabular --> discovery-pageable
   discovery-plot --> discovery-spinner
   discovery-svg --> discovery-spinner
-  style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px
+  style discovery-scada fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------
