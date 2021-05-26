@@ -15,7 +15,7 @@ export class DiscoverySvgComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() start: number;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop({mutable: true}) width: number;
   @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
@@ -63,13 +63,6 @@ export class DiscoverySvgComponent {
     this.draw.emit();
   }
 
-  drawn() {
-    if (this.execTime === 0) {
-      this.execTime = new Date().getTime() - this.start;
-    }
-  }
-
-
   convert(data: DataModel) {
     const toDisplay = [];
     this.LOG.debug(['convert'], data)
@@ -97,10 +90,18 @@ export class DiscoverySvgComponent {
 
   private static sanitize(svg) {
     const parser = new DOMParser();
-    const htmlDoc = parser.parseFromString(svg, 'text/xml');
-    const el = htmlDoc.getElementsByTagName('svg').item(0);
-    el.setAttribute('viewBox', '0 0 ' + el.width.baseVal.value + ' ' + el.height.baseVal.value);
-    return new XMLSerializer().serializeToString(htmlDoc);
+    try {
+      const htmlDoc = parser.parseFromString(svg, 'text/xml');
+      const el = htmlDoc.getElementsByTagName('svg').item(0);
+      console.log( el.getAttribute('width').replace(/[a-zA-Z]+/, ''))
+      el.setAttribute('viewBox',
+        '0 0 '
+        + el.getAttribute('width').replace(/[a-z]+/gi, '') + ' '
+        + el.getAttribute('height').replace(/[a-z]+/gi, ''));
+      return new XMLSerializer().serializeToString(htmlDoc);
+    } catch (e) {
+      return svg;
+    }
   }
 
   render() {

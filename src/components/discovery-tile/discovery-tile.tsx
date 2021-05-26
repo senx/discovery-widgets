@@ -98,6 +98,7 @@ FLOWS`;
         this.headers['statusText'] = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
 fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
+        this.LOG.debug(['exec', 'headers'], this.headers);
         this.statusHeaders.emit(this.headers);
         this.start = new Date().getTime();
         if (this.autoRefresh !== (this.options as Param).autoRefresh) {
@@ -109,6 +110,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
           }
         }
+        this.LOG.debug(['exec', 'result'], this.result);
         this.loaded = true;
       }).catch(e => {
         this.statusError.emit(e);
