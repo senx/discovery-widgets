@@ -28,12 +28,11 @@ export default {
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
 // @ts-ignore
-const Template = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
+const Template = ({url, ws, options, title}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
 <discovery-scada url="${url}"
 dashboard-title="${title ? title : ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
-cols="${cols}" cell-height="${cellHeight}"
 debug options='${JSON.stringify(options)}'
 >${ws}</discovery-scada>
 </div>
