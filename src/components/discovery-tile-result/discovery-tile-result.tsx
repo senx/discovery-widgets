@@ -1,10 +1,11 @@
-import {Component, Element, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Prop, State, Watch} from '@stencil/core';
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {DataModel} from "../../model/dataModel";
 import {Utils} from "../../utils/utils";
 import {GTSLib} from "../../utils/gts.lib";
+import {DiscoveryEvent} from "../../model/discoveryEvent";
 
 @Component({
   tag: 'discovery-tile-result',
@@ -12,7 +13,7 @@ import {GTSLib} from "../../utils/gts.lib";
   shadow: true,
 })
 export class DiscoveryTileResultComponent {
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop() result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() start: number;
   @Prop() options: Param | string = new Param();
@@ -28,6 +29,15 @@ export class DiscoveryTileResultComponent {
   @State() execTime = 0;
   @State() bgColor: string;
   @State() fontColor: string;
+  @State() innerResult: DataModel | string;
+  @State() innerStyle: string;
+
+  @Event({
+    eventName: 'discoveryEvent',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
 
   private LOG: Logger;
   private wrapper: HTMLDivElement;
@@ -37,8 +47,20 @@ export class DiscoveryTileResultComponent {
 
   @Watch('result')
   updateRes() {
-    this.result = GTSLib.getData(this.result);
+    this.innerResult = GTSLib.getData(this.result);
     this.parseResult();
+  }
+
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if(res.data) {
+      this.innerResult = res.data;
+      this.parseResult();
+    }
+    if(res.style) {
+      this.innerStyle = res.style as string;
+    }
   }
 
   componentWillLoad() {
@@ -51,7 +73,7 @@ export class DiscoveryTileResultComponent {
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-    this.result = GTSLib.getData(this.result);
+    this.innerResult = GTSLib.getData(this.result);
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -80,7 +102,7 @@ export class DiscoveryTileResultComponent {
       case 'step-after':
       case 'step-before':
         return <discovery-line
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -91,7 +113,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'annotation':
         return <discovery-annotation
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -102,7 +124,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'bar':
         return <discovery-bar
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -113,7 +135,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'display':
         return <discovery-display
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -124,7 +146,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'map':
         return <discovery-map
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
@@ -134,7 +156,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'image':
         return <discovery-image
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
@@ -144,7 +166,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'button':
         return <discovery-button
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           url={this.url}
           type={this.type}
@@ -156,7 +178,7 @@ export class DiscoveryTileResultComponent {
       case 'gauge':
       case 'circle':
         return <discovery-gauge
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -169,7 +191,7 @@ export class DiscoveryTileResultComponent {
       case 'doughnut':
       case 'rose':
         return <discovery-pie
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -180,7 +202,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'tabular':
         return <discovery-tabular
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -191,7 +213,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'plot':
         return <discovery-plot
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -202,7 +224,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'svg':
         return <discovery-svg
-          result={this.result}
+          result={this.innerResult}
           onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
@@ -217,17 +239,20 @@ export class DiscoveryTileResultComponent {
   }
 
   render() {
-    return <div class="discovery-tile"
-                style={{
-                  backgroundColor: this.bgColor,
-                  color: this.fontColor,
-                  height: (this.height)+ 'px'
-                }}>
-      {this.chartTitle ? <h2 ref={(el) => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
-      <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el as HTMLDivElement}>
-        {this.innerHeight ? this.getView() : ''}
+    return [
+      <style>{this.innerStyle}</style>,
+      <div class="discovery-tile"
+           style={{
+             backgroundColor: this.bgColor,
+             color: this.fontColor,
+             height: (this.height) + 'px'
+           }}>
+        {this.chartTitle ? <h2 ref={(el) => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
+        <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el as HTMLDivElement}>
+          {this.innerHeight ? this.getView() : ''}
+        </div>
       </div>
-    </div>;
+    ];
   }
 
   private parseResult() {
@@ -239,15 +264,17 @@ export class DiscoveryTileResultComponent {
       let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
       bgColor = ((this.options as Param) || {bgColor: bgColor}).bgColor || bgColor;
 
-      const dm = ((this.result as unknown as DataModel) || {
-        globalParams: {
-          bgColor, fontColor
-        }
-      }).globalParams || {bgColor, fontColor};
+      const dm: Param = (((this.innerResult as unknown as DataModel) || {
+        globalParams: {bgColor, fontColor}
+      }).globalParams || {bgColor, fontColor}) as Param;
 
-      this.bgColor = dm.bgColor
-      this.fontColor = dm.fontColor
-    })
+      this.bgColor = dm.bgColor;
+      this.fontColor = dm.fontColor;
+      ((this.innerResult as unknown as DataModel).events || []).forEach(e => {
+        this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
+        this.discoveryEvent.emit(e)
+      });
+    });
   }
 
   private setHeight() {

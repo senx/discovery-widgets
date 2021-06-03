@@ -77,34 +77,35 @@ export class DiscoveryDashboardComponent {
     this.ws = this.el.innerText;
     if (this.ws && this.ws !== '') {
       this.loaded = false;
-      Utils.httpPost(this.url, this.ws).then((res: any) => {
-        const result = JSON.parse(res.data as string);
-        const tmpResult = result.length > 0 ? result[0] : new Dashboard();
-        this.options = {...this.options as Param, ...tmpResult.options};
-        this.headers = {};
-        res.headers.split('\n')
-          .filter(h => h !== '' && h.toLowerCase().startsWith('x-warp10'))
-          .forEach(h => {
-            const header = h.split(':');
-            this.headers[header[0].trim()] = header[1].trim();
-          });
-        this.headers['statusText'] = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
+      Utils.httpPost(this.url, this.ws)
+        .then((res: any) => {
+          const result = JSON.parse(res.data as string);
+          const tmpResult = result.length > 0 ? result[0] : new Dashboard();
+          this.options = {...this.options as Param, ...tmpResult.options};
+          this.headers = {};
+          res.headers.split('\n')
+            .filter(h => h !== '' && h.toLowerCase().startsWith('x-warp10'))
+            .forEach(h => {
+              const header = h.split(':');
+              this.headers[header[0].trim()] = header[1].trim();
+            });
+          this.headers['statusText'] = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
 fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
-        this.statusHeaders.emit(this.headers);
-        this.loaded = true;
-        this.start = new Date().getTime();
-        if (this.autoRefresh !== (this.options as Param).autoRefresh) {
-          this.autoRefresh = (this.options as Param).autoRefresh;
-          if (this.timer) {
-            window.clearInterval(this.timer);
+          this.statusHeaders.emit(this.headers);
+          this.loaded = true;
+          this.start = new Date().getTime();
+          if (this.autoRefresh !== (this.options as Param).autoRefresh) {
+            this.autoRefresh = (this.options as Param).autoRefresh;
+            if (this.timer) {
+              window.clearInterval(this.timer);
+            }
+            if (this.autoRefresh && this.autoRefresh > 0) {
+              this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
+            }
           }
-          if (this.autoRefresh && this.autoRefresh > 0) {
-            this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
-          }
-        }
-        this.result = {... tmpResult};
-      }).catch(e => {
+          this.result = {...tmpResult};
+        }).catch(e => {
         this.statusError.emit(e);
         this.LOG.error(['exec'], e);
       })
@@ -129,7 +130,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                      gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
                      gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
                    }}
-              ><div>
+              >
+                <div>
                   {t.macro
                     ? <discovery-tile url={t.endpoint || this.url}
                                       type={t.type as ChartType}

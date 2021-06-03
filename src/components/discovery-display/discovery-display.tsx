@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -8,6 +8,7 @@ import fitty, {FittyInstance} from 'fitty';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {Utils} from "../../utils/utils";
+import {DiscoveryEvent} from "../../model/discoveryEvent";
 
 dayjs.extend(relativeTime)
 
@@ -17,6 +18,7 @@ dayjs.extend(relativeTime)
   shadow: true,
 })
 export class DiscoveryDisplayComponent {
+
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = new Param();
@@ -30,7 +32,7 @@ export class DiscoveryDisplayComponent {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() message: string;
-
+  @State() innerStyle: string;
 
   private wrapper: HTMLDivElement;
   private defOptions: Param = new Param();
@@ -44,6 +46,14 @@ export class DiscoveryDisplayComponent {
     this.result = GTSLib.getData(this.result);
     this.message = this.convert(this.result as DataModel || new DataModel());
     this.flexFont();
+  }
+
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if(res.style) {
+      this.innerStyle = res.style as string;
+    }
   }
 
   componentWillLoad() {
@@ -125,16 +135,20 @@ export class DiscoveryDisplayComponent {
 
 
   render() {
-    return <div style={{width: this.width + 'px', height: this.height + 'px'}} class="display-container">
+    return [
+      <style>{this.innerStyle}</style>,
+      <div style={{width: this.width + 'px', height: this.height + 'px'}} class="display-container">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
-        <span innerHTML={this.message}/><small>{this.unit?this.unit:''}</small>
+        <span innerHTML={this.message}/><small>{this.unit ? this.unit : ''}</small>
       </div>
     </div>
+      ]
   }
 
   private displayDuration(start: dayjs.Dayjs) {
     this.timer = setInterval(() => this.message = dayjs().to(start), 1000);
+    return dayjs().to(start);
   }
 }

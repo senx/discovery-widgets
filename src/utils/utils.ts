@@ -1,3 +1,6 @@
+import {DiscoveryEvent} from "../model/discoveryEvent";
+import {GTSLib} from "./gts.lib";
+
 export class Utils {
 
   static httpPost(theUrl, payload) {
@@ -55,5 +58,52 @@ export class Utils {
         - parseInt(getComputedStyle(el, null).getPropertyValue('padding-left'), 10)
         - parseInt(getComputedStyle(el, null).getPropertyValue('padding-right'), 10)
     }
+  }
+
+  static parseEventData(evt: DiscoveryEvent, eventHandler: string) {
+    const parsed = {style: undefined, data: undefined, xpath: undefined, popup: undefined}
+    if (eventHandler) {
+      let tag = '.*';
+      let type = '.*';
+      eventHandler.split(',').forEach(eh => {
+        if (eh.startsWith('tag')) {
+          tag = eh.split('=')[1];
+        }
+        if (eh.startsWith('type')) {
+          type = eh.split('=')[1];
+        }
+      });
+      const tagRex = new RegExp(tag);
+      if ((evt.tags || []).some(t => tagRex.test(t)) && new RegExp(type).test(evt.type || '')) {
+        switch (evt.type) {
+          case "data":
+            parsed.data = GTSLib.getData(evt.value);
+            break;
+          case "style":
+            parsed.style = evt.value;
+            break;
+          case 'xpath':
+            parsed.xpath = { selector: evt.selector, value: evt.value };
+            break;
+          default:
+          // nothing
+        }
+      }
+    }
+    return parsed;
+  }
+
+  static parseXML(xmlString, contentType) {
+    const parser = new DOMParser();
+    // Parse a simple Invalid XML source to get namespace of <parsererror>:
+    const docError = parser.parseFromString('INVALID', contentType);
+    const parsererrorNS = docError.getElementsByTagName("parsererror")[0].namespaceURI;
+    // Parse xmlString:
+    // (XMLDocument object)
+    const doc = parser.parseFromString(xmlString, contentType);
+    if (doc.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
+      throw new Error('Error parsing XML');
+    }
+    return doc;
   }
 }

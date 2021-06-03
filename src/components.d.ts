@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DataModel } from "./model/dataModel";
 import { ChartType } from "./model/types";
 import { Param } from "./model/param";
+import { DiscoveryEvent } from "./model/discoveryEvent";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
@@ -473,6 +474,7 @@ declare namespace LocalJSX {
         "chartTitle"?: string;
         "debug"?: boolean;
         "height"?: number;
+        "onDiscoveryEvent"?: (event: CustomEvent<DiscoveryEvent>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "start"?: number;

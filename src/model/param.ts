@@ -15,6 +15,7 @@
  *
  */
 import {ChartType, MapParams, TimeMode, TimeUnit} from "./types";
+
 export class Param {
   scheme = 'WARP10';
   bgColor?: string;
@@ -61,6 +62,7 @@ export class Param {
   isRefresh?: boolean;
   elemsCount?: number;
   windowed?: number;
+  eventHandler?: string;
 
 
 // components specific params

@@ -1,10 +1,11 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
+import {DiscoveryEvent} from "../../model/discoveryEvent";
 
 @Component({
   tag: 'discovery-svg',
@@ -32,6 +33,7 @@ export class DiscoverySvgComponent {
   @State() fontColor: string;
   @State() parsing: boolean = false;
   @State() toDisplay: string[] = [];
+  @State() innerStyle: string;
 
   private LOG: Logger;
   private defOptions: Param = new Param();
@@ -40,6 +42,31 @@ export class DiscoverySvgComponent {
   updateRes() {
     this.result = GTSLib.getData(this.result);
     this.parseResult();
+  }
+
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if (res.style) {
+      this.innerStyle = res.style as string;
+    }
+    if (res.xpath) {
+      const toDisplay = [];
+      const result = this.result as DataModel;
+      if (GTSLib.isArray(result.data)) {
+        (result.data as any[] || []).forEach(img => {
+          this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
+          if (DiscoverySvgComponent.isSVG(img)) {
+            toDisplay.push(DiscoverySvgComponent.sanitize(img, res.xpath.selector, res.xpath.value));
+          }
+        })
+      } else if (result.data && DiscoverySvgComponent.isSVG(result.data)) {
+        this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(result.data))
+        toDisplay.push(DiscoverySvgComponent.sanitize(result.data as string, res.xpath.selector, res.xpath.value));
+      }
+
+      this.toDisplay = [...toDisplay]
+    }
   }
 
   componentWillLoad() {
@@ -88,18 +115,35 @@ export class DiscoverySvgComponent {
     return typeof data === 'string' && /<svg/gi.test(data);
   }
 
-  private static sanitize(svg) {
-    const parser = new DOMParser();
+  private static sanitize(svg, xpath?: string, replacement?: string) {
     try {
-      const htmlDoc = parser.parseFromString(svg, 'text/xml');
+      const htmlDoc = Utils.parseXML(svg, "image/svg+xml");
       const el = htmlDoc.getElementsByTagName('svg').item(0);
-      console.log( el.getAttribute('width').replace(/[a-zA-Z]+/, ''))
+      if (!!xpath) {
+          const nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
+          const iterator = htmlDoc.evaluate(nsXpath, htmlDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
+          let elem = iterator.iterateNext();
+          const elemsToReplace = [];
+          while (elem) {
+            elemsToReplace.push(elem);
+            elem = iterator.iterateNext();
+          }
+          console.log(elemsToReplace)
+          elemsToReplace.forEach(e => {
+            const parent = e.parentElement;
+            const g = document.createElement('g');
+            g.innerHTML = replacement.trim();
+            parent.replaceChild(g.firstChild, e);
+          });
+      }
       el.setAttribute('viewBox',
         '0 0 '
         + el.getAttribute('width').replace(/[a-z]+/gi, '') + ' '
         + el.getAttribute('height').replace(/[a-z]+/gi, ''));
+    //  console.log(new XMLSerializer().serializeToString(htmlDoc))
       return new XMLSerializer().serializeToString(htmlDoc);
     } catch (e) {
+      console.log(e)
       return svg;
     }
   }
@@ -107,6 +151,7 @@ export class DiscoverySvgComponent {
   render() {
     return (
       <Host>
+        <style>{this.innerStyle}</style>
         <div class="svg-wrapper" style={{width: this.width + 'px', height: this.height + 'px'}}>
           {this.parsing
             ? <discovery-spinner>Parsing data...</discovery-spinner>
