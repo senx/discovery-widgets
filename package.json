@@ -55,8 +55,7 @@
     "leaflet": "^1.7.1",
     "leaflet-ant-path": "^1.3.0",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33",
-    "rxjs": "^7.1.0"
+    "moment-timezone": "^0.5.33"
   },
   "devDependencies": {
     "@babel/core": "^7.13.16",
