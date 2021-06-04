@@ -79,7 +79,7 @@ export class Utils {
           case "data":
             parsed.data = GTSLib.getData(evt.value);
             break;
-          case "style":
+          case "style": // map css selector -> content
             parsed.style = evt.value;
             break;
           case 'xpath':

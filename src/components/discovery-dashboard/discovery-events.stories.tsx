@@ -53,36 +53,28 @@ Usage.args = {
          'title' 'Event data receiver'
          'w' 2 'h' 1 'x' 2 'y' 0
          'data' ''
-         'options' {
-            'eventHandler' 'type=data,tag=random'
-         }
+         'options' { 'eventHandler' 'type=data,tag=random' }
        }
        {
          'type' 'display'
          'title' 'Event style receiver'
          'w' 2 'h' 1 'x' 4 'y' 0
          'data' 'status'
-         'options' {
-            'eventHandler' 'type=style,tag=random'
-         }
+         'options' { 'eventHandler' 'type=style,tag=random' }
        }
        {
          'type' 'gauge'
          'title' 'Event data receiver'
          'w' 2 'h' 1 'x' 6 'y' 0
          'data' ''
-         'options' {
-            'eventHandler' 'type=data,tag=random'
-         }
+         'options' { 'eventHandler' 'type=data,tag=random' }
        }
        {
          'type' 'svg'
          'title' 'Event style and xpath receiver'
          'w' 4 'h' 2 'x' 8 'y' 0
          'macro' <% @xav/piotr %>
-         'options' {
-            'eventHandler' 'type=(style|xpath),tag=svg'
-         }
+         'options' { 'eventHandler' 'type=(style|xpath),tag=svg' }
        }
        {
          'type' 'display'
@@ -96,11 +88,16 @@ Usage.args = {
             'data' $v
             'events' [
               { 'tags' [ 'random' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
-              { 'tags' [ 'random' ] 'type' 'style' 'value'
-                '.discovery-tile { background-color: ' $color + ' !important; } .value { color: ' + $color2 + '; } ' +
+              { 'tags' [ 'random' ] 'type' 'style'
+                'value' {
+                  '.discovery-tile' 'background-color: ' $color + ' !important;' +
+                  '.value' 'color: ' $color2 + ';' +
+                }
               }
-              { 'tags' [ 'svg' ] 'type' 'style' 'value'
-                'div > div > svg > g > g:nth-child(2) > circle:nth-child(7) { fill: ' $color2 + ' !important; }' +
+              { 'tags' [ 'svg' ] 'type' 'style'
+                'value' {
+                  'div > div > svg > g > g:nth-child(2) > circle:nth-child(7)' 'fill: ' $color2 + ' !important;' +
+                }
               }
 
               { 'tags' [ 'svg' ] 'type' 'xpath'

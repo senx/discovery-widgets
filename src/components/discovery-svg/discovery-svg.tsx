@@ -33,7 +33,7 @@ export class DiscoverySvgComponent {
   @State() fontColor: string;
   @State() parsing: boolean = false;
   @State() toDisplay: string[] = [];
-  @State() innerStyle: string;
+  @State() innerStyle: { [k: string]: string };
 
   private LOG: Logger;
   private defOptions: Param = new Param();
@@ -48,7 +48,7 @@ export class DiscoverySvgComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.style) {
-      this.innerStyle = res.style as string;
+      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
     if (res.xpath) {
       const toDisplay = [];
@@ -148,10 +148,14 @@ export class DiscoverySvgComponent {
     }
   }
 
+  private generateStyle(innerStyle: { [k: string]: string }): string {
+    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
+  }
+
   render() {
     return (
       <Host>
-        <style>{this.innerStyle}</style>
+        <style>{this.generateStyle(this.innerStyle)}</style>
         <div class="svg-wrapper" style={{width: this.width + 'px', height: this.height + 'px'}}>
           {this.parsing
             ? <discovery-spinner>Parsing data...</discovery-spinner>

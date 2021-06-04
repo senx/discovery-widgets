@@ -30,7 +30,7 @@ export class DiscoveryTileResultComponent {
   @State() bgColor: string;
   @State() fontColor: string;
   @State() innerResult: DataModel | string;
-  @State() innerStyle: string;
+  @State() innerStyle: { [k: string]: string; };
 
   @Event({
     eventName: 'discoveryEvent',
@@ -54,12 +54,12 @@ export class DiscoveryTileResultComponent {
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
-    if(res.data) {
+    if (res.data) {
       this.innerResult = res.data;
       this.parseResult();
     }
-    if(res.style) {
-      this.innerStyle = res.style as string;
+    if (res.style) {
+      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
   }
 
@@ -240,7 +240,7 @@ export class DiscoveryTileResultComponent {
 
   render() {
     return [
-      <style>{this.innerStyle}</style>,
+      <style>{this.generateStyle(this.innerStyle)}</style>,
       <div class="discovery-tile"
            style={{
              backgroundColor: this.bgColor,
@@ -285,5 +285,9 @@ export class DiscoveryTileResultComponent {
       this.innerWidth = dims.w;
       this.innerHeight = dims.h - (this.chartTitle ? Utils.getContentBounds(this.title).h + 10 : 0);
     }
+  }
+
+  private generateStyle(innerStyle: { [k: string]: string }): string {
+    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 }

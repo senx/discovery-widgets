@@ -32,7 +32,7 @@ export class DiscoveryDisplayComponent {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() message: string;
-  @State() innerStyle: string;
+  @State() innerStyle: { [k: string]: string; };
 
   private wrapper: HTMLDivElement;
   private defOptions: Param = new Param();
@@ -52,7 +52,7 @@ export class DiscoveryDisplayComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if(res.style) {
-      this.innerStyle = res.style as string;
+      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
   }
 
@@ -136,7 +136,7 @@ export class DiscoveryDisplayComponent {
 
   render() {
     return [
-      <style>{this.innerStyle}</style>,
+      <style>{this.generateStyle(this.innerStyle)}</style>,
       <div style={{width: this.width + 'px', height: this.height + 'px'}} class="display-container">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
@@ -150,5 +150,10 @@ export class DiscoveryDisplayComponent {
   private displayDuration(start: dayjs.Dayjs) {
     this.timer = setInterval(() => this.message = dayjs().to(start), 1000);
     return dayjs().to(start);
+  }
+
+  private generateStyle(innerStyle: { [k: string]: string }): string {
+    console.log(innerStyle)
+    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 }
