@@ -46,10 +46,10 @@
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "dependencies": {
-    "@stencil/core": "^2.5.2",
+    "@stencil/core": "^2.6.0",
     "@stencil/sass": "^1.4.1",
-    "dayjs": "^1.10.4",
-    "echarts": "^5.1.0",
+    "dayjs": "^1.10.5",
+    "echarts": "^5.1.1",
     "echarts-gl": "^2.0.4",
     "fitty": "^2.3.3",
     "leaflet": "^1.7.1",
@@ -58,7 +58,7 @@
     "moment-timezone": "^0.5.33"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.16",
+    "@babel/core": "^7.14.3",
     "@babel/plugin-proposal-class-properties": "~7.13.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
     "@babel/preset-env": "^7.13.15",
