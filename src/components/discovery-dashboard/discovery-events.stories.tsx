@@ -80,7 +80,7 @@ Usage.args = {
          'type' 'display'
          'title' 'Event emitter'
          'w' 2 'h' 1 'x' 0 'y' 0
-         'options' {  'autoRefresh' 3 }
+         'options' {  'autoRefresh' 2 }
          'macro' <% {
             RAND 100 * ROUND 'v' STORE
             <% $v 33 < %> <% '#77BE6955' %>  <% $v 66 < %> <% '#FF983055' %> <% '#F2486555' %> 2 SWITCH 'color' STORE
@@ -101,9 +101,12 @@ Usage.args = {
               }
 
               { 'tags' [ 'svg' ] 'type' 'xpath'
-                'value' '<' 'ellipse rx="' + $v TOSTRING +  '" ry="' + $v TOSTRING + '" style="stroke:none;fill: ' + $color2 + ';" cx="50" cy="200"' + '><' + '/ellipse>' +
-                 'selector' '/svg/g/g[2]/ellipse[1]'
-                // 'selector' 'svg > g > g:nth-child(2) > ellipse:nth-child(1)'
+                'value' '<' 'ellipse rx="' + $v TOSTRING +  '" ry="' + $v TOSTRING + '" style="stroke:none;fill: ' + $color2 + ';" cx="50" cy="200"' + '/>' +
+                'selector' '/svg/g/g[2]/ellipse[1]'
+              }
+             { 'tags' [ 'svg' ] 'type' 'xpath'
+                'value' { 'rx' $v 'ry' $v }
+                'selector' '/svg/g/g[2]/ellipse[3]'
               }
              ]
            }

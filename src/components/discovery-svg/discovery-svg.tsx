@@ -13,7 +13,7 @@ import {DiscoveryEvent} from "../../model/discoveryEvent";
   shadow: true,
 })
 export class DiscoverySvgComponent {
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop() result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() start: number;
   @Prop({mutable: true}) options: Param | string = new Param();
@@ -34,60 +34,26 @@ export class DiscoverySvgComponent {
   @State() parsing: boolean = false;
   @State() toDisplay: string[] = [];
   @State() innerStyle: { [k: string]: string };
+  @State() innerResult: DataModel
 
   private LOG: Logger;
   private defOptions: Param = new Param();
+  private funqueue = [];
 
   @Watch('result')
   updateRes() {
-    this.result = GTSLib.getData(this.result);
+    this.innerResult = GTSLib.getData(this.result);
     this.parseResult();
   }
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
-    if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
-    }
-    if (res.xpath) {
-      const toDisplay = [];
-      const result = this.result as DataModel;
-      if (GTSLib.isArray(result.data)) {
-        (result.data as any[] || []).forEach(img => {
-          this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
-          if (DiscoverySvgComponent.isSVG(img)) {
-            toDisplay.push(DiscoverySvgComponent.sanitize(img, res.xpath.selector, res.xpath.value));
-          }
-        })
-      } else if (result.data && DiscoverySvgComponent.isSVG(result.data)) {
-        this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(result.data))
-        toDisplay.push(DiscoverySvgComponent.sanitize(result.data as string, res.xpath.selector, res.xpath.value));
-      }
-
-      this.toDisplay = [...toDisplay]
-    }
+    this.funqueue.push(this.wrapFunction(this.processEvent, this, [event]));
   }
 
   componentWillLoad() {
     this.parseResult();
-  }
-
-  private parseResult() {
-    this.parsing = true;
-    this.LOG = new Logger(DiscoverySvgComponent, this.debug);
-    if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
-    }
-    this.result = GTSLib.getData(this.result);
-    this.toDisplay = this.convert(this.result as DataModel || new DataModel())
-    this.LOG.debug(['componentWillLoad'], {
-      type: this.type,
-      options: this.options,
-      toDisplay: this.toDisplay,
-    });
-    this.parsing = false;
-    this.draw.emit();
+    this.processQueue();
   }
 
   convert(data: DataModel) {
@@ -111,37 +77,89 @@ export class DiscoverySvgComponent {
     return toDisplay;
   }
 
+  private processEvent(event: CustomEvent<DiscoveryEvent>) {
+    return new Promise(resolve => {
+      const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+      if (res.style) {
+        this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+      }
+      if (res.xpath) {
+        const toDisplay = [];
+        (this.toDisplay || []).forEach(img => {
+          this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
+          if (DiscoverySvgComponent.isSVG(img)) {
+            toDisplay.push(DiscoverySvgComponent.sanitize(img, res.xpath.selector, res.xpath.value));
+          }
+        })
+        this.toDisplay = [...toDisplay]
+      }
+      resolve(true);
+    });
+  }
+
+  private wrapFunction(fn, context, params) {
+    return () => fn.apply(context, params);
+  }
+
+  private processQueue() {
+    new Promise(async resolve => {
+      while (this.funqueue.length > 0) {
+        await (this.funqueue.shift())();
+      }
+      resolve(true)
+    }).then(() => setTimeout(() => this.processQueue(), 100));
+  }
+
+  private parseResult() {
+    this.parsing = true;
+    this.LOG = new Logger(DiscoverySvgComponent, this.debug);
+    if (typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+    }
+    this.innerResult = GTSLib.getData(this.result);
+    this.toDisplay = this.convert(this.innerResult || new DataModel())
+    this.LOG.debug(['componentWillLoad'], {
+      type: this.type,
+      options: this.options,
+      toDisplay: this.toDisplay,
+    });
+    this.parsing = false;
+    this.draw.emit();
+  }
+
   private static isSVG(data) {
     return typeof data === 'string' && /<svg/gi.test(data);
   }
 
-  private static sanitize(svg, xpath?: string, replacement?: string) {
+  private static sanitize(svg, xpath?: string, replacement?: string | { [k: string]: string }) {
     try {
-      const htmlDoc = Utils.parseXML(svg, "image/svg+xml");
-      const el = htmlDoc.getElementsByTagName('svg').item(0);
+      const svgDoc = Utils.parseXML(svg, 'image/svg+xml');
+      const el = svgDoc.getElementsByTagName('svg').item(0);
       if (!!xpath) {
-          const nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
-          const iterator = htmlDoc.evaluate(nsXpath, htmlDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
-          let elem = iterator.iterateNext();
-          const elemsToReplace = [];
-          while (elem) {
-            elemsToReplace.push(elem);
-            elem = iterator.iterateNext();
-          }
-          console.log(elemsToReplace)
-          elemsToReplace.forEach(e => {
+        const nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
+        const iterator = svgDoc.evaluate(nsXpath, svgDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
+        let elem = iterator.iterateNext();
+        const elemsToReplace: SVGElement[] = [];
+        while (elem) {
+          elemsToReplace.push(elem as SVGElement);
+          elem = iterator.iterateNext();
+        }
+        elemsToReplace.forEach(e => {
+          if (typeof replacement === 'string') {
             const parent = e.parentElement;
-            const g = document.createElement('g');
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             g.innerHTML = replacement.trim();
             parent.replaceChild(g.firstChild, e);
-          });
+          } else {
+            Object.keys(replacement).forEach(k => e.setAttribute(k, replacement[k].toString()));
+          }
+        });
       }
       el.setAttribute('viewBox',
         '0 0 '
         + el.getAttribute('width').replace(/[a-z]+/gi, '') + ' '
         + el.getAttribute('height').replace(/[a-z]+/gi, ''));
-    //  console.log(new XMLSerializer().serializeToString(htmlDoc))
-      return new XMLSerializer().serializeToString(htmlDoc);
+      return new XMLSerializer().serializeToString(svgDoc);
     } catch (e) {
       console.log(e)
       return svg;
@@ -149,7 +167,7 @@ export class DiscoverySvgComponent {
   }
 
   private generateStyle(innerStyle: { [k: string]: string }): string {
-    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
+    return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
   render() {
