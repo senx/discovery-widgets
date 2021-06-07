@@ -22,7 +22,7 @@ JustAMacro.args = {
 
 export const CustomStyle = ({url, ws, language, type, options}) => `
 <style>
-* {
+:root {
   --warp-view-button-border-color: #c8e020;
   --warp-view-button-bg-color: #3b528b;
   --warp-view-button-label-color: #c8e020;

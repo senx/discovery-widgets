@@ -11,6 +11,7 @@
     text-align: center;
     text-decoration: none;
     vertical-align: middle;
+    cursor: pointer;
     font-size: var(--warp-view-button-font-size,  1rem);
     border: 1px solid var(--warp-view-button-border-color, $w10-blue);
     padding: var(--warp-view-button-padding,  .375rem .75rem);
