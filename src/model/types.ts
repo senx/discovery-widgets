@@ -15,6 +15,7 @@ export type ChartType =
   | 'image'
   | 'map'
   | 'gauge'
+  | 'linear-gauge'
   | 'circle'
   | 'pie'
   | 'plot'

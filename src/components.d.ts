@@ -82,6 +82,15 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryLinearGauge {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoveryMap {
         "debug": boolean;
         "height": number;
@@ -220,6 +229,12 @@ declare global {
         prototype: HTMLDiscoveryLineElement;
         new (): HTMLDiscoveryLineElement;
     };
+    interface HTMLDiscoveryLinearGaugeElement extends Components.DiscoveryLinearGauge, HTMLStencilElement {
+    }
+    var HTMLDiscoveryLinearGaugeElement: {
+        prototype: HTMLDiscoveryLinearGaugeElement;
+        new (): HTMLDiscoveryLinearGaugeElement;
+    };
     interface HTMLDiscoveryMapElement extends Components.DiscoveryMap, HTMLStencilElement {
     }
     var HTMLDiscoveryMapElement: {
@@ -289,6 +304,7 @@ declare global {
         "discovery-gauge": HTMLDiscoveryGaugeElement;
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-line": HTMLDiscoveryLineElement;
+        "discovery-linear-gauge": HTMLDiscoveryLinearGaugeElement;
         "discovery-map": HTMLDiscoveryMapElement;
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
@@ -377,6 +393,16 @@ declare namespace LocalJSX {
         "width"?: number;
     }
     interface DiscoveryLine {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryLinearGauge {
         "debug"?: boolean;
         "height"?: number;
         "onDraw"?: (event: CustomEvent<void>) => void;
@@ -493,6 +519,7 @@ declare namespace LocalJSX {
         "discovery-gauge": DiscoveryGauge;
         "discovery-image": DiscoveryImage;
         "discovery-line": DiscoveryLine;
+        "discovery-linear-gauge": DiscoveryLinearGauge;
         "discovery-map": DiscoveryMap;
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
@@ -517,6 +544,7 @@ declare module "@stencil/core" {
             "discovery-gauge": LocalJSX.DiscoveryGauge & JSXBase.HTMLAttributes<HTMLDiscoveryGaugeElement>;
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
+            "discovery-linear-gauge": LocalJSX.DiscoveryLinearGauge & JSXBase.HTMLAttributes<HTMLDiscoveryLinearGaugeElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;

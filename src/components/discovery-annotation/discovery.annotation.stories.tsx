@@ -1,6 +1,6 @@
 import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
 import {Param} from "../../model/param";
-import {ColorLib, Colors} from "../../utils/color-lib";
+import {Colors} from "../../utils/color-lib";
 
 export default {
   ...tile,
@@ -94,7 +94,7 @@ WithAutoRefresh.args = {
   options: {...new Param(), autoRefresh: 1}
 }
 
-export const WithCustomStyle =  ({url, ws, lang, options, unit, title}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
+export const WithCustomStyle = ({url, ws, lang, options, unit, title}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
 <style>
 :root {
     --warp-view-chart-grid-color: #35b779;

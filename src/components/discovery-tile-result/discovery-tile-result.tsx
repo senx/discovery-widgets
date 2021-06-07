@@ -188,6 +188,17 @@ export class DiscoveryTileResultComponent {
           width={this.innerWidth}
           debug={this.debug}
         />;
+      case 'linear-gauge':
+        return <discovery-linear-gauge
+          result={this.innerResult}
+          onDraw={() => this.drawn()}
+          type={this.type}
+          unit={this.unit}
+          options={this.options}
+          height={this.innerHeight}
+          width={this.innerWidth}
+          debug={this.debug}
+        />;
       case 'pie':
       case 'doughnut':
       case 'rose':

@@ -30,7 +30,7 @@ CustomDataFormat.args = {
 { 'data' $data 'params' [ { 'maxValue' 5 } { 'maxValue' 2 } { 'maxValue' 1 } ] }`
 }
 
-export const SingleValueAndCustomStyle =  ({url, ws, lang, options, unit, title}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
+export const SingleValueAndCustomStyle =  ({url, ws, lang, options, unit, title, type}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
 <style>
 :root {
     --warp-view-chart-grid-color: #35b779;
@@ -39,7 +39,7 @@ export const SingleValueAndCustomStyle =  ({url, ws, lang, options, unit, title}
     --warp-view-bg-color: #443983;
     }
 </style>
-    <discovery-tile url="${url}" type="gauge" lang="${lang}"
+    <discovery-tile url="${url}" type="${type}" lang="${lang}"
         unit="${unit || ''}" chart-title="${title}"
     options='${JSON.stringify(options)}'>${ws}</discovery-tile>
 </div>`;
@@ -56,7 +56,35 @@ CircularGauge.args = {
   ...InitialUsage.args,
   title: 'My Gauge',
   unit: '°C',
-  type: 'circle',
+  ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] }`,
+  type: 'circle'
+}
+export const HorizontalLinearGauge = Usage.bind({});
+HorizontalLinearGauge.args = {
+  ...CircularGauge.args,
+  type: 'linear-gauge',
+  options: { gauge: { horizontal: true }},
+  ws: `@training/dataset0
+[ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW -1 ] FETCH`
+}
+export const HorizontalLinearGaugeSingleValue = Usage.bind({});
+HorizontalLinearGaugeSingleValue.args = {
+  ...HorizontalLinearGauge.args,
+  type: 'linear-gauge',
+  options: { gauge: { horizontal: true }},
+  ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] }`
+}
+export const VerticalLinearGauge = Usage.bind({});
+VerticalLinearGauge.args = {
+  ...HorizontalLinearGauge.args,
+  options: { gauge: { horizontal: false }},
+  type: 'linear-gauge'
+}
+export const VerticalLinearGaugeSingleValue = Usage.bind({});
+VerticalLinearGaugeSingleValue.args = {
+  ...HorizontalLinearGauge.args,
+  type: 'linear-gauge',
+  options: { gauge: { horizontal: false }},
   ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] }`
 }
 export const CircularGaugeWithAutoRefresh = Usage.bind({});
