@@ -1,10 +1,11 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
+import {DiscoveryEvent} from "../../model/discoveryEvent";
 
 @Component({
   tag: 'discovery-button',
@@ -12,9 +13,9 @@ import {Utils} from "../../utils/utils";
   shadow: true,
 })
 export class DiscoveryButtonComponent {
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -24,7 +25,13 @@ export class DiscoveryButtonComponent {
 
   @Event() draw: EventEmitter<void>;
   @Event() execResult: EventEmitter<any[]>;
-  @Event() statusError: EventEmitter<any>;
+  @Event() statusError: EventEmitter;
+  @Event({
+    eventName: 'discoveryEvent',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -34,8 +41,8 @@ export class DiscoveryButtonComponent {
   private LOG: Logger;
 
   componentWillLoad() {
-    this.parsing = true;
     this.LOG = new Logger(DiscoveryButtonComponent, this.debug);
+    this.parsing = true;
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
@@ -63,7 +70,16 @@ export class DiscoveryButtonComponent {
   private handleClick = () => {
     Utils.httpPost(this.url, (this.result as DataModel).data + ' EVAL')
       .then((res: any) => {
-        this.execResult.emit(res.data)
+        this.LOG.debug(['handleClick', 'res.data'], res.data);
+        const result = GTSLib.getData(res.data);
+        this.LOG.debug(['handleClick', 'getData'], result);
+        if(result && result.data && GTSLib.isArray(result.data) && result.data.length > 0) {
+          (result.data[0].events || []).forEach(e => {
+            this.LOG.debug(['handleClick', 'emit'], {discoveryEvent: e});
+            this.discoveryEvent.emit(e);
+          });
+        }
+        this.execResult.emit(res.data);
       })
       .catch(e => {
         this.statusError.emit(e);

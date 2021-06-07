@@ -153,7 +153,6 @@ export class DiscoveryDisplayComponent {
   }
 
   private generateStyle(innerStyle: { [k: string]: string }): string {
-    console.log(innerStyle)
     return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 }

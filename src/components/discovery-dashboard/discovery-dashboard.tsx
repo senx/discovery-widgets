@@ -15,9 +15,9 @@ import {DataModel} from "../../model/dataModel";
 export class DiscoveryDashboardComponent {
   @Prop() url: string;
   @Prop() dashboardTitle: string;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() debug: boolean = false;
-  @Prop() autoRefresh: number = -1;
+  @Prop({mutable: true}) autoRefresh: number = -1;
   @Prop() cellHeight: number = 220;
   @Prop() cols: number = 12;
 

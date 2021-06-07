@@ -44,6 +44,7 @@ export class DiscoveryTileResultComponent {
   private title: HTMLDivElement;
   private innerHeight: number;
   private innerWidth: number;
+  private innerStyles: any;
 
   @Watch('result')
   updateRes() {
@@ -258,18 +259,7 @@ export class DiscoveryTileResultComponent {
   private parseResult() {
     setTimeout(() => {
       this.setHeight();
-      let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000000');
-      fontColor = ((this.options as Param) || {fontColor}).fontColor || fontColor;
-
-      let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-      bgColor = ((this.options as Param) || {bgColor: bgColor}).bgColor || bgColor;
-
-      const dm: Param = (((this.innerResult as unknown as DataModel) || {
-        globalParams: {bgColor, fontColor}
-      }).globalParams || {bgColor, fontColor}) as Param;
-
-      this.bgColor = dm.bgColor;
-      this.fontColor = dm.fontColor;
+      this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || []).forEach(e => {
         this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
         this.discoveryEvent.emit(e)
@@ -287,7 +277,23 @@ export class DiscoveryTileResultComponent {
     }
   }
 
-  private generateStyle(innerStyle: { [k: string]: string }): string {
-    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
+  private generateStyle(styles: { [k: string]: string }): string {
+    this.innerStyles = {...this.innerStyles, ... styles, ...(this.options as Param).customStyles || {}};
+    return Object.keys(this.innerStyles || {}).map(k=> k + ' { ' + this.innerStyles[k] + ' }').join('\n');
+  }
+
+  private handleCSSColors() {
+    let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000000');
+    fontColor = ((this.options as Param) || {fontColor}).fontColor || fontColor;
+
+    let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
+    bgColor = ((this.options as Param) || {bgColor: bgColor}).bgColor || bgColor;
+
+    const dm: Param = (((this.innerResult as unknown as DataModel) || {
+      globalParams: {bgColor, fontColor}
+    }).globalParams || {bgColor, fontColor}) as Param;
+
+    this.bgColor = dm.bgColor;
+    this.fontColor = dm.fontColor;
   }
 }

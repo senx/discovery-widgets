@@ -116,3 +116,90 @@ Usage.args = {
    }`,
   options: new Param()
 }
+export const UsageWithActionButtons = Template.bind({});
+UsageWithActionButtons.args = {
+  ... Usage.args,
+  ws: `{
+    'title' 'My Dashboard With events'
+    'tiles' [
+      {
+        'type' 'display'
+        'title' 'Event style and data receiver'
+         'w' 3 'h' 1 'x' 4 'y' 0
+         'data' ''
+         'options' { 'eventHandler' 'type=(style|data),tag=random' }
+       }
+       {
+         'type' 'button'
+         'title' 'Event emitter'
+         'options' {
+           'button' { 'label' 'Green' }
+           'customStyles' {
+              '*'
+              <'
+                --warp-view-button-border-color: #77BE69;
+                --warp-view-button-bg-color: #77BE69;
+                --warp-view-button-label-color: #fff;'
+                --warp-view-font-color: #77BE69;
+              '>
+              '.discovery-tile' 'background-color: #77BE6955 !important;'
+              '.discovery-tile h2' 'color: #77BE69 !important;'
+           }
+         }
+         'w' 2 'h' 1 'x' 0 'y' 0
+         'macro' <% { 'data' <%
+            '#77BE6955' 'color' STORE
+            '#77BE69' 'color2' STORE
+            RAND 100 * ROUND 'v' STORE
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'random' ] 'type' 'style'
+                  'value' {
+                    '.discovery-tile' 'background-color: ' $color + ' !important;' +
+                    '.value' 'color: ' $color2 + ';' +
+                  }
+                }
+                { 'tags' [ 'random' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
+               ]
+             }
+          %> } %>
+       }
+       {
+         'type' 'button'
+         'title' 'Event emitter'
+         'options' {
+          'button' { 'label' 'Red' }
+
+           'customStyles' {
+              '*'
+              <'
+                --warp-view-button-border-color: #F24865;
+                --warp-view-button-bg-color: #F24865;
+                --warp-view-button-label-color: #fff;'
+                --warp-view-font-color: #F24865;
+              '>
+              '.discovery-tile' 'background-color: #F2486555 !important;'
+              '.discovery-tile h2' 'color: #F24865 !important;'
+           }
+         }
+         'w' 2 'h' 1 'x' 2 'y' 0
+         'macro' <% { 'data' <%
+            '#F2486555' 'color' STORE
+            '#F24865' 'color2' STORE
+            RAND 100 * ROUND 'v' STORE
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'random' ] 'type' 'style'
+                  'value' {
+                    '.discovery-tile' 'background-color: ' $color + ' !important;' +
+                    '.value' 'color: ' $color2 + ';' +
+                  }
+                }
+                { 'tags' [ 'random' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
+               ]
+             }
+          %> } %>
+       }
+     ]
+  }`
+}

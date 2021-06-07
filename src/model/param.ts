@@ -63,6 +63,7 @@ export class Param {
   elemsCount?: number;
   windowed?: number;
   eventHandler?: string;
+  customStyles?: { [key: string]: string; }[];
 
 
 // components specific params

@@ -325,6 +325,7 @@ declare namespace LocalJSX {
     interface DiscoveryButton {
         "debug"?: boolean;
         "height"?: number;
+        "onDiscoveryEvent"?: (event: CustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "onExecResult"?: (event: CustomEvent<any[]>) => void;
         "onStatusError"?: (event: CustomEvent<any>) => void;
