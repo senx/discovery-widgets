@@ -114,7 +114,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               h = Math.max(y + item.h, h);
             }
           });
-          this.scadaHeight = h;
+          this.scadaHeight = h + 20;
         }
         this.result = {...tmpResult};
       }).catch(e => {
@@ -171,8 +171,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   private static sanitize(data: string | DataModel) {
-    if (typeof data === 'string') return '["' + data + '"]';
-    else return data
+    return typeof data === 'string' ? '["' + data + '"]' : data;
   }
 
   private static merge(options: Param | string, options2: Param) {
