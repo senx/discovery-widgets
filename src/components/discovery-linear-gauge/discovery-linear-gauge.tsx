@@ -18,7 +18,7 @@ import {SeriesOption} from "echarts/lib/util/types";
 export class DiscoveryLinearGauge {
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;

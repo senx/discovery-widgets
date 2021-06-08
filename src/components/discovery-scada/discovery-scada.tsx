@@ -15,9 +15,9 @@ import {DataModel} from "../../model/dataModel";
 export class DiscoveryScadaComponent {
   @Prop() url: string;
   @Prop() dashboardTitle: string;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() debug: boolean = false;
-  @Prop() autoRefresh: number = -1;
+  @Prop({mutable: true}) autoRefresh: number = -1;
   @Prop() cellHeight: number = 220;
   @Prop() cols: number = 12;
 
@@ -149,6 +149,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                     ? <discovery-tile url={t.endpoint || this.url}
                                       type={t.type as ChartType}
                                       chart-title={t.title}
+                                      unit={t.unit}
+                                      debug={this.debug}
                                       options={JSON.stringify(DiscoveryScadaComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result

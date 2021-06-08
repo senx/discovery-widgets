@@ -62,6 +62,9 @@ export class DiscoverySvgComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
+    if (this.options.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    }
     if (GTSLib.isArray(data.data)) {
       (data.data as any[] || []).forEach(img => {
         this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
@@ -155,10 +158,12 @@ export class DiscoverySvgComponent {
           }
         });
       }
-      el.setAttribute('viewBox',
-        '0 0 '
-        + el.getAttribute('width').replace(/[a-z]+/gi, '') + ' '
-        + el.getAttribute('height').replace(/[a-z]+/gi, ''));
+      if (el.getAttribute('width') && el.getAttribute('height')) {
+        el.setAttribute('viewBox',
+          '0 0 '
+          + el.getAttribute('width').replace(/[a-z]+/gi, '') + ' '
+          + el.getAttribute('height').replace(/[a-z]+/gi, ''));
+      }
       return new XMLSerializer().serializeToString(svgDoc);
     } catch (e) {
       console.log(e)

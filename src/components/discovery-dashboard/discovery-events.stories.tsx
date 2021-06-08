@@ -1,6 +1,5 @@
 import {Param} from "../../model/param";
 import {action, configureActions} from '@storybook/addon-actions';
-import {ColorLib} from "../../utils/color-lib";
 
 configureActions({
   depth: 10,
@@ -118,7 +117,7 @@ Usage.args = {
 }
 export const UsageWithActionButtons = Template.bind({});
 UsageWithActionButtons.args = {
-  ... Usage.args,
+  ...Usage.args,
   ws: `{
     'title' 'My Dashboard With events'
     'tiles' [
@@ -217,7 +216,7 @@ debug options='${JSON.stringify(options)}'
 
 export const ScadaVersion = ScadaTemplate.bind({});
 ScadaVersion.args = {
-  ... Usage.args,
+  ...Usage.args,
   ws: `{
   'title' 'My Scada With events'
      'tiles' [

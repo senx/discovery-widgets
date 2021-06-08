@@ -47,37 +47,48 @@ Usage.args = {
      'tiles' [
        {
          'type' 'svg'
-         'w' 1500 'h' 1000 'x' 0 'y' 0 'z' 1
-         'data' [ @xav/powerplant ]
+         'w' 1500 'h' 700 'x' 0 'y' 0 'z' 0
+         'data' [ @xav/nuclear ]
        }
        {
          'type' 'area'
-         'w' 500 'h' 200 'x' 890 'y' 10 'z' 9
+         'w' 270 'h' 100 'x' 1138 'y' 238 'z' 9
          'data' [
            NEWGTS 'data' RENAME
            0.0 'v' STORE
-           1 500
+           1 50
            <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
            FOR
          ]
        }
        {
          'type' 'line'
-         'title' 'Power'
-         'w' 300 'h' 150 'x' 800 'y' 600 'z' 2
+         'w' 220 'h' 150 'x' 620 'y' 60 'z' 2
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'macro' <%
            NEWGTS 'macro' RENAME
            0.0 'v' STORE
-           1 500
+           1 20
            <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
            FOR
          %>
        }
        {
-          'type' 'circle'
+         'type' 'line'
+         'w' 220 'h' 120 'x' 860 'y' 100 'z' 2
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'macro' <%
+           NEWGTS 'macro' RENAME
+           0.0 'v' STORE
+           1 20
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         %>
+       }
+       {
+          'type' 'gauge'
           'unit' '%25'
-         'w' 100 'h' 100 'x' 650 'y' 500 'z' 2
+         'w' 140 'h' 120 'x' 880 'y' 207 'z' 2
           'data'
             RAND 100 * ROUND 'v' STORE
   {
@@ -95,8 +106,8 @@ Usage.args = {
        }
        {
           'type' 'display'
-          'unit' '%25'
-         'w' 50 'h' 50 'x' 320 'y' 585 'z' 5
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 420 'y' 375 'z' 5
           'data'
             RAND 100 * ROUND 'v' STORE
   {
@@ -112,9 +123,100 @@ Usage.args = {
   }
        }
        {
-          'type' 'gauge'
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 640 'y' 320 'z' 5
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'globalParams' {
+      'bgColor'
+      <% $v 33 < %> <% '#77BE69' %>
+      <% $v 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 780 'y' 320 'z' 5
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'globalParams' {
+      'bgColor'
+      <% $v 33 < %> <% '#77BE69' %>
+      <% $v 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 880 'y' 580 'z' 5
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'globalParams' {
+      'bgColor'
+      <% $v 33 < %> <% '#77BE69' %>
+      <% $v 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 540 'y' 550 'z' 5
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'globalParams' {
+      'bgColor'
+      <% $v 33 < %> <% '#77BE69' %>
+      <% $v 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 1270 'y' 370 'z' 5
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'globalParams' {
+      'bgColor'
+      <% $v 33 < %> <% '#77BE69' %>
+      <% $v 66 < %> <% '#FF9830' %>
+      <% '#F24865' %> 2 SWITCH
+      'timeMode' 'custom'
+      'fontColor' 'white'
+    }
+  }
+       }
+       {
+          'type' 'linear-gauge'
+          'options' { 'gauge' { 'horizontal' true } }
           'unit' '%25'
-         'w' 100 'h' 100 'x' 450 'y' 585 'z' 2
+         'w' 150 'h' 80 'x' 1230 'y' 523 'z' 5
           'data'
             RAND 100 * ROUND 'v' STORE
   {
@@ -130,9 +232,44 @@ Usage.args = {
     ]
   }
        }
+
+       {
+          'type' 'linear-gauge'
+          'unit' '%25'
+          'options' { 'gauge' { 'horizontal' true } }
+         'w' 340 'h' 80 'x' 1122 'y' 585 'z' 2
+          'data'
+            RAND 100 * ROUND 'v' STORE
+  {
+    'data' $v
+    'params' [
+      {
+        'maxValue' 100
+        'datasetColor'
+        <% $v 33 < %> <% '#77BE69' %>
+        <% $v 66 < %> <% '#FF9830' %>
+        <% '#F24865' %> 2 SWITCH
+      }
+    ]
+  }
+       }
+
        {
          'type' 'bar'
-         'w' 600 'h' 300 'x' 30 'y' 10 'z' 2
+         'w' 350 'h' 150 'x' 120 'y' 180 'z' 2
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'data' [
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 5
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         ]
+       }
+
+       {
+         'type' 'area'
+         'w' 180 'h' 100 'x' 900 'y' 420 'z' 2
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'data' [
            NEWGTS 'data' RENAME
@@ -180,422 +317,313 @@ withAutoRefresh.args = {
   options: {autoRefresh: 2}
 }
 
-export const polymorphic = Usage.bind({});
-polymorphic.args = {
+export const wihEvents = ({url, ws, options, title}) => `<div>
+<style>
+:root {
+    --warp-view-tile-border: none;
+    --warp-view-tile-shadow: none;
+    --warp-view-font-color: white;
+     }
+</style>
+    <div class="card" style="width: 100%;min-height: 500px; background-color: #404040">
+        <div class="card-body">
+            <discovery-scada url="${url}"
+                dashboard-title="${title ? title : ''}" cols="8"
+                @draw="${event => console.error('foo', 'bar', event)}"
+                debug options='${JSON.stringify(options)}'
+            >${ws}</discovery-scada>
+        </div>
+    </div>
+</div>
+`;
+wihEvents.args = {
   ...Usage.args,
-  cols: 12,
-  cellHeight: 110,
   ws: `
-  RAND 100 * ROUND 'value' STORE
   {
-  'title' 'My Polymorphic Dashboard'
-  'description' 'Change over a random value each 10 seconds with 1 second tile refresh'
+  'title' 'My Scada'
+  'options' { 'scheme' 'BELIZE' }
+  'description' 'Events handling'
      'tiles' [
+
+       {
+         'type' 'svg'
+         'w' 1500 'h' 700 'x' 0 'y' 0 'z' 0
+         'options' {
+            'eventHandler' 'type=xpath,tag=(power|command)'
+            'customStyles' {
+              'path, .st4, .st5, .st6, .st9' 'stroke: white !important;'
+              '.st13' 'fill: #404040 !important'
+            }
+          }
+         'data' [ @xav/nuclear ]
+       }
        {
          'type' 'area'
-         'w' 6 'h' 3 'x' 0 'y' 2
-         'data' { 'data' [
+         'w' 270 'h' 100 'x' 1138 'y' 238 'z' 9
+         'options' { 'autoRefresh' 2 }
+         'macro' <% [
            NEWGTS 'data' RENAME
            0.0 'v' STORE
-           1 500
+           1 50
            <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
            FOR
-         ] 'params' [ {
-      'datasetColor'
-      <% $value 33 < %> <% '#77BE69' %>
-      <% $value 66 < %> <% '#FF9830' %>
-      <% '#F24865' %> 2 SWITCH
-    } ]
-         }
+         ] %>
        }
-       {
-       'type' 'rose'
-       'w' 2 'h' 2 'x' 1 'y' 0
-         'options' { 'scheme' 'ECTOPLASM'  'autoRefresh' 1 }
-       'macro' <% NOW 'now' STORE
-1 4 <% 'i' STORE NEWGTS 'serie #' $i TOSTRING + RENAME 'g' STORE
-  1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
-  $g
-%> FOR %>
-}
-       <% $value 50.0 <= %>
-       <%
        {
          'type' 'line'
-         'title' 'Value <= 50'
-         'w' 5 'h' 2 'x' 3 'y' 0
-         'options' {  'autoRefresh' 1 }
+         'w' 220 'h' 150 'x' 620 'y' 60 'z' 2
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
-         'macro' <%
-           NEWGTS 'macro' RENAME
-           0.0 'v' STORE
-           1 500
-           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
-           FOR
-         %>
-       }
-        {
-         'type' 'scatter'
-         'title' 'Value <= 50'
-         'options' { 'scheme' 'ECTOPLASM' 'autoRefresh' 1 }
-         'w' 5 'h' 2 'x' 8 'y' 0
-         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
-         'macro' <%  NEWGTS 0.0 'v' STORE 1 50 <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %> FOR %>
-       }
-       %>
-       <%
-       {
-         'type' 'bar'
-         'title' 'Value > 50'
-         'w' 9 'h' 2 'x' 3 'y' 0
-         'options' { 'scheme' 'CTHULHU'  'autoRefresh' 1 }
-         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
-         'macro' <%
+         'options' { 'autoRefresh' 2 }
+         'macro' <% [
            NEWGTS 'data' RENAME
            0.0 'v' STORE
-           1 30
+           1 50
            <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
            FOR
-         %>
+         ] %>
        }
-       %>
-       IFTE
-
+       {
+         'type' 'line'
+         'w' 220 'h' 120 'x' 860 'y' 100 'z' 2
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'options' { 'autoRefresh' 2 }
+         'macro' <% [
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 50
+           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+           FOR
+         ] %>
+       }
        {
           'type' 'gauge'
           'unit' '%25'
-          'w' 1 'h' 1 'x' 0 'y' 0
-          'data'  {
-    'data' $value
-    'params' [
-      {
-        'maxValue' 100
-        'datasetColor'
-        <% $value 33 < %> <% '#77BE69' %>
-        <% $value 66 < %> <% '#FF9830' %>
-        <% '#F24865' %> 2 SWITCH
-      }
-    ]
-  }
+         'options' { 'autoRefresh' 1 }
+          'w' 140 'h' 120 'x' 880 'y' 207 'z' 2
+          'macro' <%
+            RAND 100 * ROUND 'v' STORE
+            <% $v 33 < %> <% '#77BE6955' %>  <% $v 66 < %> <% '#FF983055' %> <% '#F2486555' %> 2 SWITCH 'color' STORE
+            <% $v 33 < %> <% '#77BE69' %>  <% $v 66 < %> <% '#FF9830' %> <% '#F24865' %> 2 SWITCH 'color2' STORE
+            {
+              'data' $v
+              'params' [ { 'maxValue' 100 'datasetColor' $color2 } ]
+              'events' [
+                {
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[4]/polygon'
+                'value' { 'style' 'fill: ' $color2 + ';' + }
+                }
+              ]
+            } %>
        }
        {
           'type' 'display'
-          'unit' '%25'
-          'w' 1 'h' 1 'x' 0 'y' 1
-          'data'
-  {
-    'data' $value
-    'globalParams' {
-      'bgColor'
-      <% $value 33 < %> <% '#77BE69' %>
-      <% $value 66 < %> <% '#FF9830' %>
-      <% '#F24865' %> 2 SWITCH
-      'timeMode' 'custom'
-      'fontColor' 'white'
-    }
-  }
-       }
-       {
-         'type' 'map'
-         'w' 6 'h' 3 'x' 6 'y' 2
-         'options' { 'scheme' 'VIRIDIS' 'map' { 'mapType' 'STADIA' } 'autoRefresh' 1 }
-         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 420 'y' 375 'z' 5
+         'options' { 'autoRefresh' 2 }
          'macro' <%
-         NEWGTS 'mapgts' STORE
-         0 10 <% 'ts' STORE $mapgts NOW $ts 10000 - * RAND 10 * RAND 10 * RAND RAND ADDVALUE DROP %> FOR
-         $mapgts %>
-       }
-     ]
-   }`,
-  options: {autoRefresh: 10}
-}
+            RAND 100 * ROUND 'v' STORE
+            <% $v 33 < %> <% '#77BE6955' %>  <% $v 66 < %> <% '#FF983055' %> <% '#F2486555' %> 2 SWITCH 'color' STORE
+            <% $v 33 < %> <% '#77BE69' %>  <% $v 66 < %> <% '#FF9830' %> <% '#F24865' %> 2 SWITCH 'color2' STORE
+            {
+              'data' $v
+              'globalParams' { 'bgColor' $color 'fontColor' $color2 }
+              'events' [
+                { 'tags' [ 'input' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
+                { 'tags' [ 'input' ] 'type' 'style'
+                  'value' {
+                    '.discovery-tile' 'background-color: ' $color + ' !important;' +
+                    '.value' 'color: ' $color2 + ';' +
+                  }
+                }
+              ]
+            } %>
+            }
 
-export const staticPolymorphic = Usage.bind({});
-staticPolymorphic.args = {
-  ...polymorphic.args,
-  ws: `
-  18 'value' STORE
-  {
-  'title' 'My Polymorphic Dashboard'
-  'description' 'Change over a random value each 5 seconds'
-     'tiles' [
+
        {
-         'type' 'area'
-         'w' 6 'h' 3 'x' 0 'y' 2
-         'data' { 'data' [
-           NEWGTS 'data' RENAME
-           0.0 'v' STORE
-           1 500
-           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
-           FOR
-         ] 'params' [ {
-      'datasetColor'
-      <% $value 33 < %> <% '#77BE69' %>
-      <% $value 66 < %> <% '#FF9830' %>
-      <% '#F24865' %> 2 SWITCH
-    } ]
-         }
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 640 'y' 320 'z' 5
+          'data' 0
+         'options' { 'eventHandler' 'type=(data|style),tag=input' }
        }
        {
-       'type' 'rose'
-       'w' 2 'h' 2 'x' 1 'y' 0
-         'options' { 'scheme' 'ECTOPLASM' }
-       'data' [ NOW 'now' STORE
-1 4 <% 'i' STORE NEWGTS 'serie #' $i TOSTRING + RENAME 'g' STORE
-  1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
-  $g
-%> FOR ]
-}
-       <% $value 50.0 <= %>
-       <%
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 780 'y' 320 'z' 5
+          'data' 0
+         'options' { 'eventHandler' 'type=(data|style),tag=input' }
+       }
        {
-         'type' 'line'
-         'title' 'Value <= 50'
-         'w' 4 'h' 2 'x' 3 'y' 0
-         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 880 'y' 580 'z' 5
+          'data' 0
+         'options' { 'eventHandler' 'type=(data|style),tag=output' }
+       }
+       {
+          'type' 'display'
+          'unit' '°C'
+          'w' 50 'h' 50 'x' 540 'y' 550 'z' 5
+         'options' { 'autoRefresh' 2 }
          'macro' <%
-           NEWGTS 'macro' RENAME
-           0.0 'v' STORE
-           1 500
-           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
-           FOR
-         %>
+            RAND 100 * ROUND 'v' STORE
+            <% $v 33 < %> <% '#77BE6955' %>  <% $v 66 < %> <% '#FF983055' %> <% '#F2486555' %> 2 SWITCH 'color' STORE
+            <% $v 33 < %> <% '#77BE69' %>  <% $v 66 < %> <% '#FF9830' %> <% '#F24865' %> 2 SWITCH 'color2' STORE
+            {
+              'data' $v
+              'globalParams' { 'bgColor' $color 'fontColor' $color2 }
+              'events' [
+                { 'tags' [ 'output' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
+                { 'tags' [ 'output' ] 'type' 'style'
+                  'value' {
+                    '.discovery-tile' 'background-color: ' $color + ' !important;' +
+                    '.value' 'color: ' $color2 + ';' +
+                  }
+                }
+                {
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[15]/g/circle[2]'
+                'value' { 'style' 'fill: ' $color + }
+                }
+              ]
+            } %>
+            }
+       {
+          'type' 'display'
+          'unit' '°C'
+         'w' 50 'h' 50 'x' 1270 'y' 370 'z' 5
+
+          'data' 0
+         'options' { 'eventHandler' 'type=(data|style),tag=input' }
        }
-        {
-         'type' 'scatter'
-         'title' 'Value <= 50'
-         'options' { 'scheme' 'ECTOPLASM' }
-         'w' 5 'h' 2 'x' 7 'y' 0
-         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
-         'data' [ NEWGTS 0.0 'v' STORE 1 50 <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %> FOR ]
+       {
+          'type' 'linear-gauge'
+          'unit' '%25'
+         'w' 150 'h' 80 'x' 1230 'y' 523 'z' 5
+          'options' { 'eventHandler' 'type=data,tag=output'  'gauge' { 'horizontal' true }  }
+         'data' { 'data' 0 'params' [ { 'maxValue' 100 } ] }
        }
-       %>
-       <%
+
+       {
+          'type' 'linear-gauge'
+          'unit' '%25'
+          'options' { 'gauge' { 'horizontal' true } 'autoRefresh' 1 }
+         'w' 340 'h' 80 'x' 1122 'y' 585 'z' 2
+          'macro' <%  RAND 100 * ROUND 'v' STORE
+
+                  <% $v 33 < %> <% '#77BE69' %>
+                  <% $v 66 < %> <% '#FF9830' %>
+                  <% '#F24865' %> 2 SWITCH 'color' STORE
+              { 'data' $v 'params' [ {
+                'maxValue' 100
+                'datasetColor' $color
+              }
+            ]
+              'events' [
+                {
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[19]/g'
+                'value' { 'style' 'transform-box: fill-box;transform-origin: center;transform: rotate(' $v TOSTRING + 'deg);' + }
+                }
+                {
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/polygon[3]'
+                'value' { 'style' 'transform: translate(' $v 2 / 30 - TOSTRING + 'px);fill :' + $color + }
+                }
+              ]
+
+            }
+            %>
+       }
+
        {
          'type' 'bar'
-         'title' 'Value > 50'
-         'w' 9 'h' 2 'x' 3 'y' 0
-         'options' { 'scheme' 'CTHULHU' }
+         'w' 350 'h' 150 'x' 120 'y' 180 'z' 2
+         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
+         'options' { 'autoRefresh' 1 }
+         'macro' <% [
+           NEWGTS 'data' RENAME
+           0.0 'v' STORE
+           1 5
+           <% 1 s * NOW SWAP - NaN NaN NaN RAND 100 * DUP 'v' STORE ADDVALUE %>
+           FOR
+         ] %>
+       }
+
+       {
+         'type' 'area'
+         'w' 180 'h' 100 'x' 900 'y' 420 'z' 2
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'data' [
            NEWGTS 'data' RENAME
            0.0 'v' STORE
-           1 30
+           1 5
            <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
            FOR
          ]
        }
-       %>
-       IFTE
 
        {
-          'type' 'gauge'
-          'unit' '%25'
-          'w' 1 'h' 1 'x' 0 'y' 0
-          'data'  {
-    'data' $value
-    'params' [
-      {
-        'maxValue' 100
-        'datasetColor'
-        <% $value 33 < %> <% '#77BE69' %>
-        <% $value 66 < %> <% '#FF9830' %>
-        <% '#F24865' %> 2 SWITCH
-      }
-    ]
-  }
+         'type' 'button'
+         'title' 'Commands'
+         'options' {
+           'button' { 'label' 'Pump on' }
+           'customStyles' {
+              '*'
+              <'
+                --warp-view-button-border-color: #77BE69;
+                --warp-view-button-bg-color: #77BE69;
+                --warp-view-button-label-color: #fff;'
+                --warp-view-font-color: #77BE69;
+              '>
+              '.discovery-tile h2' 'color: #fff !important;'
+           }
+         }
+         'w' 200 'h' 150 'x' 10 'y' 10
+         'macro' <% { 'data' <%
+            '#77BE6955' 'color' STORE
+            '#77BE69' 'color2' STORE
+            RAND 100 * ROUND 'v' STORE
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'command' ] 'type' 'xpath'
+                'selector' '//*[@id="Calque_1"]/g[15]/rect'
+                  'value' { 'style' 'stroke: ' $color2 + ' !important;' + }
+                }
+               ]
+             }
+          %> } %>
        }
        {
-          'type' 'display'
-          'unit' '%25'
-          'w' 1 'h' 1 'x' 0 'y' 1
-          'data'
-  {
-    'data' $value
-    'globalParams' {
-      'bgColor'
-      <% $value 33 < %> <% '#77BE69' %>
-      <% $value 66 < %> <% '#FF9830' %>
-      <% '#F24865' %> 2 SWITCH
-      'timeMode' 'custom'
-      'fontColor' 'white'
-    }
-  }
-       }
-       {
-         'type' 'map'
-         'w' 6 'h' 3 'x' 6 'y' 2
-         'options' { 'scheme' 'VIRIDIS' }
-         'endpoint' 'https://sandbox.senx.io/api/v0/exec'
-         'data'
-           NEWGTS 'g' STORE
-0 10 <% 'ts' STORE $g NOW $ts 10000 - * RAND 10 * RAND 10 * RAND RAND ADDVALUE DROP %> FOR
-{
-  'data' $g
-  'globalParams' {
-    'map' {
-      'mapType' 'STADIA'
-    }
-  }
-}
+         'type' 'button'
+         'options' {
+           'button' { 'label' 'Pump off' }
+           'customStyles' {
+              '*'
+              <'
+                --warp-view-button-border-color: #F24865;
+                --warp-view-button-bg-color: #F24865;
+                --warp-view-button-label-color: #fff;'
+                --warp-view-font-color: #F24865;
+              '>
+              '.discovery-tile h2' 'color: #fff !important;'
+           }
+         }
+         'w' 200 'h' 150 'x' 10 'y' 110
+         'macro' <% { 'data' <%
+            '#F2486555' 'color' STORE
+            '#F24865' 'color2' STORE
+            RAND 100 * ROUND 'v' STORE
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'command' ] 'type' 'xpath'
+                'selector' '//*[@id="Calque_1"]/g[15]/rect'
+                  'value' { 'style' 'stroke: ' $color2 + ' !important;' + }
+                }
+               ]
+             }
+          %> } %>
        }
      ]
-   }`,
-
-  options: {autoRefresh: -1}
+   }`
 }
 
-export const differentSizesAndPositionAndCustomCellHeight = Usage.bind({});
-differentSizesAndPositionAndCustomCellHeight.args = {
-  ...Usage.args,
-  cols: 12,
-  cellHeight: 110,
-  ws: `
-  {
-    'title' 'Test'
-    'tiles' [
-      {
-        'type' 'display'
-        'x' 0 'y' 0 'w' 1 'h' 1
-        'data' '1x1'
-      }
-      {
-        'type' 'display'
-        'x' 1 'y' 0 'w' 2 'h' 2
-        'data' '2x2'
-      }
-      {
-        'type' 'display'
-        'x' 3 'y' 0 'w' 1 'h' 2
-        'data' '1x2'
-      }
-      {
-        'type' 'display'
-        'x' 4 'y' 1 'w' 2 'h' 1
-        'data' '2x1'
-      }
-      {
-        'type' 'display'
-        'x' 6 'y' 0 'w' 6 'h' 2
-        'data' '6x2'
-      }
-      {
-        'type' 'display'
-        'x' 0 'y' 1 'w' 1 'h' 1
-        'data' '1x1'
-      }
-      {
-        'type' 'display'
-        'x' 1 'y' 2 'w' 2 'h' 2
-        'data' '2x2'
-      }
-      {
-        'type' 'display'
-        'x' 3 'y' 2 'w' 1 'h' 2
-        'data' '1x2'
-      }
-    ]
-  }
-  `,
-  options: {...Usage.args.options, scheme: ColorLib.color.CHARTANA}
-}
-
-export const Raspi1WithGeneralOptions = Usage.bind({});
-Raspi1WithGeneralOptions.args = {
-  ...Usage.args,
-  options: {},
-  ws: `
-// Variables
-'9MnLoloG1kgCdf4fZi.FmpBYcngX0Xr_NHskCI6cQn.hK2SmNIYoP5lD8VHThFA9wq0FU5rE2geBdC62LnplZpDqudWu4KtDogsBM9PglhqP9lHjI5aIPjJzanaiFdwpAcMOZHre7TF' 'token' STORE
-'2592000000000' 'duration' STORE
-'rasp1-1' 'hname' STORE
-{
-  'title' 'Raspi-1'
-  'description' 'Raspi-1'
-  'options' { 'scheme' 'CHARTANA' }
-  'autoRefresh' 30
-  'tiles' [
-    {
-      'title' 'Disks'
-      'x' 0 'y' 0 'w' 3 'h' 1
-      'type' 'gauge' 'unit' 'Gb'
-      'data' [ $token '~linux.df.bytes.(capacity|free)' { 'hname' $hname 'device' '~/dev/.*' } NOW -1 ] FETCH
-        [ SWAP bucketizer.last NOW 0 1 ] BUCKETIZE [ 'device' 'mountpoint' ] PARTITION  'gts' STORE
-        [] 'data' STORE
-        [] 'params' STORE
-        $gts KEYLIST <%
-          'k' STORE
-          {
-            $gts $k GET
-            <% 'g' STORE
-              $g NAME 'linux.df.bytes.' '' REPLACE
-              $g VALUES REVERSE 0 GET
-            %> FOREACH
-          } 'vals' STORE
-          $data {
-            'key'  $k 'device' GET ' (' + $k 'mountpoint' GET + ')' +
-            'value'  $vals 'capacity' GET $vals 'free' GET - 1024 / 1024 / 1024.0 / 100 * ROUND 100.0 /
-          } +! DROP
-          $params { 'maxValue' $vals 'capacity' GET  1024 / 1024 / 1024 /  } +! DROP
-      %> ASREGS FOREACH
-      { 'data' $data 'params' $params }
-    }
-    {
-        'title' 'Network'
-        'x' 0 'y' 1 'w' 3 'h' 1
-        'type' 'area'
-        'data' [ $token '~linux.proc.net.dev.(receive|transmit).bytes' { 'hname' $hname 'iface' 'eth0' } NOW $duration TOLONG ] FETCH
-          false RESETS 'gts' STORE
-          [
-            [ $gts [] 'linux.proc.net.dev.receive.bytes' filter.byclass ] FILTER
-            [ $gts [] 'linux.proc.net.dev.transmit.bytes' filter.byclass ] FILTER
-          ] FLATTEN [ SWAP bucketizer.mean NOW 1 h 0 ] BUCKETIZE
-          [ SWAP mapper.delta 1 0 0 ] MAP
-    }
-    {
-        'title' 'Load'
-        'x' 3 'y' 1 'w' 9 'h' 1
-        'type' 'area'
-        'data' <%
-          [ $token '~linux.proc.stat.userhz.(user|nice|system|idle|iowait)' { 'hname' $hname 'cpu' 'cpu' } NOW $duration TOLONG ] FETCH
-          [ SWAP bucketizer.mean NOW 1 h 0 ] BUCKETIZE 'gts' STORE
-          [ $gts [] '~linux.proc.stat.userhz.(user|nice|system|idle|iowait)' filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE 0 GET 'cpuGTS' STORE
-          [ $gts [] 'linux.proc.stat.userhz.idle' filter.byclass ] FILTER 0 GET 'idleGTS' STORE
-          [ $gts [] '~linux.proc.stat.userhz.(iowait|idle)' filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE 0 GET 'iowaitGTS' STORE
-          [ $gts [] '~linux.proc.stat.userhz.(system|idle)' filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE 0 GET 'systemGTS' STORE
-          [
-            [ [ $cpuGTS $idleGTS ] [] <%
-              'd' STORE
-              $d 7 GET 0 GET 'cpu' STORE
-              $d 7 GET 1 GET 'idle' STORE
-              1000.0 $cpu $idle - * $cpu 5  + / 10 / 'v' STORE
-              [ $d 0 GET NaN NaN NaN $v ]
-            %> ASREGS MACROREDUCER ] REDUCE 0 GET 'CPU' RENAME
-          [ [ $iowaitGTS $idleGTS ] [] <%
-            'd' STORE
-            $d 7 GET 0 GET 'cpu' STORE
-            $d 7 GET 1 GET 'idle' STORE
-            1000.0 $cpu $idle - * $cpu 5  + / 10 / 'v' STORE
-            [ $d 0 GET NaN NaN NaN $v ]
-          %> ASREGS MACROREDUCER ] REDUCE 0 GET 'Disk IO' RENAME
-          [ [ $systemGTS $idleGTS ] [] <%
-            'd' STORE
-            $d 7 GET 0 GET 'cpu' STORE
-            $d 7 GET 1 GET 'idle' STORE
-            1000.0 $cpu $idle - * $cpu 5  + / 10 / 'v' STORE
-            [ $d 0 GET NaN NaN NaN $v ]
-          %> ASREGS MACROREDUCER ] REDUCE 0 GET 'System' RENAME
-        ] %>  <% [] %> <% %> TRY
-    }
-    {
-      'title' 'RAM/Swap'
-      'x' 3 'y' 0 'w' 9 'h' 1
-      'type' 'area'
-      'data' [ $token '~linux.proc.meminfo.(MemFree|SwapFree)' { 'hname' $hname } NOW  $duration TOLONG ] FETCH
-        [ SWAP bucketizer.mean NOW 1 h 0 ] BUCKETIZE
-        [ SWAP 1.0 1024.0 1024.0 * 1024.0 * / mapper.mul 0 0 0 ] MAP
-    }
-  ]
-}`
-}
 

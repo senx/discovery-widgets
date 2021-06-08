@@ -235,8 +235,10 @@ export class DiscoveryLineComponent {
   }
 
   private getXAxis(color?: string): CartesianAxisOption {
+    const splitNumber = Math.min(Math.ceil(this.width / 100) - 1, 10);
     return {
       type: 'time',
+      splitNumber,
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},

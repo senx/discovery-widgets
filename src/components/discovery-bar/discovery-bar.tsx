@@ -16,11 +16,11 @@ import {DataModel} from "../../model/dataModel";
   shadow: true,
 })
 export class DiscoveryBarComponent {
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
-  @Prop() height: number;
+  @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string;
 

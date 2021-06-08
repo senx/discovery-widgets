@@ -87,6 +87,9 @@ export class DiscoveryDisplayComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams) as Param;
     this.options = {...options};
+    if (this.options.customStyles) {
+        this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    }
     this.LOG.debug(['convert'], 'dataModel', dataModel);
 
     let display: any;
@@ -137,7 +140,7 @@ export class DiscoveryDisplayComponent {
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
-      <div style={{width: this.width + 'px', height: this.height + 'px'}} class="display-container">
+      <div style={{width: this.width + 'px', height: this.height + 'px', color: (this.options as Param).fontColor}} class="display-container">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
