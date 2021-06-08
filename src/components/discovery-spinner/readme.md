@@ -23,6 +23,7 @@
  - [discovery-gauge](../discovery-gauge)
  - [discovery-image](../discovery-image)
  - [discovery-line](../discovery-line)
+ - [discovery-linear-gauge](../discovery-linear-gauge)
  - [discovery-pie](../discovery-pie)
  - [discovery-plot](../discovery-plot)
  - [discovery-scada](../discovery-scada)
@@ -40,6 +41,7 @@ graph TD;
   discovery-gauge --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-line --> discovery-spinner
+  discovery-linear-gauge --> discovery-spinner
   discovery-pie --> discovery-spinner
   discovery-plot --> discovery-spinner
   discovery-scada --> discovery-spinner

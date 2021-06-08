@@ -50,6 +50,7 @@ graph TD;
   discovery-tile-result --> discovery-image
   discovery-tile-result --> discovery-button
   discovery-tile-result --> discovery-gauge
+  discovery-tile-result --> discovery-linear-gauge
   discovery-tile-result --> discovery-pie
   discovery-tile-result --> discovery-tabular
   discovery-tile-result --> discovery-plot
@@ -60,6 +61,7 @@ graph TD;
   discovery-display --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-gauge --> discovery-spinner
+  discovery-linear-gauge --> discovery-spinner
   discovery-pie --> discovery-spinner
   discovery-tabular --> discovery-spinner
   discovery-tabular --> discovery-pageable

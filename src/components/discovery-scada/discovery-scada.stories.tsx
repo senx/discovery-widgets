@@ -657,7 +657,7 @@ wihEventsInLightMode.args = {
          'type' 'svg'
          'w' 1500 'h' 700 'x' 0 'y' 0 'z' 0
          'options' { 'eventHandler' 'type=xpath,tag=(power|command)' }
-         'data' [ @xav/nuclear ]
+         'data' [ @xav/nuclear2 ]
        }
        {
          'type' 'area'
@@ -711,7 +711,7 @@ wihEventsInLightMode.args = {
               'params' [ { 'maxValue' 100 'datasetColor' $color2 } ]
               'events' [
                 {
-                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[4]/polygon'
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[5]/polygon'
                 'value' { 'style' 'fill: ' $color2 + ';' + }
                 }
               ]
@@ -784,7 +784,7 @@ wihEventsInLightMode.args = {
                   }
                 }
                 {
-                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[15]/g/circle[2]'
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[17]/g/circle[2]'
                 'value' { 'style' 'fill: ' $color + }
                 }
               ]
@@ -823,11 +823,11 @@ wihEventsInLightMode.args = {
             ]
               'events' [
                 {
-                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[19]/g'
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/g[21]/g'
                 'value' { 'style' 'transform-box: fill-box;transform-origin: center;transform: rotate(' $v TOSTRING + 'deg);' + }
                 }
                 {
-                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/polygon[3]'
+                'tags' [ 'power' ] 'type' 'xpath' 'selector' '//*[@id="Calque_1"]/polygon'
                 'value' { 'style' 'transform: translate(' $v 2 / 30 - TOSTRING + 'px);fill :' + $color + }
                 }
               ]
@@ -887,7 +887,7 @@ wihEventsInLightMode.args = {
             { 'data' ''
              'events' [
                 { 'tags' [ 'command' ] 'type' 'xpath'
-                'selector' '//*[@id="Calque_1"]/g[15]/rect'
+                'selector' '//*[@id="Calque_1"]/g[17]/rect'
                   'value' { 'style' 'stroke: ' $color2 + ' !important;' + }
                 }
                ]
@@ -917,7 +917,7 @@ wihEventsInLightMode.args = {
             { 'data' ''
              'events' [
                 { 'tags' [ 'command' ] 'type' 'xpath'
-                'selector' '//*[@id="Calque_1"]/g[15]/rect'
+                'selector' '//*[@id="Calque_1"]/g[17]/rect'
                   'value' { 'style' 'stroke: ' $color2 + ' !important;' + }
                 }
                ]

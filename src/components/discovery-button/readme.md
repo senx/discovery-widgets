@@ -7,24 +7,25 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                                                                                                                                                                                                                                                                  | Default       |
-| --------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `debug`   | `debug`   |             | `boolean`                                                                                                                                                                                                                                                             | `false`       |
-| `height`  | `height`  |             | `number`                                                                                                                                                                                                                                                              | `undefined`   |
-| `options` | `options` |             | `Param \| string`                                                                                                                                                                                                                                                     | `new Param()` |
-| `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                 | `undefined`   |
-| `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "circle" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "button"` | `undefined`   |
-| `url`     | `url`     |             | `string`                                                                                                                                                                                                                                                              | `undefined`   |
-| `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                              | `undefined`   |
+| Property  | Attribute | Description | Type                                                                                                                                                                                                                                                                                    | Default       |
+| --------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `debug`   | `debug`   |             | `boolean`                                                                                                                                                                                                                                                                               | `false`       |
+| `height`  | `height`  |             | `number`                                                                                                                                                                                                                                                                                | `undefined`   |
+| `options` | `options` |             | `Param \| string`                                                                                                                                                                                                                                                                       | `new Param()` |
+| `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                                   | `undefined`   |
+| `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "linear-gauge" \| "circle" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "button"` | `undefined`   |
+| `url`     | `url`     |             | `string`                                                                                                                                                                                                                                                                                | `undefined`   |
+| `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                                                | `undefined`   |
 
 
 ## Events
 
-| Event         | Description | Type                 |
-| ------------- | ----------- | -------------------- |
-| `draw`        |             | `CustomEvent<void>`  |
-| `execResult`  |             | `CustomEvent<any[]>` |
-| `statusError` |             | `CustomEvent<any>`   |
+| Event            | Description | Type                          |
+| ---------------- | ----------- | ----------------------------- |
+| `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
+| `draw`           |             | `CustomEvent<void>`           |
+| `execResult`     |             | `CustomEvent<any[]>`          |
+| `statusError`    |             | `CustomEvent<any>`            |
 
 
 ## Dependencies
