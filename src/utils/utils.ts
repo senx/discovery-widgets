@@ -85,6 +85,9 @@ export class Utils {
           case 'xpath':
             parsed.xpath = { selector: evt.selector, value: evt.value };
             break;
+          case 'popup':
+            parsed.popup =  evt.value;
+            break;
           default:
           // nothing
         }

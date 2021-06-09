@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -6,6 +6,8 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Dashboard} from "../../model/dashboard";
 import {ChartType} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
+import {DiscoveryEvent} from "../../model/discoveryEvent";
+import {Tile} from "../../model/tile";
 
 @Component({
   tag: 'discovery-dashboard',
@@ -28,6 +30,7 @@ export class DiscoveryDashboardComponent {
   @State() width: number;
   @State() height: number;
   @State() result: Dashboard;
+  @State() modalContent: Tile;
   @State() headers: any;
   @State() loaded = false;
   @State() start: number;
@@ -35,6 +38,7 @@ export class DiscoveryDashboardComponent {
   private LOG: Logger;
   private ws: string;
   private timer: any;
+  private modal: HTMLDivElement;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -45,6 +49,18 @@ export class DiscoveryDashboardComponent {
       options: this.options,
       newValue, oldValue
     });
+  }
+
+
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if (res.popup) {
+      if (this.modal) {
+        this.modalContent = res.popup;
+        this.modal.style.display = 'block';
+      }
+    }
   }
 
   componentWillLoad() {
@@ -70,6 +86,12 @@ export class DiscoveryDashboardComponent {
     this.LOG.debug(['disconnectedCallback'], 'disconnected');
     if (this.timer) {
       window.clearInterval(this.timer);
+    }
+  }
+
+  closeModal() {
+    if (this.modal) {
+      this.modal.style.display = 'none'
     }
   }
 
@@ -115,6 +137,28 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
   render() {
     return <Host>
+      <div class="modal" onClick={() => this.closeModal()}
+           ref={(el) => this.modal = el as HTMLDivElement}>
+        <div class="modal-content">
+          <span class="close" onClick={() => this.closeModal()}>&times;</span>
+          {!!this.modalContent ? <div class="modal-wrapper">{!!this.modalContent.macro
+            ? <discovery-tile url={this.modalContent.endpoint || this.url}
+                              type={this.modalContent.type as ChartType}
+                              chart-title={this.modalContent.title}
+                              options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, this.modalContent.options))}
+            >{this.modalContent.macro + ' EVAL'}</discovery-tile>
+            : <discovery-tile-result
+              url={this.modalContent.endpoint || this.url}
+              result={DiscoveryDashboardComponent.sanitize(this.modalContent.data)}
+              type={this.modalContent.type as ChartType}
+              unit={this.modalContent.unit}
+              options={DiscoveryDashboardComponent.merge(this.options, this.modalContent.options)}
+              debug={this.debug}
+              chart-title={this.modalContent.title}
+            />}</div> : ''
+          }
+        </div>
+      </div>
       {this.loaded ?
         <div class="discovery-dashboard-main">
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}

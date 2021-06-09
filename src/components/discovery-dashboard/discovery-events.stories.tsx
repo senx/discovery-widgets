@@ -120,6 +120,7 @@ UsageWithActionButtons.args = {
   ...Usage.args,
   ws: `{
     'title' 'My Dashboard With events'
+    'options' { 'eventHandler' 'type=.*,tag=popup' }
     'tiles' [
       {
         'type' 'display'
@@ -195,6 +196,60 @@ UsageWithActionButtons.args = {
                   }
                 }
                 { 'tags' [ 'random' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
+               ]
+             }
+          %> } %>
+       }
+       {
+         'type' 'button'
+         'title' 'Popup emitter'
+         'options' {
+          'button' { 'label' 'Data' }
+         }
+         'w' 2 'h' 1 'x' 0 'y' 1
+         'macro' <% { 'data' <%
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'popup' ] 'type' 'popup'
+                  'value' {
+                     'type' 'area'
+                     'w' 3 'h' 1 'x' 0 'y' 0
+                     'data' [
+                       NEWGTS 'data' RENAME
+                       0.0 'v' STORE
+                       1 500
+                       <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+                       FOR
+                     ]
+                   }
+                }
+               ]
+             }
+          %> } %>
+       }
+       {
+         'type' 'button'
+         'title' 'Popup emitter'
+         'options' {
+          'button' { 'label' 'Macro' }
+         }
+         'w' 2 'h' 1 'x' 2 'y' 1
+         'macro' <% { 'data' <%
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'popup' ] 'type' 'popup'
+                  'value' {
+                     'type' 'area'
+                     'w' 3 'h' 1 'x' 0 'y' 0
+                     'macro' <% [
+                       NEWGTS 'data' RENAME
+                       0.0 'v' STORE
+                       1 500
+                       <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+                       FOR
+                     ] %>
+                   }
+                }
                ]
              }
           %> } %>
