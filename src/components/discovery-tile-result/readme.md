@@ -33,7 +33,7 @@
 ### Used by
 
  - [discovery-dashboard](../discovery-dashboard)
- - [discovery-scada](../discovery-scada)
+ - [discovery-modal](../discovery-modal)
  - [discovery-tile](../discovery-tile)
 
 ### Depends on
@@ -81,7 +81,7 @@ graph TD;
   discovery-plot --> discovery-spinner
   discovery-svg --> discovery-spinner
   discovery-dashboard --> discovery-tile-result
-  discovery-scada --> discovery-tile-result
+  discovery-modal --> discovery-tile-result
   discovery-tile --> discovery-tile-result
   style discovery-tile-result fill:#f9f,stroke:#333,stroke-width:4px
 ```

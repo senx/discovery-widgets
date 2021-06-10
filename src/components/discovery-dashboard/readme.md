@@ -7,15 +7,16 @@
 
 ## Properties
 
-| Property         | Attribute         | Description | Type              | Default       |
-| ---------------- | ----------------- | ----------- | ----------------- | ------------- |
-| `autoRefresh`    | `auto-refresh`    |             | `number`          | `-1`          |
-| `cellHeight`     | `cell-height`     |             | `number`          | `220`         |
-| `cols`           | `cols`            |             | `number`          | `12`          |
-| `dashboardTitle` | `dashboard-title` |             | `string`          | `undefined`   |
-| `debug`          | `debug`           |             | `boolean`         | `false`       |
-| `options`        | `options`         |             | `Param \| string` | `new Param()` |
-| `url`            | `url`             |             | `string`          | `undefined`   |
+| Property         | Attribute         | Description | Type                     | Default       |
+| ---------------- | ----------------- | ----------- | ------------------------ | ------------- |
+| `autoRefresh`    | `auto-refresh`    |             | `number`                 | `-1`          |
+| `cellHeight`     | `cell-height`     |             | `number`                 | `220`         |
+| `cols`           | `cols`            |             | `number`                 | `12`          |
+| `dashboardTitle` | `dashboard-title` |             | `string`                 | `undefined`   |
+| `debug`          | `debug`           |             | `boolean`                | `false`       |
+| `options`        | `options`         |             | `Param \| string`        | `new Param()` |
+| `type`           | `type`            |             | `"dashboard" \| "scada"` | `'dashboard'` |
+| `url`            | `url`             |             | `string`                 | `undefined`   |
 
 
 ## Events
@@ -28,10 +29,15 @@
 
 ## Dependencies
 
+### Used by
+
+ - [discovery-modal](../discovery-modal)
+
 ### Depends on
 
 - [discovery-tile](../discovery-tile)
 - [discovery-tile-result](../discovery-tile-result)
+- [discovery-modal](../discovery-modal)
 - [discovery-spinner](../discovery-spinner)
 
 ### Graph
@@ -39,6 +45,7 @@
 graph TD;
   discovery-dashboard --> discovery-tile
   discovery-dashboard --> discovery-tile-result
+  discovery-dashboard --> discovery-modal
   discovery-dashboard --> discovery-spinner
   discovery-tile --> discovery-tile-result
   discovery-tile --> discovery-spinner
@@ -67,6 +74,7 @@ graph TD;
   discovery-tabular --> discovery-pageable
   discovery-plot --> discovery-spinner
   discovery-svg --> discovery-spinner
+  discovery-modal --> discovery-dashboard
   style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
