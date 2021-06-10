@@ -30,11 +30,12 @@ export default {
 // @ts-ignore
 const Template = ({url, ws, options, title}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
-<discovery-scada url="${url}"
+<discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
+type="scada"
 debug options='${JSON.stringify(options)}'
->${ws}</discovery-scada>
+>${ws}</discovery-dashboard>
 </div>
 </div>`;
 
@@ -327,11 +328,11 @@ export const wihEvents = ({url, ws, options, title}) => `<div>
 </style>
     <div class="card" style="width: 100%;min-height: 500px; background-color: #404040">
         <div class="card-body">
-            <discovery-scada url="${url}"
-                dashboard-title="${title ? title : ''}" cols="8"
-                @draw="${event => console.error('foo', 'bar', event)}"
-                debug options='${JSON.stringify(options)}'
-            >${ws}</discovery-scada>
+           <discovery-dashboard url="${url}"
+dashboard-title="${title ? title : ''}"
+type="scada"
+debug options='${JSON.stringify(options)}'
+>${ws}</discovery-dashboard>
         </div>
     </div>
 </div>
@@ -635,11 +636,12 @@ export const wihEventsInLightMode = ({url, ws, options, title}) => `<div>
 </style>
     <div class="card" style="width: 100%;min-height: 500px;">
         <div class="card-body">
-            <discovery-scada url="${url}"
-                dashboard-title="${title ? title : ''}" cols="8"
-                @draw="${event => console.error('foo', 'bar', event)}"
-                debug options='${JSON.stringify(options)}'
-            >${ws}</discovery-scada>
+            <discovery-dashboard url="${url}"
+dashboard-title="${title ? title : ''}"
+@draw="${event => console.error('foo', 'bar', event)}"
+type="scada"
+debug options='${JSON.stringify(options)}'
+>${ws}</discovery-dashboard>
         </div>
     </div>
 </div>

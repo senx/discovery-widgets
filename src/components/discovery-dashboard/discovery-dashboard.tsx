@@ -22,6 +22,7 @@ export class DiscoveryDashboardComponent {
   @Prop({mutable: true}) autoRefresh: number = -1;
   @Prop() cellHeight: number = 220;
   @Prop() cols: number = 12;
+  @Prop() type: 'scada' | 'dashboard' = 'dashboard';
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
@@ -39,6 +40,8 @@ export class DiscoveryDashboardComponent {
   private ws: string;
   private timer: any;
   private modal: HTMLDiscoveryModalElement;
+  private _type: 'scada' | 'dashboard';
+  private scadaHeight: number;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -118,6 +121,21 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
             }
           }
+          this._type = tmpResult.type || this.type || 'dashboard';
+          if (this._type === 'scada') {
+            const tiles = tmpResult.tiles;  // items array
+            if (tiles.length > 0) {
+              let y = 0;
+              let h = 0;
+              tiles.forEach(item => {
+                if (item.y >= y) {
+                  y = item.y;
+                  h = Math.max(y + item.h, h);
+                }
+              });
+              this.scadaHeight = h + 20;
+            }
+          }
           this.result = {...tmpResult};
         }).catch(e => {
         this.statusError.emit(e);
@@ -139,16 +157,49 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     else return data
   }
 
-  render() {
-    return <Host>
-      <discovery-modal
-        ref={(el) => this.modal = el as HTMLDiscoveryModalElement}
-        data={this.modalContent}
-        options={this.options}
-        url={this.url}
-        debug={this.debug} />
-      {this.loaded ?
-        <div class="discovery-dashboard-main">
+  private getRendering() {
+    switch (this._type) {
+      case "scada":
+        return <div class="discovery-scada-main">
+          {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
+          {this.result.description ? <p>{this.result.description}</p> : ''}
+          <div class="discovery-scada-wrapper"
+               style={{height: this.scadaHeight + 'px'}}
+          >
+            {this.result.tiles.map((t) =>
+              <div class="discovery-scada-tile"
+                   style={{
+                     left: t.x + 'px',
+                     width: t.w + 'px',
+                     height: t.h + 'px',
+                     top: t.y + 'px',
+                     zIndex: '' + (t.z || 0)
+                   }}
+              >
+                <div>
+                  {t.macro
+                    ? <discovery-tile url={t.endpoint || this.url}
+                                      type={t.type as ChartType}
+                                      chart-title={t.title}
+                                      unit={t.unit}
+                                      debug={this.debug}
+                                      options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                    >{t.macro + ' EVAL'}</discovery-tile>
+                    : <discovery-tile-result
+                      url={t.endpoint || this.url}
+                      result={DiscoveryDashboardComponent.sanitize(t.data)}
+                      type={t.type as ChartType}
+                      unit={t.unit}
+                      options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                      debug={this.debug}
+                      chart-title={t.title}
+                    />
+                  }</div>
+              </div>)
+            }</div>
+        </div>;
+      case "dashboard":
+        return <div class="discovery-dashboard-main">
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
           <div class="discovery-dashboard-wrapper" style={{
@@ -183,8 +234,20 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               </div>)
             }</div>
         </div>
-        : <discovery-spinner>Requesting data...</discovery-spinner>
-      }
+      default:
+        return '';
+    }
+  }
+
+  render() {
+    return <Host>
+      <discovery-modal
+        ref={(el) => this.modal = el as HTMLDiscoveryModalElement}
+        data={this.modalContent}
+        options={this.options}
+        url={this.url}
+        debug={this.debug}/>
+      {this.loaded ? this.getRendering() : <discovery-spinner>Requesting data...</discovery-spinner>}
       <pre id="ws"><slot/></pre>
     </Host>;
   }

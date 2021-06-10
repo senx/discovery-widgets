@@ -125,7 +125,7 @@ UsageWithActionButtons.args = {
       {
         'type' 'display'
         'title' 'Event style and data receiver'
-         'w' 3 'h' 1 'x' 4 'y' 0
+         'w' 4 'h' 1 'x' 4 'y' 0
          'data' ''
          'options' { 'eventHandler' 'type=(style|data),tag=random' }
        }
@@ -285,6 +285,37 @@ UsageWithActionButtons.args = {
              }
           %> } %>
        }
+
+       {
+         'type' 'button'
+         'title' 'Popup emitter'
+         'options' {
+          'button' { 'label' 'Scada' }
+         }
+         'w' 2 'h' 1 'x' 6 'y' 1
+         'macro' <% { 'data' <%
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'popup' ] 'type' 'popup'
+                  'value'
+                  { 'title' 'My Scada' 'type' 'scada' 'tiles' [
+                  {
+                     'type' 'area'
+                     'w' 500 'h' 250 'x' 200 'y' 200 'z' 1
+                     'macro' <% [
+                       NEWGTS 'data' RENAME
+                       0.0 'v' STORE
+                       1 500
+                       <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+                       FOR
+                     ] %>
+                   }
+                ] }
+                }
+               ]
+             }
+          %> } %>
+       }
      ]
   }`
 }
@@ -292,11 +323,12 @@ UsageWithActionButtons.args = {
 // @ts-ignore
 const ScadaTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
-<discovery-scada url="${url}"
+<discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
+type="scada"
 debug options='${JSON.stringify(options)}'
->${ws}</discovery-scada>
+>${ws}</discovery-dashboard>
 </div>
 </div>`;
 
