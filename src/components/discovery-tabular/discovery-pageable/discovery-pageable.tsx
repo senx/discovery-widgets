@@ -76,14 +76,14 @@ export class DiscoveryPageable {
 
   render() {
     return <div>
-      <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}></div>
+      <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
       <table>
         <thead>{this.data.headers.map(header => <th
           style={{width: (100 / this.data.headers.length) + '%'}}>{header}</th>)}</thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
           <tr class={i % 2 === 0 ? 'odd' : 'even'}>
-            {value.map(v => <td><span innerHTML={v}></span></td>)}
+            {value.map(v => <td><span innerHTML={v}/></td>)}
           </tr>
         )}
         </tbody>

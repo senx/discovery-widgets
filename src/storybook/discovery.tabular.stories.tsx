@@ -26,11 +26,11 @@ CustomData.args = {
   ...InitialUsage.args,
   ws: `{
 'title' 'Test'
-'columns'  [ 'Name' 'A' 'B' 'C' 'D' ]
+'columns'  [ 'Name' 'A' 'B' 'C' 'Link' ]
 'rows' [
-  [ 'label X' 15 56 44 22 ]
-  [ 'label Y' 1 5 4 2 ]
-  [ 'label Z' 14 45 78 12 ]
+  [ 'label X' 15 56 44 '<' 'a href="https://warp10.io/">Warp 10</' + 'a>' + ]
+  [ 'label Y' 1 5 4 '<' 'a href="https://senx.io/">SenX</' + 'a>' + ]
+  [ 'label Z' 14 45 78 '<' 'img src="https://warp10.io/assets/img/header-w-white.png" />' + ]
 ]
 } 'values' STORE
 { 'data' $values }`
