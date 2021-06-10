@@ -1,4 +1,4 @@
-import {Param} from "../../model/param";
+import {Param} from "../model/param";
 import {action, configureActions} from '@storybook/addon-actions';
 
 configureActions({

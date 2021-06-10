@@ -1,4 +1,4 @@
-import readme from '../discovery-tile/readme.md';
+import readme from '../components/discovery-tile/readme.md';
 
 export default {
   title: 'UI/Spinner',

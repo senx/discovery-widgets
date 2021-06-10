@@ -1,6 +1,6 @@
-import readme from '../discovery-tile/readme.md';
-import {Usage} from "../discovery-tile/discovery.tile.stories";
-import {Param} from "../../model/param";
+import readme from '../components/discovery-tile/readme.md';
+import {Usage} from "./discovery.tile.stories";
+import {Param} from "../model/param";
 
 export default {
   title: 'UI/SVG Display',

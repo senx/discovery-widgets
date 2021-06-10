@@ -1,5 +1,5 @@
-import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
-import {Param} from "../../model/param";
+import tile, {Usage} from './discovery.tile.stories';
+import {Param} from "../model/param";
 
 export default {
   ...tile,

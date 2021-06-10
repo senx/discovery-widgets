@@ -1,4 +1,4 @@
-import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
+import tile, {Usage} from './discovery.tile.stories';
 
 export default {
   ...tile,

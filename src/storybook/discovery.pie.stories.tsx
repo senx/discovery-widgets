@@ -1,16 +1,16 @@
-import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
-import {Param} from "../../model/param";
-import {Colors} from "../../utils/color-lib";
+import tile, {Usage} from './discovery.tile.stories';
+import {Param} from "../model/param";
+import {Colors} from "../utils/color-lib";
 
 export default {
   ...tile,
-  title: 'Charts/Doughnut'
+  title: 'Charts/Pie'
 };
 
 export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
   ...Usage.args,
-  type: 'doughnut',
+  type: 'pie',
   ws: `0 2 <% 'j' STORE
     NEWGTS 'serie' $j TOSTRING + RENAME NOW NaN NaN NaN RAND ADDVALUE
 %> FOR`
@@ -36,8 +36,8 @@ CustomDataMap.args = {
 }`
 };
 
-export const DoughnutChartWithAutoRefresh = Usage.bind({});
-DoughnutChartWithAutoRefresh.args = {
+export const PieChartWithAutoRefresh = Usage.bind({});
+PieChartWithAutoRefresh.args = {
   ...InitialUsage.args,
   ws: `NOW 'now' STORE
 1 4 <% DROP NEWGTS 'g' STORE

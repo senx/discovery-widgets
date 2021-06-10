@@ -1,6 +1,6 @@
-import {Param} from "../../model/param";
+import {Param} from "../model/param";
 import {action, configureActions} from '@storybook/addon-actions';
-import {ColorLib} from "../../utils/color-lib";
+import {ColorLib} from "../utils/color-lib";
 
 configureActions({
   depth: 10,

@@ -1,5 +1,5 @@
-import tile, {Usage} from '../discovery-tile/discovery.tile.stories';
-import {Colors} from "../../utils/color-lib";
+import tile, {Usage} from './discovery.tile.stories';
+import {Colors} from "../utils/color-lib";
 
 export default {
   ...tile,
