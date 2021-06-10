@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -6,6 +6,8 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Dashboard} from "../../model/dashboard";
 import {ChartType} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
+import {DiscoveryEvent} from "../../model/discoveryEvent";
+import {Tile} from "../../model/tile";
 
 @Component({
   tag: 'discovery-scada',
@@ -29,6 +31,7 @@ export class DiscoveryScadaComponent {
   @State() height: number;
   @State() scadaHeight: number = 0;
   @State() result: Dashboard;
+  @State() modalContent: Tile | Dashboard;
   @State() headers: any;
   @State() loaded = false;
   @State() start: number;
@@ -36,6 +39,17 @@ export class DiscoveryScadaComponent {
   private LOG: Logger;
   private ws: string;
   private timer: any;
+  private modal: HTMLDiscoveryModalElement;
+
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if (res.popup && this.modal) {
+      this.modalContent = res.popup;
+      this.modal.open().then(() => {
+      });
+    }
+  }
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -127,6 +141,12 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
   render() {
     return <Host>
+      <discovery-modal
+        ref={(el) => this.modal = el as HTMLDiscoveryModalElement}
+        data={this.modalContent}
+        options={this.options}
+        url={this.url}
+        debug={this.debug} />
       {this.loaded ?
         <div class="discovery-scada-main">
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}

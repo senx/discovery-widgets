@@ -254,6 +254,37 @@ UsageWithActionButtons.args = {
              }
           %> } %>
        }
+
+       {
+         'type' 'button'
+         'title' 'Popup emitter'
+         'options' {
+          'button' { 'label' 'Dashboard' }
+         }
+         'w' 2 'h' 1 'x' 4 'y' 1
+         'macro' <% { 'data' <%
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'popup' ] 'type' 'popup'
+                  'value'
+                  { 'title' 'My Dashboard' 'tiles' [
+                  {
+                     'type' 'area'
+                     'w' 3 'h' 1 'x' 0 'y' 0
+                     'macro' <% [
+                       NEWGTS 'data' RENAME
+                       0.0 'v' STORE
+                       1 500
+                       <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
+                       FOR
+                     ] %>
+                   }
+                ] }
+                }
+               ]
+             }
+          %> } %>
+       }
      ]
   }`
 }

@@ -9,6 +9,8 @@ import { DataModel } from "./model/dataModel";
 import { ChartType } from "./model/types";
 import { Param } from "./model/param";
 import { DiscoveryEvent } from "./model/discoveryEvent";
+import { Tile } from "./model/tile";
+import { Dashboard } from "./model/dashboard";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
@@ -98,6 +100,13 @@ export namespace Components {
         "result": DataModel | string;
         "type": ChartType;
         "width": number;
+    }
+    interface DiscoveryModal {
+        "data": Tile | Dashboard;
+        "debug": boolean;
+        "open": () => Promise<void>;
+        "options": Param | string;
+        "url": string;
     }
     interface DiscoveryPageable {
         "data": { name: string, values: any[], headers: string[] };
@@ -241,6 +250,12 @@ declare global {
         prototype: HTMLDiscoveryMapElement;
         new (): HTMLDiscoveryMapElement;
     };
+    interface HTMLDiscoveryModalElement extends Components.DiscoveryModal, HTMLStencilElement {
+    }
+    var HTMLDiscoveryModalElement: {
+        prototype: HTMLDiscoveryModalElement;
+        new (): HTMLDiscoveryModalElement;
+    };
     interface HTMLDiscoveryPageableElement extends Components.DiscoveryPageable, HTMLStencilElement {
     }
     var HTMLDiscoveryPageableElement: {
@@ -306,6 +321,7 @@ declare global {
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-linear-gauge": HTMLDiscoveryLinearGaugeElement;
         "discovery-map": HTMLDiscoveryMapElement;
+        "discovery-modal": HTMLDiscoveryModalElement;
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
         "discovery-plot": HTMLDiscoveryPlotElement;
@@ -421,6 +437,12 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "width"?: number;
     }
+    interface DiscoveryModal {
+        "data"?: Tile | Dashboard;
+        "debug"?: boolean;
+        "options"?: Param | string;
+        "url"?: string;
+    }
     interface DiscoveryPageable {
         "data"?: { name: string, values: any[], headers: string[] };
         "debug"?: boolean;
@@ -521,6 +543,7 @@ declare namespace LocalJSX {
         "discovery-line": DiscoveryLine;
         "discovery-linear-gauge": DiscoveryLinearGauge;
         "discovery-map": DiscoveryMap;
+        "discovery-modal": DiscoveryModal;
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
         "discovery-plot": DiscoveryPlot;
@@ -546,6 +569,7 @@ declare module "@stencil/core" {
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-linear-gauge": LocalJSX.DiscoveryLinearGauge & JSXBase.HTMLAttributes<HTMLDiscoveryLinearGaugeElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
+            "discovery-modal": LocalJSX.DiscoveryModal & JSXBase.HTMLAttributes<HTMLDiscoveryModalElement>;
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
             "discovery-plot": LocalJSX.DiscoveryPlot & JSXBase.HTMLAttributes<HTMLDiscoveryPlotElement>;

@@ -6,4 +6,6 @@ export class Dashboard {
   description: string;
   tiles: Tile[] = [];
   options?: Param;
+  cols: 12;
+  cellHeight: 220;
 }

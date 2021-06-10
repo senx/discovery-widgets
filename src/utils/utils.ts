@@ -1,5 +1,7 @@
 import {DiscoveryEvent} from "../model/discoveryEvent";
 import {GTSLib} from "./gts.lib";
+import {Param} from "../model/param";
+import {DataModel} from "../model/dataModel";
 
 export class Utils {
 
@@ -16,6 +18,19 @@ export class Utils {
       xmlHttp.open("POST", theUrl, true); // true for asynchronous
       xmlHttp.send(payload);
     });
+  }
+
+  static merge(options: Param | string, options2: Param) {
+    if (typeof options === 'string') {
+      options = JSON.parse(options);
+    }
+    return {...new Param(), ...options as Param, ...options2}
+  }
+
+
+  static sanitize(data: string | DataModel) {
+    if (typeof data === 'string') return '["' + data + '"]';
+    else return data
   }
 
   static mergeDeep<T>(base: T, ext: any) {
