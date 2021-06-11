@@ -60,6 +60,7 @@ export class DiscoveryDashboardComponent {
     if (res.popup && this.modal) {
       this.modalContent = res.popup;
       this.modal.open().then(() => {
+        // empty
       });
     }
   }
@@ -74,9 +75,9 @@ export class DiscoveryDashboardComponent {
       this.options = JSON.parse(this.options);
     }
 
-    const {h, w} = Utils.getContentBounds(this.el.parentElement);
-    this.width = w - 15;
-    this.height = h;
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w - 15;
+    this.height = dims.h;
   }
 
   componentDidLoad() {
@@ -101,12 +102,12 @@ export class DiscoveryDashboardComponent {
           this.options = {...this.options as Param, ...tmpResult.options};
           this.headers = {};
           res.headers.split('\n')
-            .filter(h => h !== '' && h.toLowerCase().startsWith('x-warp10'))
-            .forEach(h => {
-              const header = h.split(':');
+            .filter(header => header !== '' && header.toLowerCase().startsWith('x-warp10'))
+            .forEach(headerName => {
+              const header = headerName.split(':');
               this.headers[header[0].trim()] = header[1].trim();
             });
-          this.headers['statusText'] = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
+          this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
 fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           this.statusHeaders.emit(this.headers);
@@ -126,22 +127,16 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             const tiles = tmpResult.tiles;  // items array
             if (tiles.length > 0) {
               let y = 0;
-              let h = 0;
+              let height = 0;
               tiles.forEach(item => {
                 if (item.y >= y) {
                   y = item.y;
-                  h = Math.max(y + item.h, h);
+                  height = Math.max(y + item.h, height);
                 }
               });
-              this.scadaHeight = h + 20;
+              this.scadaHeight = height + 20;
             }
           }
-          /*mpResult.tiles = tmpResult.tiles.map(t=> {
-            if(t.macro) {
-              t.macro = Object.keys(tmpResult.vars || {}).map(k=> `"${tmpResult.vars[k]}" "${k}" STORE`).join("\n") + "\n" + t.macro;
-            }
-            return t;
-          })*/
           this.result = {...tmpResult};
         }).catch(e => {
         this.statusError.emit(e);

@@ -73,7 +73,7 @@ export class DiscoveryInputComponent {
       this.options = JSON.parse(this.options);
     }
     this.innerResult = GTSLib.getData(this.result);
-    let btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
+    const btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
     const dm = ((this.result as unknown as DataModel) || {
       globalParams: {
         button: {label: btnLabel}

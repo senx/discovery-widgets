@@ -313,7 +313,7 @@ export class DiscoveryTileResultComponent {
     fontColor = ((this.options as Param) || {fontColor}).fontColor || fontColor;
 
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.options as Param) || {bgColor: bgColor}).bgColor || bgColor;
+    bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
 
     const dm: Param = (((this.innerResult as unknown as DataModel) || {
       globalParams: {bgColor, fontColor}

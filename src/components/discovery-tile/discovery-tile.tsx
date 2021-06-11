@@ -23,7 +23,7 @@ export class DiscoveryTileComponent {
   @Prop() vars: string= '{}';
 
   @Event() statusHeaders: EventEmitter<string[]>;
-  @Event() statusError: EventEmitter<any>;
+  @Event() statusError: EventEmitter;
 
   @Element() el: HTMLElement;
 
@@ -73,15 +73,16 @@ export class DiscoveryTileComponent {
     }
 
     this.innerVars = JSON.parse(this.vars || '{}');
-    const {h, w} = Utils.getContentBounds(this.el.parentElement);
-    this.width = w - 15;
-    this.height = h;
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w - 15;
+    this.height = dims.h;
   }
 
   componentDidLoad() {
     this.exec();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
     this.LOG.debug(['disconnectedCallback'], 'disconnected');
     if (this.timer) {
@@ -103,17 +104,16 @@ FLOWS`;
       } else {
         this.ws = Object.keys(this.innerVars || {}).map(k => `"${this.innerVars[k]}" "${k}" STORE`).join("\n") + "\n" + this.ws;
       }
-      console.log(this.ws)
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;
         this.headers = {};
         res.headers.split('\n')
-          .filter(h => h !== '' && h.toLowerCase().startsWith('x-warp10'))
-          .forEach(h => {
-            const header = h.split(':');
-            this.headers[header[0].trim()] = header[1].trim();
+          .filter(header => header !== '' && header.toLowerCase().startsWith('x-warp10'))
+          .forEach(header => {
+            const headerName = header.split(':');
+            this.headers[headerName[0].trim()] = headerName[1].trim();
           });
-        this.headers['statusText'] = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
+        this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
 fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.LOG.debug(['exec', 'headers'], this.headers);
@@ -133,7 +133,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       }).catch(e => {
         this.statusError.emit(e);
         this.loaded = true;
-        console.error(e)
+        this.LOG.error(['exec'], e);
       })
     }
   }

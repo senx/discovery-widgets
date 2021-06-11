@@ -111,9 +111,9 @@ export class DiscoveryPlot {
       } else if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         const c = ColorLib.getColor(gts.id, this.options.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
+        const t = ((data.params || [])[i] || {type: this.type}).type || this.type;
         series.push({
-          type: type === 'scatter'? 'scatter': 'line',
+          type: t === 'scatter'? 'scatter': 'line',
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
           animation: false,

@@ -69,12 +69,12 @@ export class DiscoverySvgComponent {
       (data.data as any[] || []).forEach(img => {
         this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
         if (DiscoverySvgComponent.isSVG(img)) {
-          toDisplay.push(DiscoverySvgComponent.sanitize(img));
+          toDisplay.push(this.sanitize(img));
         }
       })
     } else if (data.data && DiscoverySvgComponent.isSVG(data.data)) {
       this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(data.data))
-      toDisplay.push(DiscoverySvgComponent.sanitize(data.data as string));
+      toDisplay.push(this.sanitize(data.data as string));
     }
 
     return toDisplay;
@@ -91,7 +91,7 @@ export class DiscoverySvgComponent {
         (this.toDisplay || []).forEach(img => {
           this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
           if (DiscoverySvgComponent.isSVG(img)) {
-            toDisplay.push(DiscoverySvgComponent.sanitize(img, res.xpath.selector, res.xpath.value));
+            toDisplay.push(this.sanitize(img, res.xpath.selector, res.xpath.value));
           }
         })
         this.toDisplay = [...toDisplay]
@@ -134,7 +134,7 @@ export class DiscoverySvgComponent {
     return typeof data === 'string' && /<svg/gi.test(data);
   }
 
-  private static sanitize(svg, xpath?: string, replacement?: string | { [k: string]: string }) {
+  private sanitize(svg, xpath?: string, replacement?: string | { [k: string]: string }) {
     try {
       const svgDoc = Utils.parseXML(svg, 'image/svg+xml');
       const el = svgDoc.getElementsByTagName('svg').item(0);
@@ -166,7 +166,7 @@ export class DiscoverySvgComponent {
       }
       return new XMLSerializer().serializeToString(svgDoc);
     } catch (e) {
-      console.log(e)
+      this.LOG.error(['exec'], e);
       return svg;
     }
   }

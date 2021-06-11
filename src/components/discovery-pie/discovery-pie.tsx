@@ -149,10 +149,10 @@ export class DiscoveryPieComponent {
           });
         } else {
           Object.keys(gts).forEach((k, j) => {
-            const c = ColorLib.getColor(j, (this.options as Param).scheme);
-            const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+            const schemeColor = ColorLib.getColor(j, (this.options as Param).scheme);
+            const datasetColor = ((data.params || [])[i] || {datasetColor: schemeColor}).datasetColor || schemeColor;
             dataStruct.push({
-              ...this.getCommonDataParam(color),
+              ...this.getCommonDataParam(datasetColor),
               name: k,
               value: gts[k]
             });
@@ -189,7 +189,7 @@ export class DiscoveryPieComponent {
         left: 'center',
         show: false
       },
-      series: series
+      series
     } as EChartsOption;
   }
 

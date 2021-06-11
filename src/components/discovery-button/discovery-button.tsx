@@ -61,8 +61,7 @@ export class DiscoveryButtonComponent {
       options: this.options,
     });
 
-    let btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
-
+    const btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
     const dm = ((this.result as unknown as DataModel) || {
       globalParams: {
         button: {label: btnLabel}
@@ -95,7 +94,7 @@ export class DiscoveryButtonComponent {
       })
       .catch(e => {
         this.statusError.emit(e);
-        console.error(e)
+        this.LOG.error(['exec'], e);
       });
   }
 

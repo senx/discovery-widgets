@@ -69,13 +69,6 @@ export class DiscoveryGauge {
       endAngle: 0,
       lineStyle: {color},
       pointer: {show: false},
-      /*      pointer: {
-              icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
-              length: '12%',
-              width: '10%',
-              offsetCenter: [0, '-78%'],
-              itemStyle: {color: color}
-            },*/
       title: {
         fontSize: 12,
         offsetCenter: [0, 10],
@@ -213,7 +206,7 @@ export class DiscoveryGauge {
         left: 'center',
         show: false
       },
-      series: series
+      series
     } as EChartsOption;
   }
 

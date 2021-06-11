@@ -220,7 +220,7 @@ export class DiscoveryBarComponent {
           type: 'inside'
         }
       ],
-      series: series
+      series
     } as EChartsOption;
   }
 

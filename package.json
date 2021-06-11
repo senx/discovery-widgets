@@ -43,7 +43,7 @@
     "clean": "rm -fr ./www && rm -fr ./dist",
     "dev": "npm run storybook",
     "build-storybook": "build-storybook -c ./.storybook -o ../public",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'"
+    "lint": "tslint -c tslint.json 'src/**/*.ts*'"
   },
   "dependencies": {
     "@stencil/core": "^2.6.0",

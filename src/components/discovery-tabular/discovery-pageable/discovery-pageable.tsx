@@ -22,7 +22,7 @@ export class DiscoveryPageable {
   private displayedValues: any[] = [];
 
   @Watch('data')
-  updateData(newValues) {
+  updateData() {
     this.drawGridData();
   }
 
@@ -51,7 +51,7 @@ export class DiscoveryPageable {
     if (!this.data) {
       return;
     }
-    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) as Param;
+    const options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) as Param;
     this.options = {...options};
     this.pages = [];
     for (let i = 0; i < (this.data.values || []).length / this.elemsCount; i++) {
@@ -64,10 +64,6 @@ export class DiscoveryPageable {
       Math.min(this.elemsCount * (this.page + 1), (this.data.values || []).length)
     );
     this.LOG.debug(['drawGridData', 'data'], this.data);
-  }
-
-  private static decodeURIComponent(str: string): string {
-    return decodeURIComponent(str);
   }
 
   private static formatLabel(name: string) {

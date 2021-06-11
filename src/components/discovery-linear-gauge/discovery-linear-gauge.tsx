@@ -266,7 +266,7 @@ export class DiscoveryLinearGauge {
         axisLabel: {show: false},
         axisTick: {show: false}
       },
-      series: series
+      series
     } as EChartsOption;
   }
 
@@ -298,7 +298,6 @@ export class DiscoveryLinearGauge {
   }
 
   private drawChart() {
-    const series = [];
     setTimeout(() => {
       this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
       this.myChart.setOption(this.chartOpts)

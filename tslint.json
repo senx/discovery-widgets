@@ -5,6 +5,13 @@
     "tslint-stencil/default"
   ],
   "jsRules": {},
-  "rules": {},
-  "rulesDirectory": []
+  "rules": {
+    "component-member-order": false
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": [
+      "**/*.stories.*"
+    ]
+  }
 }
