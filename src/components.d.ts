@@ -76,6 +76,15 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryInput {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
+        "type": ChartType;
+        "url": string;
+        "width": number;
+    }
     interface DiscoveryLine {
         "debug": boolean;
         "height": number;
@@ -167,6 +176,7 @@ export namespace Components {
         "type": ChartType;
         "unit": string;
         "url": string;
+        "vars": string;
     }
     interface DiscoveryTileResult {
         "chartTitle": string;
@@ -223,6 +233,12 @@ declare global {
     var HTMLDiscoveryImageElement: {
         prototype: HTMLDiscoveryImageElement;
         new (): HTMLDiscoveryImageElement;
+    };
+    interface HTMLDiscoveryInputElement extends Components.DiscoveryInput, HTMLStencilElement {
+    }
+    var HTMLDiscoveryInputElement: {
+        prototype: HTMLDiscoveryInputElement;
+        new (): HTMLDiscoveryInputElement;
     };
     interface HTMLDiscoveryLineElement extends Components.DiscoveryLine, HTMLStencilElement {
     }
@@ -304,6 +320,7 @@ declare global {
         "discovery-display": HTMLDiscoveryDisplayElement;
         "discovery-gauge": HTMLDiscoveryGaugeElement;
         "discovery-image": HTMLDiscoveryImageElement;
+        "discovery-input": HTMLDiscoveryInputElement;
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-linear-gauge": HTMLDiscoveryLinearGaugeElement;
         "discovery-map": HTMLDiscoveryMapElement;
@@ -392,6 +409,19 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryInput {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDiscoveryEvent"?: (event: CustomEvent<DiscoveryEvent>) => void;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "onExecResult"?: (event: CustomEvent<any[]>) => void;
+        "onStatusError"?: (event: CustomEvent<any>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "url"?: string;
         "width"?: number;
     }
     interface DiscoveryLine {
@@ -493,6 +523,7 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "unit"?: string;
         "url"?: string;
+        "vars"?: string;
     }
     interface DiscoveryTileResult {
         "chartTitle"?: string;
@@ -515,6 +546,7 @@ declare namespace LocalJSX {
         "discovery-display": DiscoveryDisplay;
         "discovery-gauge": DiscoveryGauge;
         "discovery-image": DiscoveryImage;
+        "discovery-input": DiscoveryInput;
         "discovery-line": DiscoveryLine;
         "discovery-linear-gauge": DiscoveryLinearGauge;
         "discovery-map": DiscoveryMap;
@@ -540,6 +572,7 @@ declare module "@stencil/core" {
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
             "discovery-gauge": LocalJSX.DiscoveryGauge & JSXBase.HTMLAttributes<HTMLDiscoveryGaugeElement>;
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
+            "discovery-input": LocalJSX.DiscoveryInput & JSXBase.HTMLAttributes<HTMLDiscoveryInputElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-linear-gauge": LocalJSX.DiscoveryLinearGauge & JSXBase.HTMLAttributes<HTMLDiscoveryLinearGaugeElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;

@@ -136,6 +136,12 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               this.scadaHeight = h + 20;
             }
           }
+          /*mpResult.tiles = tmpResult.tiles.map(t=> {
+            if(t.macro) {
+              t.macro = Object.keys(tmpResult.vars || {}).map(k=> `"${tmpResult.vars[k]}" "${k}" STORE`).join("\n") + "\n" + t.macro;
+            }
+            return t;
+          })*/
           this.result = {...tmpResult};
         }).catch(e => {
         this.statusError.emit(e);
@@ -183,6 +189,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                       chart-title={t.title}
                                       unit={t.unit}
                                       debug={this.debug}
+                                      vars={JSON.stringify(this.result.vars)}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result
@@ -219,6 +226,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                     ? <discovery-tile url={t.endpoint || this.url}
                                       type={t.type as ChartType}
                                       chart-title={t.title}
+                                      debug={this.debug}
+                                      vars={JSON.stringify(this.result.vars)}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result

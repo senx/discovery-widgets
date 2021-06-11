@@ -16,12 +16,14 @@ export default {
     type: {
       options: [
         'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
-        'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge' ],
+        'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
+        'input:list', 'input:secret', 'input:autocomplete'],
       control: {
         type: 'select',
         labels: [
           'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
-          'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge' ]
+          'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
+          'input:list', 'input:secret', 'input:autocomplete']
       }
     },
     language: {
@@ -71,13 +73,13 @@ Usage.args = {
 }
 export const UsageWithTitle = Template.bind({});
 UsageWithTitle.args = {
-  ... Usage.args,
+  ...Usage.args,
   title: 'Test'
 }
 export const AutoRefresh = Template.bind({});
 AutoRefresh.args = {
   ...Usage.args,
-  options: { ... new Param(), autoRefresh: 5}
+  options: {...new Param(), autoRefresh: 5}
 }
 
 export const customStyle = ({url, ws, lang, options, unit, title}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">

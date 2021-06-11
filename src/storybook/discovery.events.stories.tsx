@@ -121,6 +121,9 @@ UsageWithActionButtons.args = {
   ws: `{
     'title' 'My Dashboard With events'
     'options' { 'eventHandler' 'type=.*,tag=popup' }
+    'vars' {
+      'myVar' 42
+    }
     'tiles' [
       {
         'type' 'display'
@@ -315,6 +318,23 @@ UsageWithActionButtons.args = {
                ]
              }
           %> } %>
+       }
+
+       {
+         'type' 'input:text'
+         'title' 'Input emitter'
+         'options' {
+          'button' { 'label' 'Send' }
+         }
+         'w' 2 'h' 1 'x' 8 'y' 0
+         'macro' <% { 'data' $myVar 'events' [ { 'tags' [ 'random' ] 'type' 'variable' 'selector' 'myVar' } ] } %>
+       }
+        {
+        'type' 'display'
+        'title' 'Event var receiver'
+         'w' 2 'h' 1 'x' 8 'y' 1
+         'macro' <% $myVar %>
+         'options' { 'eventHandler' 'type=(variable),tag=random' }
        }
      ]
   }`

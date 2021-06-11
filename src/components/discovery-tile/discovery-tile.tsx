@@ -1,9 +1,10 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
+import {DiscoveryEvent} from "../../model/discoveryEvent";
 
 @Component({
   tag: 'discovery-tile',
@@ -19,6 +20,7 @@ export class DiscoveryTileComponent {
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
   @Prop({mutable: true}) autoRefresh: number = -1;
+  @Prop() vars: string= '{}';
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter<any>;
@@ -35,6 +37,7 @@ export class DiscoveryTileComponent {
   private LOG: Logger;
   private ws: string;
   private timer: any;
+  private innerVars = {}
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -47,6 +50,15 @@ export class DiscoveryTileComponent {
     });
   }
 
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if (res.vars) {
+      this.innerVars = {...JSON.parse(this.vars), ...res.vars};
+      this.exec();
+    }
+  }
+
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {
@@ -54,11 +66,13 @@ export class DiscoveryTileComponent {
       type: this.type,
       options: this.options,
       language: this.language,
+      innerVars: this.innerVars,
     });
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
 
+    this.innerVars = JSON.parse(this.vars || '{}');
     const {h, w} = Utils.getContentBounds(this.el.parentElement);
     this.width = w - 15;
     this.height = h;
@@ -75,17 +89,21 @@ export class DiscoveryTileComponent {
     }
   }
 
-  exec(refresh= false) {
-   if(!refresh) this.loaded = true;
+  exec(refresh = false) {
+    if (!refresh) this.loaded = true;
     this.ws = this.el.innerText;
-    this.LOG.debug(['exec'], this.ws);
-    if (this.language === 'flows') {
-      this.ws = `<'
+    if (this.ws && this.ws !== '') {
+      this.LOG.debug(['exec'], this.ws);
+      if (this.language === 'flows') {
+        this.ws = Object.keys(this.innerVars || {}).map(k => `${k} = "${this.innerVars[k]}"`).join("\n") + "\n" + this.ws;
+        this.ws = `<'
 ${this.ws}
 '>
 FLOWS`;
-    }
-    if (this.ws && this.ws !== '') {
+      } else {
+        this.ws = Object.keys(this.innerVars || {}).map(k => `"${this.innerVars[k]}" "${k}" STORE`).join("\n") + "\n" + this.ws;
+      }
+      console.log(this.ws)
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;
         this.headers = {};

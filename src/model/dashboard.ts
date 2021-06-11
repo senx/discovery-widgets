@@ -6,6 +6,7 @@ export class Dashboard {
   type: 'dashboard' | 'scada' = 'dashboard';
   description: string;
   tiles: Tile[] = [];
+  vars: { [key: string]: any; } = {};
   options?: Param;
   cols: 12;
   cellHeight: 220;

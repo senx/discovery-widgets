@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Prop, State} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -36,9 +36,18 @@ export class DiscoveryButtonComponent {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() label: string = 'Ok';
+  @State() innerStyle: { [k: string]: string; };
 
   private defOptions: Param = new Param();
   private LOG: Logger;
+
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if(res.style) {
+      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+    }
+  }
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryButtonComponent, this.debug);
@@ -64,6 +73,9 @@ export class DiscoveryButtonComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, this.result.globalParams) as Param;
     this.options = {...options};
+    if (this.options.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    }
     this.draw.emit();
   }
 
@@ -73,7 +85,7 @@ export class DiscoveryButtonComponent {
         this.LOG.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);
         this.LOG.debug(['handleClick', 'getData'], result);
-        if(result && result.data && GTSLib.isArray(result.data) && result.data.length > 0) {
+        if (result && result.data && GTSLib.isArray(result.data) && result.data.length > 0) {
           (result.data[0].events || []).forEach(e => {
             this.LOG.debug(['handleClick', 'emit'], {discoveryEvent: e});
             this.discoveryEvent.emit(e);
@@ -87,8 +99,15 @@ export class DiscoveryButtonComponent {
       });
   }
 
+  private generateStyle(innerStyle: { [k: string]: string }): string {
+    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
+  }
+
   render() {
-    return <button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/>;
+    return [
+      <style>{this.generateStyle(this.innerStyle)}</style>,
+      <button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/>
+    ];
   }
 
 }

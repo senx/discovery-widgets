@@ -23,12 +23,13 @@ export type ChartType =
   | 'rose'
   | 'tabular'
   | 'svg'
+  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete'
   | 'button';
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
 export type ECharts = ReturnType<typeof echarts.init>;
 export type MapParams = {
-  tiles?: any[] ;
+  tiles?: any[];
   heatRadius?: number;
   heatBlur?: number;
   heatOpacity?: number;

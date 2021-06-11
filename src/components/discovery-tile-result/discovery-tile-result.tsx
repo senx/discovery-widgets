@@ -245,6 +245,19 @@ export class DiscoveryTileResultComponent {
           width={this.innerWidth}
           debug={this.debug}
         />;
+      case 'input:text':
+      case 'input:autocomplete':
+      case 'input:list':
+      case 'input:secret':
+        return <discovery-input
+          result={this.innerResult}
+          onDraw={() => this.drawn()}
+          type={this.type}
+          options={this.options}
+          height={this.innerHeight}
+          width={this.innerWidth}
+          debug={this.debug}
+        />;
       default:
         return '';
     }
@@ -271,10 +284,12 @@ export class DiscoveryTileResultComponent {
     setTimeout(() => {
       this.setHeight();
       this.handleCSSColors();
-      ((this.innerResult as unknown as DataModel).events || []).forEach(e => {
-        this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
-        this.discoveryEvent.emit(e)
-      });
+      ((this.innerResult as unknown as DataModel).events || [])
+        .filter(e => !!e.value)
+        .forEach(e => {
+          this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
+          this.discoveryEvent.emit(e)
+        });
     });
   }
 
@@ -289,8 +304,8 @@ export class DiscoveryTileResultComponent {
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
-    this.innerStyles = {...this.innerStyles, ... styles, ...(this.options as Param).customStyles || {}};
-    return Object.keys(this.innerStyles || {}).map(k=> k + ' { ' + this.innerStyles[k] + ' }').join('\n');
+    this.innerStyles = {...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {}};
+    return Object.keys(this.innerStyles || {}).map(k => k + ' { ' + this.innerStyles[k] + ' }').join('\n');
   }
 
   private handleCSSColors() {

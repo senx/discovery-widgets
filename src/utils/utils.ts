@@ -76,7 +76,7 @@ export class Utils {
   }
 
   static parseEventData(evt: DiscoveryEvent, eventHandler: string) {
-    const parsed = {style: undefined, data: undefined, xpath: undefined, popup: undefined}
+    const parsed = {style: undefined, data: undefined, xpath: undefined, popup: undefined, vars: undefined}
     if (eventHandler) {
       let tag = '.*';
       let type = '.*';
@@ -102,6 +102,9 @@ export class Utils {
             break;
           case 'popup':
             parsed.popup =  evt.value;
+            break;
+          case 'variable':
+            parsed.vars =  evt.value;
             break;
           default:
           // nothing
