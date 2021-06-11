@@ -7,9 +7,11 @@
     margin: .25rem .125rem;
     display: inline-block;
     line-height: 1.5;
-    font-size: var(--warp-view-button-font-size, 1rem);
+    font-size: var(--warp-view-input-font-size, 1rem);
     border-radius: var(--warp-view-input-border-radius, 0.25rem);
     border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
+    color: var(--warp-view-input-label-color);
+    background-color: var(--warp-view-input-bg-color);
     vertical-align: middle;
     width: 100%;
   }

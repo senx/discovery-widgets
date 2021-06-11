@@ -58,6 +58,12 @@ export class DiscoveryInputComponent {
   @Watch('result')
   updateRes() {
     this.innerResult = GTSLib.getData(this.result);
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
+    this.options = {...options};
+    if (this.options.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    }
   }
 
   componentWillLoad() {
@@ -67,15 +73,7 @@ export class DiscoveryInputComponent {
       this.options = JSON.parse(this.options);
     }
     this.innerResult = GTSLib.getData(this.result);
-    this.LOG.debug(['componentWillLoad'], {
-      type: this.type,
-      options: this.options,
-      innerResult: this.innerResult,
-      result: this.result
-    });
-
     let btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
-
     const dm = ((this.result as unknown as DataModel) || {
       globalParams: {
         button: {label: btnLabel}
@@ -90,6 +88,13 @@ export class DiscoveryInputComponent {
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
+    this.LOG.debug(['componentWillLoad'], {
+      type: this.type,
+      options: this.options,
+      innerResult: this.innerResult,
+      result: this.result
+    });
+
     this.draw.emit();
   }
 
@@ -99,7 +104,7 @@ export class DiscoveryInputComponent {
     }
     (this.innerResult.events || []).forEach(e => {
       if (!!this.selectedValue && e.type === 'variable') {
-        if(!e.value) {
+        if (!e.value) {
           e.value = {};
         }
         e.value[e.selector] = this.selectedValue;
@@ -113,6 +118,10 @@ export class DiscoveryInputComponent {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
+  private handleSecondSelect(e) {
+    this.selectedValue = e.target.value;
+  }
+
   private getInput() {
     const data = this.innerResult.data || '';
     switch (this.subType) {
@@ -123,9 +132,36 @@ export class DiscoveryInputComponent {
           this.value = (data.toString() as string);
         }
         this.selectedValue = this.value;
-        return <input type={this.subType} class="discovery-input" value={this.value}
+        return <input type="text" class="discovery-input" value={this.value}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
+      case "secret":
+        if (GTSLib.isArray(data) && data.length > 0) {
+          this.value = data[0].toString();
+        } else {
+          this.value = (data.toString() as string);
+        }
+        this.selectedValue = this.value;
+        return <input type="password" class="discovery-input" value={this.value}
+                      ref={el => this.inputField = el as HTMLInputElement}
+        />
+      case "list":
+        let values = [];
+        if (GTSLib.isArray(data) && data.length > 0) {
+          values = data as any[];
+        } else {
+          values = [data.toString() as string];
+        }
+        if (typeof values[0] === 'string') {
+          values = values.map(s => {
+            return {k: s, v: s};
+          });
+        }
+        this.value = ((this.options as Param).input || {value: ''}).value || '';
+        this.selectedValue = this.value;
+        return <select class="discovery-input" onInput={e => this.handleSecondSelect(e)}>
+          {values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
+        </select>
       default:
         return '';
     }

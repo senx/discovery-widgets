@@ -77,6 +77,9 @@ export class Param {
   gauge?:{
     horizontal: boolean
   };
+  input?: {
+    value?: string
+  }
   map?: MapParams;
   histo?: {
     histnorm: 'percent' | 'probability' | 'density' | 'probability density';
