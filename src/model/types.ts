@@ -23,7 +23,7 @@ export type ChartType =
   | 'rose'
   | 'tabular'
   | 'svg'
-  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete'
+  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider'
   | 'button';
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';

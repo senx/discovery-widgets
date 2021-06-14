@@ -249,6 +249,7 @@ export class DiscoveryTileResultComponent {
       case 'input:autocomplete':
       case 'input:list':
       case 'input:secret':
+      case 'input:slider':
         return <discovery-input
           result={this.innerResult}
           onDraw={() => this.drawn()}

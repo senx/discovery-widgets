@@ -36,16 +36,20 @@ export class DiscoveryInputComponent {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() value: string = '';
-  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' = 'text';
+  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label: string = 'Ok';
 
-  private selectedValue: string | string[];
+  @State() selectedValue: string | string[];
   private defOptions: Param = new Param();
   private LOG: Logger;
   private inputField: HTMLInputElement | HTMLSelectElement;
+  private display: HTMLDivElement;
   private disabled: boolean = false;
+  private min = 0;
+  private max = 100;
+  private values = [];
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -64,6 +68,7 @@ export class DiscoveryInputComponent {
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
+    this.parseResult();
   }
 
   componentWillLoad() {
@@ -88,6 +93,7 @@ export class DiscoveryInputComponent {
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
+    this.parseResult();
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -118,12 +124,19 @@ export class DiscoveryInputComponent {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
-  private handleSecondSelect(e) {
+  private handleSelect(e) {
     this.selectedValue = e.target.value;
+    if (!!this.display && this.subType === 'slider') {
+      const newValue = Number((parseInt(this.selectedValue as string, 10) - this.min) * 100 / (this.max - this.min));
+      const newPosition = 10 - (newValue * 0.2);
+      this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
+    }
   }
 
-  private getInput() {
+  private parseResult() {
     const data = this.innerResult.data || '';
+    this.min = ((this.options as Param).input || {min: 0}).min || 0;
+    this.max = ((this.options as Param).input || {max: 100}).max || 100;
     switch (this.subType) {
       case "text":
         if (GTSLib.isArray(data) && !!data[0]) {
@@ -132,9 +145,7 @@ export class DiscoveryInputComponent {
           this.value = (data.toString() as string);
         }
         this.selectedValue = this.value;
-        return <input type="text" class="discovery-input" value={this.value}
-                      ref={el => this.inputField = el as HTMLInputElement}
-        />
+        break;
       case "secret":
         if (GTSLib.isArray(data) && data.length > 0) {
           this.value = data[0].toString();
@@ -142,25 +153,64 @@ export class DiscoveryInputComponent {
           this.value = (data.toString() as string);
         }
         this.selectedValue = this.value;
-        return <input type="password" class="discovery-input" value={this.value}
-                      ref={el => this.inputField = el as HTMLInputElement}
-        />
-      case "list":
-        let values = [];
+        break;
+      case "slider":
         if (GTSLib.isArray(data) && data.length > 0) {
-          values = data as any[];
+          this.value = data[0].toString();
         } else {
-          values = [data.toString() as string];
+          this.value = (data.toString() as string);
         }
-        if (typeof values[0] === 'string') {
-          values = values.map(s => {
+        this.selectedValue = this.value;
+        const newValue = Number((parseInt(this.value, 10) - this.min) * 100 / (this.max - this.min));
+        const newPosition = 10 - (newValue * 0.2);
+        this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
+        break;
+      case "list":
+        this.values = [];
+        if (GTSLib.isArray(data) && data.length > 0) {
+          this.values = data as any[];
+        } else {
+          this.values = [data.toString() as string];
+        }
+        if (typeof this.values[0] === 'string') {
+          this.values = this.values.map(s => {
             return {k: s, v: s};
           });
         }
         this.value = ((this.options as Param).input || {value: ''}).value || '';
         this.selectedValue = this.value;
-        return <select class="discovery-input" onInput={e => this.handleSecondSelect(e)}>
-          {values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
+        break;
+      default:
+        return '';
+    }
+
+  }
+
+  private getInput() {
+    switch (this.subType) {
+      case "text":
+        return <input type="text" class="discovery-input" value={this.value}
+                      ref={el => this.inputField = el as HTMLInputElement}
+        />
+      case "secret":
+        return <input type="password" class="discovery-input" value={this.value}
+                      ref={el => this.inputField = el as HTMLInputElement}
+        />
+      case "slider":
+        return <div class="range-outside-wrapper">
+          <div class="range-wrap">
+            <div class="range-value" ref={el => this.display = el as HTMLDivElement}>
+              <span>{this.selectedValue}</span>
+            </div>
+            <input type="range" class="discovery-input" value={this.value}
+                   min={this.min} max={this.max} onInput={e => this.handleSelect(e)}
+                   ref={el => this.inputField = el as HTMLInputElement}
+            />
+          </div>
+        </div>
+      case "list":
+        return <select class="discovery-input" onInput={e => this.handleSelect(e)}>
+          {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
         </select>
       default:
         return '';

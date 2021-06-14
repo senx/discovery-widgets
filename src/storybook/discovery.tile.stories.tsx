@@ -17,13 +17,13 @@ export default {
       options: [
         'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
         'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
-        'input:list', 'input:secret', 'input:autocomplete'],
+        'input:list', 'input:secret', 'input:autocomplete', 'input:slider'],
       control: {
         type: 'select',
         labels: [
           'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
           'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
-          'input:list', 'input:secret', 'input:autocomplete']
+          'input:list', 'input:secret', 'input:autocomplete', 'input:slider']
       }
     },
     language: {

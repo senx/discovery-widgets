@@ -78,7 +78,9 @@ export class Param {
     horizontal: boolean
   };
   input?: {
-    value?: string
+    value?: string,
+    min?: number,
+    max?: number
   }
   map?: MapParams;
   histo?: {
