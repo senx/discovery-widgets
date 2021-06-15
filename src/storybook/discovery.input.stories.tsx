@@ -125,3 +125,37 @@ export const SliderInputWithCustomStyle = ({url, ws, language, type, options}) =
 SliderInputWithCustomStyle.args = {
   ...SliderInputInitialUsage.args
 }
+export const DateInputInitialUsage = Usage.bind({});
+DateInputInitialUsage.args = {
+  ...Usage.args,
+  type: 'input:date',
+  ws: `{ 'data' NOW 'globalParams' { 'input' { 'min' 0 'max' 0 } } 'events' [
+    { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
+  ] }`
+};
+
+export const DateInputWithCustomStyle = ({url, ws, language, type, options}) => `
+<style>
+:root {
+  --warp-view-input-border-color: #c8e020;
+  --warp-view-input-bg-color: #3b528b;
+  --warp-view-input-border-radius: 20px;
+  --warp-view-input-label-color: #c8e020;
+
+  --warp-view-button-border-color: #c8e020;
+  --warp-view-button-bg-color: #3b528b;
+  --warp-view-button-label-color: #c8e020;
+  --warp-view-button-width: 500px;
+  --warp-view-button-border-radius: 20px;
+  }
+</style>
+<div class="card" style="width: 100%;min-height: 500px">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="${type}" language="${language}"
+        debug="true" options='${JSON.stringify(options)}'
+        >${ws}</discovery-tile>
+    </div>
+</div>`;
+DateInputWithCustomStyle.args = {
+  ...DateInputInitialUsage.args
+}

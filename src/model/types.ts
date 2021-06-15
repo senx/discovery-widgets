@@ -1,29 +1,20 @@
 import * as echarts from "echarts";
 
 export type ChartType =
-  'line'
-  | 'area'
-  | 'scatter'
-  | 'spline-area'
-  | 'spline'
-  | 'step'
-  | 'step-after'
-  | 'step-before'
+  'line' | 'area' | 'scatter' | 'spline-area' | 'spline' | 'step' | 'step-after' | 'step-before'
   | 'annotation'
   | 'bar'
   | 'display'
   | 'image'
   | 'map'
-  | 'gauge'
-  | 'linear-gauge'
-  | 'circle'
+  | 'gauge' | 'linear-gauge' | 'circle'
   | 'pie'
   | 'plot'
   | 'doughnut'
   | 'rose'
   | 'tabular'
   | 'svg'
-  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider'
+  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider' | 'input:date'
   | 'button';
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';

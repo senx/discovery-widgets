@@ -6,6 +6,7 @@ import {DiscoveryEvent} from "../../model/discoveryEvent";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
+import flatpickr from "flatpickr";
 
 @Component({
   tag: 'discovery-input',
@@ -36,12 +37,12 @@ export class DiscoveryInputComponent {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() value: string = '';
-  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' = 'text';
+  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label: string = 'Ok';
 
-  @State() selectedValue: string | string[];
+  @State() selectedValue: string | string[] | any;
   private defOptions: Param = new Param();
   private LOG: Logger;
   private inputField: HTMLInputElement | HTMLSelectElement;
@@ -50,6 +51,7 @@ export class DiscoveryInputComponent {
   private min = 0;
   private max = 100;
   private values = [];
+  private root: HTMLDivElement;
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -104,8 +106,26 @@ export class DiscoveryInputComponent {
     this.draw.emit();
   }
 
+  componentDidLoad() {
+    if (this.subType === 'date') {
+      const instance = flatpickr(this.inputField as HTMLInputElement, {
+        enableTime: true,
+        defaultDate: this.formatDateTime(this.value),
+        appendTo: this.root,
+        positionElement: this.inputField,
+        static: true,
+        enableSeconds: true,
+        dateFormat: 'Y/m/d H:i:S'
+      });
+      instance.config.onChange.push((d, s, i) => {
+        const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+        this.selectedValue = GTSLib.toTimestamp(s, divider, (this.options as Param).timeZone);
+      });
+    }
+  }
+
   private handleClick = () => {
-    if (this.inputField) {
+    if (this.inputField && this.subType !== 'date') {
       this.selectedValue = this.inputField.value;
     }
     (this.innerResult.events || []).forEach(e => {
@@ -139,6 +159,7 @@ export class DiscoveryInputComponent {
     this.max = ((this.options as Param).input || {max: 100}).max || 100;
     switch (this.subType) {
       case "text":
+      case "secret":
         if (GTSLib.isArray(data) && !!data[0]) {
           this.value = data[0].toString();
         } else {
@@ -146,13 +167,13 @@ export class DiscoveryInputComponent {
         }
         this.selectedValue = this.value;
         break;
-      case "secret":
-        if (GTSLib.isArray(data) && data.length > 0) {
+      case "date":
+        if (GTSLib.isArray(data) && !!data[0]) {
           this.value = data[0].toString();
         } else {
           this.value = (data.toString() as string);
         }
-        this.selectedValue = this.value;
+        this.selectedValue = {date: this.formatDate(this.value), time: this.formatTime(this.value)};
         break;
       case "slider":
         if (GTSLib.isArray(data) && data.length > 0) {
@@ -186,6 +207,19 @@ export class DiscoveryInputComponent {
 
   }
 
+  private formatDateTime(timestamp: string): string {
+    const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    return (GTSLib.toISOString(parseInt(timestamp, 10), divider, (this.options as Param).timeZone) || '').replace('Z', '');
+  }
+
+  private formatDate(timestamp: string): string {
+    return this.formatDateTime(timestamp).split('T')[0];
+  }
+
+  private formatTime(timestamp: string): string {
+    return this.formatDateTime(timestamp).split('T')[1];
+  }
+
   private getInput() {
     switch (this.subType) {
       case "text":
@@ -194,6 +228,10 @@ export class DiscoveryInputComponent {
         />
       case "secret":
         return <input type="password" class="discovery-input" value={this.value}
+                      ref={el => this.inputField = el as HTMLInputElement}
+        />
+      case "date":
+        return <input type="text" class="discovery-input" value={this.formatDateTime(this.value)}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "slider":
@@ -218,17 +256,21 @@ export class DiscoveryInputComponent {
   }
 
   render() {
-    return [<style>{this.generateStyle(this.innerStyle)}</style>,
-      <div class="discovery-input-wrapper">
-        {this.getInput()}
-        <div class="discovery-input-btn-wrapper">
-          <button
-            class="discovery-btn"
-            disabled={this.disabled}
-            type="button"
-            onClick={this.handleClick}
-          >{this.label}</button>
+    return [
+      <style>{this.generateStyle(this.innerStyle)}</style>,
+      <div ref={el => this.root = el}>
+        <div class="discovery-input-wrapper">
+          {this.getInput()}
+          <div class="discovery-input-btn-wrapper">
+            <button
+              class="discovery-btn"
+              disabled={this.disabled}
+              type="button"
+              onClick={this.handleClick}
+            >{this.label}</button>
+          </div>
         </div>
-      </div>];
+      </div>
+    ];
   }
 }
