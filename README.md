@@ -11,6 +11,7 @@
 #### With CDN
 
 ```html
+
 <script nomodule src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
 <script type="module" src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
 ```
@@ -18,31 +19,32 @@
 #### Usage
 
 ```html
+
 <html>
-    <head>
-        <title>Test</title>
-    </head>
-    <body>
-        <discovery-dashboard url="https://warp.senx.io/api/v0/exec" dashboard-title="Test">
-{
-    'title' 'Test'
-    'description' 'Dashboard test'
-    'tiles' [ 
-        {
-            'title' 'test'
-            'options' { 'autoRefresh' 1 }
-            'x' 0 'y' 0 'w' 12 'h' 4
-            'type' 'area' 'macro' <%
-                1 4 <% DROP NEWGTS 'g' STORE
-                1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
-                $g %> FOR %> 
-        }
-    ] 
-}
-        </discovery-dashboard>
-        <script nomodule src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
-        <script type="module" src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
-    </body>
+<head>
+  <title>Test</title>
+</head>
+<body>
+<discovery-dashboard url="https://warp.senx.io/api/v0/exec" dashboard-title="Test">
+  {
+  'title' 'Test'
+  'description' 'Dashboard test'
+  'tiles' [
+  {
+  'title' 'test'
+  'options' { 'autoRefresh' 1 }
+  'x' 0 'y' 0 'w' 12 'h' 4
+  'type' 'area' 'macro' <%
+  1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR %>
+  }
+  ]
+  }
+</discovery-dashboard>
+<script nomodule src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
+<script type="module" src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
+</body>
 </html>
 ```
 
@@ -73,7 +75,7 @@ Through a WarpScript:
 
 ### discovery-dashboard
 
-This is the main Web Component. 
+This is the main Web Component.
 
 #### Attributes
 
@@ -93,35 +95,85 @@ This is the main Web Component.
 Insert directly your dashboard definition as a WarpScript inside the HTML tag:
 
 ```html
+
 <discovery-dashboard url="https://warp.senx.io/api/v0/exec" dashboard-title="Test">
-{
-    'title' 'Test'
-    'description' 'Dashboard test'
-    'tiles' [ 
-        {
-            'title' 'test'
-            'options' { 'autoRefresh' 1 }
-            'x' 0 'y' 0 'w' 12 'h' 4
-            'type' 'area' 'macro' <%
-                1 4 <% DROP NEWGTS 'g' STORE
-                1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
-                $g %> FOR %> 
-        }
-    ] 
-}
+  {
+  'title' 'Test'
+  'description' 'Dashboard test'
+  'tiles' [
+  {
+  'title' 'test'
+  'options' { 'autoRefresh' 1 }
+  'x' 0 'y' 0 'w' 12 'h' 4
+  'type' 'area' 'macro' <%
+  1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR %>
+  }
+  ]
+  }
 </discovery-dashboard>
 ``` 
 
-#### Options
+### discovery-tile
 
-Options inherit from higher level. You can use options as an attribute in `<discovery-dashboard />`, as a field in the dashboard definition, as a field in a tile definition and as a field in execution result.
+This Web component displays a Tile based upon a WarpScript (or FLoWS). The WarpScript is executed when the tile renders.
+
+| Property         | Attribute         |  Type                     | Default       | Description |
+| ---------------- | ----------------- | ------------------------ | ------------- |-------------|
+| `autoRefresh`    | `auto-refresh`    | `number`                 | `-1`          | Reloads the tile and execute again the script each x seconds, -1 to disable it |
+| `chartTitle`     | `chart-title`     | `string`                 | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
+| `debug`          | `debug`           | `boolean`                | `false`       | Enable debug messages | 
+| `options`        | `options`         | `Param / string`         | `new Param()` | Serialized JSON options (see Params below) | 
+| `type`           | `type`            | `line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button`  | | Chart type |   
+| `url`            | `url`             | `string`                 | `undefined`   | exec url of your Warp 10 endpoint |
+| `lang`            | `lang`             | `warpscript, flows`                 | `warpscript`   | Language used  |
+
+````html
+
+<discovery-tile url="warp 10 url"
+                unit="°C"
+                type="text"
+                chart-title="Text">
+  { 'data' 42 'globalParams' { 'bgColor' 'darkblue' 'fontColor' 'cyan' } }
+</discovery-tile>
+````
+
+### discovery-tile-result
+
+This Web component displays a Tile based upon a WarpScript (or FLoWS) execution result (DataModel).
+
+| Property         | Attribute         |  Type                     | Default       | Description |
+| ---------------- | ----------------- | ------------------------ | ------------- |-------------|
+| `chartTitle`     | `chart-title`     | `string`                 | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
+| `debug`          | `debug`           | `boolean`                | `false`       | Enable debug messages | 
+| `options`        | `options`         | `Param / string`         | `new Param()` | Serialized JSON options (see Params below) | 
+| `type`           | `type`            | `line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button`  | | Chart type |   
+| `url`            | `url`             | `string`                 | `undefined`   | exec url of your Warp 10 endpoint |
+| `height`     | `height`      |  `number`            | | Fixed height of the tile |
+| `width`     | `width`      |   `number`          |  | Fixed width of the tile |
+| `result`     | `result`      |  `DataModel / string`           |  | Execution result |
+
+````html
+
+<discovery-tile-result url="warp 10 url"
+                       unit="°C"
+                       type="text"
+                       chart-title="Text">
+  { 'data' 42 'globalParams' { 'bgColor' 'darkblue' 'fontColor' 'cyan' } }
+</discovery-tile-result>
+````
+
+#### Params / Options
+
+Options inherit from higher level. You can use options as an attribute in `<discovery-dashboard />`, as a field in the
+dashboard definition, as a field in a tile definition and as a field in execution result.
 
 ![options](./assets/options.png)
 
-
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| type | `string` | | Chart type  (line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button |
+| type | `string` | | Chart type  (line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button) |
 | timeMode | `string` | 'date' | date, timestamp or custom |
 | timeZone | `string` | 'UTC' | Timezone |
 | timeUnit | `string` | 'us' | Warp 10 time unit (us, ms, ns) |
@@ -152,8 +204,10 @@ Options inherit from higher level. You can use options as an attribute in `<disc
 
 ### Tile definition
 
-- If the dashboard type is **'dashboard'**, x, y, h and w are expressed in cells. x and y begin at 0, the top left corner, w and h begin at 1.
-- If the dashboard type is **'scada'**, x, y, h and w are expressed in pixels. x and y begin at 0, the top left corner. z represents the z-index.
+- If the dashboard type is **'dashboard'**, x, y, h and w are expressed in cells. x and y begin at 0, the top left
+  corner, w and h begin at 1.
+- If the dashboard type is **'scada'**, x, y, h and w are expressed in pixels. x and y begin at 0, the top left corner.
+  z represents the z-index.
 
 Data are displayed either with `data` or with `macro`. Auto-refresh for tiles only applies for `macro`.
 
@@ -172,10 +226,10 @@ Data are displayed either with `data` or with `macro`. Auto-refresh for tiles on
 | macro | `<% macro %>` | | A macro executed when the tile loads in the display. See Execution Result below. |
 | options | `Option` | | Options (see above) concerning this tile |
 
-### Execution result
+### Execution result (DataModel)
 
-You could either return a single value ( GTS, number or string depending on the chart type), or a complex data structure:
-
+You could either return a single value ( GTS, number or string depending on the chart type), or a complex data
+structure:
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -186,8 +240,6 @@ You could either return a single value ( GTS, number or string depending on the 
 
 ### Common CSS vars
 
-#### CSS vars in tooltips
-
 | Name | Default |
 |------|------|
 | --gts-classname-font-color | #004eff |
@@ -196,14 +248,106 @@ You could either return a single value ( GTS, number or string depending on the 
 | --gts-separator-font-color | #a0a0a0 |
 | --gts-labelvalue-font-color | #000000 |
 | --gts-attrvalue-font-color | #000000 |
+| --warp-view-font-color | #000000 |
 
 ### Specific charts configuration and CSS styles
 
+| Event  | Description | Type                |
+| ------ | ----------- | ------------------- |
+| `draw` |             | `CustomEvent<void>` |
+
 #### line, area, scatter, spline-area, spline, step, step-after, step-before
+
+| Name | Default |
+|------|------|
+| --warp-view-chart-label-color | #8e8e8e |
+| --warp-view-chart-grid-color | #8e8e8e |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `GTS`, `GTS[]` |  Data to display, numeric GTS only |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+Supported option per series are:
+
+- datasetColor: Hex CSS color of the series. ie: '#fff00f'
+- type: Chart type (line, area, scatter, spline-area, spline, step, step-after, step-before)
+- xAxis: In case of multi-X axis support, represents the index of related axis.
+- yAxis: In case of multi-Y axis support, represents the index of related axis.
+
+````
+1 4 <% 
+  DROP NEWGTS 'g' STORE
+  1 30 <% 
+    'ts' STORE 
+    $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP 
+  %> FOR
+$g %> FOR STACKTOLIST 'data' STORE
+{ 
+  'data' $data 
+  'params' [ 
+    { 'datasetColor' '#dc3545' 'xAxis' 0 }
+    { 'datasetColor' '#ff9900' 'xAxis' 0 }
+    { 'type' 'area' 'datasetColor' '#90d743' 'xAxis' 1 }
+    { 'datasetColor' 'white' 'xAxis' 0 }
+  ]
+}  
+````
 
 #### annotation
 
+| Name | Default |
+|------|------|
+| --warp-view-chart-label-color | #8e8e8e |
+| --warp-view-chart-grid-color | #8e8e8e |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `GTS`, `GTS[]` |  Data to display, non-numeric GTS only |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+Supported option per series are:
+
+- datasetColor: Hex CSS color of the series. ie: '#fff00f'
+
 #### bar
+
+| Name | Default |
+|------|------|
+| --warp-view-chart-label-color | #8e8e8e |
+| --warp-view-chart-grid-color | #8e8e8e |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `GTS`, `GTS[]`, custom data |  Data to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+Supported option per series are:
+
+- datasetColor: Hex CSS color of the series. ie: '#fff00f'
+- bar
+  - horizontal: Bar chart orientation
+  - stacked
+
+Custom data:
+
+````json
+{
+  "title": "Test",
+  "columns":  [ "A", "B", "C", "D" ],
+  "rows": [
+    [ "label X", 15, 56, 44, 22 ],
+    [ "label Y", 1, 5, 4, 2 ],
+    [ "label Z", 14, 45, 78, 12 ]
+  ]
+}
+````
 
 #### display
 
