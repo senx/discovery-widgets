@@ -1,4 +1,4 @@
-# discovery-gauge
+# discovery-input
 
 
 
@@ -14,15 +14,18 @@
 | `options` | `options` |             | `Param \| string`                                                                                                                                                                                                                                                                                                                                                                                   | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                                                                                                                                               | `undefined`   |
 | `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "linear-gauge" \| "circle" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "input:text" \| "input:list" \| "input:secret" \| "input:autocomplete" \| "input:slider" \| "input:date" \| "button"` | `undefined`   |
-| `unit`    | `unit`    |             | `string`                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
+| `url`     | `url`     |             | `string`                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
 | `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
 
 
 ## Events
 
-| Event  | Description | Type                |
-| ------ | ----------- | ------------------- |
-| `draw` |             | `CustomEvent<void>` |
+| Event            | Description | Type                          |
+| ---------------- | ----------- | ----------------------------- |
+| `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
+| `draw`           |             | `CustomEvent<void>`           |
+| `execResult`     |             | `CustomEvent<any[]>`          |
+| `statusError`    |             | `CustomEvent<any>`            |
 
 
 ## Dependencies
@@ -31,16 +34,11 @@
 
  - [discovery-tile-result](../discovery-tile-result)
 
-### Depends on
-
-- [discovery-spinner](../discovery-spinner)
-
 ### Graph
 ```mermaid
 graph TD;
-  discovery-gauge --> discovery-spinner
-  discovery-tile-result --> discovery-gauge
-  style discovery-gauge fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-tile-result --> discovery-input
+  style discovery-input fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

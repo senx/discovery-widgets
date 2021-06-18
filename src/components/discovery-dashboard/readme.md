@@ -62,6 +62,7 @@ graph TD;
   discovery-tile-result --> discovery-tabular
   discovery-tile-result --> discovery-plot
   discovery-tile-result --> discovery-svg
+  discovery-tile-result --> discovery-input
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
