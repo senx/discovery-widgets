@@ -18,7 +18,7 @@ import {DataModel} from "../../model/dataModel";
 export class DiscoveryBarComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
   @Prop() width: number;
   @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
@@ -33,7 +33,7 @@ export class DiscoveryBarComponent {
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
-  private defOptions: Param = new Param();
+  private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
   private divider: number = 1000;
   private myChart: ECharts;
@@ -56,6 +56,7 @@ export class DiscoveryBarComponent {
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
+      chartOpts: this.chartOpts
     });
   }
 
@@ -115,7 +116,7 @@ export class DiscoveryBarComponent {
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => {
             let ts: number | string = d[0];
-            if ((this.options as Param).timeMode || 'date' === 'date') {
+            if ((this.options as Param).timeMode === 'date') {
               ts = GTSLib.toISOString(d[0], this.divider, (this.options as Param).timeZone);
             }
             if (!!((this.options as Param).bar || {horizontal: false}).horizontal) {

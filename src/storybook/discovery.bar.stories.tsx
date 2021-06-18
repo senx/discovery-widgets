@@ -18,6 +18,18 @@ InitialUsage.args = {
 %> FOR`
 };
 
+export const InitialUsageWithTimeStamp = InitialUsage.bind({});
+InitialUsageWithTimeStamp.args = {
+  ...InitialUsage.args,
+  type: 'bar',
+  ws: `NOW 'now' STORE
+1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g
+%> FOR`,
+options: {...InitialUsage.args.options, timeMode: 'timestamp'}
+};
+
 export const RealData = Usage.bind({});
 RealData.args = {
   ...InitialUsage.args,

@@ -14,6 +14,19 @@ InitialUsage.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
+
+
+export const InitialUsageWithTimeStamp = InitialUsage.bind({});
+InitialUsageWithTimeStamp.args = {
+  ...InitialUsage.args,
+  ws: `NOW 'now' STORE
+1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g
+%> FOR`,
+  options: {...InitialUsage.args.options, timeMode: 'timestamp'}
+};
+
 export const FlowsSample = Usage.bind({});
 FlowsSample.args = {
   ...InitialUsage.args,

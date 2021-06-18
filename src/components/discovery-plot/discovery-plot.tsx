@@ -19,7 +19,7 @@ import {DiscoveryLineComponent} from "../discovery-line/discovery-line";
 export class DiscoveryPlot {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -76,15 +76,15 @@ export class DiscoveryPlot {
     const gtsCount = gtsList.length;
     let linesCount = 1;
     let annotationPosition = 0;
-    const bounds = { min: Number.MAX_VALUE, max: Number.MIN_VALUE };
+    const bounds = {min: Number.MAX_VALUE, max: Number.MIN_VALUE};
     for (let i = 0; i < gtsCount; i++) {
       const type = ((data.params || [])[i] || {type: this.type}).type || 'line';
       const gts = gtsList[i];
       GTSLib.gtsSort(gts);
-      if(!!gts.v && gts.v.length > 0 && bounds.min > gts.v[0][0]) {
+      if (!!gts.v && gts.v.length > 0 && bounds.min > gts.v[0][0]) {
         bounds.min = gts.v[0][0];
       }
-      if(!!gts.v && gts.v.length > 0 && bounds.max < gts.v[gts.v.length - 1][0]) {
+      if (!!gts.v && gts.v.length > 0 && bounds.max < gts.v[gts.v.length - 1][0]) {
         bounds.max = gts.v[gts.v.length - 1][0];
       }
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
@@ -97,7 +97,7 @@ export class DiscoveryPlot {
         series.push({
           type: 'scatter',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / this.divider, (this.expanded ? annotationPosition : 0) + 0.5]),
+          data: gts.v.map(d => [(this.options as Param).timeMode === 'date' ? (d[0] / this.divider) : d[0], (this.expanded ? annotationPosition : 0) + 0.5]),
           animation: false,
           large: true,
           showSymbol: true,
@@ -113,9 +113,9 @@ export class DiscoveryPlot {
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const t = ((data.params || [])[i] || {type: this.type}).type || this.type;
         series.push({
-          type: t === 'scatter'? 'scatter': 'line',
+          type: t === 'scatter' ? 'scatter' : 'line',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
+          data: gts.v.map(d => [(this.options as Param).timeMode === 'date' ? (d[0] / this.divider) : d[0], d[d.length - 1]]),
           animation: false,
           large: true,
           showSymbol: type === 'scatter' || this.options.showDots,
@@ -228,7 +228,7 @@ export class DiscoveryPlot {
         type: 'value',
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
-        axisLabel: {show: true,color: Utils.getLabelColor(this.el)},
+        axisLabel: {show: true, color: Utils.getLabelColor(this.el)},
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}}
       }],
       axisPointer: {

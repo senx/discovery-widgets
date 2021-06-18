@@ -21,7 +21,7 @@ export class DiscoveryLineComponent {
 
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -117,7 +117,7 @@ export class DiscoveryLineComponent {
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / this.divider, d[d.length - 1]]),
+          data: gts.v.map(d => [(this.options as Param).timeMode === 'date' ? (d[0] / this.divider) : d[0], d[d.length - 1]]),
           animation: false,
           large: true,
           showSymbol: this.type === 'scatter' || this.options.showDots,
@@ -236,8 +236,9 @@ export class DiscoveryLineComponent {
 
   private getXAxis(color?: string): CartesianAxisOption {
     const splitNumber = Math.min(Math.ceil(this.width / 100) - 1, 10);
+    console.log((this.options as Param).timeMode)
     return {
-      type: 'time',
+      type: (this.options as Param).timeMode === 'date' ? 'time' : 'category',
       splitNumber,
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
