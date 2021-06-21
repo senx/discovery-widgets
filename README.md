@@ -901,7 +901,7 @@ Sample:
 
 ##### variable
 
-You can inject variables into `macro` defined in Tiles and modify value with an event. Butvariables must be declared at 
+You can inject variables into `macro` defined in Tiles and modify value with an event. But variables must be declared at 
 the Dashboard level with an initial value.
 
 | Name | Type | Description |
