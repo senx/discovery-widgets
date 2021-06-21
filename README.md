@@ -1,7 +1,5 @@
 # Discovery
 
-[TOC]
-
 ## Usage
 
 ### In a Web Environment
