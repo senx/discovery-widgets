@@ -249,6 +249,7 @@ structure:
 | --gts-labelvalue-font-color | #000000 |
 | --gts-attrvalue-font-color | #000000 |
 | --warp-view-font-color | #000000 |
+| --warp-view-bg-color | transparent |
 
 ### Specific charts configuration and CSS styles
 
@@ -335,7 +336,7 @@ Supported option per series are:
   - horizontal: Bar chart orientation
   - stacked
 
-Custom data:
+##### Custom data:
 
 ````json
 {
@@ -351,33 +352,554 @@ Custom data:
 
 #### display
 
+| Name | Type | Description |
+|------|------|-------------|
+| data | `number`, `string`, custom data |  Data to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+- Option.timeMode:
+  - date: convert the value into an ISO date.
+  - duration: convert the value to a human-readable duration.
+  - custom: display value as is, including HTML.
+
+##### Custom Data Samples:
+
+````
+{ 'data' 42 'globalParams' { 'timeMode' 'custom' } }
+````
+
+````
+{ 'data' NOW 'globalParams' { 'timeMode' 'date' } }
+````
+
+````
+{ 'data' NOW 5 s - 'globalParams' { 'timeMode' 'duration' } }
+````
+
+````
+{
+  'data' '<a href="https://warp10.io/" target="_blank">Warp 10</a>'
+  'globalParams' { 'bgColor' '#f57f17' 'fontColor' '#bc5100' 'timeMode' 'custom' }
+}
+````
+
+````
+{
+  'data' { 'text' 'SenX.io' 'url' 'https://senx.io' }
+  'globalParams' { 'bgColor' '#f57f17' 'fontColor' '#bc5100' }
+}
+````
+
 #### image
+
+| Name | Type | Description |
+|------|------|-------------|
+| data |  `string`,  `string[]`, custom data |  Base64 images to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
 
 #### map
 
+| Name | Type | Description |
+|------|------|-------------|
+| data |   `GTS`, `GTS[]`, custom data  |  Data to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+##### Custom data: 
+
+- `string[]`: considered as GEOJson
+- `GTS[]`: considered as Path
+
+##### Options
+
+| Name | Type | Description |
+|------|------|-------------|
+| tiles | `string[]` | List of custom tile layers |
+| mapType | `string` | Base tile layer (NONE, DEFAULT, HOT, TOPO, TOPO2, STADIA, STADIA_DARK, TONER, TONER_LITE, TERRAIN, ESRI, SATELLITE, OCEANS, GRAY, GRAYSCALE, WATERCOLOR, CARTODB, CARTODB_DARK) |
+| startLat | `number` | Initial latitude position |
+| startLong | `number` | Initial longitude position |
+| startZoom | `number` | Initial zoom level |
+| maxNativeZoom | `number` | Maximum zoom number the tile source has available. If it is specified, the tiles on all zoom levels higher than maxNativeZoom will be loaded from maxNativeZoom level and auto-scaled. |
+| maxZoom | `number` | The maximum zoom level up to which this layer will be displayed (inclusive). |
+
+##### Params:
+
+Render dots without lines:
+
+````
+{
+  'key' 'bases'
+  'render' 'dots'
+  "color" "#f44336"
+  "line" false
+}
+````
+Render weighted dots:
+
+````
+{
+  'key' 'sightings'
+  'render' 'weightedDots'
+  "color" "#31C0F6cc"
+  "borderColor" "#31C0F6"
+  "maxValue" 100
+  "minValue" 0
+}
+````
+
 #### gauge, circle
+
+| Name | Default |
+|------|------|
+| --warp-view-chart-label-color | #8e8e8e |
+| --warp-view-chart-grid-color | #8e8e8e |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `GTS`, `GTS[]`, custom data |  Data to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+##### Params
+
+| Name | Type | Description |
+|------|------|-------------|
+| maxValue | `number` | Max value for gauge |
 
 #### linear-gauge
 
+| Name | Default |
+|------|------|
+| --warp-view-chart-label-color | #8e8e8e |
+| --warp-view-chart-grid-color | #8e8e8e |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `GTS`, `GTS[]`, custom data |  Data to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+##### Options
+
+| Name | Type | Description |
+|------|------|-------------|
+| gauge.horizontal | `boolean` | Gauge orientation |
+
+##### Params
+
+| Name | Type | Description |
+|------|------|-------------|
+| maxValue | `number` | Max value for gauge |
+
 #### pie, doughnut, rose
+
+| Name | Default |
+|------|------|
+| --warp-view-chart-label-color | #8e8e8e |
+| --warp-view-chart-grid-color | #8e8e8e |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `GTS`, `GTS[]`, custom data |  Data to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+##### Custom data:
+
+`{ 'key':string 'value':number }[]`
 
 #### plot
 
+See line and annotation.
+
 #### tabular
+
+| Name | Default |
+|------|------|
+| --warp-view-datagrid-cell-padding | 5px |
+| --warp-view-datagrid-odd-bg-color | #ffffff |
+| --warp-view-datagrid-odd-color | #404040 |
+| --warp-view-datagrid-even-bg-color | #c0c0c0 |
+| --warp-view-datagrid-even-color | #000000 |
+| --warp-view-pagination-border-color | #c0c0c0 |
+| --warp-view-pagination-bg-color | #ffffff |
+| --warp-view-pagination-active-bg-color | #4CAF50 |
+| --warp-view-pagination-active-color | #ffffff |
+| --warp-view-pagination-active-border-color | #4CAF50 |
+| --warp-view-pagination-hover-bg-color | #c0c0c0 |
+| --warp-view-pagination-hover-color | #000000 |
+| --warp-view-pagination-hover-border-color | #c0c0c0 |
+| --warp-view-pagination-disabled-color | #c0c0c0 |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `GTS`, `GTS[]`, custom data |  Data to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+##### Custom data:
+
+````
+{ 
+  'title':string'
+  'columns':string[]
+  'rows' <string|number>[]
+}[]
+````
+
+Sample:
+````
+{ 'data' {
+  'title' 'Test'
+  'columns'  [ 'Name' 'A' 'B' 'C' 'Link' ]
+  'rows' [
+    [ 'label X' 15 56 44 '<' 'a href="https://warp10.io/">Warp 10</' + 'a>' + ]
+    [ 'label Y' 1 5 4 '<' 'a href="https://senx.io/">SenX</' + 'a>' + ]
+    [ 'label Z' 14 45 78 '<' 'img src="https://warp10.io/assets/img/header-w-white.png" />' + ]
+  ]
+  } 
+}
+````
 
 #### svg
 
+| Name | Type | Description |
+|------|------|-------------|
+| data | `string[]` |  SVG to display |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
 #### input:text, input:secret
+
+| Name | Default |
+|------|------|
+| --warp-view-input-font-size | 1rem |
+| --warp-view-input-border-radius | 0.25rem |
+| --warp-view-input-border-color | #c0c0c0 |
+| --warp-view-input-label-color | #404040 |
+| --warp-view-input-bg-color | #ffffff |
+| --warp-view-button-font-size | 1rem |
+| --warp-view-button-border-color | #004eff |
+| --warp-view-button-padding | .375rem .75rem |
+| --warp-view-button-label-color | #ffffff |
+| --warp-view-button-bg-color | #004eff |
+| --warp-view-button-width | auto |
+| --warp-view-button-border-radius | 0.25rem |
+
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `string`, `number` |  Initial value of the input |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
 
 #### input:list, input:autocomplete
 
+| Name | Default |
+|------|------|
+| --warp-view-input-font-size | 1rem |
+| --warp-view-input-border-radius | 0.25rem |
+| --warp-view-input-border-color | #c0c0c0 |
+| --warp-view-input-label-color | #404040 |
+| --warp-view-input-bg-color | #ffffff |
+| --warp-view-button-font-size | 1rem |
+| --warp-view-button-border-color | #004eff |
+| --warp-view-button-padding | .375rem .75rem |
+| --warp-view-button-label-color | #ffffff |
+| --warp-view-button-bg-color | #004eff |
+| --warp-view-button-width | auto |
+| --warp-view-button-border-radius | 0.25rem |
+
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `string[]`, `number[]` |  Content of the list |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+- `Options.input.value`: Initial value
+
 #### input:slider
+
+| Name | Default |
+|------|------|
+| --warp-view-input-font-size | 1rem |
+| --warp-view-input-border-radius | 0.25rem |
+| --warp-view-input-border-color | #c0c0c0 |
+| --warp-view-input-label-color | #404040 |
+| --warp-view-input-bg-color | #ffffff |
+| --warp-view-button-font-size | 1rem |
+| --warp-view-button-border-color | #004eff |
+| --warp-view-button-padding | .375rem .75rem |
+| --warp-view-button-label-color | #ffffff |
+| --warp-view-button-bg-color | #004eff |
+| --warp-view-button-width | auto |
+| --warp-view-button-border-radius | 0.25rem |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `number` |  Initial value of the input |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
+- `Options.input.min`: Minimum value
+- `Options.input.max`: Maximum value
 
 #### input:date
 
+| Name | Default |
+|------|------|
+| --warp-view-input-font-size | 1rem |
+| --warp-view-input-border-radius | 0.25rem |
+| --warp-view-input-border-color | #c0c0c0 |
+| --warp-view-input-label-color | #404040 |
+| --warp-view-input-bg-color | #ffffff |
+| --warp-view-button-font-size | 1rem |
+| --warp-view-button-border-color | #004eff |
+| --warp-view-button-padding | .375rem .75rem |
+| --warp-view-button-label-color | #ffffff |
+| --warp-view-button-bg-color | #004eff |
+| --warp-view-button-width | auto |
+| --warp-view-button-border-radius | 0.25rem |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `number` |  Initial timestamp of the input in time unit |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
 #### input:date-range
+
+TODO 
 
 #### button
 
+| Name | Default |
+|------|------|
+| --warp-view-button-font-size | 1rem |
+| --warp-view-button-border-color | #004eff |
+| --warp-view-button-padding | .375rem .75rem |
+| --warp-view-button-label-color | #ffffff |
+| --warp-view-button-bg-color | #004eff |
+| --warp-view-button-width | auto |
+| --warp-view-button-border-radius | 0.25rem |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `macro` |  Macro to exec against The Warp 10 instance when button is clicked. |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
 ## Events
+
+Tiles emit events, they also trap events. A Dashboard also traps particular events.
+
+Events are defined in the exec result of a tile, events are emitted when parsing done.
+
+Tiles register handlers on particular tags and event's type. You can use regular expression.
+
+Sample:
+
+![Events](./assets/events.png)
+
+
+````
+{
+    'title' 'My Dashboard With events'
+    'tiles' [
+      {
+        'type' 'display'
+        'title' 'Tile A'
+        'w' 1 'h' 1 'x' 0 'y' 0
+        'data' ''
+        'options' { 'eventHandler' 'type=(data|style),tag=tes.*' } // Events handler
+      }
+      {
+         'type' 'button'
+         'title' 'Tile B'
+         'options' { 'button' { 'label' 'Click me' } }
+         'w' 1 'h' 1 'x' 1 'y' 0
+         'macro' <% { 'data' <%
+            RAND 100 * ROUND 'v' STORE // compute a random value
+            { 
+              'data' ''
+              'events' [
+                { 'tags' [ 'test' ] 'type' 'data' 'value' $v } } // Event emitter
+               ]
+             }
+          %> } %>
+       }
+    ]
+}
+````
+
+#### Event's types
+
+##### data
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `data` |  |
+| tags | `string[]` | Targets  |
+| value |  `GTS`, `GTS[]`, `string`, `number`, custom data | The event emitter send data to the receiver, could be any kind of data including single value, GTS list or complex data. The receiver treat this event as an execution result.  |
+
+Sample:
+
+````
+{ 'tags' [ 'random' ] 'type' 'data' 'value' 42 } }
+````
+
+##### style
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `style` |  |
+| tags | `string[]` | Targets  |
+| value |  `{key:sting, value:string}` | Send CSS style to be applied by the receiver with a CSS selector as key |
+
+
+Sample:
+
+````
+{ 
+  'tags' [ 'foo' ] 
+  'type' 'style' 
+  'value' {
+    '.discovery-tile' 'background-color: red !important;'
+    '.value' 'color: #ffffff;' 
+  }
+}
+````
+
+##### xpath
+
+Only relevant for SVG targets.
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `xpath` |  |
+| tags | `string[]` | Targets  |
+| value |  `{key:sting, value:string}`, `string` | Attributes map or XML string for node replacement |
+| selector |  `string` | XPath selector starting at SVG (ie:  `/svg/g/g[2]/ellipse[3]` ) |
+
+
+If `value` is a string, the node targeted by the XPath `selector` is replaced by the XML provided in `value`.
+
+If `value` is a map, the attributes of the node targeted by the XPath `selector` will be overridden with the values 
+provided in the map. The key of the map must correspond to an attribute's name.  
+
+Sample:
+
+````
+{  // Node replacement
+  'tags' [ 'svg' ] 
+  'type' 'xpath'
+  'value' '<' 'ellipse rx="15" ry="18" style="stroke:none;fill: red;" cx="50" cy="200"' + '/>' + 
+  'selector' '/svg/g/g[2]/ellipse[1]'
+}
+{ // Attributes replacement
+  'tags' [ 'svg' ]
+  'type' 'xpath'
+  'value' { 'rx' $v 'ry' $v }
+  'selector' '/svg/g/g[2]/ellipse[3]'
+}
+````
+
+##### popup
+
+The only target is the Dashboard itself, you must declare handlers at the dashboard level.
+
+Dashboard Event handler declaration:
+
+````
+{
+    'title' 'My Dashboard With events'
+    'options' { 'eventHandler' 'type=popup,tag=foo' }
+    'tiles' [ ... ]
+}
+````
+
+When event is trapped, a popup opens with a content.
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `popup` |  |
+| tags | `string[]` | Targets  |
+| value | `Tile`,  `Dashboard` | Open a Tile or a complete dashboard in a popup. |
+
+Sample:
+
+````
+{ 
+  'tags' [ 'foo' ] 
+  'type' 'popup'
+  'value' { // a Tile
+     'type' 'area'
+     'data' [
+       NEWGTS 'data' RENAME 0.0 'v' STORE
+       1 500 <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %> FOR
+     ]
+  }
+}
+````
+
+##### variable
+
+You can inject variables into `macro` defined in Tiles and modify value with an event. Butvariables must be declared at 
+the Dashboard level with an initial value.
+
+
+
+
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `variable` |  |
+| tags | `string[]` | Targets  |
+| value |  any | New value for this variable |
+| selector |  `string` | Variable's name |
+
+Complete Sample:
+
+````
+{
+  'title' 'My Dashboard With events'
+  'vars' {
+    'myVar' 42
+  }
+  'tiles' [
+    {
+      'type' 'input:text'
+      'title' 'Input emitter'
+      'options' {
+        'button' { 'label' 'Send' }
+      }
+      'w' 2 'h' 1 'x' 0 'y' 0
+      'macro' <% { 'data' $myVar 'events' [ { 'tags' [ 'random' ] 'type' 'variable' 'selector' 'myVar' } ] } %>
+    }
+    {
+      'type' 'display'
+      'title' 'Event var receiver'
+      'w' 2 'h' 1 'x' 0 'y' 1
+      'macro' <% $myVar %>
+      'options' { 'eventHandler' 'type=(variable),tag=random' }
+    } 
+  ]
+}
+````
 

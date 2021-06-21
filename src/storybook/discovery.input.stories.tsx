@@ -129,7 +129,7 @@ export const DateInputInitialUsage = Usage.bind({});
 DateInputInitialUsage.args = {
   ...Usage.args,
   type: 'input:date',
-  ws: `{ 'data' NOW 'globalParams' { 'input' { 'min' 0 'max' 0 } } 'events' [
+  ws: `{ 'data' NOW 'events' [
     { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
   ] }`
 };

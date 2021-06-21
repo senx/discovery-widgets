@@ -17,7 +17,7 @@
     border-radius: var(--warp-view-input-border-radius, 0.25rem);
     border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
     color: var(--warp-view-input-label-color, $w10-charcoal);
-    background-color: var(--warp-view-input-bg-color);
+    background-color: var(--warp-view-input-bg-color, $w10-white);
     vertical-align: middle;
     width: 100%;
   }
@@ -135,46 +135,4 @@
       }
     }
   }
-
-  /* .datepicker-toggle {
-     display: inline-block;
-     position: relative;
-     width: 18px;
-     height: 19px;
-     padding-left: 7px;
-     padding-right: 7px;
-     margin-bottom: auto;
-     margin-top: auto;
-
-     .datepicker-toggle-button {
-       position: absolute;
-       left: 0;
-       top: 0;
-       width: 100%;
-       height: 100%;
-       background: transparent url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJ2LTFoMnpNNCAxMnYxSDJ2LTFoMnptMyAwdjFINXYtMWgyem0zIDB2MUg4di0xaDJ6bTMgMHYxaC0ydi0xaDJ6bTMgMHYxaC0ydi0xaDJ6TTQgMTB2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0zIDB2MWgtMnYtMWgyem0zIDB2MWgtMnYtMWgyek03IDh2MUg1VjhoMnptMyAwdjFIOFY4aDJ6bTMgMHYxaC0yVjhoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==') no-repeat center center;
-     }
-
-     .datepicker-input {
-       position: absolute;
-       left: 0;
-       top: 0;
-       width: 100%;
-       height: 100%;
-       opacity: 0;
-       cursor: pointer;
-       box-sizing: border-box;
-     }
-
-     .datepicker-input::-webkit-calendar-picker-indicator {
-       position: absolute;
-       left: 0;
-       top: 0;
-       width: 100%;
-       height: 100%;
-       margin: 0;
-       padding: 0;
-       cursor: pointer;
-     }
-   }*/
 }
