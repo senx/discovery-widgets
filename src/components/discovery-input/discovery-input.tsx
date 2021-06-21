@@ -36,8 +36,8 @@ export class DiscoveryInputComponent {
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
-  @State() value: string = '';
-  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' = 'text';
+  @State() value: string | number | number[] = '';
+  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label: string = 'Ok';
@@ -52,6 +52,7 @@ export class DiscoveryInputComponent {
   private max = 100;
   private values = [];
   private root: HTMLDivElement;
+  private flatpickrInstance: any;
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -107,25 +108,30 @@ export class DiscoveryInputComponent {
   }
 
   componentDidLoad() {
-    if (this.subType === 'date') {
-      const instance = flatpickr(this.inputField as HTMLInputElement, {
+    if (this.subType === 'date' || this.subType === 'date-range') {
+      this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, {
         enableTime: true,
-        defaultDate: this.formatDateTime(this.value),
         appendTo: this.root,
         positionElement: this.inputField,
         static: true,
         enableSeconds: true,
         dateFormat: 'Y/m/d H:i:S'
       });
-      instance.config.onChange.push((d, s, i) => {
+      this.flatpickrInstance.config.onChange.push((d, s, i) => {
         const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-        this.selectedValue = GTSLib.toTimestamp(s, divider, (this.options as Param).timeZone);
+        if(this.subType === 'date-range') {
+          this.selectedValue = d
+            .map(date => date.toISOString())
+            .map(date => GTSLib.toTimestamp(date, divider, (this.options as Param).timeZone));
+        } else {
+          this.selectedValue = GTSLib.toTimestamp(s, divider, (this.options as Param).timeZone);
+        }
       });
     }
   }
 
   private handleClick = () => {
-    if (this.inputField && this.subType !== 'date') {
+    if (this.inputField && this.subType !== 'date' && this.subType !== 'date-range') {
       this.selectedValue = this.inputField.value;
     }
     (this.innerResult.events || []).forEach(e => {
@@ -173,7 +179,25 @@ export class DiscoveryInputComponent {
         } else {
           this.value = (data.toString() as string);
         }
-        this.selectedValue = {date: this.formatDate(this.value), time: this.formatTime(this.value)};
+        this.selectedValue = this.value;
+        if (this.flatpickrInstance) {
+          this.flatpickrInstance.setDate(this.formatDateTime('' + this.value));
+        }
+        break;
+      case "date-range":
+        if (GTSLib.isArray(data) && data.length >= 2) {
+          this.value = (data as any[]).sort();
+        }
+        this.selectedValue = this.value;
+        if (this.flatpickrInstance) {
+          this.flatpickrInstance.config.mode = 'range';
+          this.flatpickrInstance.setDate(
+            [
+              this.formatDateTime('' + this.value[0]),
+              this.formatDateTime('' + this.value[1])
+            ]
+          )
+        }
         break;
       case "slider":
         if (GTSLib.isArray(data) && data.length > 0) {
@@ -182,7 +206,7 @@ export class DiscoveryInputComponent {
           this.value = (data.toString() as string);
         }
         this.selectedValue = this.value;
-        const newValue = Number((parseInt(this.value, 10) - this.min) * 100 / (this.max - this.min));
+        const newValue = Number((parseInt(this.value as string, 10) - this.min) * 100 / (this.max - this.min));
         const newPosition = 10 - (newValue * 0.2);
         this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
         break;
@@ -223,15 +247,19 @@ export class DiscoveryInputComponent {
   private getInput() {
     switch (this.subType) {
       case "text":
-        return <input type="text" class="discovery-input" value={this.value}
+        return <input type="text" class="discovery-input" value={this.value as string}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "secret":
-        return <input type="password" class="discovery-input" value={this.value}
+        return <input type="password" class="discovery-input" value={this.value as string}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "date":
-        return <input type="text" class="discovery-input" value={this.formatDateTime(this.value)}
+        return <input type="text" class="discovery-input"
+                      ref={el => this.inputField = el as HTMLInputElement}
+        />
+      case "date-range":
+        return <input type="text" class="discovery-input"
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "slider":
@@ -240,7 +268,7 @@ export class DiscoveryInputComponent {
             <div class="range-value" ref={el => this.display = el as HTMLDivElement}>
               <span>{this.selectedValue}</span>
             </div>
-            <input type="range" class="discovery-input" value={this.value}
+            <input type="range" class="discovery-input" value={this.value as string}
                    min={this.min} max={this.max} onInput={e => this.handleSelect(e)}
                    ref={el => this.inputField = el as HTMLInputElement}
             />

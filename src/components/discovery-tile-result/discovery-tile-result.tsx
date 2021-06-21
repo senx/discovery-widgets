@@ -251,6 +251,7 @@ export class DiscoveryTileResultComponent {
       case 'input:secret':
       case 'input:slider':
       case 'input:date':
+      case 'input:date-range':
         return <discovery-input
           result={this.innerResult}
           onDraw={() => this.drawn()}

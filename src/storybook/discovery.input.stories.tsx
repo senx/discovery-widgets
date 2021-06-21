@@ -159,3 +159,38 @@ export const DateInputWithCustomStyle = ({url, ws, language, type, options}) => 
 DateInputWithCustomStyle.args = {
   ...DateInputInitialUsage.args
 }
+
+export const DateRangeInputInitialUsage = Usage.bind({});
+DateRangeInputInitialUsage.args = {
+  ...Usage.args,
+  type: 'input:date-range',
+  ws: `{ 'data' [ NOW 10 d - NOW ] 'events' [
+    { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
+  ] }`
+};
+
+export const DateRangeInputWithCustomStyle = ({url, ws, language, type, options}) => `
+<style>
+:root {
+  --warp-view-input-border-color: #c8e020;
+  --warp-view-input-bg-color: #3b528b;
+  --warp-view-input-border-radius: 20px;
+  --warp-view-input-label-color: #c8e020;
+
+  --warp-view-button-border-color: #c8e020;
+  --warp-view-button-bg-color: #3b528b;
+  --warp-view-button-label-color: #c8e020;
+  --warp-view-button-width: 500px;
+  --warp-view-button-border-radius: 20px;
+  }
+</style>
+<div class="card" style="width: 100%;min-height: 500px">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="${type}" language="${language}"
+        debug="true" options='${JSON.stringify(options)}'
+        >${ws}</discovery-tile>
+    </div>
+</div>`;
+DateRangeInputWithCustomStyle.args = {
+  ...DateRangeInputInitialUsage.args
+}

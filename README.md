@@ -612,6 +612,10 @@ Sample:
 
 #### input:text, input:secret
 
+[More Samples](src/storybook/discovery.input.stories.tsx)
+
+When used by the event mechanism, emits the value of the input.
+
 | Name | Default |
 |------|------|
 | --warp-view-input-font-size | 1rem |
@@ -638,6 +642,8 @@ Sample:
 #### input:list, input:autocomplete
 
 [More Samples](src/storybook/discovery.input.stories.tsx)
+
+When used by the event mechanism, emits the selected value of the input.
 
 | Name | Default |
 |------|------|
@@ -668,6 +674,8 @@ Sample:
 
 [More Samples](src/storybook/discovery.input.stories.tsx)
 
+When used by the event mechanism, emits the value of the slider.
+
 | Name | Default |
 |------|------|
 | --warp-view-input-font-size | 1rem |
@@ -697,6 +705,8 @@ Sample:
 
 [More Samples](src/storybook/discovery.input.stories.tsx)
 
+When used by the event mechanism, emits the timestamp in time unit of the input.
+
 | Name | Default |
 |------|------|
 | --warp-view-input-font-size | 1rem |
@@ -721,7 +731,32 @@ Sample:
 
 #### input:date-range
 
-TODO 
+[More Samples](src/storybook/discovery.input.stories.tsx)
+
+When used by the event mechanism, emits the timestamps (start and end) in time unit of the input.
+
+| Name | Default |
+|------|------|
+| --warp-view-input-font-size | 1rem |
+| --warp-view-input-border-radius | 0.25rem |
+| --warp-view-input-border-color | #c0c0c0 |
+| --warp-view-input-label-color | #404040 |
+| --warp-view-input-bg-color | #ffffff |
+| --warp-view-button-font-size | 1rem |
+| --warp-view-button-border-color | #004eff |
+| --warp-view-button-padding | .375rem .75rem |
+| --warp-view-button-label-color | #ffffff |
+| --warp-view-button-bg-color | #004eff |
+| --warp-view-button-width | auto |
+| --warp-view-button-border-radius | 0.25rem |
+
+| Name | Type | Description |
+|------|------|-------------|
+| data | `number[]` |  Initial timestamps of the input in time unit, start and end of the range |
+| globalParams |  `Option` | Global options (see above) concerning this tile |
+| params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
+| events | `Events[]` | List of events to emit (see below) |
+
 
 #### button
 
@@ -912,7 +947,7 @@ the Dashboard level with an initial value.
 | selector |  `string` | Variable's name |
 
 Complete Sample:
-
+q
 ````
 {
   'title' 'My Dashboard With events'
