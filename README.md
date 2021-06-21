@@ -77,6 +77,9 @@ Through a WarpScript:
 
 This is the main Web Component.
 
+- [More Dashboard Samples](src/storybook/discovery.dashboard.stories.tsx)
+- [More Scada Samples](src/storybook/discovery.scada.stories.tsx)
+
 #### Attributes
 
 | Property         | Attribute         |  Type                     | Default       | Description |
@@ -259,6 +262,10 @@ structure:
 
 #### line, area, scatter, spline-area, spline, step, step-after, step-before
 
+- [More Line Samples](src/storybook/discovery.line.stories.tsx)
+- [More Area Samples](src/storybook/discovery.area.stories.tsx)
+- [More Scatter Samples](src/storybook/discovery.scatters.stories.tsx)
+
 | Name | Default |
 |------|------|
 | --warp-view-chart-label-color | #8e8e8e |
@@ -299,6 +306,8 @@ $g %> FOR STACKTOLIST 'data' STORE
 
 #### annotation
 
+[More Samples](src/storybook/discovery.annotation.stories.tsx)
+
 | Name | Default |
 |------|------|
 | --warp-view-chart-label-color | #8e8e8e |
@@ -316,6 +325,8 @@ Supported option per series are:
 - datasetColor: Hex CSS color of the series. ie: '#fff00f'
 
 #### bar
+
+[More Samples](src/storybook/discovery.bar.stories.tsx)
 
 | Name | Default |
 |------|------|
@@ -351,6 +362,8 @@ Supported option per series are:
 ````
 
 #### display
+
+[More Samples](src/storybook/discovery.display.stories.tsx)
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -394,6 +407,8 @@ Supported option per series are:
 
 #### image
 
+[More Samples](src/storybook/discovery.image.stories.tsx)
+
 | Name | Type | Description |
 |------|------|-------------|
 | data |  `string`,  `string[]`, custom data |  Base64 images to display |
@@ -402,6 +417,8 @@ Supported option per series are:
 | events | `Events[]` | List of events to emit (see below) |
 
 #### map
+
+[More Samples](src/storybook/discovery.map.stories.tsx)
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -454,6 +471,8 @@ Render weighted dots:
 
 #### gauge, circle
 
+[More Samples](src/storybook/discovery.gauge.stories.tsx)
+
 | Name | Default |
 |------|------|
 | --warp-view-chart-label-color | #8e8e8e |
@@ -473,6 +492,8 @@ Render weighted dots:
 | maxValue | `number` | Max value for gauge |
 
 #### linear-gauge
+
+[More Samples](src/storybook/discovery.gauge.stories.tsx)
 
 | Name | Default |
 |------|------|
@@ -500,6 +521,10 @@ Render weighted dots:
 
 #### pie, doughnut, rose
 
+- [More Pie Samples](src/storybook/discovery.pie.stories.tsx)
+- [More Doughnut Samples](src/storybook/discovery.doughnut.stories.tsx)
+- [More Rose Samples](src/storybook/discovery.rose.stories.tsx)
+
 | Name | Default |
 |------|------|
 | --warp-view-chart-label-color | #8e8e8e |
@@ -518,9 +543,13 @@ Render weighted dots:
 
 #### plot
 
+[More Samples](src/storybook/discovery.plot.stories.tsx)
+
 See line and annotation.
 
 #### tabular
+
+[More Samples](src/storybook/discovery.tabular.stories.tsx)
 
 | Name | Default |
 |------|------|
@@ -572,6 +601,8 @@ Sample:
 
 #### svg
 
+[More Samples](src/storybook/discovery.svg.stories.tsx)
+
 | Name | Type | Description |
 |------|------|-------------|
 | data | `string[]` |  SVG to display |
@@ -606,6 +637,8 @@ Sample:
 
 #### input:list, input:autocomplete
 
+[More Samples](src/storybook/discovery.input.stories.tsx)
+
 | Name | Default |
 |------|------|
 | --warp-view-input-font-size | 1rem |
@@ -633,6 +666,8 @@ Sample:
 
 #### input:slider
 
+[More Samples](src/storybook/discovery.input.stories.tsx)
+
 | Name | Default |
 |------|------|
 | --warp-view-input-font-size | 1rem |
@@ -659,6 +694,8 @@ Sample:
 - `Options.input.max`: Maximum value
 
 #### input:date
+
+[More Samples](src/storybook/discovery.input.stories.tsx)
 
 | Name | Default |
 |------|------|
@@ -688,6 +725,8 @@ TODO
 
 #### button
 
+[More Samples](src/storybook/discovery.button.stories.tsx)
+
 | Name | Default |
 |------|------|
 | --warp-view-button-font-size | 1rem |
@@ -712,6 +751,8 @@ Tiles emit events, they also trap events. A Dashboard also traps particular even
 Events are defined in the exec result of a tile, events are emitted when parsing done.
 
 Tiles register handlers on particular tags and event's type. You can use regular expression.
+
+[More Samples](src/storybook/discovery.events.stories.tsx)
 
 Sample:
 
