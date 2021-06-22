@@ -133,6 +133,7 @@ export class DiscoveryInputComponent {
         });
         break;
       case 'autocomplete':
+        // noinspection JSPotentiallyInvalidConstructorUsage
         this.autoCompleteJS = new autoComplete({
           placeHolder: "Search...",
           selector: () => this.inputField,
