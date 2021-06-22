@@ -345,7 +345,7 @@ TileOverFlow.args = {
               %>
             }
             {
-              'x' 0 'y' 2 'w' 12 'h' 4
+              'x' 4 'y' 2 'w' 8 'h' 4
               'options'  { 'scheme' 'CHARTANA' 'map'  { 'mapType' 'GRAYSCALE' } }
               'type' 'map'
               'macro' <%
@@ -371,6 +371,23 @@ TileOverFlow.args = {
                 { 'data' $data 'params' $params 'globalParams' { "map" { "startZoom" 4 } } }
             %>
           }
+          {
+              'title' 'Deaths per million top 10 countries'
+              'x' 0 'y' 2 'w' 4 'h' 4
+              'type' 'rose'
+              'options' { 'eventHandler' 'type=(variable),tag=country' }
+              'macro' <%
+                [ $token 'covid'  { 'country' $country }  ] FINDSETS STACKTOLIST 1 GET 'continent' GET 0 GET 'continent' STORE
+                [ $token 'covid'  { 'continent' $continent }  NOW -1 ] FETCH [ 10 ] $mapping MVTICKSPLIT FLATTEN  <%
+                  'g' STORE $g LABELS 'country' GET 'c' STORE $g $c RENAME { NULL NULL } RELABEL
+                %> F LMAP
+                <%
+                  [ 'a' 'b' ] STORE
+                  <% $a VALUES 0 GET $b VALUES 0 GET > %>
+                  <% -1 %> <% 1 %> IFTE
+                %> SORTWITH  [ 0 10 ] SUBLIST
+              %>
+            }
         ]
     }`
 }
