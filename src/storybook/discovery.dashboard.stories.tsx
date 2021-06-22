@@ -179,8 +179,44 @@ Usage.args = {
 export const TileOverFlow = Usage.bind({});
 TileOverFlow.args = {
   ...Usage.args,
+  cellHeight: 120,
+  cols: 12,
   ws: `{
         'title' 'Covid Tracker'
+        'options' {
+          'scheme' 'CHARTANA'
+          'customStyles' {
+            '.discovery-dashboard-main'
+            <'
+            --wc-split-gutter-color: #404040;
+            --warp-view-pagination-bg-color: #343a40 !important;
+            --warp-view-pagination-border-color: #6c757d;
+            --warp-view-datagrid-odd-bg-color: rgba(255, 255, 255, .05);
+            --warp-view-datagrid-odd-color: #FFFFFF;
+            --warp-view-datagrid-even-bg-color: #212529;
+            --warp-view-datagrid-even-color: #FFFFFF;
+            --warp-view-font-color: #FFFFFF;
+            --warp-view-chart-label-color: #FFFFFF;
+            --gts-stack-font-color: #FFFFFF;
+            --warp-view-resize-handle-color: #111111;
+            --warp-view-chart-legend-bg: #000;
+            --gts-labelvalue-font-color: #ccc;
+            --gts-separator-font-color: #FFFFFF;
+            --gts-labelname-font-color: rgb(105, 223, 184);
+            --gts-classname-font-color: rgb(126, 189, 245);
+            --warp-view-chart-legend-color: #FFFFFF;
+            --wc-tab-header-color: #FFFFFF;
+            --wc-tab-header-selected-color: #404040;
+            --warp-view-tile-background: #40404066;
+            --warp-view-font-color: #fff;
+            font-size: 12px !important;
+            background-color: #FAFBFF !important;
+            line-height: 1.52 !important;
+            background: linear-gradient(40deg, #3BBC7D, #1D434C) !important;
+            padding: 1em;
+            '>
+            }
+         }
         'vars' {
             'token' 'zizNn2DCXw0qtsbWx_F4WvA9ORyQBAtDScaTVaGGqJ1f5DMhE1ijFr6JDQQhPncn1bE4WQZrUN.ZIaJtCl_SOlx9oZ8H0e83U3afcX.iUPodyj.vqSgjHgToKfeO1_ZaG5fNfi3e7l71mlmJhs8Fl.'
             'country' 'France'
@@ -241,22 +277,73 @@ TileOverFlow.args = {
                     {
                         'data' $data
                         'globalParams' { 'input' { 'value' $country } }
-                        'events' [ { 'type' 'variable' 'tags' 'country' 'selector' 'country' }  ]
+                        'events' [ { 'type' 'variable' 'tags' [ 'country' ] 'selector' 'country' }  ]
                     }
                 %>
             }
             {
-                'title' 'Evolution in this country'
-                'x' 2 'y' 0 'w' 4 'h' 3
+                'title' 'Deaths/Cases per million'
+                'x' 2 'y' 0 'w' 6 'h' 2
                 'type' 'area'
+                'options' { 'eventHandler' 'type=(variable),tag=country' }
                 'macro' <%
                     [ $token 'covid'  { 'country' $country }  NOW 365 d 5 * ] FETCH
                     [ 8 11 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
-                    [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'gts' STORE
+                    [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE
+                    [ SWAP mapper.mean 7 0 0 ] MAP 'gts' STORE
                     [ $gts [] $mapping '8' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
                     [ $gts [] $mapping '11' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
                 %>
             }
+            {
+                'title' 'ICU patients'
+                'x' 8 'y' 0 'w' 4 'h' 2
+                'type' 'area'
+                'options' { 'eventHandler' 'type=(variable),tag=country' }
+                'macro' <%
+                    [ $token 'covid'  { 'country' $country }  NOW 365 d 5 * ] FETCH
+                    [ 13 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
+                    [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE [ SWAP [] reducer.sum ] REDUCE
+                %>
+            }
+            {
+              'title' 'Deaths'
+              'x' 0 'y' 1 'w' 2 'h' 1
+              'type' 'display'
+              'options' { 'eventHandler' 'type=(variable),tag=country' }
+              'macro' <%
+                [ $token 'covid'  { 'country' $country }  NOW -1 ] FETCH
+                [ 4 ] MVTICKSPLIT 0 GET VALUES 0 GET 'v' STORE
+                { 'data' [ $v ] 'globalParams' { 'timeMode' 'custom' } }
+              %>
+            }
+            {
+              'x' 0 'y' 2 'w' 12 'h' 4
+              'options'  { 'scheme' 'CHARTANA' 'map'  { 'mapType' 'STADIA' } }
+              'type' 'map'
+              'macro' <%
+                [ $token 'covid'  {}  NOW -1 ] FETCH
+                [ 4 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN 'data' STORE
+                [] 'last' STORE
+                $data <%
+                  [ SWAP bucketizer.last NOW 0 1 ] BUCKETIZE 0 GET VALUES 0 GET 'lastValue' STORE
+                  $last $lastValue +! DROP
+                %> FOREACH
+                $last MAX 'max' STORE
+                [] 'params' STORE
+                $data <%
+                  $params {
+                    'key' 'Total death'
+                    'render' 'weightedDots'
+                    "color" "#f44336cc"
+                    "borderColor" "#f44336"
+                    "maxValue" $max
+                    "minValue" 0
+                  } +! DROP
+                %> FOREACH
+                { 'data' $data 'params' $params 'globalParams' { "map" { "startZoom" 4 } } }
+            %>
+          }
         ]
     }`
 }

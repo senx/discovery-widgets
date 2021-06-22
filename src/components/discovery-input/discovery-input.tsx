@@ -138,7 +138,7 @@ export class DiscoveryInputComponent {
           placeHolder: "Search...",
           selector: () => this.inputField,
           data: {src: this.values, keys: 'v'},
-          resultItem: {highlight: {render: true}}
+          resultItem: {highlight: {render: true}},
         });
         this.inputField.addEventListener("selection", (event: any) => {
           this.selectedValue = event.detail.selection.value.k;
@@ -246,13 +246,22 @@ export class DiscoveryInputComponent {
         this.value = ((this.options as Param).input || {value: ''}).value || '';
         this.selectedValue = this.value;
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
-          this.autoCompleteJS.data = {src: this.values, keys: 'v'}
+          this.autoCompleteJS.data = {
+            src: this.values,
+            keys: 'v',
+            filter: (list) => list.filter(item => {
+              const inputValue = this.inputField.value.toLowerCase();
+              const itemValue = item.value.v.toLowerCase();
+              if (itemValue.startsWith(inputValue)) {
+                return item.value;
+              }
+            })
+          }
         }
         break;
       default:
         return '';
     }
-
   }
 
   private formatDateTime(timestamp: string): string {

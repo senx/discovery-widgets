@@ -77,6 +77,7 @@ export class Utils {
 
   static parseEventData(evt: DiscoveryEvent, eventHandler: string) {
     const parsed = {style: undefined, data: undefined, xpath: undefined, popup: undefined, vars: undefined}
+    console.log(evt, eventHandler)
     if (eventHandler) {
       let tag = '.*';
       let type = '.*';
@@ -89,6 +90,9 @@ export class Utils {
         }
       });
       const tagRex = new RegExp(tag);
+      if(evt.tags && typeof evt.tags === 'string') {
+        evt.tags = [ evt.tags ];
+      }
       if ((evt.tags || []).some(t => tagRex.test(t)) && new RegExp(type).test(evt.type || '')) {
         switch (evt.type) {
           case "data":

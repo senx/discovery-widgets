@@ -16,9 +16,9 @@ import {antPath} from 'leaflet-ant-path';
   shadow: true,
 })
 export class DiscoveryMapComponent {
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @State()  @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;

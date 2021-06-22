@@ -236,7 +236,6 @@ export class DiscoveryLineComponent {
 
   private getXAxis(color?: string): CartesianAxisOption {
     const splitNumber = Math.min(Math.ceil(this.width / 100) - 1, 10);
-    console.log((this.options as Param).timeMode)
     return {
       type: (this.options as Param).timeMode === 'date' ? 'time' : 'category',
       splitNumber,
