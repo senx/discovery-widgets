@@ -154,7 +154,7 @@ export class DiscoveryInputComponent {
     if (this.inputField && this.subType !== 'date' && this.subType !== 'date-range') {
       this.selectedValue = this.inputField.value;
     }
-    (this.innerResult.events || []).forEach(e => {
+    (this.innerResult?.events || []).forEach(e => {
       if (!!this.selectedValue && e.type === 'variable') {
         if (!e.value) {
           e.value = {};
