@@ -26,12 +26,12 @@
         height: 100%;
         border: var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
         box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: visible;
         background: var(--warp-view-tile-background);
 
-        &.input-autocomplete {
-          overflow: visible;
+        &.annotations, &.plot {
+          overflow-y: auto;
+          overflow-x: hidden;
         }
 
         & > div {
@@ -63,12 +63,12 @@
         left: 0;
         border:  var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
         box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: visible;
         background: var(--warp-view-tile-background);
 
-        &.input-autocomplete {
-          overflow: visible;
+        &.annotations, &.plot {
+          overflow-y: auto;
+          overflow-x: hidden;
         }
 
         & > div {

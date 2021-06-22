@@ -213,7 +213,6 @@ TileOverFlow.args = {
             background-color: #FAFBFF !important;
             line-height: 1.52 !important;
             background: linear-gradient(40deg, #3BBC7D, #1D434C) !important;
-            padding: 1em;
             '>
             }
          }
@@ -233,39 +232,50 @@ TileOverFlow.args = {
                 10 'total_deaths_per_million'
                 11 'new_deaths_per_million'
                 12 'new_deaths_smoothed_per_million'
-                13 'icu_patients'
-                14 'icu_patients_per_million'
-                15 'hosp_patients'
-                16 'hosp_patients_per_million'
-                17 'weekly_icu_admissions'
-                18 'weekly_icu_admissions_per_million'
-                19 'weekly_hosp_admissions'
-                20 'weekly_hosp_admissions_per_million'
-                21 'total_tests'
+                13 'reproduction_rate'
+                14 'icu_patients'
+                15 'icu_patients_per_million'
+                16 'hosp_patients'
+                17 'hosp_patients_per_million'
+                18 'weekly_icu_admissions'
+                19 'weekly_icu_admissions_per_million'
+                20 'weekly_hosp_admissions'
+                21 'weekly_hosp_admissions_per_million'
                 22 'new_tests'
-                23 'total_tests_per_thousand'
-                24 'new_tests_per_thousand'
-                25 'new_tests_smoothed'
-                26 'new_tests_smoothed_per_thousand'
-                27 'tests_per_case'
+                23 'total_tests'
+                24 'total_tests_per_thousand'
+                25 'new_tests_per_thousand'
+                26 'new_tests_smoothed'
+                27 'new_tests_smoothed_per_thousand'
                 28 'positive_rate'
-                29 'tests_units'
-                30 'stringency_index'
-                31 'population'
-                32 'population_density'
-                33 'median_age'
-                34 'aged_65_older'
-                35 'aged_70_older'
-                36 'gdp_per_capita'
-                37 'extreme_poverty'
-                38 'cardiovasc_death_rate'
-                39 'diabetes_prevalence'
-                40 'female_smokers'
-                41 'male_smokers'
-                42 'handwashing_facilities'
-                43 'hospital_beds_per_thousand '
-                44 'life_expectancy'
-                45 'human_development_index'
+                29 'tests_per_case'
+                30 'tests_units'
+                31 'total_vaccinations'
+                32 'people_vaccinated'
+                33 'people_fully_vaccinated'
+                34 'new_vaccinations'
+                35 'new_vaccinations_smoothed'
+                36 'total_vaccinations_per_hundred'
+                37 'people_vaccinated_per_hundred'
+                38 'people_fully_vaccinated_per_hundred'
+                39 'new_vaccinations_smoothed_per_millions'
+                40 'tringency_index'
+                41 'population'
+                42 'population_density'
+                43 'median_age'
+                44 'aged_65_older'
+                45 'aged_70_older'
+                46 'gdp_per_capita'
+                47 'extreme_poverty'
+                48 'cardiovasc_death_rate'
+                49 'diabetes_prevalence'
+                50 'female_smokers'
+                51 'male_smokers'
+                52 'handwashing_facilities'
+                53 'hospital_beds_per_thousand'
+                54 'life_expectancy'
+                55 'human_development_index'
+                56 'excess_mortality'
               }
         }
         'tiles' [
@@ -283,16 +293,33 @@ TileOverFlow.args = {
             }
             {
                 'title' 'Deaths/Cases per million'
-                'x' 2 'y' 0 'w' 6 'h' 2
+                'x' 2 'y' 0 'w' 3 'h' 2
                 'type' 'area'
                 'options' { 'eventHandler' 'type=(variable),tag=country' }
                 'macro' <%
                     [ $token 'covid'  { 'country' $country }  NOW 365 d 5 * ] FETCH
-                    [ 8 11 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
+                    [ 8 11 39 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
                     [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE
-                    [ SWAP mapper.mean 7 0 0 ] MAP 'gts' STORE
+                    [ SWAP mapper.mean 7 0 0 ] MAP
+                    [ SWAP mapper.abs 0 0 0 ] MAP 'gts' STORE
                     [ $gts [] $mapping '8' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
                     [ $gts [] $mapping '11' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
+                %>
+            }
+            {
+                'title' 'Vaccination'
+                'x' 5 'y' 0 'w' 3 'h' 2
+                'type' 'area'
+                'options' { 'eventHandler' 'type=(variable),tag=country' }
+                'macro' <%
+                    [ $token 'covid'  { 'country' $country }  NOW 365 d 5 * ] FETCH
+                    [ 32 33 41 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
+                    [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'gts' STORE
+                    [ $gts [] $mapping '32' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
+                    [ $gts [] $mapping '33' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
+                    [ $gts [] $mapping '41' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
+                    STACKTOLIST 'data' STORE
+                    { 'data' $data 'params' [ { 'type' 'area' } { 'type' 'area' } { 'type' 'line' } ] }
                 %>
             }
             {
@@ -302,7 +329,7 @@ TileOverFlow.args = {
                 'options' { 'eventHandler' 'type=(variable),tag=country' }
                 'macro' <%
                     [ $token 'covid'  { 'country' $country }  NOW 365 d 5 * ] FETCH
-                    [ 13 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
+                    [ 14 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
                     [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE [ SWAP [] reducer.sum ] REDUCE
                 %>
             }
@@ -319,7 +346,7 @@ TileOverFlow.args = {
             }
             {
               'x' 0 'y' 2 'w' 12 'h' 4
-              'options'  { 'scheme' 'CHARTANA' 'map'  { 'mapType' 'STADIA' } }
+              'options'  { 'scheme' 'CHARTANA' 'map'  { 'mapType' 'GRAYSCALE' } }
               'type' 'map'
               'macro' <%
                 [ $token 'covid'  {}  NOW -1 ] FETCH

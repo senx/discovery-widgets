@@ -1,7 +1,12 @@
 @import '../../../node_modules/leaflet/dist/leaflet.css';
+
 :host {
   display: block;
   width: auto;
+
+  .leaflet-top, .leaflet-bottom {
+    z-index: 900;
+  }
 
   .leaflet-container {
     width: 100%;
