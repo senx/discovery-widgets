@@ -35,6 +35,7 @@ export class DiscoveryDashboardComponent {
   @State() headers: any;
   @State() loaded = false;
   @State() start: number;
+  @State() innerStyle: { [k: string]: string; };
 
   private LOG: Logger;
   private ws: string;
@@ -42,6 +43,7 @@ export class DiscoveryDashboardComponent {
   private modal: HTMLDiscoveryModalElement;
   private _type: 'scada' | 'dashboard';
   private scadaHeight: number;
+  private innerStyles: any;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -62,6 +64,9 @@ export class DiscoveryDashboardComponent {
       this.modal.open().then(() => {
         // empty
       });
+    }
+    if (res.style) {
+      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
   }
 
@@ -151,7 +156,6 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     }
     return {...new Param(), ...options as Param, ...options2}
   }
-
 
   static sanitize(data: string | DataModel) {
     if (typeof data === 'string') return '["' + data + '"]';
@@ -251,8 +255,16 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         options={this.options}
         url={this.url}
         debug={this.debug}/>
-      {this.loaded ? this.getRendering() : <discovery-spinner>Requesting data...</discovery-spinner>}
+      {this.loaded
+        ? [<style>{this.generateStyle(this.innerStyle)}</style>, this.getRendering()]
+        : <discovery-spinner>Requesting data...</discovery-spinner>
+      }
       <pre id="ws"><slot/></pre>
     </Host>;
+  }
+
+  private generateStyle(styles: { [k: string]: string }): string {
+    this.innerStyles = {...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {}};
+    return Object.keys(this.innerStyles || {}).map(k => k + ' { ' + this.innerStyles[k] + ' }').join('\n');
   }
 }
