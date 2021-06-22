@@ -96,13 +96,19 @@ export class DiscoveryTileComponent {
     if (this.ws && this.ws !== '') {
       this.LOG.debug(['exec'], this.ws);
       if (this.language === 'flows') {
-        this.ws = Object.keys(this.innerVars || {}).map(k => `${k} = "${this.innerVars[k]}"`).join("\n") + "\n" + this.ws;
+        this.ws = Object.keys(this.innerVars || {}).map(k => `${k} = ${typeof this.innerVars[k] === 'string'
+          ? '"' + this.innerVars[k] + '"'
+          : 'JSON->(\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n)'
+        }`).join("\n") + "\n" + this.ws;
         this.ws = `<'
 ${this.ws}
 '>
 FLOWS`;
       } else {
-        this.ws = Object.keys(this.innerVars || {}).map(k => `"${this.innerVars[k]}" "${k}" STORE`).join("\n") + "\n" + this.ws;
+        this.ws = Object.keys(this.innerVars || {}).map(k => `${typeof this.innerVars[k] === 'string'
+          ? '"' + this.innerVars[k] + '"'
+          : '\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n JSON->'
+        } "${k}" STORE`).join("\n") + "\n" + this.ws;
       }
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;

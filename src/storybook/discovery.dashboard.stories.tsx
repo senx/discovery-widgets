@@ -182,9 +182,55 @@ TileOverFlow.args = {
   ws: `{
         'title' 'Covid Tracker'
         'vars' {
-        'token'
-        'zizNn2DCXw0qtsbWx_F4WvA9ORyQBAtDScaTVaGGqJ1f5DMhE1ijFr6JDQQhPncn1bE4WQZrUN.ZIaJtCl_SOlx9oZ8H0e83U3afcX.iUPodyj.vqSgjHgToKfeO1_ZaG5fNfi3e7l71mlmJhs8Fl.'
-        'country' 'France'
+            'token' 'zizNn2DCXw0qtsbWx_F4WvA9ORyQBAtDScaTVaGGqJ1f5DMhE1ijFr6JDQQhPncn1bE4WQZrUN.ZIaJtCl_SOlx9oZ8H0e83U3afcX.iUPodyj.vqSgjHgToKfeO1_ZaG5fNfi3e7l71mlmJhs8Fl.'
+            'country' 'France'
+            'mapping' {
+                1 'total_cases'
+                2 'new_cases'
+                3 'new_cases_smoothed'
+                4 'total_deaths'
+                5 'new_deaths'
+                6 'new_deaths_smoothed'
+                7 'total_cases_per_million'
+                8 'new_cases_per_million'
+                9 'new_cases_smoothed_per_million'
+                10 'total_deaths_per_million'
+                11 'new_deaths_per_million'
+                12 'new_deaths_smoothed_per_million'
+                13 'icu_patients'
+                14 'icu_patients_per_million'
+                15 'hosp_patients'
+                16 'hosp_patients_per_million'
+                17 'weekly_icu_admissions'
+                18 'weekly_icu_admissions_per_million'
+                19 'weekly_hosp_admissions'
+                20 'weekly_hosp_admissions_per_million'
+                21 'total_tests'
+                22 'new_tests'
+                23 'total_tests_per_thousand'
+                24 'new_tests_per_thousand'
+                25 'new_tests_smoothed'
+                26 'new_tests_smoothed_per_thousand'
+                27 'tests_per_case'
+                28 'positive_rate'
+                29 'tests_units'
+                30 'stringency_index'
+                31 'population'
+                32 'population_density'
+                33 'median_age'
+                34 'aged_65_older'
+                35 'aged_70_older'
+                36 'gdp_per_capita'
+                37 'extreme_poverty'
+                38 'cardiovasc_death_rate'
+                39 'diabetes_prevalence'
+                40 'female_smokers'
+                41 'male_smokers'
+                42 'handwashing_facilities'
+                43 'hospital_beds_per_thousand '
+                44 'life_expectancy'
+                45 'human_development_index'
+              }
         }
         'tiles' [
             {
@@ -200,7 +246,16 @@ TileOverFlow.args = {
                 %>
             }
             {
-
+                'title' 'Evolution in this country'
+                'x' 2 'y' 0 'w' 4 'h' 3
+                'type' 'area'
+                'macro' <%
+                    [ $token 'covid'  { 'country' $country }  NOW 365 d 5 * ] FETCH
+                    [ 8 11 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
+                    [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'gts' STORE
+                    [ $gts [] $mapping '8' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
+                    [ $gts [] $mapping '11' GET filter.byclass ] FILTER [ SWAP [] reducer.sum ] REDUCE
+                %>
             }
         ]
     }`

@@ -168,9 +168,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         return <div class="discovery-scada-main">
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
-          <div class="discovery-scada-wrapper"
-               style={{height: this.scadaHeight + 'px'}}
-          >
+          <div class="discovery-scada-wrapper" style={{height: this.scadaHeight + 'px'}}>
             {this.result.tiles.map((t) =>
               <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
