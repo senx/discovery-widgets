@@ -36,7 +36,7 @@ export class DiscoveryLineComponent {
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
-  private defOptions: Param = new Param();
+  private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
   private divider: number = 1000;
   private myChart: ECharts;
