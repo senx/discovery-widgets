@@ -172,7 +172,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                style={{height: this.scadaHeight + 'px'}}
           >
             {this.result.tiles.map((t) =>
-              <div class={'discovery-scada-tile ' + t.type.replace(/:/gi, '-')}
+              <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
                      left: t.x + 'px',
                      width: t.w + 'px',
@@ -214,7 +214,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
           }}>
             {this.result.tiles.map((t) =>
-              <div class={'discovery-dashboard-tile ' + t.type.replace(/:/gi, '-')}
+              <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
                      gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
                      gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),

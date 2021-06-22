@@ -187,15 +187,23 @@ TileOverFlow.args = {
         'country' 'France'
         }
         'tiles' [
-        {
-        'title' 'Country'
-        'x' 0 'y' 0 'w' 2 'h' 1
-        'type' 'input:autocomplete'
-        'macro' <% [ $token '~.*' {} ] FINDSETS STACKTOLIST 1 GET 'country' GET LSORT 'data' STORE { 'data'
-            $data 'globalParams' { 'input' { 'value' $country } } } %>
+            {
+                'title' 'Country'
+                'x' 0 'y' 0 'w' 2 'h' 1
+                'type' 'input:autocomplete'
+                'macro' <% [ $token '~.*' {} ] FINDSETS STACKTOLIST 1 GET 'country' GET LSORT 'data' STORE
+                    {
+                        'data' $data
+                        'globalParams' { 'input' { 'value' $country } }
+                        'events' [ { 'type' 'variable' 'tags' 'country' 'selector' 'country' }  ]
+                    }
+                %>
             }
-            ]
-            }`
+            {
+
+            }
+        ]
+    }`
 }
 
 export const CustomStyle = ({url, ws, options, title}) => `<div>
