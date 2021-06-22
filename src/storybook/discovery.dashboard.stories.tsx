@@ -174,6 +174,30 @@ Usage.args = {
    }`,
   options: new Param()
 }
+
+
+export const TileOverFlow = Usage.bind({});
+TileOverFlow.args = {
+  ...Usage.args,
+  ws: `{
+        'title' 'Covid Tracker'
+        'vars' {
+        'token'
+        'zizNn2DCXw0qtsbWx_F4WvA9ORyQBAtDScaTVaGGqJ1f5DMhE1ijFr6JDQQhPncn1bE4WQZrUN.ZIaJtCl_SOlx9oZ8H0e83U3afcX.iUPodyj.vqSgjHgToKfeO1_ZaG5fNfi3e7l71mlmJhs8Fl.'
+        'country' 'France'
+        }
+        'tiles' [
+        {
+        'title' 'Country'
+        'x' 0 'y' 0 'w' 2 'h' 1
+        'type' 'input:autocomplete'
+        'macro' <% [ $token '~.*' {} ] FINDSETS STACKTOLIST 1 GET 'country' GET LSORT 'data' STORE { 'data'
+            $data 'globalParams' { 'input' { 'value' $country } } } %>
+            }
+            ]
+            }`
+}
+
 export const CustomStyle = ({url, ws, options, title}) => `<div>
 <style>
 :root {
