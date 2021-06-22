@@ -90,7 +90,7 @@ export class DiscoveryInputComponent {
       }
     }).globalParams || {button: {label: btnLabel}};
 
-    this.label = dm.button.label;
+    this.label = (dm.button ||  {label: btnLabel}).label;
     this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
@@ -121,7 +121,7 @@ export class DiscoveryInputComponent {
           enableSeconds: true,
           dateFormat: 'Y/m/d H:i:S'
         });
-        this.flatpickrInstance.config.onChange.push((d, s, i) => {
+        this.flatpickrInstance.config.onChange.push((d, s) => {
           const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
           if (this.subType === 'date-range') {
             this.selectedValue = d
