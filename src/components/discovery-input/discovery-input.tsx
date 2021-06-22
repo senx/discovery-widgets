@@ -7,6 +7,7 @@ import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import flatpickr from "flatpickr";
+import autoComplete from "@tarekraafat/autocomplete.js/dist/autoComplete.js";
 
 @Component({
   tag: 'discovery-input',
@@ -53,6 +54,7 @@ export class DiscoveryInputComponent {
   private values = [];
   private root: HTMLDivElement;
   private flatpickrInstance: any;
+  private autoCompleteJS: any;
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -108,25 +110,42 @@ export class DiscoveryInputComponent {
   }
 
   componentDidLoad() {
-    if (this.subType === 'date' || this.subType === 'date-range') {
-      this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, {
-        enableTime: true,
-        appendTo: this.root,
-        positionElement: this.inputField,
-        static: true,
-        enableSeconds: true,
-        dateFormat: 'Y/m/d H:i:S'
-      });
-      this.flatpickrInstance.config.onChange.push((d, s, i) => {
-        const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-        if(this.subType === 'date-range') {
-          this.selectedValue = d
-            .map(date => date.toISOString())
-            .map(date => GTSLib.toTimestamp(date, divider, (this.options as Param).timeZone));
-        } else {
-          this.selectedValue = GTSLib.toTimestamp(s, divider, (this.options as Param).timeZone);
-        }
-      });
+    switch (this.subType) {
+      case "date":
+      case "date-range":
+        this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, {
+          enableTime: true,
+          appendTo: this.root,
+          positionElement: this.inputField,
+          static: true,
+          enableSeconds: true,
+          dateFormat: 'Y/m/d H:i:S'
+        });
+        this.flatpickrInstance.config.onChange.push((d, s, i) => {
+          const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+          if (this.subType === 'date-range') {
+            this.selectedValue = d
+              .map(date => date.toISOString())
+              .map(date => GTSLib.toTimestamp(date, divider, (this.options as Param).timeZone));
+          } else {
+            this.selectedValue = GTSLib.toTimestamp(s, divider, (this.options as Param).timeZone);
+          }
+        });
+        break;
+      case 'autocomplete':
+        this.autoCompleteJS = new autoComplete({
+          placeHolder: "Search...",
+          selector: () => this.inputField,
+          data: {src: this.values, keys: 'v'},
+          resultItem: {highlight: {render: true}}
+        });
+        this.inputField.addEventListener("selection", (event: any) => {
+          this.selectedValue = event.detail.selection.value.k;
+          this.value = event.detail.selection.value.v;
+        });
+        break;
+      default:
+        break;
     }
   }
 
@@ -211,6 +230,7 @@ export class DiscoveryInputComponent {
         this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
         break;
       case "list":
+      case 'autocomplete':
         this.values = [];
         if (GTSLib.isArray(data) && data.length > 0) {
           this.values = data as any[];
@@ -224,6 +244,9 @@ export class DiscoveryInputComponent {
         }
         this.value = ((this.options as Param).input || {value: ''}).value || '';
         this.selectedValue = this.value;
+        if (this.subType === 'autocomplete' && this.autoCompleteJS) {
+          this.autoCompleteJS.data = {src: this.values, keys: 'v'}
+        }
         break;
       default:
         return '';
@@ -234,14 +257,6 @@ export class DiscoveryInputComponent {
   private formatDateTime(timestamp: string): string {
     const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     return (GTSLib.toISOString(parseInt(timestamp, 10), divider, (this.options as Param).timeZone) || '').replace('Z', '');
-  }
-
-  private formatDate(timestamp: string): string {
-    return this.formatDateTime(timestamp).split('T')[0];
-  }
-
-  private formatTime(timestamp: string): string {
-    return this.formatDateTime(timestamp).split('T')[1];
   }
 
   private getInput() {
@@ -260,6 +275,10 @@ export class DiscoveryInputComponent {
         />
       case "date-range":
         return <input type="text" class="discovery-input"
+                      ref={el => this.inputField = el as HTMLInputElement}
+        />
+      case "autocomplete":
+        return <input type="text" class="discovery-input" value={this.value as string}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "slider":

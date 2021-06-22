@@ -48,6 +48,7 @@
   "dependencies": {
     "@stencil/core": "^2.6.0",
     "@stencil/sass": "^1.4.1",
+    "@tarekraafat/autocomplete.js": "^10.1.5",
     "dayjs": "^1.10.5",
     "echarts": "^5.1.2",
     "echarts-gl": "^2.0.5",

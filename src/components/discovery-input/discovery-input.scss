@@ -1,5 +1,6 @@
 @import "src/components/vars";
 @import '../../../node_modules/flatpickr/dist/flatpickr.css';
+@import '../../../node_modules/@tarekraafat/autocomplete.js/dist/css/autoComplete.02.css';
 
 :host {
   display: block;
@@ -38,6 +39,16 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
+  }
+
+  .autoComplete_wrapper {
+    width: 100%;
+    margin-right: 20px;
+    margin-bottom: 10px;
+
+    input[type=text].discovery-input {
+      height: 100%;
+    }
   }
 
   button.discovery-btn {
