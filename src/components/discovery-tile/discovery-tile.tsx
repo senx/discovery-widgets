@@ -24,6 +24,7 @@ export class DiscoveryTileComponent {
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
+  @Event() execResult: EventEmitter;
 
   @Element() el: HTMLElement;
 
@@ -39,7 +40,6 @@ export class DiscoveryTileComponent {
   private timer: any;
   private innerVars = {}
   private tileResult: HTMLDiscoveryTileResultElement;
-  private rs: any;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -149,6 +149,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           }
         }
         this.LOG.debug(['exec', 'result'], this.result);
+        this.execResult.emit(this.result);
         this.loaded = true;
       }).catch(e => {
         this.statusError.emit(e);
