@@ -24,6 +24,7 @@
 
 | Event           | Description | Type                    |
 | --------------- | ----------- | ----------------------- |
+| `execResult`    |             | `CustomEvent<any>`      |
 | `statusError`   |             | `CustomEvent<any>`      |
 | `statusHeaders` |             | `CustomEvent<string[]>` |
 

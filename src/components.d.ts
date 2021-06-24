@@ -532,6 +532,7 @@ declare namespace LocalJSX {
         "chartTitle"?: string;
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
+        "onExecResult"?: (event: CustomEvent<any>) => void;
         "onStatusError"?: (event: CustomEvent<any>) => void;
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
         "options"?: Param | string;
