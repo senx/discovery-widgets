@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -6,6 +6,7 @@ import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-svg',
@@ -51,9 +52,24 @@ export class DiscoverySvgComponent {
     this.funqueue.push(this.wrapFunction(this.processEvent, this, [event]));
   }
 
+  @Method()
+  async resize() {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w;
+    this.height = dims.h;
+  }
+
   componentWillLoad() {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w;
+    this.height = dims.h;
     this.parseResult();
     this.processQueue();
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   convert(data: DataModel) {

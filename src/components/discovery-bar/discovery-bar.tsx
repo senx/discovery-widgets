@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {ChartType, ECharts} from "../../model/types";
 import {Param} from "../../model/param";
 import * as echarts from "echarts";
@@ -9,6 +9,7 @@ import {Utils} from "../../utils/utils";
 import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
 import {DataModel} from "../../model/dataModel";
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-bar',
@@ -44,6 +45,13 @@ export class DiscoveryBarComponent {
     setTimeout(() => this.myChart.setOption(this.chartOpts));
   }
 
+  @Method()
+  async resize() {
+    if(this.myChart) {
+      this.myChart.resize();
+    }
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryBarComponent, this.debug);
@@ -58,6 +66,12 @@ export class DiscoveryBarComponent {
       options: this.options,
       chartOpts: this.chartOpts
     });
+    this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private getCommonSeriesParam(color) {
@@ -231,8 +245,8 @@ export class DiscoveryBarComponent {
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
       renderer: 'svg',
-      width: this.width,
-      height: this.height ? this.height - 10 : undefined
+   //   width: this.width,
+     // height: this.height ? this.height - 10 : undefined
     });
     this.myChart.on('finished', () => {
       this.rendering = false;
@@ -246,7 +260,7 @@ export class DiscoveryBarComponent {
   }
 
   render() {
-    return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
+    return <div style={{width: '100%', height: '100%'}}>
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el as HTMLDivElement}/>

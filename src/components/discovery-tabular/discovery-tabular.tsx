@@ -1,10 +1,11 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from "@stencil/core";
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from "@stencil/core";
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-tabular',
@@ -36,6 +37,14 @@ export class DiscoveryTabular {
     this.tabularData = this.convert(GTSLib.getData(this.result));
   }
 
+  @Method()
+  async resize() {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w;
+    this.height = dims.h;
+  }
+
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryTabular, this.debug);
@@ -49,6 +58,10 @@ export class DiscoveryTabular {
       type: this.type,
       options: this.options,
     });
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w;
+    this.height = dims.h;
+    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
 
   private static getHeaderParam(data: DataModel, i: number, j: number, key: string, def: string): string {
@@ -137,7 +150,7 @@ export class DiscoveryTabular {
 
   render() {
     this.draw.emit();
-    return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
+    return <div class="tabular-wrapper">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       {this.tabularData.map(d => <discovery-pageable data={d} options={this.options as Param} debug={this.debug} /> )}

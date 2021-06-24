@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType, MapParams} from "../../model/types";
 import {Param} from "../../model/param";
@@ -9,6 +9,7 @@ import Leaflet, {TileLayerOptions} from 'leaflet';
 import {MapLib} from "../../utils/map-lib";
 import {ColorLib} from "../../utils/color-lib";
 import {antPath} from 'leaflet-ant-path';
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-map',
@@ -19,8 +20,8 @@ export class DiscoveryMapComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = new Param();
-  @Prop() width: number;
-  @State()  @Prop({mutable: true}) height: number;
+  @State() @Prop() width: number;
+  @State() @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
 
   @Element() el: HTMLElement;
@@ -67,6 +68,13 @@ export class DiscoveryMapComponent {
     }
   }
 
+  @Method()
+  async resize() {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w;
+    this.height = dims.h - 10;
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryMapComponent, this.debug);
@@ -80,7 +88,15 @@ export class DiscoveryMapComponent {
       options: this.options,
       toDisplay: this.toDisplay,
     });
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w;
+    this.height = dims.h;
     this.parsing = false;
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   componentDidLoad() {
@@ -498,8 +514,8 @@ export class DiscoveryMapComponent {
 
   render() {
     return <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
-          <div ref={(el) => this.mapElement = el as HTMLDivElement}/>
-        </div>;
+      <div ref={(el) => this.mapElement = el as HTMLDivElement}/>
+    </div>;
   }
 
 }

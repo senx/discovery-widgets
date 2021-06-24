@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import * as echarts from 'echarts';
 import {EChartsOption} from 'echarts';
 import {GTSLib} from '../../utils/gts.lib';
@@ -11,6 +11,7 @@ import {ChartType, ECharts} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
 import {CartesianAxisOption} from "echarts/lib/coord/cartesian/AxisModel";
 import {GridOption} from "echarts/lib/coord/cartesian/GridModel";
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-line',
@@ -22,8 +23,8 @@ export class DiscoveryLineComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
-  @Prop() width: number;
-  @Prop() height: number;
+  @State() @Prop() width: number;
+  @State() @Prop() height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
 
@@ -35,6 +36,7 @@ export class DiscoveryLineComponent {
   @State() rendering: boolean = false;
 
   private graph: HTMLDivElement;
+  private wrap: HTMLDivElement;
   private chartOpts: EChartsOption;
   private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
@@ -63,6 +65,11 @@ export class DiscoveryLineComponent {
     });
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   convert(data: DataModel) {
@@ -81,9 +88,6 @@ export class DiscoveryLineComponent {
         containLabel: true
       },
       responsive: true,
-      title: {
-        //  text: 'ECharts entry example'
-      },
       throttle: 70,
       tooltip: {
         trigger: 'axis',
@@ -265,9 +269,9 @@ export class DiscoveryLineComponent {
     this.parsing = false;
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
-      renderer: 'svg',
-      width: this.width,
-      height: this.height,
+        renderer: 'svg',
+      /*   width: this.width,
+         height: this.height,*/
     });
     this.myChart.on('finished', () => {
       this.rendering = false;
@@ -276,12 +280,19 @@ export class DiscoveryLineComponent {
     setTimeout(() => this.myChart.setOption(this.chartOpts));
   }
 
+  @Method()
+  async resize() {
+    if(this.myChart) {
+      this.myChart.resize();
+    }
+  }
+
   private drawn() {
     this.draw.emit();
   }
 
   render() {
-    return <div style={{width: this.width + 'px', height: this.height + 'px'}}>
+    return <div style={{width: '100%', height: '100%'}} ref={(el) => this.wrap = el as HTMLDivElement}>
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el as HTMLDivElement}/>

@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
 import {ChartType, ECharts} from "../../model/types";
 import {Param} from "../../model/param";
 import * as echarts from "echarts";
@@ -10,6 +10,7 @@ import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
 import {DataModel} from "../../model/dataModel";
 
+import elementResizeEvent from "element-resize-event";
 @Component({
   tag: 'discovery-annotation',
   styleUrl: 'discovery-annotation.scss',
@@ -53,6 +54,13 @@ export class DiscoveryAnnotation {
     });
   }
 
+  @Method()
+  async resize() {
+    if(this.myChart) {
+      this.myChart.resize();
+    }
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryAnnotation, this.debug);
@@ -63,6 +71,11 @@ export class DiscoveryAnnotation {
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.options});
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   convert(data: DataModel) {

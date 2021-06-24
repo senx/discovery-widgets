@@ -17,13 +17,13 @@ export default {
       options: [
         'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
         'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
-        'input:list', 'input:secret', 'input:autocomplete', 'input:slider', 'input:date', 'input:date-range'],
+        'input:list', 'input:secret', 'input:autocomplete', 'input:slider', 'input:date', 'input:date-range', 'image'],
       control: {
         type: 'select',
         labels: [
           'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
           'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
-          'input:list', 'input:secret', 'input:autocomplete', 'input:slider', 'input:date', 'input:date-range']
+          'input:list', 'input:secret', 'input:autocomplete', 'input:slider', 'input:date', 'input:date-range', 'image']
       }
     },
     language: {
@@ -50,7 +50,11 @@ export default {
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
 // @ts-ignore
-const Template = ({url, ws, language, type, options, unit, title}) => `<div class="card" style="width: 100%;min-height: 500px">
+const Template = ({url, ws, language, type, options, unit, title}) => `
+<div style="height: 600px;width: 100%;
+min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+<div class="card"
+ style="height: 100%;width: 100%;min-height: 100%;">
       <div class="card-body">
           <discovery-tile url="${url}" type="${type}" language="${language}"
           unit="${unit || ''}"
@@ -59,7 +63,9 @@ const Template = ({url, ws, language, type, options, unit, title}) => `<div clas
           debug options='${JSON.stringify(options)}'
           >${ws}</discovery-tile>
       </div>
-  </div>`;
+  </div>
+</div>
+`;
 
 export const Usage = Template.bind({});
 Usage.args = {
@@ -109,3 +115,12 @@ backgroundAndIndividualLineColors.args = {
   `,
   options: {...options, bgColor: '#404040'}
 }
+
+export const resizeHandler = ({url, ws, lang, options, unit, title}) => `<div style="height: 300px;
+min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+    <discovery-tile url="${url}" type="line" lang="${lang}"
+        unit="${unit || ''}" title="${title || ''}"
+    options='${JSON.stringify(options)}'>${ws}</discovery-tile>
+</div>`;
+resizeHandler.args = {...Usage.args};
+

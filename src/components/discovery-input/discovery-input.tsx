@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Listen, Prop, State, Watch} from "@stencil/core";
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from "@stencil/core";
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -74,6 +74,10 @@ export class DiscoveryInputComponent {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
     this.parseResult();
+  }
+
+  @Method()
+  async resize() {
   }
 
   componentWillLoad() {

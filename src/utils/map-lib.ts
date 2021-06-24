@@ -283,10 +283,13 @@ export class MapLib {
     if (!MapLib.validateWeightedDotsPositionArray(posArray, params)) {
       return;
     }
-    if (!params.minColorValue || !params.maxColorValue || !params.startColor || !params.endColor) {
+    if (params.minColorValue === undefined
+      || params.maxColorValue === undefined
+      || params.startColor === undefined
+      || params.endColor === undefined) {
       MapLib.LOG.error(['validateWeightedColoredDotsPositionArray'], 'When using ' +
         '\'coloredWeightedDots\' rendering, \'maxColorValue\', \'minColorValue\', \'startColor\' ' +
-        'and \'endColor\' parameters are compulsory');
+        'and \'endColor\' parameters are compulsory', params);
       posArray.render = undefined;
       return;
     }

@@ -53,7 +53,7 @@ Usage.args = {
          'w' 2 'h' 1 'x' 3 'y' 0
          'data' 'Hello Discovery'
        }
-       {
+        {
          'type' 'area'
          'w' 3 'h' 1 'x' 0 'y' 0
          'data' [
@@ -64,7 +64,7 @@ Usage.args = {
            FOR
          ]
        }
-       {
+        {
          'type' 'line'
          'title' 'Title'
          'w' 3 'h' 1 'x' 5 'y' 0
@@ -77,7 +77,7 @@ Usage.args = {
            FOR
          %>
        }
-       {
+        {
          'type' 'annotation'
          'w' 8 'h' 1 'x' 0 'y' 2
          'data' [
@@ -86,7 +86,7 @@ Usage.args = {
            NEWGTS 'annot3' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
          ]
        }
-       {
+        {
           'type' 'circle'
           'unit' '%25'
           'w' 1 'h' 1 'x' 0 'y' 1
@@ -325,12 +325,12 @@ TileOverFlow.args = {
             {
                 'title' 'ICU patients'
                 'x' 8 'y' 0 'w' 4 'h' 2
-                'type' 'area'
+                'type' 'bar'
                 'options' { 'eventHandler' 'type=(variable),tag=country' }
                 'macro' <%
                     [ $token 'covid'  { 'country' $country }  NOW 365 d 5 * ] FETCH
                     [ 14 ] $mapping MVTICKSPLIT FLATTEN ->GTS VALUELIST FLATTEN
-                    [ SWAP bucketizer.sum NOW 1 d 0 ] BUCKETIZE [ SWAP [] reducer.sum ] REDUCE
+                    [ SWAP bucketizer.mean NOW 7 d 0 ] BUCKETIZE [ SWAP [] reducer.sum ] REDUCE
                 %>
             }
             {

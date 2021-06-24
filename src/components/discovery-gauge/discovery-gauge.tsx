@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType, ECharts} from "../../model/types";
 import {Param} from "../../model/param";
@@ -9,6 +9,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
 import {SeriesOption} from "echarts/lib/util/types";
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-gauge',
@@ -44,6 +45,13 @@ export class DiscoveryGauge {
     this.drawChart();
   }
 
+  @Method()
+  async resize() {
+    if (this.myChart) {
+      this.myChart.resize();
+    }
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryGauge, this.debug);
@@ -57,6 +65,11 @@ export class DiscoveryGauge {
       options: this.options,
       chartOpts: this.chartOpts
     });
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private getCommonSeriesParam(color) {
@@ -192,7 +205,7 @@ export class DiscoveryGauge {
         },
         center: [
           (gtsCount === 1 ? '50' : i % 2 === 0 ? '25' : '75') + '%',
-          (gtsCount === 1 ?  (this.type === 'gauge' ? '65': '50') : (radius * (floor - 1) - radius / 2 + 10)) + '%'
+          (gtsCount === 1 ? (this.type === 'gauge' ? '65' : '50') : (radius * (floor - 1) - radius / 2 + 10)) + '%'
         ]
       })
     });
@@ -213,7 +226,7 @@ export class DiscoveryGauge {
   autoFontSize(size: number) {
     if (this.el.getBoundingClientRect().height > 0) {
       const count = size > 1;
-      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 10) / (count  ? 4 : 1);
+      return (this.el.getBoundingClientRect().height >= 700) ? 50 : (this.el.getBoundingClientRect().height / 10) / (count ? 4 : 1);
     } else {
       return 12;
     }
@@ -235,7 +248,7 @@ export class DiscoveryGauge {
   }
 
   render() {
-    return <div style={{height: this.height + 'px'}}>
+    return <div style={{width: '100%', height: '100%'}}>
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
       {this.parsing ? <div class="discovery-chart-spinner">
         <discovery-spinner>Parsing data...</discovery-spinner>

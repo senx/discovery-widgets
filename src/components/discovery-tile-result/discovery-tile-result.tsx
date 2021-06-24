@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Listen, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -42,9 +42,8 @@ export class DiscoveryTileResultComponent {
   private LOG: Logger;
   private wrapper: HTMLDivElement;
   private title: HTMLDivElement;
-  private innerHeight: number;
-  private innerWidth: number;
   private innerStyles: any;
+  private tile: any;
 
   @Watch('result')
   updateRes() {
@@ -78,7 +77,7 @@ export class DiscoveryTileResultComponent {
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
-      result: this.result
+      result: this.innerResult
     });
   }
 
@@ -108,9 +107,8 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
           debug={this.debug}
+          ref={(el) => this.tile = el}
         />;
       case 'annotation':
         return <discovery-annotation
@@ -119,8 +117,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'bar':
@@ -130,8 +127,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'display':
@@ -141,8 +137,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'map':
@@ -151,8 +146,7 @@ export class DiscoveryTileResultComponent {
           onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'image':
@@ -161,8 +155,7 @@ export class DiscoveryTileResultComponent {
           onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'button':
@@ -172,8 +165,7 @@ export class DiscoveryTileResultComponent {
           url={this.url}
           type={this.type}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'gauge':
@@ -184,8 +176,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'linear-gauge':
@@ -195,8 +186,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'pie':
@@ -208,8 +198,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'tabular':
@@ -219,8 +208,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'plot':
@@ -230,8 +218,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'svg':
@@ -241,8 +228,7 @@ export class DiscoveryTileResultComponent {
           type={this.type}
           unit={this.unit}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       case 'input:text':
@@ -257,12 +243,19 @@ export class DiscoveryTileResultComponent {
           onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
-          height={this.innerHeight}
-          width={this.innerWidth}
+          ref={(el) => this.tile = el}
           debug={this.debug}
         />;
       default:
         return '';
+    }
+  }
+
+  @Method()
+  async resize() {
+    console.log('componentDidLoad - resize', this.tile);
+    if (this.tile) {
+      (this.tile as any).resize();
     }
   }
 
@@ -273,11 +266,11 @@ export class DiscoveryTileResultComponent {
            style={{
              backgroundColor: this.bgColor,
              color: this.fontColor,
-             height: (this.height) + 'px'
+             height: '100%', width: '100%'
            }}>
         {this.chartTitle ? <h2 ref={(el) => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
         <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el as HTMLDivElement}>
-          {this.innerHeight ? this.getView() : ''}
+          {this.getView()}
         </div>
       </div>
     ];
@@ -285,7 +278,7 @@ export class DiscoveryTileResultComponent {
 
   private parseResult() {
     setTimeout(() => {
-      this.setHeight();
+      // this.setSize();
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])
         .filter(e => !!e.value)
@@ -294,16 +287,11 @@ export class DiscoveryTileResultComponent {
           this.discoveryEvent.emit(e)
         });
     });
-  }
-
-  private setHeight() {
-    if (this.wrapper) {
-      const dims = Utils.getContentBounds(this.wrapper.parentElement);
-      this.height = dims.h;
-      this.width = dims.w;
-      this.innerWidth = dims.w;
-      this.innerHeight = dims.h - (this.chartTitle ? Utils.getContentBounds(this.title).h + 10 : 0);
-    }
+    this.LOG.debug(['parseResult'], {
+      type: this.type,
+      options: this.options,
+      result: this.innerResult
+    });
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
@@ -314,14 +302,11 @@ export class DiscoveryTileResultComponent {
   private handleCSSColors() {
     let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000000');
     fontColor = ((this.options as Param) || {fontColor}).fontColor || fontColor;
-
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
-
     const dm: Param = (((this.innerResult as unknown as DataModel) || {
       globalParams: {bgColor, fontColor}
     }).globalParams || {bgColor, fontColor}) as Param;
-
     this.bgColor = dm.bgColor;
     this.fontColor = dm.fontColor;
   }

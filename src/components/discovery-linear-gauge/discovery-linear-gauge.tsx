@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType, ECharts} from "../../model/types";
 import {Param} from "../../model/param";
@@ -9,6 +9,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
 import {SeriesOption} from "echarts/lib/util/types";
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-linear-gauge',
@@ -44,6 +45,13 @@ export class DiscoveryLinearGauge {
     this.drawChart();
   }
 
+  @Method()
+  async resize() {
+    if(this.myChart) {
+      this.myChart.resize();
+    }
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLinearGauge, this.debug);
@@ -57,6 +65,11 @@ export class DiscoveryLinearGauge {
       options: this.options,
       chartOpts: this.chartOpts
     });
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private getCommonSeriesParam(color) {
@@ -286,7 +299,7 @@ export class DiscoveryLinearGauge {
   }
 
   render() {
-    return <div style={{height: this.height + 'px'}}>
+    return <div style={{width: '100%', height: '100%'}}>
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
       {this.parsing ? <div class="discovery-chart-spinner">
         <discovery-spinner>Parsing data...</discovery-spinner>

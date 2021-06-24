@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Listen, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
+import elementResizeEvent from "element-resize-event";
 
 dayjs.extend(relativeTime)
 
@@ -22,8 +23,8 @@ export class DiscoveryDisplayComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = new Param();
-  @Prop() width: number;
-  @Prop({mutable: true}) height: number;
+  @State() @Prop({mutable: true}) width: number;
+  @State() @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
 
@@ -40,6 +41,7 @@ export class DiscoveryDisplayComponent {
   private LOG: Logger;
   private timer: any;
   private fitties: FittyInstance;
+  private innerHeight: number;
 
   @Watch('result')
   updateRes() {
@@ -51,9 +53,18 @@ export class DiscoveryDisplayComponent {
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
-    if(res.style) {
+    if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
+  }
+
+  @Method()
+  async resize() {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    console.log(this.width, dims.w)
+    this.width = dims.w;
+    this.height = dims.h;
+    this.flexFont();
   }
 
   componentWillLoad() {
@@ -69,18 +80,24 @@ export class DiscoveryDisplayComponent {
       type: this.type,
       options: this.options,
     });
+    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
 
   componentDidLoad() {
     this.height = Utils.getContentBounds(this.el.parentElement).h;
     this.parsing = false;
-    this.flexFont();
+    console.log('componentDidLoad', this.message)
+    setTimeout(() => this.flexFont());
   }
 
   disconnectedCallback() {
     if (this.timer) {
       clearInterval(this.timer);
     }
+    if (this.fitties) {
+      this.fitties.unsubscribe();
+    }
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private convert(dataModel: DataModel) {
@@ -88,7 +105,7 @@ export class DiscoveryDisplayComponent {
     options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams) as Param;
     this.options = {...options};
     if (this.options.customStyles) {
-        this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
     this.LOG.debug(['convert'], 'dataModel', dataModel);
 
@@ -121,18 +138,21 @@ export class DiscoveryDisplayComponent {
   }
 
   flexFont() {
-    this.height = Utils.getContentBounds(this.el.parentElement).h;
     if (!!this.wrapper) {
-      this.LOG.debug(['flexFont'], this.height);
-      if (this.fitties) {
-        this.fitties.unsubscribe();
+      const height =  Utils.getContentBounds(this.wrapper.parentElement).h - 20;
+      if(height !== this.innerHeight) {
+        this.innerHeight = height;
+        this.LOG.debug(['flexFont'], height);
+        if (this.fitties) {
+          this.fitties.unsubscribe();
+        }
+        this.fitties = fitty(this.wrapper, {
+          maxSize: height * 0.80,
+          minSize: 14
+        });
+        this.fitties.fit();
+        this.draw.emit();
       }
-      this.fitties = fitty(this.wrapper, {
-        maxSize: this.el.parentElement.clientHeight * 0.80,
-        minSize: 14
-      });
-      this.fitties.fit();
-      this.draw.emit();
     }
   }
 
@@ -140,14 +160,15 @@ export class DiscoveryDisplayComponent {
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
-      <div style={{width: this.width + 'px', height: this.height + 'px', color: (this.options as Param).fontColor}} class="display-container">
+      <div style={{ color: (this.options as Param).fontColor}}
+           class="display-container">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
-      {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
-        <span innerHTML={this.message}/><small>{this.unit ? this.unit : ''}</small>
+        {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
+        <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
+          <span innerHTML={this.message}/><small>{this.unit ? this.unit : ''}</small>
+        </div>
       </div>
-    </div>
-      ]
+    ]
   }
 
   private displayDuration(start: dayjs.Dayjs) {
@@ -156,6 +177,6 @@ export class DiscoveryDisplayComponent {
   }
 
   private generateStyle(innerStyle: { [k: string]: string }): string {
-    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
+    return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 }

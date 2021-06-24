@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -20,7 +20,7 @@ export class DiscoveryTileComponent {
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
   @Prop({mutable: true}) autoRefresh: number = -1;
-  @Prop() vars: string= '{}';
+  @Prop() vars: string = '{}';
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
@@ -38,6 +38,8 @@ export class DiscoveryTileComponent {
   private ws: string;
   private timer: any;
   private innerVars = {}
+  private tileResult: HTMLDiscoveryTileResultElement;
+  private rs: any;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -59,6 +61,17 @@ export class DiscoveryTileComponent {
     }
   }
 
+  @Method()
+  async resize() {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w - 15;
+    this.height = dims.h;
+    this.LOG.debug(['componentDidLoad'], 'Tile - resize', this.tileResult);
+    if (this.tileResult) {
+      return this.tileResult.resize();
+    }
+  }
+
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {
@@ -71,12 +84,12 @@ export class DiscoveryTileComponent {
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-
     this.innerVars = JSON.parse(this.vars || '{}');
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
   }
+
 
   componentDidLoad() {
     this.exec();
@@ -94,7 +107,7 @@ export class DiscoveryTileComponent {
     if (!refresh) this.loaded = true;
     this.ws = this.el.innerText;
     if (this.ws && this.ws !== '') {
-      this.LOG.debug(['exec'], this.ws);
+      this.LOG.debug(['exec'], this.ws, this.type);
       if (this.language === 'flows') {
         this.ws = Object.keys(this.innerVars || {}).map(k => `${k} = ${typeof this.innerVars[k] === 'string'
           ? '"' + this.innerVars[k] + '"'
@@ -148,18 +161,19 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   render() {
     return <Host>
       {this.loaded ?
-        <div style={{width: '100%', height: 'auto'}}>
+        <div style={{width: '100%', height: '100%'}}>
           <discovery-tile-result
             url={this.url}
             start={this.start}
             result={this.result}
             type={this.type}
-            width={this.width}
-            height={this.height}
             options={this.options}
             unit={this.unit}
             debug={this.debug}
+            height={this.height}
+            width={this.width}
             chart-title={this.chartTitle}
+            ref={(el) => this.tileResult = el as HTMLDiscoveryTileResultElement}
           />
         </div>
         : <div class="discovery-tile-spinner">

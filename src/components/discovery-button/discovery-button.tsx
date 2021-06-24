@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Listen, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -47,6 +47,10 @@ export class DiscoveryButtonComponent {
     if(res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
+  }
+
+  @Method()
+  async resize() {
   }
 
   componentWillLoad() {

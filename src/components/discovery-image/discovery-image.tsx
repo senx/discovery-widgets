@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -30,6 +30,14 @@ export class DiscoveryImageComponent {
   private divider: number = 1000;
   private LOG: Logger;
 
+  @Watch('result')
+  updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      this.result = GTSLib.getData(this.result);
+      this.toDisplay = this.convert(this.result as DataModel || new DataModel())
+    }
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryImageComponent, this.debug);
@@ -43,6 +51,7 @@ export class DiscoveryImageComponent {
       type: this.type,
       options: this.options,
       toDisplay: this.toDisplay,
+      result: this.result
     });
     this.parsing = false;
     this.draw.emit();
@@ -69,7 +78,7 @@ export class DiscoveryImageComponent {
   render() {
     return (
       <Host>
-        <div class="images-wrapper" style={{width: this.width + 'px', height: this.height + 'px'}}>
+        <div class="images-wrapper" style={{width: '100%', height: '100%'}}>
         {this.parsing
           ? <discovery-spinner>Parsing data...</discovery-spinner>
           : this.toDisplay.length > 0

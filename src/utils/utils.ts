@@ -90,8 +90,8 @@ export class Utils {
         }
       });
       const tagRex = new RegExp(tag);
-      if(evt.tags && typeof evt.tags === 'string') {
-        evt.tags = [ evt.tags ];
+      if (evt.tags && typeof evt.tags === 'string') {
+        evt.tags = [evt.tags];
       }
       if ((evt.tags || []).some(t => tagRex.test(t)) && new RegExp(type).test(evt.type || '')) {
         switch (evt.type) {
@@ -102,13 +102,13 @@ export class Utils {
             parsed.style = evt.value;
             break;
           case 'xpath':
-            parsed.xpath = { selector: evt.selector, value: evt.value };
+            parsed.xpath = {selector: evt.selector, value: evt.value};
             break;
           case 'popup':
-            parsed.popup =  evt.value;
+            parsed.popup = evt.value;
             break;
           case 'variable':
-            parsed.vars =  evt.value;
+            parsed.vars = evt.value;
             break;
           default:
           // nothing
@@ -131,4 +131,10 @@ export class Utils {
     }
     return doc;
   }
+
+  static fitText(el: HTMLElement, h: number, options = {}) {
+    const settings = {minFontSize: 0, maxFontSize: 1000, ...options};
+    el.style.fontSize = Math.max(Math.min(h / (0.50 * 10), settings.maxFontSize), settings.minFontSize) + 'px';
+    return el;
+  };
 }

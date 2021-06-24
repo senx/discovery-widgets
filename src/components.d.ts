@@ -16,6 +16,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -25,6 +26,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -34,6 +36,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "url": string;
@@ -53,6 +56,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -62,6 +66,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -80,6 +85,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "url": string;
@@ -89,6 +95,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -98,6 +105,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -107,6 +115,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "width": number;
@@ -129,6 +138,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -138,6 +148,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -151,6 +162,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "start": number;
         "type": ChartType;
@@ -162,6 +174,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
@@ -173,6 +186,7 @@ export namespace Components {
         "debug": boolean;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
+        "resize": () => Promise<void>;
         "type": ChartType;
         "unit": string;
         "url": string;
@@ -183,6 +197,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "start": number;
         "type": ChartType;
