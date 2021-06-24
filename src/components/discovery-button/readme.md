@@ -28,6 +28,19 @@
 | `statusError`    |             | `CustomEvent<any>`            |
 
 
+## Methods
+
+### `resize() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
 ## Dependencies
 
 ### Used by

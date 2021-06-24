@@ -25,6 +25,19 @@
 | `draw` |             | `CustomEvent<void>` |
 
 
+## Methods
+
+### `resize() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
 ## Dependencies
 
 ### Used by
