@@ -1,6 +1,5 @@
 import {Param} from "../model/param";
 import {action, configureActions} from '@storybook/addon-actions';
-import {ColorLib} from "../utils/color-lib";
 
 configureActions({
   depth: 10,
@@ -48,7 +47,7 @@ Usage.args = {
      'tiles' [
        {
          'type' 'svg'
-         'w' 1500 'h' 700 'x' 0 'y' 0 'z' 0
+         'w' 1500 'h' 700 'x' 50 'y' 0 'z' 0
          'data' [ @xav/nuclear ]
        }
        {
@@ -298,11 +297,12 @@ export const CustomStyle = ({url, ws, options, title}) => `<div>
 </style>
     <div class="card" style="width: 100%;min-height: 500px; background-color: #404040">
         <div class="card-body">
-            <discovery-scada url="${url}"
+            <discovery-dashboard url="${url}"
                 dashboard-title="${title ? title : ''}" cols="8"
+                type="scada"
                 @draw="${event => console.error('foo', 'bar', event)}"
                 debug options='${JSON.stringify(options)}'
-            >${ws}</discovery-scada>
+            >${ws}</discovery-dashboard>
         </div>
     </div>
 </div>
@@ -348,7 +348,7 @@ wihEvents.args = {
 
        {
          'type' 'svg'
-         'w' 1500 'h' 700 'x' 0 'y' 0 'z' 0
+         'w' 1500 'h' 700 'x' 50 'y' 0 'z' 0
          'options' {
             'eventHandler' 'type=xpath,tag=(power|command)'
             'customStyles' {
@@ -657,7 +657,7 @@ wihEventsInLightMode.args = {
 
        {
          'type' 'svg'
-         'w' 1500 'h' 700 'x' 0 'y' 0 'z' 0
+         'w' 1500 'h' 700 'x' 50 'y' 0 'z' 0
          'options' { 'eventHandler' 'type=xpath,tag=(power|command)' }
          'data' [ @xav/nuclear2 ]
        }
