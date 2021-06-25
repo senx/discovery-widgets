@@ -36,6 +36,7 @@ export class DiscoveryDashboardComponent {
   @State() loaded = false;
   @State() start: number;
   @State() innerStyle: { [k: string]: string; };
+  @State() audioFile: string;
 
   private LOG: Logger;
   private ws: string;
@@ -67,6 +68,9 @@ export class DiscoveryDashboardComponent {
     }
     if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+    }
+    if (res.audio) {
+      this.audioFile = res.audio;
     }
   }
 
@@ -208,7 +212,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           {this.result.description ? <p>{this.result.description}</p> : ''}
           <div class="discovery-dashboard-wrapper" style={{
             width: '100%', height: 'auto',
-            gridAutoRows: 'minmax(' + this.cellHeight + 'px, auto)',
+            gridAutoRows: 'minmax(' + (this.result.cellHeight || this.cellHeight) + 'px, auto)',
             gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
           }}>
             {this.result.tiles.map((t) =>
@@ -254,7 +258,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         url={this.url}
         debug={this.debug}/>
       {this.loaded
-        ? [<style>{this.generateStyle(this.innerStyle)}</style>, this.getRendering()]
+        ? [<style>{this.generateStyle(this.innerStyle)}</style>, this.getRendering(), this.audioFile ?
+          <audio src={this.audioFile} autoplay id="song"/> : '']
         : <discovery-spinner>Requesting data...</discovery-spinner>
       }
       <pre id="ws"><slot/></pre>

@@ -1,23 +1,29 @@
 @import "src/components/vars";
 
 :host {
-  display: block;
+  width: 100%;
+  height: 100%;
 
-  button.discovery-btn {
-    margin: .25rem .125rem;
-    display: inline-block;
-    font-weight: 400;
-    line-height: 1.5;
+  .button-wrapper {
+    width: 100%;
     text-align: center;
-    text-decoration: none;
-    vertical-align: middle;
-    cursor: pointer;
-    font-size: var(--warp-view-button-font-size,  1rem);
-    border: 1px solid var(--warp-view-button-border-color, $w10-blue);
-    padding: var(--warp-view-button-padding,  .375rem .75rem);
-    color: var(--warp-view-button-label-color, $w10-white);
-    background-color: var(--warp-view-button-bg-color, $w10-blue);
-    min-width: var(--warp-view-button-width, auto);
-    border-radius: var(--warp-view-button-border-radius, 0.25rem);
+
+    button.discovery-btn {
+      margin: .25rem .125rem;
+      display: inline-block;
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: center;
+      text-decoration: none;
+      vertical-align: middle;
+      cursor: pointer;
+      font-size: var(--warp-view-button-font-size, 1rem);
+      border: 1px solid var(--warp-view-button-border-color, $w10-blue);
+      padding: var(--warp-view-button-padding, .375rem .75rem);
+      color: var(--warp-view-button-label-color, $w10-white);
+      background-color: var(--warp-view-button-bg-color, $w10-blue);
+      min-width: var(--warp-view-button-width, auto);
+      border-radius: var(--warp-view-button-border-radius, 0.25rem);
+    }
   }
 }

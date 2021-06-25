@@ -179,10 +179,10 @@ Usage.args = {
 export const TileOverFlow = Usage.bind({});
 TileOverFlow.args = {
   ...Usage.args,
-  cellHeight: 120,
   cols: 12,
   ws: `{
         'title' 'Covid Tracker'
+        'cellHeight' 120
         'options' {
           'scheme' 'CHARTANA'
           'customStyles' {

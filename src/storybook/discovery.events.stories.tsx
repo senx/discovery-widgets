@@ -45,7 +45,17 @@ Usage.args = {
   cols: 12,
   cellHeight: 220,
   ws: `{
-  'title' 'My Dashboard With events'
+     'title' 'My Dashboard With events'
+     'options' {
+      'eventHandler' 'type=(style|audio),tag=bg'
+      'customStyles' {
+            '.discovery-dashboard-wrapper'
+            <'
+            --warp-view-tile-background: #40404066;
+            --warp-view-font-color: #fff;
+            '>
+          }
+     }
      'tiles' [
        {
          'type' 'display'
@@ -79,11 +89,26 @@ Usage.args = {
          'type' 'display'
          'title' 'Event emitter'
          'w' 2 'h' 1 'x' 0 'y' 0
-         'options' {  'autoRefresh' 2 }
+         'options' {  'autoRefresh' 10 }
          'macro' <% {
             RAND 100 * ROUND 'v' STORE
             <% $v 33 < %> <% '#77BE6955' %>  <% $v 66 < %> <% '#FF983055' %> <% '#F2486555' %> 2 SWITCH 'color' STORE
             <% $v 33 < %> <% '#77BE69' %>  <% $v 66 < %> <% '#FF9830' %> <% '#F24865' %> 2 SWITCH 'color2' STORE
+
+            <% $v 33 < %>
+            <% 'https://images.unsplash.com/photo-1580725869538-9b164c27c44f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1489&q=80' %>
+            <% $v 66 < %> <% 'https://images.unsplash.com/photo-1428592953211-077101b2021b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80' %>
+            <% 'https://images.unsplash.com/photo-1500670602153-5e2dd3c75f20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1490&q=80' %>
+            2 SWITCH 'bg' STORE
+
+
+            <% $v 33 < %>
+            <% 'http://soundbible.com/grab.php?id=1818&type=mp3' %>
+            <% $v 66 < %> <% 'http://soundbible.com/grab.php?id=2015&type=mp3' %>
+            <% 'http://soundbible.com/grab.php?id=1937&type=mp3' %>
+            2 SWITCH 'sound' STORE
+
+
             'data' $v
             'events' [
               { 'tags' [ 'random' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
@@ -92,6 +117,14 @@ Usage.args = {
                   '.discovery-tile' 'background-color: ' $color + ' !important;' +
                   '.value' 'color: ' $color2 + ';' +
                 }
+              }
+              { 'tags' [ 'bg' ] 'type' 'style'
+                'value' {
+                 '.discovery-dashboard-main' 'transition: background 0.5s ease; background : fixed url(' $bg + ') no-repeat center !important; background-size: cover !important;' +
+                }
+              }
+              { 'tags' [ 'bg' ] 'type' 'audio'
+                'value' $sound
               }
               { 'tags' [ 'svg' ] 'type' 'style'
                 'value' {

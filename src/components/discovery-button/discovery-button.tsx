@@ -109,7 +109,7 @@ export class DiscoveryButtonComponent {
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
-      <button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/>
+      <div class="button-wrapper"><button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/></div>
     ];
   }
 

@@ -947,7 +947,7 @@ the Dashboard level with an initial value.
 | selector |  `string` | Variable's name |
 
 Complete Sample:
-q
+
 ````
 {
   'title' 'My Dashboard With events'
