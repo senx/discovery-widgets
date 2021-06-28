@@ -36,7 +36,7 @@ export class DiscoveryPlot {
   @State() expanded: boolean = false;
 
   private graph: HTMLDivElement;
-  private defOptions: Param = new Param();
+  private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
   private displayExpander: boolean = false;
   private myChart: ECharts;
@@ -47,18 +47,27 @@ export class DiscoveryPlot {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
+      this.myChart.setOption(this.chartOpts);
+      const dims = Utils.getContentBounds(this.el.parentElement);
+      this.width = dims.w;
+      this.height = dims.h - 20;
       this.myChart.resize({
         width: this.width,
         height: this.height,
       });
-      this.myChart.setOption(this.chartOpts);
     });
   }
 
   @Method()
   async resize() {
     if (this.myChart) {
-      this.myChart.resize();
+      const dims = Utils.getContentBounds(this.el.parentElement);
+      this.width = dims.w;
+      this.height = dims.h - 20;
+      this.myChart.resize({
+        width: this.width,
+        height: this.height,
+      });
     }
   }
 
@@ -70,6 +79,10 @@ export class DiscoveryPlot {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w;
+    this.height = dims.h - 20;
+    this.parsing = false;
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.options});
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
     elementResizeEvent(this.el.parentElement, () => this.resize());
@@ -185,7 +198,7 @@ export class DiscoveryPlot {
         }
       },
       xAxis: [{
-        type: 'time',
+        type: (this.options as Param).timeMode === 'date' ? 'time' : 'category',
         boundaryGap: false,
         onZero: false,
         min: bounds.min / this.divider,
@@ -212,7 +225,7 @@ export class DiscoveryPlot {
           onZero: false,
           min: bounds.min / this.divider,
           max: bounds.max / this.divider,
-          type: 'time',
+          type: (this.options as Param).timeMode === 'date' ? 'time' : 'category',
           axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
           axisLabel: {color: Utils.getLabelColor(this.el)},
           axisTick: {lineStyle: {color: Utils.getGridColor(this.el)}},
@@ -267,11 +280,7 @@ export class DiscoveryPlot {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {
-      renderer: 'svg',
-      width: this.width,
-      height: this.height
-    });
+    this.myChart = echarts.init(this.graph, null, {      renderer: 'svg'    });
     this.myChart.on('rendered', () => {
       this.rendering = false;
       this.drawn();
@@ -289,7 +298,7 @@ export class DiscoveryPlot {
         ?
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
-      <div class="chart-area" style={{width: this.width + 'px', height: this.height + 'px'}}>
+      <div class="chart-area" style={{width: '100%', height: '100%'}} >
         {this.parsing ? <div class="discovery-chart-spinner">
           <discovery-spinner>Parsing data...</discovery-spinner>
         </div> : ''}
@@ -304,8 +313,9 @@ export class DiscoveryPlot {
   private toggle() {
     this.expanded = !this.expanded;
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
+
     setTimeout(() => {
-      this.myChart.resize({
+     this.myChart.resize({
         width: this.width,
         height: this.height,
       });
