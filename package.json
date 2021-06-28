@@ -1,6 +1,6 @@
 {
   "name": "@senx/discovery-widgets",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Discovery Widgets Elements",
   "keywords": [
     "web",
@@ -38,7 +38,6 @@
     "test.watch": "stencil test --spec --e2e --watchAll",
     "gen": "stencil generate",
     "storybook.run": "start-storybook -p 6006 -s ./www",
-
     "storybook": "npm-run-all --parallel build:dev storybook.run",
     "prepublishOnly": "yarn clean && yarn build",
     "clean": "rm -fr ./www && rm -fr ./dist",
