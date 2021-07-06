@@ -459,3 +459,163 @@ ScadaVersion.args = {
    }`,
   options: new Param()
 }
+
+
+export const GTSEvents = Template.bind({});
+GTSEvents.args = {
+  ... Usage.args,
+  ws: `
+  'zizNn2DCXw0qtsbWx_F4WvA9ORyQBAtDScaTVaGGqJ1f5DMhE1ijFr6JDQQhPncn1bE4WQZrUN.ZIaJtCl_SOlx9oZ8H0e83U3afcX.iUPodyj.vqSgjHgToKfeO1_ZaG5fNfi3e7l71mlmJhs8Fl.' 'token' STORE
+'France'  'country' STORE
+[ $token 'covid'  { 'country' $country }  NOW 1 d 5 * ] FETCH WRAP 'fiveYearsOfData' STORE
+
+{
+  'title' 'Covid'
+  'description' 'The Covid 19 dashboard'
+  'vars' {
+    'token' $token
+    'country' $country
+    'fiveYearsOfData' $fiveYearsOfData
+    'mapping' {
+      1 'total_cases'
+      2 'new_cases'
+      3 'new_cases_smoothed'
+      4 'total_deaths'
+      5 'new_deaths'
+      6 'new_deaths_smoothed'
+      7 'total_cases_per_million'
+      8 'new_cases_per_million'
+      9 'new_cases_smoothed_per_million'
+      10 'total_deaths_per_million'
+      11 'new_deaths_per_million'
+      12 'new_deaths_smoothed_per_million'
+      13 'reproduction_rate'
+      14 'icu_patients'
+      15 'icu_patients_per_million'
+      16 'hosp_patients'
+      17 'hosp_patients_per_million'
+      18 'weekly_icu_admissions'
+      19 'weekly_icu_admissions_per_million'
+      20 'weekly_hosp_admissions'
+      21 'weekly_hosp_admissions_per_million'
+      22 'new_tests'
+      23 'total_tests'
+      24 'total_tests_per_thousand'
+      25 'new_tests_per_thousand'
+      26 'new_tests_smoothed'
+      27 'new_tests_smoothed_per_thousand'
+      28 'positive_rate'
+      29 'tests_per_case'
+      30 'tests_units'
+      31 'total_vaccinations'
+      32 'people_vaccinated'
+      33 'people_fully_vaccinated'
+      34 'new_vaccinations'
+      35 'new_vaccinations_smoothed'
+      36 'total_vaccinations_per_hundred'
+      37 'people_vaccinated_per_hundred'
+      38 'people_fully_vaccinated_per_hundred'
+      39 'new_vaccinations_smoothed_per_millions'
+      40 'tringency_index'
+      41 'population'
+      42 'population_density'
+      43 'median_age'
+      44 'aged_65_older'
+      45 'aged_70_older'
+      46 'gdp_per_capita'
+      47 'extreme_poverty'
+      48 'cardiovasc_death_rate'
+      49 'diabetes_prevalence'
+      50 'female_smokers'
+      51 'male_smokers'
+      52 'handwashing_facilities'
+      53 'hospital_beds_per_thousand'
+      54 'life_expectancy'
+      55 'human_development_index'
+      56 'excess_mortality'
+    }
+
+  }
+  'tiles' [
+    {
+      'title' 'Country'
+      'x' 0 'y' 0 'w' 2 'h' 1
+      'type' 'input:autocomplete'
+      'macro' <%
+        [ $token '~.*' {} ] FINDSETS STACKTOLIST 1 GET 'country' GET LSORT 'listOfCountries' STORE
+        {
+          'data' $listOfCountries
+          'globalParams' { 'input' { 'value' $country } } // the initial selected value coming from global vars
+          'events' [ { 'type' 'variable' 'tags' [ 'country' ] 'selector' 'country' }  ] // Event definition
+        }
+      %>
+    }
+{
+  'title' 'Deaths/Cases per million'
+  'x' 2 'y' 0 'w' 3 'h' 2
+  'type' 'area'
+  'options' { 'eventHandler' 'type=variable,tag=country' } // event handler
+  'macro' <%
+    [ $token 'covid' { 'country' $country }  NOW 1 d 5 * ] FETCH WRAP 'wrappedGts' STORE
+    $wrappedGts UNWRAP [ 8 11 ] {  8 'new_cases_per_million' 11 'new_deaths_per_million' } MVTICKSPLIT
+    <% ->GTS VALUELIST %> F LMAP FLATTEN 'data' STORE
+    [ $data bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'data' STORE
+    [ $data mapper.mean 7 0 0 ] MAP 'data' STORE
+    [ $data mapper.abs 0 0 0 ] MAP 'data' STORE
+    {
+        'data' $data
+        'events' [
+          // Event definition
+          { 'type' 'variable' 'tags' [ 'history' ] 'selector' 'fiveYearsOfData' 'value' { 'fiveYearsOfData' $wrappedGts } }
+        ]
+    }
+  %>
+}
+{
+  'title' 'Deaths'
+  'x' 0 'y' 1 'w' 2 'h' 1
+  'type' 'display'
+  'options' { 'eventHandler' 'type=variable,tag=country' }
+  'macro' <%
+    [ $token 'covid'  { 'country' $country }  NOW -1 ] FETCH // last known value
+    [ 4 ] MVTICKSPLIT 0 GET VALUES 0 GET 'v' STORE // value extraction
+    { 'data' [ $v ] 'globalParams' { 'timeMode' 'custom' } } // Tile parameters,
+  %>
+}
+{
+  'title' 'Vaccination'
+  'x' 5 'y' 0 'w' 3 'h' 2
+  'type' 'area'
+  'options' { 'eventHandler' 'type=variable,tag=history' } // Regexp
+  'macro' <%
+    $fiveYearsOfData UNWRAP [ 32 33 41 ] $mapping MVTICKSPLIT // It's more easy to use the mapping var
+    <% ->GTS VALUELIST %> F LMAP FLATTEN 'data' STORE // we extract fields as GTS
+    [ $data bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'data' STORE  // daily sum
+    [ $data mapper.mean 7 0 0 ] MAP 'data' STORE // 7 days moving average
+    {
+      'data' $data
+      'params' [
+        { 'type' 'area' } // field 32 (people_vaccinated) as an area chart
+        { 'type' 'area' } // field 33 (people_fully_vaccinated) as an area chart
+        { 'type' 'line' } // field 41 (population) as a line chart
+      ]
+    }
+  %>
+}
+{
+  'title' 'ICU patients'
+  'x' 8 'y' 0 'w' 4 'h' 2
+  'type' 'area'
+  'options' { 'eventHandler' 'type=variable,tag=history' } // Regexp
+  'macro' <%
+    $fiveYearsOfData UNWRAP [ 14 ] $mapping MVTICKSPLIT //
+    <% ->GTS VALUELIST %> F LMAP FLATTEN 'data' STORE
+    [ $data bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'data' STORE
+    [ $data mapper.mean 7 0 0 ] MAP STOP 'data' STORE
+    { 'data' $data  'params' [ { 'datasetColor' '#29ABE2' } ] }
+  %>
+}
+]
+}
+  `
+}

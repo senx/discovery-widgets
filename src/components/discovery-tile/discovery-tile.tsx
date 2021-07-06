@@ -57,6 +57,7 @@ export class DiscoveryTileComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
+      console.log(this.vars, res.vars)
       this.innerVars = {...JSON.parse(this.vars), ...res.vars};
       this.exec();
     }
@@ -110,7 +111,8 @@ export class DiscoveryTileComponent {
     if (this.ws && this.ws !== '') {
       this.LOG.debug(['exec'], this.ws, this.type);
       if (this.language === 'flows') {
-        this.ws = Object.keys(this.innerVars || {}).map(k => `${k} = ${typeof this.innerVars[k] === 'string'
+        this.ws = Object.keys(this.innerVars || {})
+          .map(k => `${k} = ${typeof this.innerVars[k] === 'string'
           ? '"' + this.innerVars[k] + '"'
           : 'JSON->(\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n)'
         }`).join("\n") + "\n" + this.ws;
@@ -119,7 +121,8 @@ ${this.ws}
 '>
 FLOWS`;
       } else {
-        this.ws = Object.keys(this.innerVars || {}).map(k => `${typeof this.innerVars[k] === 'string'
+        this.ws = Object.keys(this.innerVars || {})
+          .map(k => `${typeof this.innerVars[k] === 'string'
           ? '"' + this.innerVars[k] + '"'
           : '\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n JSON->'
         } "${k}" STORE`).join("\n") + "\n" + this.ws;

@@ -1,4 +1,5 @@
 import tile, {Usage} from './discovery.tile.stories';
+import {Param} from "../model/param";
 
 export default {
   ...tile,
@@ -14,6 +15,15 @@ TextInputInitialUsage.args = {
   ] }`
 };
 
+export const TextInputWithButton = TextInputInitialUsage.bind({});
+TextInputWithButton.args = {
+  ...TextInputInitialUsage.args,
+  options: {
+    ...new Param(), input: {
+      showButton: true
+    }
+  }
+}
 
 export const TextInputWithAValue = Usage.bind({});
 TextInputWithAValue.args = {
@@ -60,7 +70,10 @@ export const ListInputInitialUsage = Usage.bind({});
 ListInputInitialUsage.args = {
   ...Usage.args,
   type: 'input:list',
-  ws: `{ 'data' [ 'a' 'b' 'c' 'd' 42  ] 'globalParams' { 'input' { 'value' 'c' } } 'events' [
+  ws: `{
+  'data' [ "admiring" "adoring" "agitated" "amazing" "angry" "awesome" "backstabbing" "berserk" "big" "boring" "clever" "cocky" "compassionate" "condescending" "cranky" "desperate" "determined" "distracted" "dreamy" "drunk" "ecstatic" "elated" "elegant" "evil" "fervent" "focused" "furious" "gigantic" "gloomy" "goofy" "grave" "happy" "high" "hopeful" "hungry" "insane" "jolly" "jovial" "kickass" "lonely" "loving" "mad" "modest" "naughty" "nauseous" "nostalgic" "pedantic" "pensive" "prickly" "reverent" "romantic" "sad" "serene" "sharp" "sick" "silly" "sleepy" "small" "stoic" "stupefied" "suspicious" "tender" "thirsty" "tiny" "trusting"  ]
+  'globalParams' { 'input' { 'value' 'cranky' } }
+  'events' [
     { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
   ] }`
 };
@@ -95,7 +108,10 @@ export const AutocompleteInputInitialUsage = Usage.bind({});
 AutocompleteInputInitialUsage.args = {
   ...Usage.args,
   type: 'input:autocomplete',
-  ws: `{ 'data'  [ 'a' 'b' 'c' 'd' 42  ] 'globalParams' { 'input' { 'value' 'c' } } 'events' [
+  ws: `{
+  'data' [ "admiring" "adoring" "agitated" "amazing" "angry" "awesome" "backstabbing" "berserk" "big" "boring" "clever" "cocky" "compassionate" "condescending" "cranky" "desperate" "determined" "distracted" "dreamy" "drunk" "ecstatic" "elated" "elegant" "evil" "fervent" "focused" "furious" "gigantic" "gloomy" "goofy" "grave" "happy" "high" "hopeful" "hungry" "insane" "jolly" "jovial" "kickass" "lonely" "loving" "mad" "modest" "naughty" "nauseous" "nostalgic" "pedantic" "pensive" "prickly" "reverent" "romantic" "sad" "serene" "sharp" "sick" "silly" "sleepy" "small" "stoic" "stupefied" "suspicious" "tender" "thirsty" "tiny" "trusting"  ]
+   'globalParams' { 'input' { 'value' 'focused' } }
+   'events' [
     { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
   ] }`
 };

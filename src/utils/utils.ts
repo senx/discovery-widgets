@@ -77,7 +77,6 @@ export class Utils {
 
   static parseEventData(evt: DiscoveryEvent, eventHandler: string) {
     const parsed = {style: undefined, data: undefined, xpath: undefined, popup: undefined, vars: undefined, audio: undefined}
-    console.log(evt, eventHandler)
     if (eventHandler) {
       let tag = '.*';
       let type = '.*';

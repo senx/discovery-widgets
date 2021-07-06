@@ -279,6 +279,7 @@ export class DiscoveryTileResultComponent {
   private parseResult() {
     setTimeout(() => {
       // this.setSize();
+      this.unit = (this.options as Param).unit || this.unit
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])
         .filter(e => !!e.value)

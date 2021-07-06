@@ -25,7 +25,7 @@ export class Param {
   timeZone = 'UTC';
   unit?: string;
   type?: ChartType;
-  showRangeSelector?: boolean;
+  showRangeSelector?: boolean = false;
   timeMode?: TimeMode;
   showDots = false;
   timeUnit: TimeUnit = 'us';
@@ -78,6 +78,7 @@ export class Param {
     horizontal: boolean
   };
   input?: {
+    showButton?: boolean,
     value?: string,
     min?: number,
     max?: number

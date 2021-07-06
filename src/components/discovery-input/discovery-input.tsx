@@ -17,7 +17,7 @@ import autoComplete from "@tarekraafat/autocomplete.js/dist/autoComplete.js";
 export class DiscoveryInputComponent {
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -45,6 +45,7 @@ export class DiscoveryInputComponent {
 
   @State() selectedValue: string | string[] | any;
   private defOptions: Param = new Param();
+  private innerOptions: Param = new Param();
   private LOG: Logger;
   private inputField: HTMLInputElement | HTMLSelectElement;
   private display: HTMLDivElement;
@@ -58,7 +59,7 @@ export class DiscoveryInputComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
     if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
@@ -69,9 +70,9 @@ export class DiscoveryInputComponent {
     this.innerResult = GTSLib.getData(this.result);
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
-    this.options = {...options};
-    if (this.options.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    this.innerOptions = {...options};
+    if (this.innerOptions.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
     this.parseResult();
   }
@@ -87,25 +88,25 @@ export class DiscoveryInputComponent {
       this.options = JSON.parse(this.options);
     }
     this.innerResult = GTSLib.getData(this.result);
-    const btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
+    this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
+    this.innerOptions = {...options};
+    const btnLabel = (this.innerOptions.button || {label: 'Ok'}).label;
     const dm = ((this.result as unknown as DataModel) || {
       globalParams: {
         button: {label: btnLabel}
       }
     }).globalParams || {button: {label: btnLabel}};
 
-    this.label = (dm.button ||  {label: btnLabel}).label;
-    this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
-    this.options = {...options};
-    if (this.options.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    this.label = (dm.button || {label: btnLabel}).label;
+    if (this.innerOptions.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
     this.parseResult();
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      innerOptions: this.innerOptions,
       innerResult: this.innerResult,
       result: this.result
     });
@@ -126,13 +127,16 @@ export class DiscoveryInputComponent {
           dateFormat: 'Y/m/d H:i:S'
         });
         this.flatpickrInstance.config.onChange.push((d, s) => {
-          const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+          const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
           if (this.subType === 'date-range') {
             this.selectedValue = d
               .map(date => date.toISOString())
-              .map(date => GTSLib.toTimestamp(date, divider, (this.options as Param).timeZone));
+              .map(date => GTSLib.toTimestamp(date, divider, this.innerOptions.timeZone));
           } else {
-            this.selectedValue = GTSLib.toTimestamp(s, divider, (this.options as Param).timeZone);
+            this.selectedValue = GTSLib.toTimestamp(s, divider, this.innerOptions.timeZone);
+          }
+          if(!this.innerOptions.input?.showButton) {
+            this.handleClick();
           }
         });
         break;
@@ -147,6 +151,9 @@ export class DiscoveryInputComponent {
         this.inputField.addEventListener("selection", (event: any) => {
           this.selectedValue = event.detail.selection.value.k;
           this.value = event.detail.selection.value.v;
+          if(!this.innerOptions.input?.showButton) {
+            this.handleClick();
+          }
         });
         break;
       default:
@@ -176,17 +183,21 @@ export class DiscoveryInputComponent {
 
   private handleSelect(e) {
     this.selectedValue = e.target.value;
+    console.log(e.target, this.selectedValue, !this.innerOptions.input?.showButton)
     if (!!this.display && this.subType === 'slider') {
       const newValue = Number((parseInt(this.selectedValue as string, 10) - this.min) * 100 / (this.max - this.min));
       const newPosition = 10 - (newValue * 0.2);
       this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
     }
+    if(!this.innerOptions.input?.showButton) {
+      this.handleClick();
+    }
   }
 
   private parseResult() {
     const data = this.innerResult.data || '';
-    this.min = ((this.options as Param).input || {min: 0}).min || 0;
-    this.max = ((this.options as Param).input || {max: 100}).max || 100;
+    this.min = (this.innerOptions.input || {min: 0}).min || 0;
+    this.max = (this.innerOptions.input || {max: 100}).max || 100;
     switch (this.subType) {
       case "text":
       case "secret":
@@ -247,7 +258,7 @@ export class DiscoveryInputComponent {
             return {k: s, v: s};
           });
         }
-        this.value = ((this.options as Param).input || {value: ''}).value || '';
+        this.value = (this.innerOptions.input || {value: ''}).value || '';
         this.selectedValue = this.value;
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {
@@ -269,26 +280,26 @@ export class DiscoveryInputComponent {
   }
 
   private formatDateTime(timestamp: string): string {
-    const divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    return (GTSLib.toISOString(parseInt(timestamp, 10), divider, (this.options as Param).timeZone) || '').replace('Z', '');
+    const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    return (GTSLib.toISOString(parseInt(timestamp, 10), divider, this.innerOptions.timeZone) || '').replace('Z', '');
   }
 
   private getInput() {
     switch (this.subType) {
       case "text":
-        return <input type="text" class="discovery-input" value={this.value as string}
+        return <input type="text" class="discovery-input" value={this.value as string} onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "secret":
-        return <input type="password" class="discovery-input" value={this.value as string}
+        return <input type="password" class="discovery-input" value={this.value as string} onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "date":
-        return <input type="text" class="discovery-input"
+        return <input type="text" class="discovery-input" onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "date-range":
-        return <input type="text" class="discovery-input"
+        return <input type="text" class="discovery-input" onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "autocomplete":
@@ -322,14 +333,15 @@ export class DiscoveryInputComponent {
       <div ref={el => this.root = el}>
         <div class="discovery-input-wrapper">
           {this.getInput()}
-          <div class="discovery-input-btn-wrapper">
-            <button
-              class="discovery-btn"
-              disabled={this.disabled}
-              type="button"
-              onClick={this.handleClick}
-            >{this.label}</button>
-          </div>
+          {this.innerOptions.input?.showButton ?
+            <div class="discovery-input-btn-wrapper">
+              <button
+                class="discovery-btn"
+                disabled={this.disabled}
+                type="button"
+                onClick={this.handleClick}
+              >{this.label}</button>
+            </div> : ''}
         </div>
       </div>
     ];
