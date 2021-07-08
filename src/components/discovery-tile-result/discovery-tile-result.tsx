@@ -284,15 +284,19 @@ export class DiscoveryTileResultComponent {
       ((this.innerResult as unknown as DataModel).events || [])
         .filter(e => !!e.value)
         .forEach(e => {
-          this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
+          if (this.LOG) {
+            this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
+          }
           this.discoveryEvent.emit(e)
         });
     });
-    this.LOG.debug(['parseResult'], {
-      type: this.type,
-      options: this.options,
-      result: this.innerResult
-    });
+    if (this.LOG) {
+      this.LOG.debug(['parseResult'], {
+        type: this.type,
+        options: this.options,
+        result: this.innerResult
+      });
+    }
   }
 
   private generateStyle(styles: { [k: string]: string }): string {

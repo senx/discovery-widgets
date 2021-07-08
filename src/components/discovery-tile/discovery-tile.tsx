@@ -47,10 +47,12 @@ export class DiscoveryTileComponent {
       this.options = JSON.parse(this.options);
       this.exec(true);
     }
-    this.LOG.debug(['optionsUpdate'], {
-      options: this.options,
-      newValue, oldValue
-    });
+    if(this.LOG) {
+      this.LOG.debug(['optionsUpdate'], {
+        options: this.options,
+        newValue, oldValue
+      });
+    }
   }
 
   @Listen('discoveryEvent', {target: 'window'})
