@@ -229,13 +229,16 @@ export class DiscoveryLineComponent {
   }
 
   private getYAxis(color?: string): CartesianAxisOption {
+    const opts  = this.options as Param;
     return {
       type: 'value',
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
       axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      scale: true
+      scale: !(opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0),
+      min: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[0] : undefined,
+      max: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[1] : undefined,
     }
   }
 
@@ -246,8 +249,7 @@ export class DiscoveryLineComponent {
       splitNumber,
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
-      axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      scale: true
+      axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}}
     }
   }
 

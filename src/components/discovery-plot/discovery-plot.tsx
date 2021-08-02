@@ -256,7 +256,9 @@ export class DiscoveryPlot {
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLabel: {show: true, color: Utils.getLabelColor(this.el)},
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
-        scale: true
+        scale: !(this.options.bounds && this.options.bounds.yRanges && this.options.bounds.yRanges.length > 0),
+        min: this.options.bounds && this.options.bounds.yRanges && this.options.bounds.yRanges.length > 0 ? this.options.bounds.yRanges[0] : undefined,
+        max: this.options.bounds && this.options.bounds.yRanges && this.options.bounds.yRanges.length > 0 ? this.options.bounds.yRanges[1] : undefined,
       }],
       axisPointer: {
         link: [{
@@ -281,7 +283,7 @@ export class DiscoveryPlot {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {      renderer: 'svg'    });
+    this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
     this.myChart.on('rendered', () => {
       this.rendering = false;
       this.drawn();
@@ -299,7 +301,7 @@ export class DiscoveryPlot {
         ?
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
-      <div class="chart-area" style={{width: '100%', height: '100%'}} >
+      <div class="chart-area" style={{width: '100%', height: '100%'}}>
         {this.parsing ? <div class="discovery-chart-spinner">
           <discovery-spinner>Parsing data...</discovery-spinner>
         </div> : ''}
@@ -316,7 +318,7 @@ export class DiscoveryPlot {
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
 
     setTimeout(() => {
-     this.myChart.resize({
+      this.myChart.resize({
         width: this.width,
         height: this.height,
       });
