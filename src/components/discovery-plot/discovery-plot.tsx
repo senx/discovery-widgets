@@ -255,7 +255,8 @@ export class DiscoveryPlot {
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLabel: {show: true, color: Utils.getLabelColor(this.el)},
-        axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}}
+        axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
+        scale: true
       }],
       axisPointer: {
         link: [{

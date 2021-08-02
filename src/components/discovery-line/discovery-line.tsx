@@ -101,7 +101,7 @@ export class DiscoveryLineComponent {
       },
       toolbox: {
         feature: {
-          //  saveAsImage: {}
+         //   saveAsImage: {}
         }
       },
       legend: {bottom: 10, left: 'center', show: false},
@@ -234,7 +234,8 @@ export class DiscoveryLineComponent {
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
-      axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}}
+      axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      scale: true
     }
   }
 
@@ -246,6 +247,7 @@ export class DiscoveryLineComponent {
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      scale: true
     }
   }
 
@@ -268,11 +270,7 @@ export class DiscoveryLineComponent {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {
-        renderer: 'svg',
-      /*   width: this.width,
-         height: this.height,*/
-    });
+    this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
     this.myChart.on('finished', () => {
       this.rendering = false;
       this.drawn();
@@ -282,7 +280,7 @@ export class DiscoveryLineComponent {
 
   @Method()
   async resize() {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.resize();
     }
   }
