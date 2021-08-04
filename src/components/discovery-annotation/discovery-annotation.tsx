@@ -35,7 +35,7 @@ export class DiscoveryAnnotation {
   @State() expanded: boolean = false;
 
   private graph: HTMLDivElement;
-  private defOptions: Param = new Param();
+  private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
   private displayExpander: boolean = false;
   private myChart: ECharts;
@@ -97,7 +97,10 @@ export class DiscoveryAnnotation {
         series.push({
           type: 'scatter',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [d[0] / this.divider, (this.expanded ? i : 0) + 0.5]),
+          data: gts.v.map(d => [(this.options as Param).timeMode === 'date'
+            ? GTSLib.toISOString(d[0], this.divider, (this.options as Param).timeZone)
+            : d[0]
+            , (this.expanded ? i : 0) + 0.5]),
           animation: false,
           large: true,
           showSymbol: true,
@@ -110,13 +113,11 @@ export class DiscoveryAnnotation {
       }
     }
     this.height = 50 + (linesCount * 30);
-    this.LOG.debug(['convert'], {expanded: this.expanded, series, height: this.height, linesCount});
+    const opts  = this.options as Param;
+    this.LOG.debug(['convert'], {expanded: this.expanded, series, height: this.height, linesCount, opts});
     return {
       progressive: 20000,
       animation: false,
-      title: {
-        //  text: 'ECharts entry example'
-      },
       grid: {
         height: this.height - 30,
         right: 10,
@@ -144,20 +145,14 @@ export class DiscoveryAnnotation {
         }
       },
       xAxis: {
-        type: 'time',
-        axisLine: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        },
-        axisLabel: {
-          color: Utils.getLabelColor(this.el)
-        },
-        axisTick: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        },
+        type: opts.timeMode === 'date' ? 'time' : 'category',
+        splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
+        axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
+        axisLabel: {color:  Utils.getLabelColor(this.el)},
+        axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
+        scale: !(opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0),
+        min: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[0] : undefined,
+        max: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[1] : undefined,
       },
       yAxis: {
         show: true,

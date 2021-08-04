@@ -13,8 +13,7 @@ InitialUsage.args = {
   ws: `0 5 <% 'j' STORE
   NEWGTS 'serie' $j TOSTRING + RENAME 'gts' STORE
   0 30 <%
-    'i' STORE
-    $gts NOW RAND 100000 * -  NaN NaN NaN "t" ADDVALUE DROP
+   'ts' STORE $gts $ts RAND + STU * NOW +  NaN NaN NaN "t" ADDVALUE DROP
   %> FOR
   $gts
 %> FOR`
@@ -72,6 +71,7 @@ NEWGTS 'emptyone, stack top' RENAME`
 export const SwitchToTimestamp = Usage.bind({});
 SwitchToTimestamp.args = {
   ...InitialUsage.args,
+  options: {... new Param(), timeMode: 'timestamp'},
   ws: `NEWGTS 'boolannotation, not ordered' RENAME
 -5 NaN NaN NaN T ADDVALUE
 4 NaN NaN NaN T ADDVALUE

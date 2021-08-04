@@ -47,7 +47,7 @@ export class DiscoveryBarComponent {
 
   @Method()
   async resize() {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.resize();
     }
   }
@@ -243,11 +243,7 @@ export class DiscoveryBarComponent {
     this.height = Utils.getContentBounds(this.el.parentElement).h;
     this.parsing = false;
     this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {
-      renderer: 'svg',
-   //   width: this.width,
-     // height: this.height ? this.height - 10 : undefined
-    });
+    this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
     this.myChart.on('finished', () => {
       this.rendering = false;
       this.drawn();
