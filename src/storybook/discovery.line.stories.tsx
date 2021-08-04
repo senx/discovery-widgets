@@ -14,7 +14,18 @@ InitialUsage.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
-
+export const WithXRange = Usage.bind({});
+WithXRange.args = {
+  ...Usage.args,
+  type: 'line',
+  ws: `
+  {
+  'data' [ 1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR ]
+  'globalParams' { 'bounds' { 'maxDate' NOW 1 m + 'minDate' NOW 1 m - } }
+  }`
+};
 
 export const InitialUsageWithTimeStamp = InitialUsage.bind({});
 InitialUsageWithTimeStamp.args = {

@@ -243,13 +243,17 @@ export class DiscoveryLineComponent {
   }
 
   private getXAxis(color?: string): CartesianAxisOption {
+    const opts  = this.options as Param;
     const splitNumber = Math.min(Math.ceil(this.width / 100) - 1, 10);
     return {
-      type: (this.options as Param).timeMode === 'date' ? 'time' : 'category',
+      type: opts.timeMode === 'date' ? 'time' : 'category',
       splitNumber,
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
-      axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}}
+      axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      scale: !(opts.bounds && (!!opts.bounds.minDate || !!opts.bounds.maxDate)),
+      min: !!opts.bounds && !!opts.bounds.minDate ? opts.bounds.minDate / this.divider : undefined,
+      max: !!opts.bounds && !!opts.bounds.maxDate ? opts.bounds.maxDate / this.divider : undefined,
     }
   }
 
