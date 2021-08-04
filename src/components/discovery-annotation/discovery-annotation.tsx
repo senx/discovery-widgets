@@ -11,6 +11,7 @@ import {SeriesOption} from "echarts/lib/util/types";
 import {DataModel} from "../../model/dataModel";
 
 import elementResizeEvent from "element-resize-event";
+
 @Component({
   tag: 'discovery-annotation',
   styleUrl: 'discovery-annotation.scss',
@@ -19,7 +20,7 @@ import elementResizeEvent from "element-resize-event";
 export class DiscoveryAnnotation {
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({ mutable: true }) options: Param | string = new Param();
+  @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @State() @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -56,7 +57,7 @@ export class DiscoveryAnnotation {
 
   @Method()
   async resize() {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.resize();
     }
   }
@@ -113,7 +114,7 @@ export class DiscoveryAnnotation {
       }
     }
     this.height = 50 + (linesCount * 30);
-    const opts  = this.options as Param;
+    const opts = this.options as Param;
     this.LOG.debug(['convert'], {expanded: this.expanded, series, height: this.height, linesCount, opts});
     return {
       progressive: 20000,
@@ -148,11 +149,11 @@ export class DiscoveryAnnotation {
         type: opts.timeMode === 'date' ? 'time' : 'category',
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
-        axisLabel: {color:  Utils.getLabelColor(this.el)},
+        axisLabel: {color: Utils.getLabelColor(this.el)},
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
-        scale: !(opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0),
-        min: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[0] : undefined,
-        max: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[1] : undefined,
+        scale: !(opts.bounds && (!!opts.bounds.minDate || !!opts.bounds.maxDate)),
+        min: !!opts.bounds && !!opts.bounds.minDate ? opts.bounds.minDate / this.divider : undefined,
+        max: !!opts.bounds && !!opts.bounds.maxDate ? opts.bounds.maxDate / this.divider : undefined,
       },
       yAxis: {
         show: true,

@@ -18,6 +18,22 @@ InitialUsage.args = {
   $gts
 %> FOR`
 };
+export const WithXRange = Usage.bind({});
+WithXRange.args = {
+  ...Usage.args,
+  type: 'annotation',
+  ws: `
+  {
+  'data' [ 0 5 <% 'j' STORE
+  NEWGTS 'serie' $j TOSTRING + RENAME 'gts' STORE
+  0 30 <%
+   'ts' STORE $gts $ts RAND + STU * NOW +  NaN NaN NaN "t" ADDVALUE DROP
+  %> FOR
+  $gts
+%> FOR ]
+  'globalParams' { 'bounds' { 'maxDate' NOW 1 m + 'minDate' NOW 1 m - } }
+  }`
+};
 
 export const TestCase1 = Usage.bind({});
 TestCase1.args = {
