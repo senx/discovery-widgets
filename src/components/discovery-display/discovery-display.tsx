@@ -61,7 +61,6 @@ export class DiscoveryDisplayComponent {
   @Method()
   async resize() {
     const dims = Utils.getContentBounds(this.el.parentElement);
-    console.log(this.width, dims.w)
     this.width = dims.w;
     this.height = dims.h;
     this.flexFont();

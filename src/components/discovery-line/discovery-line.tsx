@@ -101,7 +101,7 @@ export class DiscoveryLineComponent {
       },
       toolbox: {
         feature: {
-         //   saveAsImage: {}
+          //   saveAsImage: {}
         }
       },
       legend: {bottom: 10, left: 'center', show: false},
@@ -121,7 +121,12 @@ export class DiscoveryLineComponent {
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [(this.options as Param).timeMode === 'date' ? (d[0] / this.divider) : d[0], d[d.length - 1]]),
+          data: gts.v.map(d => [
+            (this.options as Param).timeMode === 'date'
+              ? d[0] / this.divider
+              : d[0]
+            , d[d.length - 1]
+          ]),
           animation: false,
           large: true,
           showSymbol: this.type === 'scatter' || this.options.showDots,
@@ -229,7 +234,7 @@ export class DiscoveryLineComponent {
   }
 
   private getYAxis(color?: string): CartesianAxisOption {
-    const opts  = this.options as Param;
+    const opts = this.options as Param;
     return {
       type: 'value',
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
@@ -243,11 +248,11 @@ export class DiscoveryLineComponent {
   }
 
   private getXAxis(color?: string): CartesianAxisOption {
-    const opts  = this.options as Param;
-    const splitNumber = Math.min(Math.ceil(this.width / 100) - 1, 10);
+    const opts = this.options as Param;
     return {
       type: opts.timeMode === 'date' ? 'time' : 'category',
-      splitNumber,
+      splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
+      splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},

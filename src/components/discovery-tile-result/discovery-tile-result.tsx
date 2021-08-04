@@ -20,7 +20,7 @@ export class DiscoveryTileResultComponent {
   @Prop({mutable: true}) width: number;
   @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
-  @Prop() unit: string = '';
+  @Prop({mutable: true}) unit: string = '';
   @Prop() url: string;
   @Prop() chartTitle: string;
 

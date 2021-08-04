@@ -80,6 +80,7 @@ Usage.args = {
         {
          'type' 'annotation'
          'w' 8 'h' 1 'x' 0 'y' 2
+         'options' { 'timeMode' 'timestamp' }
          'data' [
            NEWGTS 'annot1' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
            NEWGTS 'annot2' RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
