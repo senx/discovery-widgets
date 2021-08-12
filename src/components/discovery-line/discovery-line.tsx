@@ -212,15 +212,13 @@ export class DiscoveryLineComponent {
       } else {
         this.options.timeMode = 'timestamp';
         this.LOG.debug(['convert', 'gts'], gts);
-        (gts.data || []).forEach((struct, index) => {
-          const c = ColorLib.getColor(gts.id || index, (this.options as Param).scheme);
+          const c = ColorLib.getColor(gts.id || i, (this.options as Param).scheme);
           const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
           (opts.series as any[]).push({
             ...this.getCommonSeriesParam(color),
-            name: struct.label || '' + index,
-            data: (struct.values || []).sort((a, b) => a[0] > b[0] ? 1 : -1)
+            name: gts.label || '' + i,
+            data: (gts.values || []) // .sort((a, b) => a[0] < b[0] ? -1 : 1)
           } as SeriesOption);
-        });
       }
     }
     // multi Y
@@ -298,7 +296,7 @@ export class DiscoveryLineComponent {
   private getXAxis(color?: string): CartesianAxisOption {
     const opts = this.options as Param;
     return {
-      type: opts.timeMode === 'date' ? 'time' : 'category',
+      type: opts.timeMode === 'date' ? 'time' : 'value',
       splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},

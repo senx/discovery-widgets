@@ -20,17 +20,13 @@ ChartWithCustomData.args = {
   ...InitialUsage.args,
   type: 'scatter',
   ws: `
-  <%
-  [
-    0 10 <% DROP [ RAND 10 * FLOOR RAND 10 * ] %> FOR
-  ]
-  %> 'rand' STORE
+  <% [ 0 10 <% DROP [ RAND 10 * 5 -   RAND 10 * 5 - ] %> FOR ] %> 'rand' STORE
   {
-'title' 'Test'
-'data' [
-  { 'label' 'A' 'values' @rand }
-  { 'label' 'B' 'values' @rand }
- ]
-} 'values' STORE
-{ 'data' $values 'globalParams' { } }`
+    'title' 'Test'
+    'globalParams' { }
+    'data' [
+      { 'label' 'A' 'values' @rand }
+      { 'label' 'B' 'values' @rand }
+    ]
+  }`
 }
