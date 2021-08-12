@@ -76,7 +76,21 @@ export class DiscoveryLineComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
-    const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
+    let gtsList;
+    if (GTSLib.isArray(data.data)) {
+      data.data = GTSLib.flatDeep(data.data as any[]);
+      this.LOG.debug(['convert', 'isArray']);
+      if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
+        this.LOG.debug(['convert', 'isArray 2']);
+        gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
+      } else {
+        this.LOG.debug(['convert', 'isArray 3']);
+        gtsList = data.data as any[];
+      }
+    } else {
+      this.LOG.debug(['convert', 'not array']);
+      gtsList = [data.data];
+    }
     this.LOG.debug(['convert'], {options: this.options, gtsList});
     const gtsCount = gtsList.length;
     let multiY = false;
@@ -195,6 +209,18 @@ export class DiscoveryLineComponent {
 
         }
         (opts.series as any[]).push(s);
+      } else {
+        this.options.timeMode = 'timestamp';
+        this.LOG.debug(['convert', 'gts'], gts);
+        (gts.data || []).forEach((struct, index) => {
+          const c = ColorLib.getColor(gts.id || index, (this.options as Param).scheme);
+          const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+          (opts.series as any[]).push({
+            ...this.getCommonSeriesParam(color),
+            name: struct.label || '' + index,
+            data: (struct.values || []).sort((a, b) => a[0] > b[0] ? 1 : -1)
+          } as SeriesOption);
+        });
       }
     }
     // multi Y
@@ -229,8 +255,30 @@ export class DiscoveryLineComponent {
       });
       (opts.grid as GridOption).top = 30 * (i - 1);
     }
-    this.LOG.debug(['convert'], {opts});
+    this.LOG.debug(['convert', 'opts'], {opts});
     return opts as EChartsOption;
+  }
+
+  private getCommonSeriesParam(color) {
+    return {
+      type: this.type,
+      animation: false,
+      large: true,
+      clip: false,
+      lineStyle: {color},
+      itemStyle: {
+        opacity: 0.8,
+        borderColor: color,
+        color: {
+          type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+          colorStops: [
+            {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+            {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+          ],
+          global: false // false by default
+        }
+      }
+    } as SeriesOption
   }
 
   private getYAxis(color?: string): CartesianAxisOption {

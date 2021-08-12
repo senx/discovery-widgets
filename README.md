@@ -273,7 +273,7 @@ structure:
 
 | Name | Type | Description |
 |------|------|-------------|
-| data | `GTS`, `GTS[]` |  Data to display, numeric GTS only |
+| data | `GTS`, `GTS[]`, custom data |  Data to display, numeric GTS only |
 | globalParams |  `Option` | Global options (see above) concerning this tile |
 | params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
 | events | `Events[]` | List of events to emit (see below) |
@@ -302,6 +302,24 @@ $g %> FOR STACKTOLIST 'data' STORE
     { 'datasetColor' 'white' 'xAxis' 0 }
   ]
 }  
+````
+
+Custom data for line and scatter only:
+
+````
+<%
+  [
+    0 10 <% DROP [ RAND 10 * FLOOR RAND 10 * ] %> FOR
+  ]
+  %> 'rand' STORE
+  {
+'title' 'Test'
+'data' [
+  { 'label' 'A' 'values' @rand }
+  { 'label' 'B' 'values' @rand }
+ ]
+} 'values' STORE
+{ 'data' $values 'globalParams' { } }
 ````
 
 #### annotation
