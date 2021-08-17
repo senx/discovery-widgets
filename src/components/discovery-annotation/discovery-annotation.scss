@@ -14,7 +14,11 @@
   }
 
   .chart-area {
-    padding-top: 20px;
+   // padding-top: 20px;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
   }
 
   .discovery-chart-spinner {

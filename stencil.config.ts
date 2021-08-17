@@ -7,7 +7,7 @@ export const config: Config = {
     sass()
   ],
   enableCache: true,
-  buildEs5: true,
+  buildEs5: 'prod',
   rollupPlugins: {
     after: [
       nodePolyfills(),

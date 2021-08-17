@@ -844,3 +844,47 @@ Raspi1WithGeneralOptions.args = {
 }`
 }
 
+export const AnnotationResize = Usage.bind({});
+AnnotationResize.args = {
+  ...Usage.args,
+
+  cols: 12,
+  cellHeight: 220,
+  ws: `{
+  'title' 'Resizing'
+     'tiles' [
+
+        {
+         'type' 'annotation'
+         'w' 8 'h' 1 'x' 3 'y' 0
+         'options' { 'timeMode' 'timestamp' }
+         'data'
+         [ 0 10 <%
+            'i' STORE
+            NEWGTS 'annot' $i TOSTRING + RENAME 1 500 <% RAND 0.09 < <% NaN NaN NaN T ADDVALUE %> <% DROP %> IFTE %> FOR
+            %> FOR
+         ]
+       }
+        {
+          'type' 'circle'
+          'unit' '%25'
+          'w' 3 'h' 1 'x' 0 'y' 0
+          'data'
+            RAND 100 * ROUND 'v' STORE
+            {
+              'data' $v
+              'params' [
+                {
+                  'maxValue' 100
+                  'datasetColor'
+                  <% $v 33 < %> <% '#77BE69' %>
+                  <% $v 66 < %> <% '#FF9830' %>
+                  <% '#F24865' %> 2 SWITCH
+                }
+              ]
+            }
+       }
+     ]
+   }`,
+  options: new Param()
+}

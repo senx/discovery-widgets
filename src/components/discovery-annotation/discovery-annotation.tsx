@@ -47,10 +47,7 @@ export class DiscoveryAnnotation {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
-      this.myChart.resize({
-        width: this.width,
-        height: this.height,
-      });
+      this.myChart.resize({width: this.width, height: this.height});
       this.myChart.setOption(this.chartOpts);
     });
   }
@@ -209,7 +206,7 @@ export class DiscoveryAnnotation {
   }
 
   render() {
-    return <Host>
+    return <Host style={{width: this.width + 'px', height: (this.height + (this.expanded ? 50 : 0)) + 'px'}}>
       {this.displayExpander
         ?
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
