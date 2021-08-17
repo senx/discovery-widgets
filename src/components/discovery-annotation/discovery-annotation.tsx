@@ -18,7 +18,7 @@ import elementResizeEvent from "element-resize-event";
   shadow: true,
 })
 export class DiscoveryAnnotation {
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
