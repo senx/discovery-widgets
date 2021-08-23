@@ -100,7 +100,7 @@ export class DiscoveryDashboardComponent {
     }
   }
 
-  exec(refresh = false) {
+  exec() {
     this.ws = this.el.innerText;
     if (this.ws && this.ws !== '') {
       this.loaded = false;
@@ -128,7 +128,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               window.clearInterval(this.timer);
             }
             if (this.autoRefresh && this.autoRefresh > 0) {
-              this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
+              this.timer = window.setInterval(() => this.exec(), this.autoRefresh * 1000);
             }
           }
           this._type = tmpResult.type || this.type || 'dashboard';
@@ -261,7 +261,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         debug={this.debug}/>
       {this.loaded
         ? [<style>{this.generateStyle(this.innerStyle)}</style>, this.getRendering(), this.audioFile ?
-          <audio src={this.audioFile} autoplay id="song"/> : '']
+          <audio src={this.audioFile} autoPlay id="song"/> : '']
         : <discovery-spinner>Requesting data...</discovery-spinner>
       }
       <pre id="ws"><slot/></pre>
