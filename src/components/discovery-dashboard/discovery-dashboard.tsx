@@ -211,7 +211,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
           <div class="discovery-dashboard-wrapper" style={{
-            width: '100%', height: 'auto',
+            width: '100%', //height: 'auto',
             gridAutoRows: 'minmax(' + (this.result.cellHeight || this.cellHeight) + 'px, auto)',
             gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
           }}>
@@ -220,6 +220,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                    style={{
                      gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
                      gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
+                     height:  (this.result.cellHeight || this.cellHeight) + 'px'
                    }}
               >
                 <div>
