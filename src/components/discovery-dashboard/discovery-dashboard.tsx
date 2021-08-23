@@ -220,7 +220,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                    style={{
                      gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
                      gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
-                     height:  (this.result.cellHeight || this.cellHeight) + 'px'
+                     height: ((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h- 1) + 5) + 'px',
+                     minHeight: '100%'
                    }}
               >
                 <div>

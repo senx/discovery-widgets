@@ -721,8 +721,8 @@ differentSizesAndPositionAndCustomCellHeight.args = {
       }
       {
         'type' 'display'
-        'x' 6 'y' 0 'w' 6 'h' 2
-        'data' '6x2'
+        'x' 6 'y' 0 'w' 6 'h' 4
+        'data' '6x4'
       }
       {
         'type' 'display'
