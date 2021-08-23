@@ -27,9 +27,10 @@
         height: 100%;
         border: var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
         box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow-y: visible;
+        overflow-x: visible;
         background: var(--warp-view-tile-background);
+        position: relative;
 
         &.annotations, &.plot {
           overflow-y: auto;
