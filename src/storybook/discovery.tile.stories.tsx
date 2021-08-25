@@ -53,10 +53,8 @@ export default {
 
 // @ts-ignore
 const Template = ({url, ws, language, type, options, unit, title}) => `
-<div style="height: 600px;width: 100%;
-min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
-<div class="card"
- style="height: 100%;width: 100%;min-height: 100%;">
+<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
       <div class="card-body">
           <discovery-tile url="${url}" type="${type}" language="${language}"
           unit="${unit || ''}"

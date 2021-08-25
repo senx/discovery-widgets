@@ -212,13 +212,13 @@ export class DiscoveryLineComponent {
       } else {
         this.options.timeMode = 'timestamp';
         this.LOG.debug(['convert', 'gts'], gts);
-          const c = ColorLib.getColor(gts.id || i, (this.options as Param).scheme);
-          const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-          (opts.series as any[]).push({
-            ...this.getCommonSeriesParam(color),
-            name: gts.label || '' + i,
-            data: (gts.values || []) // .sort((a, b) => a[0] < b[0] ? -1 : 1)
-          } as SeriesOption);
+        const c = ColorLib.getColor(gts.id || i, (this.options as Param).scheme);
+        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+        (opts.series as any[]).push({
+          ...this.getCommonSeriesParam(color),
+          name: gts.label || '' + i,
+          data: (gts.values || []) // .sort((a, b) => a[0] < b[0] ? -1 : 1)
+        } as SeriesOption);
       }
     }
     // multi Y
@@ -325,14 +325,16 @@ export class DiscoveryLineComponent {
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
-    this.parsing = false;
-    this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
-    this.myChart.on('finished', () => {
-      this.rendering = false;
-      this.drawn();
+    setTimeout(() => {
+      this.parsing = false
+      this.rendering = true;
+      this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
+      this.myChart.on('finished', () => {
+        this.rendering = false;
+        this.drawn();
+      });
+      this.myChart.setOption(this.chartOpts)
     });
-    setTimeout(() => this.myChart.setOption(this.chartOpts));
   }
 
   @Method()

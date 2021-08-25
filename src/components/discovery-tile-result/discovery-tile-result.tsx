@@ -86,9 +86,11 @@ export class DiscoveryTileResultComponent {
   }
 
   drawn() {
-    if (this.execTime === 0) {
-      this.execTime = new Date().getTime() - this.start;
-    }
+    setTimeout(() => {
+      if (this.execTime === 0) {
+        this.execTime = new Date().getTime() - this.start;
+      }
+    });
   }
 
   getView() {

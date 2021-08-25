@@ -83,10 +83,11 @@ export class DiscoveryDisplayComponent {
   }
 
   componentDidLoad() {
-    this.height = Utils.getContentBounds(this.el.parentElement).h;
-    this.parsing = false;
-    console.log('componentDidLoad', this.message)
-    setTimeout(() => this.flexFont());
+    setTimeout(() => {
+      this.height = Utils.getContentBounds(this.el.parentElement).h;
+      this.flexFont();
+      this.parsing = false;
+    });
   }
 
   disconnectedCallback() {

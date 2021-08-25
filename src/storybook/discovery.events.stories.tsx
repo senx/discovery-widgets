@@ -467,7 +467,7 @@ GTSEvents.args = {
   ws: `
   'zizNn2DCXw0qtsbWx_F4WvA9ORyQBAtDScaTVaGGqJ1f5DMhE1ijFr6JDQQhPncn1bE4WQZrUN.ZIaJtCl_SOlx9oZ8H0e83U3afcX.iUPodyj.vqSgjHgToKfeO1_ZaG5fNfi3e7l71mlmJhs8Fl.' 'token' STORE
 'France'  'country' STORE
-[ $token 'covid'  { 'country' $country }  NOW 1 d 5 * ] FETCH WRAP 'fiveYearsOfData' STORE
+[ $token 'covid'  { 'country' $country }  NOW 1 w 5 * ] FETCH WRAP 'fiveYearsOfData' STORE
 
 {
   'title' 'Covid'
@@ -556,7 +556,7 @@ GTSEvents.args = {
   'type' 'area'
   'options' { 'eventHandler' 'type=variable,tag=country' } // event handler
   'macro' <%
-    [ $token 'covid' { 'country' $country }  NOW 1 d 5 * ] FETCH WRAP 'wrappedGts' STORE
+    [ $token 'covid' { 'country' $country }  NOW 1 w 5 * ] FETCH WRAP 'wrappedGts' STORE
     $wrappedGts UNWRAP [ 8 11 ] {  8 'new_cases_per_million' 11 'new_deaths_per_million' } MVTICKSPLIT
     <% ->GTS VALUELIST %> F LMAP FLATTEN 'data' STORE
     [ $data bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'data' STORE
@@ -591,7 +591,6 @@ GTSEvents.args = {
     $fiveYearsOfData UNWRAP [ 32 33 41 ] $mapping MVTICKSPLIT // It's more easy to use the mapping var
     <% ->GTS VALUELIST %> F LMAP FLATTEN 'data' STORE // we extract fields as GTS
     [ $data bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'data' STORE  // daily sum
-    [ $data mapper.mean 7 0 0 ] MAP 'data' STORE // 7 days moving average
     {
       'data' $data
       'params' [
@@ -608,10 +607,10 @@ GTSEvents.args = {
   'type' 'area'
   'options' { 'eventHandler' 'type=variable,tag=history' } // Regexp
   'macro' <%
-    $fiveYearsOfData UNWRAP [ 14 ] $mapping MVTICKSPLIT //
+    $fiveYearsOfData UNWRAP [ 15 ] $mapping MVTICKSPLIT //
     <% ->GTS VALUELIST %> F LMAP FLATTEN 'data' STORE
     [ $data bucketizer.sum NOW 1 d 0 ] BUCKETIZE 'data' STORE
-    [ $data mapper.mean 7 0 0 ] MAP STOP 'data' STORE
+    [ $data mapper.mean 7 0 0 ] MAP 'data' STORE
     { 'data' $data  'params' [ { 'datasetColor' '#29ABE2' } ] }
   %>
 }

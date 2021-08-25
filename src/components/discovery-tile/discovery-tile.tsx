@@ -59,7 +59,6 @@ export class DiscoveryTileComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
-      console.log(this.vars, res.vars)
       this.innerVars = {...JSON.parse(this.vars), ...res.vars};
       this.exec();
     }
@@ -108,7 +107,9 @@ export class DiscoveryTileComponent {
   }
 
   exec(refresh = false) {
-    if (!refresh) this.loaded = true;
+    if (!refresh) {
+      setTimeout(() => this.loaded = true);
+    }
     this.ws = this.el.innerText;
     if (this.ws && this.ws !== '') {
       this.LOG.debug(['exec'], this.ws, this.type);
@@ -155,15 +156,14 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         }
         this.LOG.debug(['exec', 'result'], this.result);
         this.execResult.emit(this.result);
-        this.loaded = true;
+        setTimeout(() => this.loaded = true);
       }).catch(e => {
         this.statusError.emit(e);
-        this.loaded = true;
+        setTimeout(() => this.loaded = true);
         this.LOG.error(['exec'], e);
       })
     }
   }
-
 
   render() {
     return <Host>
