@@ -76,7 +76,15 @@ export class Utils {
   }
 
   static parseEventData(evt: DiscoveryEvent, eventHandler: string) {
-    const parsed = {style: undefined, data: undefined, xpath: undefined, popup: undefined, vars: undefined, audio: undefined}
+    const parsed = {
+      style: undefined,
+      data: undefined,
+      xpath: undefined,
+      popup: undefined,
+      vars: undefined,
+      audio: undefined,
+      zoom: undefined,
+    }
     if (eventHandler) {
       let tag = '.*';
       let type = '.*';
@@ -111,6 +119,9 @@ export class Utils {
             break;
           case 'audio':
             parsed.audio = evt.value;
+            break;
+          case 'zoom':
+            parsed.zoom = evt.value;
             break;
           default:
           // nothing

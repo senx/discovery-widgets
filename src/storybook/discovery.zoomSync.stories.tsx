@@ -57,7 +57,6 @@ const Template = ({url, ws, options, title, type, unit}) => `
     chart1.setZoom(event.detail)
   });
 </script>`;
-
 export const Usage = Template.bind({});
 Usage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
@@ -66,4 +65,63 @@ Usage.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`,
   options: new Param()
+}
+
+// @ts-ignore
+const DashboardTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
+<div class="card-body">
+<discovery-dashboard url="${url}"
+dashboard-title="${title ? title : ''}"
+@draw="${event => console.error('foo', 'bar', event)}"
+cols="${cols}" cell-height="${cellHeight}"
+debug options='${JSON.stringify(options)}'
+>${ws}</discovery-dashboard>
+</div>
+</div>`;
+
+export const WithinDashbord = DashboardTemplate.bind({});
+WithinDashbord.args = {
+  cols: 12,
+  cellHeight: 220,
+  options: new Param(),
+  url: 'https://warp.senx.io/api/v0/exec',
+  ws: `{
+     'title' 'My Dashboard with zoom sync'
+     'tiles' [
+        {
+          'type' 'bar' 'x' 0 'y' 0 'w' 6 'h' 1
+          'options' { 'eventHandler' 'type=zoom,tag=chart1' }
+          'macro' <%
+            NOW 'now' STORE
+            [ 1 4 <% DROP NEWGTS 'g' STORE
+              1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
+              $g
+            %> FOR ] 'data' STORE
+            {
+              'data' $data
+              'events' [
+                { 'tags' [ 'chart2' ] 'type' 'zoom' }
+              ]
+            }
+          %>
+        }
+        {
+          'type' 'line' 'x' 6 'y' 0 'w' 6 'h' 1
+          'options' { 'eventHandler' 'type=zoom,tag=chart2' }
+          'macro' <%
+            NOW 'now' STORE
+            [ 1 4 <% DROP NEWGTS 'g' STORE
+              1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
+              $g
+            %> FOR ] 'data' STORE
+            {
+              'data' $data
+              'events' [
+                { 'tags' [ 'chart1' ] 'type' 'zoom' }
+              ]
+            }
+          %>
+        }
+     ]
+  }`
 }

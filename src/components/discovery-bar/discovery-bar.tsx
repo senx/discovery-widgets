@@ -248,21 +248,23 @@ export class DiscoveryBarComponent {
   }
 
   componentDidLoad() {
-    this.height = Utils.getContentBounds(this.el.parentElement).h;
-    this.parsing = false;
-    this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
-    this.myChart.on('finished', () => {
-      this.rendering = false;
-      this.drawn();
+    setTimeout(() => {
+      this.height = Utils.getContentBounds(this.el.parentElement).h;
+      this.parsing = false;
+      this.rendering = true;
+      this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
+      this.myChart.on('finished', () => {
+        this.rendering = false;
+        this.drawn();
+      });
+      this.myChart.on('dataZoom', event => {
+        const {start, end} = (event.batch || [])[0] || {};
+        if (start && end) {
+          this.dataZoom.emit({start, end});
+        }
+      });
+      this.myChart.setOption(this.chartOpts)
     });
-    this.myChart.on('dataZoom', event => {
-      const {start, end} = (event.batch || [])[0] || {};
-      if (start && end) {
-        this.dataZoom.emit({start, end});
-      }
-    });
-    setTimeout(() => this.myChart.setOption(this.chartOpts));
   }
 
   private drawn() {

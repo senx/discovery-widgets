@@ -61,6 +61,12 @@ export class DiscoveryTileResultComponent {
     if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
+    if (res.zoom) {
+      this.setZoom(res.zoom).then(() => {
+        // empty
+      });
+    }
+
   }
 
   componentWillLoad() {
@@ -93,6 +99,15 @@ export class DiscoveryTileResultComponent {
     });
   }
 
+  handleZoom(event: CustomEvent<{ start: number, end: number }>) {
+    ((this.innerResult as unknown as DataModel).events || [])
+      .filter(e => e.type === 'zoom')
+      .forEach(e => {
+        e.value = event.detail;
+        this.discoveryEvent.emit(e);
+      });
+  }
+
   getView() {
     switch (this.type) {
       case "line":
@@ -110,6 +125,7 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.options}
           debug={this.debug}
+          onDataZoom={event => this.handleZoom(event)}
           ref={(el) => this.tile = el}
         />;
       case 'annotation':
@@ -120,6 +136,7 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.options}
           ref={(el) => this.tile = el}
+          onDataZoom={event => this.handleZoom(event)}
           debug={this.debug}
         />;
       case 'bar':
@@ -130,6 +147,7 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.options}
           ref={(el) => this.tile = el}
+          onDataZoom={event => this.handleZoom(event)}
           debug={this.debug}
         />;
       case 'display':
@@ -291,7 +309,7 @@ export class DiscoveryTileResultComponent {
       this.unit = (this.options as Param).unit || this.unit
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])
-        .filter(e => !!e.value)
+        .filter(e => !!e.value).filter(e => e.type !== 'zoom')
         .forEach(e => {
           if (this.LOG) {
             this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
