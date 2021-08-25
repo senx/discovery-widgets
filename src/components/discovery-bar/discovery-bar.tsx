@@ -197,7 +197,8 @@ export class DiscoveryBarComponent {
         show: false
       },
       xAxis: {
-        type: !!((this.options as Param).bar || {horizontal: false}).horizontal ? 'value' : 'category',
+        show: !this.options.hideXAxis,
+        type: !!(this.options.bar || {horizontal: false}).horizontal ? 'value' : 'category',
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -214,8 +215,9 @@ export class DiscoveryBarComponent {
       },
       yAxis: {
         name: this.unit || (this.options as Param).unit,
+        show: !this.options.hideYAxis,
         nameTextStyle: {color: Utils.getLabelColor(this.el)},
-        type: !!((this.options as Param).bar || {horizontal: false}).horizontal ? 'category' : 'value',
+        type: !!(this.options.bar || {horizontal: false}).horizontal ? 'category' : 'value',
         splitLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)

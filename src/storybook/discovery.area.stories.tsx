@@ -1,5 +1,6 @@
 import tile, {Usage} from './discovery.tile.stories';
 import {Colors} from "../utils/color-lib";
+import {Param} from "../model/param";
 
 export default {
   ...tile,
@@ -23,14 +24,15 @@ SmoothedArea.args = {
 false RESETS
 [ SWAP mapper.delta 1 0 0 ] MAP`
 }
-export const SteppedArea = Usage.bind({});
-SteppedArea.args = {
+export const SteppedAreaWithoutYAxis = Usage.bind({});
+SteppedAreaWithoutYAxis.args = {
   ...Usage.args,
   type: 'step-area',
   ws: `@training/dataset0
 [ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW -20 ] FETCH
 false RESETS
-[ SWAP mapper.delta 1 0 0 ] MAP`
+[ SWAP mapper.delta 1 0 0 ] MAP`,
+  options: { ... new Param(), hideYAxis: true}
 }
 export const MixedChart = Usage.bind({});
 MixedChart.args = {

@@ -285,6 +285,7 @@ export class DiscoveryLineComponent {
     return {
       type: 'value',
       name: this.unit || opts.unit,
+      show: !opts.hideYAxis,
       nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
@@ -300,6 +301,7 @@ export class DiscoveryLineComponent {
     const opts = this.options as Param;
     return {
       type: opts.timeMode === 'date' ? 'time' : 'value',
+      show: !opts.hideXAxis,
       splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},

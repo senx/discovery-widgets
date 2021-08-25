@@ -41,6 +41,8 @@ export class Param {
   properties?: any;
   yAxis?: number;
   xAxis?: number;
+  hideYAxis = false;
+  hideXAxis = false;
   showlegend = false;
   responsive?: boolean;
   autoRefresh?: number;
