@@ -171,7 +171,7 @@ export class DiscoveryBarComponent {
     this.LOG.debug(['convert', 'series'], series);
     return {
       grid: {
-        left: 10, top: 10, bottom: 10, right: 10,
+        left: 10, top: !!(this.unit || this.options.unit) ? 30 : 10, bottom: 10, right: 10,
         containLabel: true
       },
       tooltip: {
@@ -213,10 +213,8 @@ export class DiscoveryBarComponent {
         }
       },
       yAxis: {
-        nameRotate: 90,
-        nameLocation: 'middle',
         name: this.unit || (this.options as Param).unit,
-        nameTextStyle: {color: Utils.getLabelColor(this.el), padding: [0, 0, 10, 0]},
+        nameTextStyle: {color: Utils.getLabelColor(this.el)},
         type: !!((this.options as Param).bar || {horizontal: false}).horizontal ? 'category' : 'value',
         splitLine: {
           lineStyle: {

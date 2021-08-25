@@ -285,7 +285,7 @@ export class DiscoveryLineComponent {
     return {
       type: 'value',
       name: this.unit || opts.unit,
-      nameTextStyle: {color: color || Utils.getLabelColor(this.el)}, //, padding: [0, 0, 10, 0]},
+      nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
