@@ -1,7 +1,7 @@
 import * as echarts from "echarts";
 
 export type ChartType =
-  'line' | 'area' | 'scatter' | 'spline-area' | 'spline' | 'step' | 'step-after' | 'step-before'
+  'line' | 'area' | 'scatter' | 'step-area' | 'spline-area' | 'spline' | 'step' | 'step-after' | 'step-before'
   | 'annotation'
   | 'bar'
   | 'display'

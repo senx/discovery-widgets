@@ -148,7 +148,7 @@ export class DiscoveryLineComponent {
           smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
           clip: false,
           step: DiscoveryLineComponent.getStepShape(type),
-          areaStyle: type === 'area' || type === 'spline-area' ? {
+          areaStyle: type === 'area' || type === 'step-area' || type === 'spline-area' ? {
             opacity: 0.8,
             color: {
               type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
@@ -321,6 +321,7 @@ export class DiscoveryLineComponent {
       case "spline":
         return undefined;
       case "step":
+      case "step-area":
         return 'middle';
       case "step-before":
         return 'start';

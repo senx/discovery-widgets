@@ -20,14 +20,25 @@
 
 ## Events
 
-| Event  | Description | Type                |
-| ------ | ----------- | ------------------- |
-| `draw` |             | `CustomEvent<void>` |
+| Event      | Description | Type                                           |
+| ---------- | ----------- | ---------------------------------------------- |
+| `dataZoom` |             | `CustomEvent<{ start: number; end: number; }>` |
+| `draw`     |             | `CustomEvent<void>`                            |
 
 
 ## Methods
 
 ### `resize() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
 
 
 

@@ -114,6 +114,7 @@ export class DiscoveryTileResultComponent {
       case "area":
       case "scatter":
       case "spline-area":
+      case "step-area":
       case "spline":
       case 'step':
       case 'step-after':

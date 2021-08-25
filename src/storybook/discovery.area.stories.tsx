@@ -23,6 +23,15 @@ SmoothedArea.args = {
 false RESETS
 [ SWAP mapper.delta 1 0 0 ] MAP`
 }
+export const SteppedArea = Usage.bind({});
+SteppedArea.args = {
+  ...Usage.args,
+  type: 'step-area',
+  ws: `@training/dataset0
+[ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW -20 ] FETCH
+false RESETS
+[ SWAP mapper.delta 1 0 0 ] MAP`
+}
 export const MixedChart = Usage.bind({});
 MixedChart.args = {
   ...InitialUsage.args,

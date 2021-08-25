@@ -128,7 +128,7 @@ This Web component displays a Tile based upon a WarpScript (or FLoWS). The WarpS
 | `chartTitle`     | `chart-title`     | `string`                 | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
 | `debug`          | `debug`           | `boolean`                | `false`       | Enable debug messages | 
 | `options`        | `options`         | `Param / string`         | `new Param()` | Serialized JSON options (see Params below) | 
-| `type`           | `type`            | `line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button`  | | Chart type |   
+| `type`           | `type`            | `line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button`  | | Chart type |   
 | `url`            | `url`             | `string`                 | `undefined`   | exec url of your Warp 10 endpoint |
 | `lang`            | `lang`             | `warpscript, flows`                 | `warpscript`   | Language used  |
 
@@ -151,7 +151,7 @@ This Web component displays a Tile based upon a WarpScript (or FLoWS) execution 
 | `chartTitle`     | `chart-title`     | `string`                 | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
 | `debug`          | `debug`           | `boolean`                | `false`       | Enable debug messages | 
 | `options`        | `options`         | `Param / string`         | `new Param()` | Serialized JSON options (see Params below) | 
-| `type`           | `type`            | `line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button`  | | Chart type |   
+| `type`           | `type`            | `line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button`  | | Chart type |   
 | `url`            | `url`             | `string`                 | `undefined`   | exec url of your Warp 10 endpoint |
 | `height`     | `height`      |  `number`            | | Fixed height of the tile |
 | `width`     | `width`      |   `number`          |  | Fixed width of the tile |
@@ -176,7 +176,7 @@ dashboard definition, as a field in a tile definition and as a field in executio
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| type | `string` | | Chart type  (line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button) |
+| type | `string` | | Chart type  (line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button) |
 | timeMode | `string` | 'date' | date, timestamp or custom |
 | timeZone | `string` | 'UTC' | Timezone |
 | timeUnit | `string` | 'us' | Warp 10 time unit (us, ms, ns) |
@@ -216,7 +216,7 @@ Data are displayed either with `data` or with `macro`. Auto-refresh for tiles on
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| type | `string` | | Chart type  (line, area, scatter, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button |
+| type | `string` | | Chart type  (line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button |
 | endpoint | `string` | | exec url of your Warp 10 endpoint |
 | title | `string` | | Tile title |
 | unit | `string` | | Unit to be displayed |
@@ -260,7 +260,7 @@ structure:
 | ------ | ----------- | ------------------- |
 | `draw` |             | `CustomEvent<void>` |
 
-#### line, area, scatter, spline-area, spline, step, step-after, step-before
+#### line, area, scatter, spline-area, step-area, spline, step, step-after, step-before
 
 - [More Line Samples](src/storybook/discovery.line.stories.tsx)
 - [More Area Samples](src/storybook/discovery.area.stories.tsx)
@@ -281,7 +281,7 @@ structure:
 Supported option per series are:
 
 - datasetColor: Hex CSS color of the series. ie: '#fff00f'
-- type: Chart type (line, area, scatter, spline-area, spline, step, step-after, step-before)
+- type: Chart type (line, area, scatter, step-area, spline-area, spline, step, step-after, step-before)
 - xAxis: In case of multi-X axis support, represents the index of related axis.
 - yAxis: In case of multi-Y axis support, represents the index of related axis.
 
