@@ -11,6 +11,7 @@ export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
   ...Usage.args,
   type: 'bar',
+  unit: 'my unit',
   ws: `NOW 'now' STORE
 1 4 <% DROP NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR

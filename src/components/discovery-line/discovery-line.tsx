@@ -284,6 +284,10 @@ export class DiscoveryLineComponent {
     const opts = this.options as Param;
     return {
       type: 'value',
+      nameRotate: 90,
+      nameLocation: 'middle',
+      name: this.unit || opts.unit,
+      nameTextStyle: {color: color || Utils.getLabelColor(this.el), padding: [0, 0, 10, 0]},
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
@@ -297,6 +301,7 @@ export class DiscoveryLineComponent {
   private getXAxis(color?: string): CartesianAxisOption {
     const opts = this.options as Param;
     return {
+      name: 'tt',
       type: opts.timeMode === 'date' ? 'time' : 'value',
       splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},

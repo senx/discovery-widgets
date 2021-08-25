@@ -10,6 +10,7 @@ export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
   ...Usage.args,
   type: 'line',
+  unit: 'my unit',
   ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`

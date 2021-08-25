@@ -213,6 +213,10 @@ export class DiscoveryBarComponent {
         }
       },
       yAxis: {
+        nameRotate: 90,
+        nameLocation: 'middle',
+        name: this.unit || (this.options as Param).unit,
+        nameTextStyle: {color: Utils.getLabelColor(this.el), padding: [0, 0, 10, 0]},
         type: !!((this.options as Param).bar || {horizontal: false}).horizontal ? 'category' : 'value',
         splitLine: {
           lineStyle: {
