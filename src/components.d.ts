@@ -359,7 +359,7 @@ declare namespace LocalJSX {
     interface DiscoveryAnnotation {
         "debug"?: boolean;
         "height"?: number;
-        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number }>) => void;
+        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -370,7 +370,7 @@ declare namespace LocalJSX {
     interface DiscoveryBar {
         "debug"?: boolean;
         "height"?: number;
-        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number }>) => void;
+        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -449,7 +449,7 @@ declare namespace LocalJSX {
     interface DiscoveryLine {
         "debug"?: boolean;
         "height"?: number;
-        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number }>) => void;
+        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

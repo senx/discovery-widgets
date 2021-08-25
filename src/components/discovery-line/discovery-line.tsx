@@ -31,7 +31,7 @@ export class DiscoveryLineComponent {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
-  @Event() dataZoom: EventEmitter<{ start: number, end: number }>;
+  @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -99,7 +99,7 @@ export class DiscoveryLineComponent {
     const opts: EChartsOption = {
       progressive: 20000,
       grid: {
-        left: 10, top: 10, bottom: 10, right: 10,
+        left: 10, top: !!(this.unit || this.options.unit) ? 30 : 10, bottom: 10, right: 10,
         containLabel: true
       },
       responsive: true,
@@ -284,10 +284,8 @@ export class DiscoveryLineComponent {
     const opts = this.options as Param;
     return {
       type: 'value',
-      nameRotate: 90,
-      nameLocation: 'middle',
       name: this.unit || opts.unit,
-      nameTextStyle: {color: color || Utils.getLabelColor(this.el), padding: [0, 0, 10, 0]},
+      nameTextStyle: {color: color || Utils.getLabelColor(this.el)}, //, padding: [0, 0, 10, 0]},
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
@@ -301,7 +299,6 @@ export class DiscoveryLineComponent {
   private getXAxis(color?: string): CartesianAxisOption {
     const opts = this.options as Param;
     return {
-      name: 'tt',
       type: opts.timeMode === 'date' ? 'time' : 'value',
       splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
@@ -343,7 +340,8 @@ export class DiscoveryLineComponent {
       this.myChart.on('dataZoom', event => {
         const {start, end} = (event.batch || [])[0] || {};
         if (start && end) {
-          this.dataZoom.emit({start, end});
+          const dataZoom = this.myChart.getOption().dataZoom[1];
+          this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
       this.myChart.setOption(this.chartOpts)
