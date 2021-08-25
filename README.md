@@ -876,6 +876,22 @@ Sample:
 }
 ````
 
+##### zoom
+
+Only relevant for line, area, step, annotation and bar charts.
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `zoom` |  |
+| tags | `string[]` | Targets  |
+
+
+Sample:
+
+````
+{ 'tags' [ 'chart2' ] 'type' 'zoom' }
+````
+
 ##### xpath
 
 Only relevant for SVG targets.
