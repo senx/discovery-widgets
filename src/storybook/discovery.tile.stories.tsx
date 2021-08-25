@@ -5,7 +5,7 @@ import {action, configureActions} from '@storybook/addon-actions';
 configureActions({
   depth: 10,
   // Limit the number of items logged into the actions panel
-  limit: 5,
+  limit: 20,
   allowFunction: true
 });
 const options = new Param()
@@ -49,6 +49,7 @@ export default {
   'statusError',
   'execResult',
   'draw',
+  'dataZoom',
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
 // @ts-ignore

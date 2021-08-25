@@ -18,6 +18,7 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "type": ChartType;
         "unit": string;
         "width": number;
@@ -28,6 +29,7 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "type": ChartType;
         "unit": string;
         "width": number;
@@ -97,6 +99,7 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "type": ChartType;
         "unit": string;
         "width": number;
@@ -187,6 +190,7 @@ export namespace Components {
         "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
+        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "type": ChartType;
         "unit": string;
         "url": string;
@@ -199,6 +203,7 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "start": number;
         "type": ChartType;
         "unit": string;
@@ -354,6 +359,7 @@ declare namespace LocalJSX {
     interface DiscoveryAnnotation {
         "debug"?: boolean;
         "height"?: number;
+        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -364,6 +370,7 @@ declare namespace LocalJSX {
     interface DiscoveryBar {
         "debug"?: boolean;
         "height"?: number;
+        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -442,6 +449,7 @@ declare namespace LocalJSX {
     interface DiscoveryLine {
         "debug"?: boolean;
         "height"?: number;
+        "onDataZoom"?: (event: CustomEvent<{ start: number, end: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

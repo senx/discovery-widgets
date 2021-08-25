@@ -261,6 +261,13 @@ export class DiscoveryTileResultComponent {
     }
   }
 
+  @Method()
+  async setZoom(dataZoom: { start: number, end: number }) {
+    if (this.tile) {
+      (this.tile as any).setZoom(dataZoom);
+    }
+  }
+
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,

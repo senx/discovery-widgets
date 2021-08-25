@@ -47,7 +47,7 @@ export class DiscoveryTileComponent {
       this.options = JSON.parse(this.options);
       this.exec(true);
     }
-    if(this.LOG) {
+    if (this.LOG) {
       this.LOG.debug(['optionsUpdate'], {
         options: this.options,
         newValue, oldValue
@@ -116,9 +116,9 @@ export class DiscoveryTileComponent {
       if (this.language === 'flows') {
         this.ws = Object.keys(this.innerVars || {})
           .map(k => `${k} = ${typeof this.innerVars[k] === 'string'
-          ? '"' + this.innerVars[k] + '"'
-          : 'JSON->(\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n)'
-        }`).join("\n") + "\n" + this.ws;
+            ? '"' + this.innerVars[k] + '"'
+            : 'JSON->(\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n)'
+          }`).join("\n") + "\n" + this.ws;
         this.ws = `<'
 ${this.ws}
 '>
@@ -126,9 +126,9 @@ FLOWS`;
       } else {
         this.ws = Object.keys(this.innerVars || {})
           .map(k => `${typeof this.innerVars[k] === 'string'
-          ? '"' + this.innerVars[k] + '"'
-          : '\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n JSON->'
-        } "${k}" STORE`).join("\n") + "\n" + this.ws;
+            ? '"' + this.innerVars[k] + '"'
+            : '\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n JSON->'
+          } "${k}" STORE`).join("\n") + "\n" + this.ws;
       }
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;
@@ -163,6 +163,11 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.LOG.error(['exec'], e);
       })
     }
+  }
+
+  @Method()
+  async setZoom(dataZoom: { start: number, end: number }) {
+    this.tileResult.setZoom(dataZoom);
   }
 
   render() {

@@ -29,6 +29,7 @@ export class DiscoveryAnnotation {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
+  @Event() dataZoom: EventEmitter<{ start: number, end: number }>;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -194,11 +195,24 @@ export class DiscoveryAnnotation {
       width: this.width,
       height: this.height
     });
-    this.myChart.on('rendered', () => {
+    this.myChart.on('finished', () => {
       this.rendering = false;
       this.drawn();
     });
+    this.myChart.on('dataZoom', event => {
+      const {start, end} = (event.batch || [])[0] || {};
+      if (start && end) {
+        this.dataZoom.emit({start, end});
+      }
+    });
     setTimeout(() => this.myChart.setOption(this.chartOpts));
+  }
+
+  @Method()
+  async setZoom(dataZoom: { start: number, end: number }) {
+    if (this.myChart) {
+      this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom});
+    }
   }
 
   private drawn() {

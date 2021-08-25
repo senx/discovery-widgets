@@ -31,6 +31,7 @@ export class DiscoveryLineComponent {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
+  @Event() dataZoom: EventEmitter<{ start: number, end: number }>;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -333,6 +334,12 @@ export class DiscoveryLineComponent {
         this.rendering = false;
         this.drawn();
       });
+      this.myChart.on('dataZoom', event => {
+        const {start, end} = (event.batch || [])[0] || {};
+        if (start && end) {
+          this.dataZoom.emit({start, end});
+        }
+      });
       this.myChart.setOption(this.chartOpts)
     });
   }
@@ -341,6 +348,13 @@ export class DiscoveryLineComponent {
   async resize() {
     if (this.myChart) {
       this.myChart.resize();
+    }
+  }
+
+  @Method()
+  async setZoom(dataZoom: { start: number, end: number }) {
+    if (this.myChart) {
+      this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom});
     }
   }
 
