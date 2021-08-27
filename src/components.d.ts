@@ -187,6 +187,7 @@ export namespace Components {
         "autoRefresh": number;
         "chartTitle": string;
         "debug": boolean;
+        "exec": (refresh?: boolean) => Promise<void>;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;

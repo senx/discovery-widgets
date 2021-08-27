@@ -31,6 +31,16 @@
 
 ## Methods
 
+### `exec(refresh?: boolean) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resize() => Promise<void>`
 
 
