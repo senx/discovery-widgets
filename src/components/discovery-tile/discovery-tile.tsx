@@ -45,11 +45,28 @@ export class DiscoveryTileComponent {
   optionsUpdate(newValue: string, oldValue: string) {
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
-      this.exec(true);
+      this.exec(true).then(() => {
+        // empty
+      });
     }
     if (this.LOG) {
       this.LOG.debug(['optionsUpdate'], {
         options: this.options,
+        newValue, oldValue
+      });
+    }
+  }
+  @Watch('vars')
+  varsUpdate(newValue: string, oldValue: string) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+      this.exec(true).then(() => {
+        // empty
+      });
+    }
+    if (this.LOG) {
+      this.LOG.debug(['varsUpdate'], {
+        vars: this.vars,
         newValue, oldValue
       });
     }
@@ -60,7 +77,9 @@ export class DiscoveryTileComponent {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
       this.innerVars = {...JSON.parse(this.vars), ...res.vars};
-      this.exec();
+      this.exec().then(() => {
+        // empty
+      });
     }
   }
 
@@ -95,7 +114,9 @@ export class DiscoveryTileComponent {
 
 
   componentDidLoad() {
-    this.exec();
+    this.exec().then(() => {
+      // empty;
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -106,7 +127,8 @@ export class DiscoveryTileComponent {
     }
   }
 
-  exec(refresh = false) {
+  @Method()
+  async exec(refresh = false) {
     if (!refresh) {
       setTimeout(() => this.loaded = true);
     }
