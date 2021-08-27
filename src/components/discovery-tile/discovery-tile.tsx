@@ -115,21 +115,16 @@ export class DiscoveryTileComponent {
       this.LOG.debug(['exec'], this.ws, this.type);
       if (this.language === 'flows') {
         this.ws = Object.keys(this.innerVars || {})
-          .map(k => `${k} = ${typeof this.innerVars[k] === 'string'
-            ? '"' + this.innerVars[k] + '"'
-            : 'JSON->(\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n)'
-          }`).join("\n") + "\n" + this.ws;
+          .map(k => Utils.generateVars(k, this.innerVars[k])).join("\n") + "\n" + this.ws;
         this.ws = `<'
 ${this.ws}
 '>
 FLOWS`;
       } else {
         this.ws = Object.keys(this.innerVars || {})
-          .map(k => `${typeof this.innerVars[k] === 'string'
-            ? '"' + this.innerVars[k] + '"'
-            : '\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n JSON->'
-          } "${k}" STORE`).join("\n") + "\n" + this.ws;
+          .map(k => Utils.generateVars(k, this.innerVars[k])).join("\n") + "\n" + this.ws;
       }
+      console.log(this.ws)
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;
         this.headers = {};

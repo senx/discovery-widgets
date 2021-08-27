@@ -150,4 +150,26 @@ export class Utils {
     el.style.fontSize = Math.max(Math.min(h / (0.50 * 10), settings.maxFontSize), settings.minFontSize) + 'px';
     return el;
   };
+
+  static generateVars(key: string, value: any): string {
+    if(typeof value === 'string') {
+      return `"${value}" "${key}" STORE`;
+    } else  if(typeof value === 'number') {
+      return `${value} "${key}" STORE`;
+    } else {
+      if(value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
+        if(value.type == 'string') {
+          return `"${value.value}" "${key}" STORE`;
+        } else {
+          return `${value.value} "${key}" STORE`;
+        }
+      } else {
+        return `
+<'
+${JSON.stringify(value)}
+'>
+ JSON-> "${key}" STORE`;
+      }
+    }
+  }
 }

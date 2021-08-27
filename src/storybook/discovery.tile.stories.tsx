@@ -125,3 +125,34 @@ min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
 </div>`;
 resizeHandler.args = {...Usage.args};
 
+
+const TemplateCustomVars = ({url, options}) => `
+<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6" style="height: 150px;">
+
+            <discovery-tile url="${url}" type="display"
+            chart-title="custom var : string"
+            vars='${JSON.stringify({'myVar': {type: 'string', value: 'Hello'}})}'
+            debug options='${JSON.stringify(options)}'
+            >$myVar</discovery-tile>
+          </div>
+            <div class="col-6" style="height: 150px;">
+
+            <discovery-tile url="${url}" type="display"
+            chart-title="custom var : eval"
+            vars='${JSON.stringify({'myVar': {type: 'eval', value: '24 h'}})}'
+            debug options='${JSON.stringify(options)}'
+            >$myVar</discovery-tile>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+export const externalVars = TemplateCustomVars.bind({});
+externalVars.args = {
+  ...Usage.args
+}
