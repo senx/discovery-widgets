@@ -116,7 +116,7 @@ export class DiscoveryTileComponent {
       if (this.language === 'flows') {
         this.ws = Object.keys(this.innerVars || {})
           .map(k => `${k} = ${typeof this.innerVars[k] === 'string'
-            ? this.innerVars[k]
+            ? '"' + this.innerVars[k] + '"'
             : 'JSON->(\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n)'
           }`).join("\n") + "\n" + this.ws;
         this.ws = `<'
@@ -126,7 +126,7 @@ FLOWS`;
       } else {
         this.ws = Object.keys(this.innerVars || {})
           .map(k => `${typeof this.innerVars[k] === 'string'
-            ? this.innerVars[k]
+            ? '"' + this.innerVars[k] + '"'
             : '\n<\'\n' + JSON.stringify(this.innerVars[k]) + '\n\'>\n JSON->'
           } "${k}" STORE`).join("\n") + "\n" + this.ws;
       }
