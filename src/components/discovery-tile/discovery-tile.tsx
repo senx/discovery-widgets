@@ -124,7 +124,6 @@ FLOWS`;
         this.ws = Object.keys(this.innerVars || {})
           .map(k => Utils.generateVars(k, this.innerVars[k])).join("\n") + "\n" + this.ws;
       }
-      console.log(this.ws)
       Utils.httpPost(this.url, this.ws).then((res: any) => {
         this.result = res.data as string;
         this.headers = {};
