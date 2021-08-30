@@ -135,7 +135,7 @@ export class DiscoveryInputComponent {
           } else {
             this.selectedValue = GTSLib.toTimestamp(s, divider, this.innerOptions.timeZone);
           }
-          if(!this.innerOptions.input?.showButton) {
+          if (!this.innerOptions.input?.showButton) {
             this.handleClick();
           }
         });
@@ -147,12 +147,19 @@ export class DiscoveryInputComponent {
           selector: () => this.inputField,
           data: {src: this.values, keys: 'v'},
           resultItem: {highlight: {render: true}},
-        });
-        this.inputField.addEventListener("selection", (event: any) => {
-          this.selectedValue = event.detail.selection.value.k;
-          this.value = event.detail.selection.value.v;
-          if(!this.innerOptions.input?.showButton) {
-            this.handleClick();
+          events: {
+            input: {
+              selection: (event) => {
+                console.log(event.detail.selection.value)
+                const selection = event.detail.selection.value.v;
+                this.autoCompleteJS.input.value = selection;
+                this.selectedValue = selection;
+                this.LOG.debug(['selection'], {v: this.selectedValue, b: !this.innerOptions.input?.showButton});
+                if (!this.innerOptions.input?.showButton) {
+                  this.handleClick();
+                }
+              }
+            }
           }
         });
         break;
@@ -189,7 +196,7 @@ export class DiscoveryInputComponent {
       const newPosition = 10 - (newValue * 0.2);
       this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
     }
-    if(!this.innerOptions.input?.showButton) {
+    if (!this.innerOptions.input?.showButton) {
       this.handleClick();
     }
   }
@@ -287,11 +294,13 @@ export class DiscoveryInputComponent {
   private getInput() {
     switch (this.subType) {
       case "text":
-        return <input type="text" class="discovery-input" value={this.value as string} onInput={e => this.handleSelect(e)}
+        return <input type="text" class="discovery-input" value={this.value as string}
+                      onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "secret":
-        return <input type="password" class="discovery-input" value={this.value as string} onInput={e => this.handleSelect(e)}
+        return <input type="password" class="discovery-input" value={this.value as string}
+                      onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "date":
