@@ -158,7 +158,7 @@ export class Utils {
       return `${value} "${key}" STORE`;
     } else {
       if(value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
-        if(value.type == 'string') {
+        if(value.type === 'string') {
           return `"${value.value}" "${key}" STORE`;
         } else {
           return `${value.value} "${key}" STORE`;
