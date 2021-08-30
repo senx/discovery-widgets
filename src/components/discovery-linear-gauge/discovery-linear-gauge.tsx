@@ -313,7 +313,7 @@ export class DiscoveryLinearGauge {
   private drawChart() {
     setTimeout(() => {
       this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
-      this.myChart.setOption(this.chartOpts)
+      this.myChart.setOption(this.chartOpts || {})
     });
   }
 

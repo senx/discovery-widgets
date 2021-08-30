@@ -49,7 +49,7 @@ export class DiscoveryAnnotation {
     this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
       this.myChart.resize({width: this.width, height: this.height});
-      this.myChart.setOption(this.chartOpts);
+      this.myChart.setOption(this.chartOpts || {});
     });
   }
 
@@ -206,7 +206,7 @@ export class DiscoveryAnnotation {
         this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
       }
     });
-    setTimeout(() => this.myChart.setOption(this.chartOpts));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   @Method()
@@ -246,7 +246,7 @@ export class DiscoveryAnnotation {
         width: this.width,
         height: this.height,
       });
-      this.myChart.setOption(this.chartOpts)
+      this.myChart.setOption(this.chartOpts || {})
     });
   }
 }

@@ -49,7 +49,7 @@ export class DiscoveryLineComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-      setTimeout(() => this.myChart.setOption(this.chartOpts));
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
     }
   }
 
@@ -346,7 +346,7 @@ export class DiscoveryLineComponent {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
-      this.myChart.setOption(this.chartOpts)
+      this.myChart.setOption(this.chartOpts || {})
     });
   }
 

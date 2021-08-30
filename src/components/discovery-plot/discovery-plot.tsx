@@ -47,7 +47,7 @@ export class DiscoveryPlot {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts);
+      this.myChart.setOption(this.chartOpts || {});
       const dims = Utils.getContentBounds(this.el.parentElement);
       this.width = dims.w;
       this.height = dims.h - 20;
@@ -288,7 +288,7 @@ export class DiscoveryPlot {
       this.rendering = false;
       this.drawn();
     });
-    setTimeout(() => this.myChart.setOption(this.chartOpts));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   private drawn() {
@@ -322,7 +322,7 @@ export class DiscoveryPlot {
         width: this.width,
         height: this.height,
       });
-      this.myChart.setOption(this.chartOpts)
+      this.myChart.setOption(this.chartOpts || {})
     });
   }
 }

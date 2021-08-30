@@ -267,7 +267,7 @@ export class DiscoveryGauge {
         series.push(s);
       })
       this.chartOpts.series = series;
-      this.myChart.setOption(this.chartOpts)
+      this.myChart.setOption(this.chartOpts || {})
     });
   }
 
