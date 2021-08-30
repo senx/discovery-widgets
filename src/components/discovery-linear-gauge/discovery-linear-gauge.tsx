@@ -96,10 +96,10 @@ export class DiscoveryLinearGauge {
   }
 
   convert(data: DataModel) {
-    const isHorizontal = !!(this.options as Param).gauge && !!(this.options as Param).gauge.horizontal;
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
+    const isHorizontal = !!(this.options as Param).gauge && !!(this.options as Param).gauge.horizontal;
     const series: any[] = [];
     // noinspection JSUnusedAssignment
     let gtsList = [];

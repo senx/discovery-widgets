@@ -71,8 +71,8 @@ export const HorizontalLinearGaugeSingleValue = Usage.bind({});
 HorizontalLinearGaugeSingleValue.args = {
   ...HorizontalLinearGauge.args,
   type: 'linear-gauge',
-  options: { gauge: { horizontal: true }},
-  ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] }`
+  options: { gauge: { horizontal: false }},
+  ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] 'globalParams' { 'gauge' { 'horizontal' true } } }`
 }
 export const VerticalLinearGauge = Usage.bind({});
 VerticalLinearGauge.args = {
