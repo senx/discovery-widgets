@@ -21,6 +21,15 @@ const Template = ({message}) => `<div class="card" style="width: 100%;">
 </div>`;
 export const InitialUsage = Template.bind({});
 InitialUsage.args = {
-  message: 'loading ...'
+  message: 'Data loading ...'
 };
 
+const Template2 = ({message}) => `<div class="card" style="width: 100%;">
+  <div class="card-body">
+    <discovery-spinner message="${message}"></discovery-spinner>
+  </div>
+</div>`;
+export const MassageAsAttribute = Template2.bind({});
+MassageAsAttribute.args = {
+  message: 'Data loading ...'
+};

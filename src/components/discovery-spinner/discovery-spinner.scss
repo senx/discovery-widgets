@@ -1,7 +1,18 @@
 @import "src/components/vars";
 
 :host {
-  color: var(--warp-view-font-color, $w10-black);
+
+  span.message {
+    color: var(--warp-view-font-color, $w10-black);
+    padding-left: 5px;
+  }
+
+  .hidden {
+    color: transparent;
+    font-size: 0;
+    height: 0;
+    overflow: hidden;
+  }
 
   .loader {
     font-size: 10px;
