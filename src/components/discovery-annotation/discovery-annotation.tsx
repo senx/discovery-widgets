@@ -199,7 +199,7 @@ export class DiscoveryAnnotation {
       this.rendering = false;
       this.drawn();
     });
-    this.myChart.on('dataZoom', event => {
+    this.myChart.on('dataZoom', (event: any) => {
       const {start, end} = (event.batch || [])[0] || {};
       if (start && end) {
         const dataZoom = this.myChart.getOption().dataZoom[1];

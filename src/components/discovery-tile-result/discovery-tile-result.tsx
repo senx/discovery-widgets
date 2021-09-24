@@ -274,7 +274,6 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async resize() {
-    console.log('componentDidLoad - resize', this.tile);
     if (this.tile) {
       (this.tile as any).resize();
     }
