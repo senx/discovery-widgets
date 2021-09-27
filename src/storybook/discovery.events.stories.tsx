@@ -32,12 +32,18 @@ const Template = ({url, ws, options, title, cols, cellHeight}) => `<div class="c
 <div class="card-body">
 <discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"
+id="myDash"
 @draw="${event => console.error('foo', 'bar', event)}"
 cols="${cols}" cell-height="${cellHeight}"
 debug options='${JSON.stringify(options)}'
 >${ws}</discovery-dashboard>
 </div>
-</div>`;
+</div>
+<script>
+document.querySelector('#myDash').addEventListener('discoveryEvent', e => {
+  console.log(e.detail)
+})
+</script>`;
 
 export const Usage = Template.bind({});
 Usage.args = {

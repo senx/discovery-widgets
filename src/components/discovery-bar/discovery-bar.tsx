@@ -187,8 +187,9 @@ export class DiscoveryBarComponent {
         }
       },
       toolbox: {
+        show: (this.options as Param).showControls,
         feature: {
-          //  saveAsImage: {}
+          saveAsImage: { type: 'png' }
         }
       },
       legend: {
@@ -275,6 +276,12 @@ export class DiscoveryBarComponent {
   private drawn() {
     this.draw.emit();
   }
+
+  @Method()
+  async exportPng() {
+    return this.myChart? this.myChart.getDataURL(): undefined;
+  }
+
 
   render() {
     return <div style={{width: '100%', height: '100%'}}>

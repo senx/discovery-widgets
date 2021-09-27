@@ -87,6 +87,12 @@ export class DiscoveryGauge {
         offsetCenter: [0, 10],
         color: Utils.getLabelColor(this.el)
       },
+      toolbox: {
+        show: (this.options as Param).showControls,
+        feature: {
+          saveAsImage: { type: 'png' }
+        }
+      },
       splitLine: {show: false},
       axisLabel: {show: false},
       splitNumber: 4, // The number of split segments on the axis
@@ -246,6 +252,12 @@ export class DiscoveryGauge {
     });
     this.drawChart();
   }
+
+  @Method()
+  async exportPng() {
+    return this.myChart? this.myChart.getDataURL(): undefined;
+  }
+
 
   render() {
     return <div style={{width: '100%', height: '100%'}}>

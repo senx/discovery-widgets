@@ -193,8 +193,9 @@ export class DiscoveryPieComponent {
         backgroundColor: 'rgba(255, 255, 255, 0.8)'
       },
       toolbox: {
+        show: (this.options as Param).showControls,
         feature: {
-          //  saveAsImage: {}
+          saveAsImage: { type: 'png' }
         }
       },
       legend: {
@@ -205,6 +206,12 @@ export class DiscoveryPieComponent {
       series
     } as EChartsOption;
   }
+
+  @Method()
+  async exportPng() {
+    return this.myChart? this.myChart.getDataURL(): undefined;
+  }
+
 
   componentDidLoad() {
     this.height = Utils.getContentBounds(this.el.parentElement).h;

@@ -20,6 +20,23 @@ JustAMacro.args = {
   ws: `<% 2 2 + %>`
 };
 
+
+export const AFullEvent = Usage.bind({});
+AFullEvent.args = {
+  ...Usage.args,
+  type: 'button',
+  ws: `
+  { 'data' <%
+            RAND 100 * ROUND 'v' STORE
+            { 'data' ''
+             'events' [
+                { 'tags' [ 'random' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
+               ]
+             }
+          %> }
+  `
+};
+
 export const CustomStyle = ({url, ws, language, type, options}) => `
 <style>
 :root {
@@ -34,9 +51,16 @@ export const CustomStyle = ({url, ws, language, type, options}) => `
     <div class="card-body">
         <discovery-tile url="${url}" type="${type}" language="${language}"
         debug="true" options='${JSON.stringify(options)}'
+        id="myBtn"
         >${ws}</discovery-tile>
     </div>
-</div>`;
+</div>
+<script>
+document.querySelector('#myBtn').addEventListener('discoveryEvent', e => {
+  console.log(e.detail)
+})
+</script>
+`;
 CustomStyle.args = {
-  ...InitialUsage.args
+  ...AFullEvent.args
 }

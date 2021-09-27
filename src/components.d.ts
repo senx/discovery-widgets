@@ -14,6 +14,7 @@ import { Dashboard } from "./model/dashboard";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
+        "exportPng": () => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -25,6 +26,7 @@ export namespace Components {
     }
     interface DiscoveryBar {
         "debug": boolean;
+        "exportPng": () => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -66,6 +68,7 @@ export namespace Components {
     }
     interface DiscoveryGauge {
         "debug": boolean;
+        "exportPng": () => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -76,6 +79,7 @@ export namespace Components {
     }
     interface DiscoveryImage {
         "debug": boolean;
+        "exportPng": () => Promise<string[]>;
         "height": number;
         "options": Param | string;
         "result": DataModel | string;
@@ -95,6 +99,7 @@ export namespace Components {
     }
     interface DiscoveryLine {
         "debug": boolean;
+        "exportPng": () => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -106,6 +111,7 @@ export namespace Components {
     }
     interface DiscoveryLinearGauge {
         "debug": boolean;
+        "exportPng": () => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -139,16 +145,7 @@ export namespace Components {
     }
     interface DiscoveryPie {
         "debug": boolean;
-        "height": number;
-        "options": Param | string;
-        "resize": () => Promise<void>;
-        "result": DataModel | string;
-        "type": ChartType;
-        "unit": string;
-        "width": number;
-    }
-    interface DiscoveryPlot {
-        "debug": boolean;
+        "exportPng": () => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -188,6 +185,7 @@ export namespace Components {
         "chartTitle": string;
         "debug": boolean;
         "exec": (refresh?: boolean) => Promise<void>;
+        "exportPng": () => Promise<any>;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -200,6 +198,7 @@ export namespace Components {
     interface DiscoveryTileResult {
         "chartTitle": string;
         "debug": boolean;
+        "exportPng": () => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -297,12 +296,6 @@ declare global {
         prototype: HTMLDiscoveryPieElement;
         new (): HTMLDiscoveryPieElement;
     };
-    interface HTMLDiscoveryPlotElement extends Components.DiscoveryPlot, HTMLStencilElement {
-    }
-    var HTMLDiscoveryPlotElement: {
-        prototype: HTMLDiscoveryPlotElement;
-        new (): HTMLDiscoveryPlotElement;
-    };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
     var HTMLDiscoverySpinnerElement: {
@@ -348,7 +341,6 @@ declare global {
         "discovery-modal": HTMLDiscoveryModalElement;
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
-        "discovery-plot": HTMLDiscoveryPlotElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-svg": HTMLDiscoverySvgElement;
         "discovery-tabular": HTMLDiscoveryTabularElement;
@@ -500,16 +492,6 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
-    interface DiscoveryPlot {
-        "debug"?: boolean;
-        "height"?: number;
-        "onDraw"?: (event: CustomEvent<void>) => void;
-        "options"?: Param | string;
-        "result"?: DataModel | string;
-        "type"?: ChartType;
-        "unit"?: string;
-        "width"?: number;
-    }
     interface DiscoverySpinner {
         "message"?: string;
     }
@@ -578,7 +560,6 @@ declare namespace LocalJSX {
         "discovery-modal": DiscoveryModal;
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
-        "discovery-plot": DiscoveryPlot;
         "discovery-spinner": DiscoverySpinner;
         "discovery-svg": DiscoverySvg;
         "discovery-tabular": DiscoveryTabular;
@@ -604,7 +585,6 @@ declare module "@stencil/core" {
             "discovery-modal": LocalJSX.DiscoveryModal & JSXBase.HTMLAttributes<HTMLDiscoveryModalElement>;
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
-            "discovery-plot": LocalJSX.DiscoveryPlot & JSXBase.HTMLAttributes<HTMLDiscoveryPlotElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-svg": LocalJSX.DiscoverySvg & JSXBase.HTMLAttributes<HTMLDiscoverySvgElement>;
             "discovery-tabular": LocalJSX.DiscoveryTabular & JSXBase.HTMLAttributes<HTMLDiscoveryTabularElement>;

@@ -80,6 +80,12 @@ export class DiscoveryLinearGauge {
       large: true,
       clip: false,
       lineStyle: {color},
+      toolbox: {
+        show: (this.options as Param).showControls,
+        feature: {
+          saveAsImage: { type: 'png' }
+        }
+      },
       itemStyle: {
         opacity: 0.8,
         borderColor: color,
@@ -297,6 +303,12 @@ export class DiscoveryLinearGauge {
     });
     this.drawChart();
   }
+
+  @Method()
+  async exportPng() {
+    return this.myChart? this.myChart.getDataURL(): undefined;
+  }
+
 
   render() {
     return <div style={{width: '100%', height: '100%'}}>

@@ -286,6 +286,15 @@ export class DiscoveryTileResultComponent {
     }
   }
 
+  @Method()
+  async exportPng() {
+    if (this.tile) {
+      return (this.tile as any).exportPng();
+    } else {
+      return undefined;
+    }
+  }
+
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,

@@ -115,8 +115,9 @@ export class DiscoveryLineComponent {
         }
       },
       toolbox: {
+        show: (this.options as Param).showControls,
         feature: {
-          //   saveAsImage: {}
+          saveAsImage: { type: 'png' }
         }
       },
       legend: {bottom: 10, left: 'center', show: false},
@@ -359,9 +360,14 @@ export class DiscoveryLineComponent {
 
   @Method()
   async setZoom(dataZoom: { start: number, end: number }) {
-    if (this.myChart) {
+    if (!!this.myChart) {
       this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom});
     }
+  }
+
+  @Method()
+  async exportPng() {
+    return this.myChart? this.myChart.getDataURL(): undefined;
   }
 
   private drawn() {

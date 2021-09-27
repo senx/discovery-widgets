@@ -6,7 +6,7 @@ import {Component, Element, h, Host, Prop} from '@stencil/core';
   shadow: true,
 })
 export class DiscoverySpinner {
-  @Prop() message = 'Loading...';
+  @Prop({mutable: true}) message = 'Loading...';
 
   @Element() el: HTMLElement;
 

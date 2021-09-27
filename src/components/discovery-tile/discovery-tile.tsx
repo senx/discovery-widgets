@@ -127,6 +127,12 @@ export class DiscoveryTileComponent {
     }
   }
 
+
+  @Method()
+  async exportPng() {
+    return this.tileResult.exportPng();
+  }
+
   @Method()
   async exec(refresh = false) {
     if (!refresh) {

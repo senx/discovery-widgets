@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -73,6 +73,12 @@ export class DiscoveryImageComponent {
     }
     return toDisplay;
   }
+
+  @Method()
+  async exportPng() {
+    return this.toDisplay;
+  }
+
 
 
   render() {

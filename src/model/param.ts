@@ -46,7 +46,7 @@ export class Param {
   showlegend = false;
   responsive?: boolean;
   autoRefresh?: number;
-  showControls = true;
+  showControls = false;
   showErrors = true;
   showStatus = true;
   expandAnnotation = false;
