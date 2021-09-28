@@ -75,7 +75,7 @@ export class DiscoveryImageComponent {
   }
 
   @Method()
-  async exportPng() {
+  async export(type: 'png'| 'svg' = 'png') {
     return this.toDisplay;
   }
 

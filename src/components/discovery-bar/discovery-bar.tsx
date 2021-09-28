@@ -278,8 +278,8 @@ export class DiscoveryBarComponent {
   }
 
   @Method()
-  async exportPng() {
-    return this.myChart? this.myChart.getDataURL(): undefined;
+  async export(type: 'png'|'svg' = 'png') {
+    return this.myChart? this.myChart.getDataURL({type}): undefined;
   }
 
 

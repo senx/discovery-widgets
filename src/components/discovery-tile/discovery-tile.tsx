@@ -128,9 +128,10 @@ export class DiscoveryTileComponent {
   }
 
 
+
   @Method()
-  async exportPng() {
-    return this.tileResult.exportPng();
+  async export(type: 'png'|'svg' = 'png') {
+    return this.tileResult.export(type);
   }
 
   @Method()

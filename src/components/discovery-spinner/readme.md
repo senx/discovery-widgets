@@ -25,7 +25,6 @@
  - [discovery-line](../discovery-line)
  - [discovery-linear-gauge](../discovery-linear-gauge)
  - [discovery-pie](../discovery-pie)
- - [discovery-plot](../discovery-plot)
  - [discovery-svg](../discovery-svg)
  - [discovery-tabular](../discovery-tabular)
  - [discovery-tile](../discovery-tile)
@@ -42,7 +41,6 @@ graph TD;
   discovery-line --> discovery-spinner
   discovery-linear-gauge --> discovery-spinner
   discovery-pie --> discovery-spinner
-  discovery-plot --> discovery-spinner
   discovery-svg --> discovery-spinner
   discovery-tabular --> discovery-spinner
   discovery-tile --> discovery-spinner

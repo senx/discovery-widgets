@@ -25,6 +25,19 @@
 | `draw` |             | `CustomEvent<void>` |
 
 
+## Methods
+
+### `exportPng() => Promise<string[]>`
+
+
+
+#### Returns
+
+Type: `Promise<string[]>`
+
+
+
+
 ## Dependencies
 
 ### Used by

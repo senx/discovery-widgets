@@ -60,7 +60,6 @@ graph TD;
   discovery-tile-result --> discovery-linear-gauge
   discovery-tile-result --> discovery-pie
   discovery-tile-result --> discovery-tabular
-  discovery-tile-result --> discovery-plot
   discovery-tile-result --> discovery-svg
   discovery-tile-result --> discovery-input
   discovery-line --> discovery-spinner
@@ -73,7 +72,6 @@ graph TD;
   discovery-pie --> discovery-spinner
   discovery-tabular --> discovery-spinner
   discovery-tabular --> discovery-pageable
-  discovery-plot --> discovery-spinner
   discovery-svg --> discovery-spinner
   discovery-modal --> discovery-dashboard
   style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px

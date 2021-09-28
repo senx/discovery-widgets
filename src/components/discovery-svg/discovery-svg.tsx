@@ -187,6 +187,11 @@ export class DiscoverySvgComponent {
     }
   }
 
+  @Method()
+  async export(type: 'png'|'svg' = 'svg') {
+    return this.toDisplay;
+  }
+
   private generateStyle(innerStyle: { [k: string]: string }): string {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }

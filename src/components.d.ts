@@ -14,7 +14,7 @@ import { Dashboard } from "./model/dashboard";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
-        "exportPng": () => Promise<string>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -26,7 +26,7 @@ export namespace Components {
     }
     interface DiscoveryBar {
         "debug": boolean;
-        "exportPng": () => Promise<string>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -68,7 +68,7 @@ export namespace Components {
     }
     interface DiscoveryGauge {
         "debug": boolean;
-        "exportPng": () => Promise<string>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -79,7 +79,7 @@ export namespace Components {
     }
     interface DiscoveryImage {
         "debug": boolean;
-        "exportPng": () => Promise<string[]>;
+        "export": (type?: 'png' | 'svg') => Promise<string[]>;
         "height": number;
         "options": Param | string;
         "result": DataModel | string;
@@ -99,7 +99,7 @@ export namespace Components {
     }
     interface DiscoveryLine {
         "debug": boolean;
-        "exportPng": () => Promise<string>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -111,7 +111,7 @@ export namespace Components {
     }
     interface DiscoveryLinearGauge {
         "debug": boolean;
-        "exportPng": () => Promise<string>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -145,7 +145,7 @@ export namespace Components {
     }
     interface DiscoveryPie {
         "debug": boolean;
-        "exportPng": () => Promise<string>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -160,6 +160,7 @@ export namespace Components {
     interface DiscoverySvg {
         "chartTitle": string;
         "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<string[]>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -185,7 +186,7 @@ export namespace Components {
         "chartTitle": string;
         "debug": boolean;
         "exec": (refresh?: boolean) => Promise<void>;
-        "exportPng": () => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -198,7 +199,7 @@ export namespace Components {
     interface DiscoveryTileResult {
         "chartTitle": string;
         "debug": boolean;
-        "exportPng": () => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;

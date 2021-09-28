@@ -30,6 +30,16 @@
 
 ## Methods
 
+### `exportPng() => Promise<any>`
+
+
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
 ### `resize() => Promise<void>`
 
 
@@ -72,7 +82,6 @@ Type: `Promise<void>`
 - [discovery-linear-gauge](../discovery-linear-gauge)
 - [discovery-pie](../discovery-pie)
 - [discovery-tabular](../discovery-tabular)
-- [discovery-plot](../discovery-plot)
 - [discovery-svg](../discovery-svg)
 - [discovery-input](../discovery-input)
 
@@ -90,7 +99,6 @@ graph TD;
   discovery-tile-result --> discovery-linear-gauge
   discovery-tile-result --> discovery-pie
   discovery-tile-result --> discovery-tabular
-  discovery-tile-result --> discovery-plot
   discovery-tile-result --> discovery-svg
   discovery-tile-result --> discovery-input
   discovery-line --> discovery-spinner
@@ -103,7 +111,6 @@ graph TD;
   discovery-pie --> discovery-spinner
   discovery-tabular --> discovery-spinner
   discovery-tabular --> discovery-pageable
-  discovery-plot --> discovery-spinner
   discovery-svg --> discovery-spinner
   discovery-dashboard --> discovery-tile-result
   discovery-modal --> discovery-tile-result

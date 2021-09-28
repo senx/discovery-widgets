@@ -28,6 +28,16 @@
 
 ## Methods
 
+### `exportPng() => Promise<string>`
+
+
+
+#### Returns
+
+Type: `Promise<string>`
+
+
+
 ### `resize() => Promise<void>`
 
 

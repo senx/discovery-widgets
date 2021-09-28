@@ -287,9 +287,9 @@ export class DiscoveryTileResultComponent {
   }
 
   @Method()
-  async exportPng() {
-    if (this.tile) {
-      return (this.tile as any).exportPng();
+  async export(type: 'png'|'svg' = 'png') {
+    if (this.tile && this.tile['export']) {
+      return (this.tile as any).export(type);
     } else {
       return undefined;
     }
