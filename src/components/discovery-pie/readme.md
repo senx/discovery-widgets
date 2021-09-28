@@ -27,7 +27,7 @@
 
 ## Methods
 
-### `exportPng() => Promise<string>`
+### `export(type?: 'png' | 'svg') => Promise<string>`
 
 
 

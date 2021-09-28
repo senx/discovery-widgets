@@ -30,7 +30,7 @@
 
 ## Methods
 
-### `exportPng() => Promise<any>`
+### `export(type?: 'png' | 'svg') => Promise<any>`
 
 
 

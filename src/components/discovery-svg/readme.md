@@ -30,6 +30,16 @@
 
 ## Methods
 
+### `export(type?: 'png' | 'svg') => Promise<string[]>`
+
+
+
+#### Returns
+
+Type: `Promise<string[]>`
+
+
+
 ### `resize() => Promise<void>`
 
 
