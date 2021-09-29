@@ -192,7 +192,6 @@ export class DiscoveryAnnotation {
     this.parsing = false;
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
-      renderer: 'svg',
       width: this.width,
       height: this.height
     });

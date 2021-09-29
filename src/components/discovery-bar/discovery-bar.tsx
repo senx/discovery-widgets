@@ -257,7 +257,7 @@ export class DiscoveryBarComponent {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
       this.parsing = false;
       this.rendering = true;
-      this.myChart = echarts.init(this.graph, null, {renderer: 'svg'});
+      this.myChart = echarts.init(this.graph);
       this.myChart.on('finished', () => {
         this.rendering = false;
         this.drawn();

@@ -218,7 +218,6 @@ export class DiscoveryPieComponent {
     this.parsing = false;
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
-      renderer: 'svg',
       width: this.width,
       height: this.height ? this.height - 10 : undefined
     });

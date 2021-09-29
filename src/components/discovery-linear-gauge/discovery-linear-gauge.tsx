@@ -293,7 +293,6 @@ export class DiscoveryLinearGauge {
     this.parsing = false;
     this.rendering = true;
     this.myChart = echarts.init(this.graph, null, {
-      renderer: 'svg',
       width: undefined,
       height: this.height
     });

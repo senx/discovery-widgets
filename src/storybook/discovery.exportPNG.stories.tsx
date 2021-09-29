@@ -55,6 +55,7 @@ const Template = ({url, ws, options, title, type, unit}) => `
 </div>
 <script>
 function saveBase64AsFile(base64, fileName) {
+  console.log(base64)
     const link = document.createElement("a");
     document.body.appendChild(link); // for Firefox
     link.setAttribute("href", base64);
@@ -67,10 +68,10 @@ window.onload = () => {
   const chart1 = document.querySelector('#chart1');
   const chart2 = document.querySelector('#chart2');
   document.querySelector('#exportChart1').addEventListener('click', e => {
-    chart1.exportPng().then(png => saveBase64AsFile(png, 'myChjart1.png'));
+    chart1.export('png').then(png => saveBase64AsFile(png, 'myChjart1.png'));
   })
   document.querySelector('#exportChart2').addEventListener('click', e => {
-    chart2.exportPng().then(png => saveBase64AsFile(png, 'myChjart2.png'));
+    chart2.export('png').then(png => saveBase64AsFile(png, 'myChjart2.png'));
   })
 
 }
