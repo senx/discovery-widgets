@@ -34,23 +34,16 @@ const Template = ({url, ws, options, title, type, unit}) => `
 <div class="col-6">
    <div class="card h-100">
       <div class="card-body">
-          <discovery-tile url="${url}" type="${type}"
-          id="chart2"
-          unit="${unit || ''}"
-          chart-title="${title || ''}"
-          @draw="${event => console.error('foo', 'bar', event)}"
-          debug options='${JSON.stringify(options)}'
-          >${ws}</discovery-tile>
+         <img src="" style="width: 100%; height: auto" id="chart-img">
       </div>
   </div>
   </div>
 </div>
-<div class="row" >
+<div class="row mt-3">
     <div class="col-6">
         <button class="btn btn-primary" id="exportChart1">Export chart 1</button>
     </div>
     <div class="col-6">
-        <button class="btn btn-primary" id="exportChart2">Export chart 2</button>
     </div>
 </div>
 <script>
@@ -65,13 +58,16 @@ function saveBase64AsFile(base64, fileName) {
 
 window.onload = () => {
 
-  const chart1 = document.querySelector('#chart1');
-  const chart2 = document.querySelector('#chart2');
-  document.querySelector('#exportChart1').addEventListener('click', e => {
-    chart1.export('png').then(png => saveBase64AsFile(png, 'myChjart1.png'));
+  const chart = document.querySelector('#chart1');
+  const img = document.querySelector('#chart-img');
+
+  chart.addEventListener('draw', e=> {
+    console.log(e);
+    chart.export('svg').then(png =>  img.setAttribute('src', png));
   })
-  document.querySelector('#exportChart2').addEventListener('click', e => {
-    chart2.export('png').then(png => saveBase64AsFile(png, 'myChjart2.png'));
+
+  document.querySelector('#exportChart1').addEventListener('click', e => {
+    chart.export('png').then(png => saveBase64AsFile(png, 'myChjart1.png'));
   })
 
 }
@@ -83,7 +79,7 @@ Usage.args = {
   ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`,
-  options: {... new Param(), showControls: true}
+  options: {...new Param(), showControls: true}
 }
 
 // @ts-ignore

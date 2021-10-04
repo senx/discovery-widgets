@@ -189,7 +189,7 @@ export class DiscoveryBarComponent {
       toolbox: {
         show: (this.options as Param).showControls,
         feature: {
-          saveAsImage: { type: 'png' }
+          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
       legend: {
@@ -257,10 +257,14 @@ export class DiscoveryBarComponent {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
       this.parsing = false;
       this.rendering = true;
+      let initial = false;
       this.myChart = echarts.init(this.graph);
       this.myChart.on('finished', () => {
         this.rendering = false;
-        this.drawn();
+        if (initial) {
+          this.drawn();
+          initial = false;
+        }
       });
       this.myChart.on('dataZoom', (event: any) => {
         const {start, end} = (event.batch || [])[0] || {};
@@ -269,7 +273,8 @@ export class DiscoveryBarComponent {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
-      this.myChart.setOption(this.chartOpts || {})
+      this.myChart.setOption(this.chartOpts || {}, false, true);
+      initial = true;
     });
   }
 
@@ -278,8 +283,8 @@ export class DiscoveryBarComponent {
   }
 
   @Method()
-  async export(type: 'png'|'svg' = 'png') {
-    return this.myChart? this.myChart.getDataURL({type}): undefined;
+  async export(type: 'png' | 'svg' = 'png') {
+    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 
 

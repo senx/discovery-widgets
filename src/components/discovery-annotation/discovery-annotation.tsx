@@ -141,7 +141,7 @@ export class DiscoveryAnnotation {
       toolbox: {
         show: (this.options as Param).showControls,
         feature: {
-          saveAsImage: { type: 'png' }
+          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
       xAxis: {
@@ -189,24 +189,31 @@ export class DiscoveryAnnotation {
   }
 
   componentDidLoad() {
-    this.parsing = false;
-    this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {
-      width: this.width,
-      height: this.height
+    setTimeout(() => {
+      this.parsing = false;
+      this.rendering = true;
+      let initial = false;
+      this.myChart = echarts.init(this.graph, null, {
+        width: this.width,
+        height: this.height
+      });
+      this.myChart.on('finished', () => {
+        this.rendering = false;
+        if (initial) {
+          this.drawn();
+          initial = false;
+        }
+      });
+      this.myChart.on('dataZoom', (event: any) => {
+        const {start, end} = (event.batch || [])[0] || {};
+        if (start && end) {
+          const dataZoom = this.myChart.getOption().dataZoom[1];
+          this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
+        }
+      });
+      this.myChart.setOption(this.chartOpts || {}, false, true);
+      initial = true;
     });
-    this.myChart.on('finished', () => {
-      this.rendering = false;
-      this.drawn();
-    });
-    this.myChart.on('dataZoom', (event: any) => {
-      const {start, end} = (event.batch || [])[0] || {};
-      if (start && end) {
-        const dataZoom = this.myChart.getOption().dataZoom[1];
-        this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
-      }
-    });
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   @Method()
@@ -217,8 +224,8 @@ export class DiscoveryAnnotation {
   }
 
   @Method()
-  async export(type: 'png'|'svg' = 'png') {
-    return this.myChart? this.myChart.getDataURL({type}): undefined;
+  async export(type: 'png' | 'svg' = 'png') {
+    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 
   private drawn() {

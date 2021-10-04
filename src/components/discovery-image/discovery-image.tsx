@@ -29,6 +29,7 @@ export class DiscoveryImageComponent {
   private defOptions: Param = new Param();
   private divider: number = 1000;
   private LOG: Logger;
+  private initial = false;
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -39,22 +40,28 @@ export class DiscoveryImageComponent {
   }
 
   componentWillLoad() {
-    this.parsing = true;
-    this.LOG = new Logger(DiscoveryImageComponent, this.debug);
-    if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
-    }
-    this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.toDisplay = this.convert(this.result as DataModel || new DataModel())
-    this.LOG.debug(['componentWillLoad'], {
-      type: this.type,
-      options: this.options,
-      toDisplay: this.toDisplay,
-      result: this.result
+    setTimeout(() => {
+      this.parsing = true;
+      this.initial = true;
+      this.LOG = new Logger(DiscoveryImageComponent, this.debug);
+      if (typeof this.options === 'string') {
+        this.options = JSON.parse(this.options);
+      }
+      this.result = GTSLib.getData(this.result);
+      this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+      this.toDisplay = this.convert(this.result as DataModel || new DataModel())
+      this.LOG.debug(['componentWillLoad'], {
+        type: this.type,
+        options: this.options,
+        toDisplay: this.toDisplay,
+        result: this.result
+      });
+      this.parsing = false;
+      if (this.initial) {
+        this.draw.emit();
+        this.initial = false;
+      }
     });
-    this.parsing = false;
-    this.draw.emit();
   }
 
   convert(data: DataModel) {
@@ -75,22 +82,20 @@ export class DiscoveryImageComponent {
   }
 
   @Method()
-  async export(type: 'png'| 'svg' = 'png') {
+  async export(type: 'png' | 'svg' = 'png') {
     return this.toDisplay;
   }
-
-
 
   render() {
     return (
       <Host>
         <div class="images-wrapper" style={{width: '100%', height: '100%'}}>
-        {this.parsing
-          ? <discovery-spinner>Parsing data...</discovery-spinner>
-          : this.toDisplay.length > 0
-            ? this.toDisplay.map((img) => <img src={img} class="responsive" alt="Result"/>)
-            : ''
-        }</div>
+          {this.parsing
+            ? <discovery-spinner>Parsing data...</discovery-spinner>
+            : this.toDisplay.length > 0
+              ? this.toDisplay.map((img) => <img src={img} class="responsive" alt="Result"/>)
+              : ''
+          }</div>
       </Host>
     );
   }

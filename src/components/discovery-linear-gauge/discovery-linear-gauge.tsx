@@ -47,7 +47,7 @@ export class DiscoveryLinearGauge {
 
   @Method()
   async resize() {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.resize();
     }
   }
@@ -83,7 +83,7 @@ export class DiscoveryLinearGauge {
       toolbox: {
         show: (this.options as Param).showControls,
         feature: {
-          saveAsImage: { type: 'png' }
+          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
       itemStyle: {
@@ -292,20 +292,25 @@ export class DiscoveryLinearGauge {
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
+    let initial = false;
     this.myChart = echarts.init(this.graph, null, {
       width: undefined,
       height: this.height
     });
-    this.myChart.on('rendered', () => {
+    this.myChart.on('finished', () => {
       this.rendering = false;
-      this.drawn();
+      if (initial) {
+        this.drawn();
+        initial = false;
+      }
     });
     this.drawChart();
+    initial = true;
   }
 
   @Method()
-  async export(type: 'png'|'svg' = 'png') {
-    return this.myChart? this.myChart.getDataURL({type}): undefined;
+  async export(type: 'png' | 'svg' = 'png') {
+    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 
 

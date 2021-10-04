@@ -42,6 +42,7 @@ export class DiscoveryDisplayComponent {
   private timer: any;
   private fitties: FittyInstance;
   private innerHeight: number;
+  private initial = false;
 
   @Watch('result')
   updateRes() {
@@ -85,6 +86,7 @@ export class DiscoveryDisplayComponent {
   componentDidLoad() {
     setTimeout(() => {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
+      this.initial = true;
       this.flexFont();
       this.parsing = false;
     });
@@ -139,19 +141,19 @@ export class DiscoveryDisplayComponent {
 
   flexFont() {
     if (!!this.wrapper) {
-      const height =  Utils.getContentBounds(this.wrapper.parentElement).h - 20;
-      if(height !== this.innerHeight) {
+      const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
+      if (height !== this.innerHeight) {
         this.innerHeight = height;
         this.LOG.debug(['flexFont'], height);
         if (this.fitties) {
           this.fitties.unsubscribe();
         }
-        this.fitties = fitty(this.wrapper, {
-          maxSize: height * 0.80,
-          minSize: 14
-        });
+        this.fitties = fitty(this.wrapper, {maxSize: height * 0.80, minSize: 14});
         this.fitties.fit();
-        this.draw.emit();
+        if (this.initial) {
+          this.draw.emit();
+          this.initial = false;
+        }
       }
     }
   }
@@ -160,9 +162,9 @@ export class DiscoveryDisplayComponent {
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
-      <div style={{ color: (this.options as Param).fontColor}}
+      <div style={{color: (this.options as Param).fontColor}}
            class="display-container">
-      {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
+        {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
           <span innerHTML={this.message}/><small>{this.unit ? this.unit : ''}</small>

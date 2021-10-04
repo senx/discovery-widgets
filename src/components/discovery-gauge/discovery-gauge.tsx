@@ -90,7 +90,7 @@ export class DiscoveryGauge {
       toolbox: {
         show: (this.options as Param).showControls,
         feature: {
-          saveAsImage: { type: 'png' }
+          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
       splitLine: {show: false},
@@ -239,22 +239,29 @@ export class DiscoveryGauge {
   };
 
   componentDidLoad() {
-    this.parsing = false;
-    this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {
-      width: undefined,
-      height: this.height
+    setTimeout(() => {
+      this.parsing = false;
+      this.rendering = true;
+      let initial = false;
+      this.myChart = echarts.init(this.graph, null, {
+        width: undefined,
+        height: this.height
+      });
+      this.myChart.on('finished', () => {
+        this.rendering = false;
+        if (initial) {
+          this.drawn();
+          initial = false;
+        }
+      });
+      this.drawChart();
+      initial = true;
     });
-    this.myChart.on('rendered', () => {
-      this.rendering = false;
-      this.drawn();
-    });
-    this.drawChart();
   }
 
   @Method()
-  async export(type: 'png'|'svg' = 'png') {
-    return this.myChart? this.myChart.getDataURL({type}): undefined;
+  async export(type: 'png' | 'svg' = 'png') {
+    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 
 
@@ -271,8 +278,8 @@ export class DiscoveryGauge {
   }
 
   private drawChart() {
-    const series = [];
     setTimeout(() => {
+      const series = [];
       (this.chartOpts.series as SeriesOption[]).forEach(s => {
         s.detail.fontSize = this.autoFontSize((this.chartOpts.series as SeriesOption[]).length);
         series.push(s);

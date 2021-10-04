@@ -47,7 +47,7 @@ export class DiscoveryPieComponent {
 
   @Method()
   async resize() {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.resize();
     }
   }
@@ -78,8 +78,8 @@ export class DiscoveryPieComponent {
       animation: true,
       large: true,
       clip: false,
-      radius: this.type === 'pie' ? '90%' :this.type === 'rose'? ['30%', '90%'] : ['40%', '90%'],
-      roseType: this.type === 'rose'? 'area': undefined,
+      radius: this.type === 'pie' ? '90%' : this.type === 'rose' ? ['30%', '90%'] : ['40%', '90%'],
+      roseType: this.type === 'rose' ? 'area' : undefined,
       label: {
         color: Utils.getLabelColor(this.el)
       },
@@ -195,7 +195,7 @@ export class DiscoveryPieComponent {
       toolbox: {
         show: (this.options as Param).showControls,
         feature: {
-          saveAsImage: { type: 'png' }
+          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
       legend: {
@@ -208,24 +208,31 @@ export class DiscoveryPieComponent {
   }
 
   @Method()
-  async export(type: 'png'|'svg' = 'png') {
-    return this.myChart? this.myChart.getDataURL({type}): undefined;
+  async export(type: 'png' | 'svg' = 'png') {
+    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 
 
   componentDidLoad() {
-    this.height = Utils.getContentBounds(this.el.parentElement).h;
-    this.parsing = false;
-    this.rendering = true;
-    this.myChart = echarts.init(this.graph, null, {
-      width: this.width,
-      height: this.height ? this.height - 10 : undefined
+    setTimeout(() => {
+      this.height = Utils.getContentBounds(this.el.parentElement).h;
+      this.parsing = false;
+      this.rendering = true;
+      let initial = false;
+      this.myChart = echarts.init(this.graph, null, {
+        width: this.width,
+        height: this.height ? this.height - 10 : undefined
+      });
+      this.myChart.on('finished', () => {
+        this.rendering = false;
+        if (initial) {
+          this.drawn();
+          initial = false;
+        }
+      });
+      this.myChart.setOption(this.chartOpts || {}, false, true);
+      initial = true;
     });
-    this.myChart.on('finished', () => {
-      this.rendering = false;
-      this.drawn();
-    });
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   private drawn() {
