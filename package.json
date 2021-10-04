@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "dist": "stencil build",
-    "build": "stencil build --docs --prod",
+    "build": "npx browserslist@latest --update-db && stencil build --docs --prod",
     "build:dev": "stencil build --dev --watch",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
@@ -76,7 +76,7 @@
     "@storybook/web-components": "^6.3.9",
     "@types/node": "^16.9.6",
     "babel-loader": "8.2.2",
-    "browserslist": "^4.17.1",
+    "browserslist": "^4.17.2",
     "case": "^1.6.3",
     "lit-html": "^2.0.0",
     "npm-run-all": "^4.1.5",

@@ -49,7 +49,8 @@ export class DiscoveryAnnotation {
     this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
       this.myChart.resize({width: this.width, height: this.height});
-      this.myChart.setOption(this.chartOpts || {});
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
+      this.draw.emit();
     });
   }
 

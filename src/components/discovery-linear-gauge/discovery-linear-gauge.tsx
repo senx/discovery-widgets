@@ -42,7 +42,7 @@ export class DiscoveryLinearGauge {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
-    this.drawChart();
+    this.drawChart(true);
   }
 
   @Method()
@@ -326,10 +326,13 @@ export class DiscoveryLinearGauge {
     </div>
   }
 
-  private drawChart() {
+  private drawChart(update = false) {
     setTimeout(() => {
       this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
-      this.myChart.setOption(this.chartOpts || {})
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
+      if(update) {
+        this.draw.emit();
+      }
     });
   }
 

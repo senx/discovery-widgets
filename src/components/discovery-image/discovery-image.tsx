@@ -36,6 +36,7 @@ export class DiscoveryImageComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.toDisplay = this.convert(this.result as DataModel || new DataModel())
+      this.draw.emit();
     }
   }
 

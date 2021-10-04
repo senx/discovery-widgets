@@ -49,7 +49,8 @@ export class DiscoveryLineComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
+      this.draw.emit();
     }
   }
 

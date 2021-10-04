@@ -42,7 +42,8 @@ export class DiscoveryPieComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
+    this.draw.emit();
   }
 
   @Method()
