@@ -91,14 +91,6 @@ export class DiscoveryTileResultComponent {
     this.parseResult();
   }
 
-  drawn() {
-    setTimeout(() => {
-      if (this.execTime === 0) {
-        this.execTime = new Date().getTime() - this.start;
-      }
-    });
-  }
-
   handleZoom(event: CustomEvent<{ start: number, end: number }>) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'zoom')
@@ -121,7 +113,6 @@ export class DiscoveryTileResultComponent {
       case 'step-before':
         return <discovery-line
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -132,7 +123,6 @@ export class DiscoveryTileResultComponent {
       case 'annotation':
         return <discovery-annotation
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -143,7 +133,6 @@ export class DiscoveryTileResultComponent {
       case 'bar':
         return <discovery-bar
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -154,7 +143,6 @@ export class DiscoveryTileResultComponent {
       case 'display':
         return <discovery-display
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -164,7 +152,6 @@ export class DiscoveryTileResultComponent {
       case 'map':
         return <discovery-map
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
           ref={(el) => this.tile = el}
@@ -173,7 +160,6 @@ export class DiscoveryTileResultComponent {
       case 'image':
         return <discovery-image
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
           ref={(el) => this.tile = el}
@@ -182,7 +168,6 @@ export class DiscoveryTileResultComponent {
       case 'button':
         return <discovery-button
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           url={this.url}
           type={this.type}
           options={this.options}
@@ -193,7 +178,6 @@ export class DiscoveryTileResultComponent {
       case 'circle':
         return <discovery-gauge
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -203,7 +187,6 @@ export class DiscoveryTileResultComponent {
       case 'linear-gauge':
         return <discovery-linear-gauge
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -215,7 +198,6 @@ export class DiscoveryTileResultComponent {
       case 'rose':
         return <discovery-pie
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -225,7 +207,6 @@ export class DiscoveryTileResultComponent {
       case 'tabular':
         return <discovery-tabular
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -235,7 +216,6 @@ export class DiscoveryTileResultComponent {
       case 'plot':
         return <discovery-plot
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -245,7 +225,6 @@ export class DiscoveryTileResultComponent {
       case 'svg':
         return <discovery-svg
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           unit={this.unit}
           options={this.options}
@@ -261,7 +240,6 @@ export class DiscoveryTileResultComponent {
       case 'input:date-range':
         return <discovery-input
           result={this.innerResult}
-          onDraw={() => this.drawn()}
           type={this.type}
           options={this.options}
           ref={(el) => this.tile = el}

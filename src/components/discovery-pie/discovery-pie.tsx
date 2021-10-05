@@ -42,7 +42,7 @@ export class DiscoveryPieComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
     this.draw.emit();
   }
 
@@ -231,7 +231,7 @@ export class DiscoveryPieComponent {
           initial = false;
         }
       });
-      this.myChart.setOption(this.chartOpts || {}, false, true);
+      this.myChart.setOption(this.chartOpts || {});
       initial = true;
     });
   }

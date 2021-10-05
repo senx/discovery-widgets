@@ -58,6 +58,7 @@ export namespace Components {
     }
     interface DiscoveryDisplay {
         "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -122,6 +123,7 @@ export namespace Components {
     }
     interface DiscoveryMap {
         "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -160,7 +162,7 @@ export namespace Components {
     interface DiscoverySvg {
         "chartTitle": string;
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string[]>;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -391,6 +393,7 @@ declare namespace LocalJSX {
         "cols"?: number;
         "dashboardTitle"?: string;
         "debug"?: boolean;
+        "onRendered"?: (event: CustomEvent<void>) => void;
         "onStatusError"?: (event: CustomEvent<any>) => void;
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
         "options"?: Param | string;

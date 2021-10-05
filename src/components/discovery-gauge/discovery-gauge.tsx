@@ -250,7 +250,7 @@ export class DiscoveryGauge {
       this.myChart.on('finished', () => {
         this.rendering = false;
         if (initial) {
-          this.drawn();
+          setTimeout(() => this.draw.emit());
           initial = false;
         }
       });
@@ -285,14 +285,7 @@ export class DiscoveryGauge {
         series.push(s);
       })
       this.chartOpts.series = series;
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
-      if(update) {
-        this.draw.emit();
-      }
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
     });
-  }
-
-  private drawn() {
-    this.draw.emit();
   }
 }

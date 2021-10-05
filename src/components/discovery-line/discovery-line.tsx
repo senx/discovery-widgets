@@ -49,8 +49,7 @@ export class DiscoveryLineComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
-      this.draw.emit();
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
     }
   }
 
@@ -98,7 +97,7 @@ export class DiscoveryLineComponent {
     let multiY = false;
     let multiX = false;
     const opts: EChartsOption = {
-      progressive: 20000,
+      animation: false,
       grid: {
         left: 10, top: !!(this.unit || this.options.unit) ? 30 : 10, bottom: 10, right: 10,
         containLabel: true
@@ -341,7 +340,7 @@ export class DiscoveryLineComponent {
       this.myChart.on('finished', () => {
         this.rendering = false;
         if (initial) {
-          this.drawn();
+          setTimeout(() => this.draw.emit());
           initial = false;
         }
       });
@@ -352,7 +351,7 @@ export class DiscoveryLineComponent {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
-      this.myChart.setOption(this.chartOpts || {}, false, true);
+      this.myChart.setOption(this.chartOpts || {});
       initial = true;
     });
   }
@@ -374,10 +373,6 @@ export class DiscoveryLineComponent {
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
-  }
-
-  private drawn() {
-    this.draw.emit();
   }
 
   render() {

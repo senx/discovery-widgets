@@ -17,7 +17,7 @@ export default {
 
 // @ts-ignore
 const Template = ({url, ws, options, title, type, unit}) => `
-<div class="row" style="height: 300px">
+<div class="row row-cols-1 row-cols-md-2" style="mheight: 300px">
 <div class="col-6" style="height: 300px">
    <div class="card h-100">
       <div class="card-body">
@@ -31,10 +31,10 @@ const Template = ({url, ws, options, title, type, unit}) => `
       </div>
   </div>
   </div>
-<div class="col-6">
+<div class="col-6"  style="height: 300px">
    <div class="card h-100">
-      <div class="card-body">
-         <img src="" style="width: 100%; height: auto" id="chart-img">
+      <div class="card-body text-center">
+         <img src="" style="width: auto; height: auto; max-height: 300px" id="chart-img" alt="">
       </div>
   </div>
   </div>
@@ -48,7 +48,6 @@ const Template = ({url, ws, options, title, type, unit}) => `
 </div>
 <script>
 function saveBase64AsFile(base64, fileName) {
-  console.log(base64)
     const link = document.createElement("a");
     document.body.appendChild(link); // for Firefox
     link.setAttribute("href", base64);
@@ -57,13 +56,12 @@ function saveBase64AsFile(base64, fileName) {
 }
 
 window.onload = () => {
-
   const chart = document.querySelector('#chart1');
   const img = document.querySelector('#chart-img');
 
   chart.addEventListener('draw', e=> {
-    console.log(e);
-    chart.export('svg').then(png =>  img.setAttribute('src', png));
+    console.log(e)
+    chart.export('png').then(png =>  img.setAttribute('src', png));
   })
 
   document.querySelector('#exportChart1').addEventListener('click', e => {
@@ -82,12 +80,28 @@ Usage.args = {
   options: {...new Param(), showControls: true}
 }
 
+export const Display = Template.bind({});
+Display.args = {
+  ...Usage.args,
+  type: 'display',
+  ws: `42`
+}
+
+export const Map = Template.bind({});
+Map.args = {
+  ...Usage.args,
+  type: 'map',
+  ws: `NEWGTS 'g' STORE
+1 6 <% 'ts' STORE $g $ts RAND 100 * RAND 100 * RAND 100 * RAND 100 * ADDVALUE DROP %> FOR
+$g`,
+}
+
 // @ts-ignore
 const DashboardTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
 <discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"
-@draw="${event => console.error('foo', 'bar', event)}"
+@rendered="${event => console.error('foo', 'bar', event)}"
 cols="${cols}" cell-height="${cellHeight}"
 debug options='${JSON.stringify(options)}'
 >${ws}</discovery-dashboard>

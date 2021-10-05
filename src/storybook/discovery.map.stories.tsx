@@ -100,10 +100,9 @@ JSON->`
 export const AutoRefresh = Usage.bind({});
 AutoRefresh.args = {
   ...InitialUsage.args,
-  ws: ` NEWGTS 'g' STORE
+  ws: `NEWGTS 'g' STORE
 1 6 <% 'ts' STORE $g $ts RAND RAND RAND RAND ADDVALUE DROP %> FOR
-$g
-  `,
+$g`,
   options: {... Usage.options, autoRefresh: 2}
 }
 

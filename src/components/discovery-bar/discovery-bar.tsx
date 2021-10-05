@@ -43,8 +43,7 @@ export class DiscoveryBarComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
-    this.draw.emit();
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   @Method()
@@ -171,6 +170,7 @@ export class DiscoveryBarComponent {
     }
     this.LOG.debug(['convert', 'series'], series);
     return {
+      animation: false,
       grid: {
         left: 10, top: !!(this.unit || this.options.unit) ? 30 : 10, bottom: 10, right: 10,
         containLabel: true
@@ -263,7 +263,7 @@ export class DiscoveryBarComponent {
       this.myChart.on('finished', () => {
         this.rendering = false;
         if (initial) {
-          this.drawn();
+          setTimeout(() => this.draw.emit());
           initial = false;
         }
       });
@@ -274,13 +274,9 @@ export class DiscoveryBarComponent {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
-      this.myChart.setOption(this.chartOpts || {}, false, true);
+      this.myChart.setOption(this.chartOpts || {});
       initial = true;
     });
-  }
-
-  private drawn() {
-    this.draw.emit();
   }
 
   @Method()

@@ -7,6 +7,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
 import elementResizeEvent from "element-resize-event";
+import domtoimage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-svg',
@@ -188,8 +189,8 @@ export class DiscoverySvgComponent {
   }
 
   @Method()
-  async export(type: 'png'|'svg' = 'svg') {
-    return this.toDisplay;
+  async export(type: 'png' | 'svg' = 'png') {
+    return type === 'svg' ? this.toDisplay : domtoimage.toPng(this.el);
   }
 
   private generateStyle(innerStyle: { [k: string]: string }): string {

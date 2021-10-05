@@ -23,6 +23,7 @@
 
 | Event           | Description | Type                    |
 | --------------- | ----------- | ----------------------- |
+| `rendered`      |             | `CustomEvent<void>`     |
 | `statusError`   |             | `CustomEvent<any>`      |
 | `statusHeaders` |             | `CustomEvent<string[]>` |
 

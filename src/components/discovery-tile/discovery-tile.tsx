@@ -56,6 +56,7 @@ export class DiscoveryTileComponent {
       });
     }
   }
+
   @Watch('vars')
   varsUpdate(newValue: string, oldValue: string) {
     if (!!this.vars && typeof this.vars === 'string') {
@@ -127,10 +128,8 @@ export class DiscoveryTileComponent {
     }
   }
 
-
-
   @Method()
-  async export(type: 'png'|'svg' = 'png') {
+  async export(type: 'png' | 'svg' = 'png') {
     return this.tileResult.export(type);
   }
 

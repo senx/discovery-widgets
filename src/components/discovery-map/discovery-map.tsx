@@ -9,7 +9,8 @@ import Leaflet, {TileLayerOptions} from 'leaflet';
 import {MapLib} from "../../utils/map-lib";
 import {ColorLib} from "../../utils/color-lib";
 import {antPath} from 'leaflet-ant-path';
-import elementResizeEvent from "element-resize-event";
+import elementResizeEvent from 'element-resize-event';
+import domtoimage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-map',
@@ -56,14 +57,16 @@ export class DiscoveryMapComponent {
   private tileLayerGroup = Leaflet.featureGroup();
   private geoJsonLayer = Leaflet.featureGroup();
   private tilesLayer: Leaflet.TileLayer;
+  private mainLayer: Leaflet.LayerGroup;
   private firstDraw: boolean = true;
   private mapOpts: MapParams;
-
+  private initial = false;
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
+      this.initial = true;
       this.drawMap(this.result as DataModel || new DataModel(), true);
     }
   }
@@ -73,6 +76,11 @@ export class DiscoveryMapComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h - 10;
+  }
+
+  @Method()
+  async export(type: 'png' | 'svg' = 'png') {
+    return await domtoimage.toPng(this.mapElement, {height: this.height, width: this.width});
   }
 
   componentWillLoad() {
@@ -105,6 +113,8 @@ export class DiscoveryMapComponent {
   }
 
   drawMap(data: DataModel, isRefresh = false) {
+    let tilesPromise: Promise<void>;
+    let zoomPromise: Promise<void>;
     // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
@@ -139,6 +149,7 @@ export class DiscoveryMapComponent {
       }
       if (!isRefresh) {
         this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
+        tilesPromise = new Promise(resolve => setTimeout(() => this.tilesLayer.on("load", () => resolve())));
       }
 
     }
@@ -151,9 +162,12 @@ export class DiscoveryMapComponent {
         this.tileLayerGroup.clearLayers();
       }
     } else {
+      this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer])
+      this.mainLayer.on('add', () => {
+      })
       this.map = Leaflet.map(this.mapElement, {
         preferCanvas: true,
-        layers: [this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer],
+        layers: this.mainLayer,
         zoomAnimation: true,
         maxZoom: this.mapOpts.maxZoom || 19
       });
@@ -263,8 +277,9 @@ export class DiscoveryMapComponent {
             }, this.currentZoom || this.mapOpts.startZoom || 10,
             {
               animate: false,
-              duration: 500
+              duration: 0
             });
+          zoomPromise = new Promise(resolve => this.map.once("moveend zoomend", () => resolve()));
         }
       }, 10);
     } else {
@@ -280,10 +295,17 @@ export class DiscoveryMapComponent {
           duration: 0
         }
       );
+      zoomPromise = new Promise(resolve => setTimeout(() => this.map.once("moveend zoomend", () => resolve())));
     }
     this.firstDraw = false;
     this.patchMapTileGapBug();
-    this.draw.emit();
+    Promise.all([zoomPromise, tilesPromise])
+      .then(() => setTimeout(() => {
+        if (this.initial) {
+          this.draw.emit();
+          this.initial = false;
+        }
+      }, 500))
   }
 
   private icon(color: string, marker = '') {

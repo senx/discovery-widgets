@@ -10,6 +10,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
 import elementResizeEvent from "element-resize-event";
+import domtoimage from 'dom-to-image';
 
 dayjs.extend(relativeTime)
 
@@ -65,6 +66,11 @@ export class DiscoveryDisplayComponent {
     this.width = dims.w;
     this.height = dims.h;
     this.flexFont();
+  }
+
+  @Method()
+  async export(type: 'png' | 'svg' = 'png') {
+    return await domtoimage.toPng(this.wrapper);
   }
 
   componentWillLoad() {
@@ -149,15 +155,17 @@ export class DiscoveryDisplayComponent {
           this.fitties.unsubscribe();
         }
         this.fitties = fitty(this.wrapper, {maxSize: height * 0.80, minSize: 14});
+        this.fitties.element.addEventListener('fit', () => {
+          // log the detail property to the console
+          if (this.initial) {
+            setTimeout(() => this.draw.emit(), 100);
+            this.initial = false;
+          }
+        });
         this.fitties.fit();
-        if (this.initial) {
-          this.draw.emit();
-          this.initial = false;
-        }
       }
     }
   }
-
 
   render() {
     return [

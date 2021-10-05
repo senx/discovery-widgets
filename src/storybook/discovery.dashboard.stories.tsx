@@ -25,6 +25,7 @@ export default {
   'statusError',
   'execResult',
   'draw',
+  'rendered',
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
 // @ts-ignore

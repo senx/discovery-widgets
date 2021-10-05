@@ -49,8 +49,7 @@ export class DiscoveryAnnotation {
     this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
       this.myChart.resize({width: this.width, height: this.height});
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, false, true));
-      this.draw.emit();
+      this.myChart.setOption(this.chartOpts || {});
     });
   }
 
@@ -116,7 +115,6 @@ export class DiscoveryAnnotation {
     const opts = this.options as Param;
     this.LOG.debug(['convert'], {expanded: this.expanded, series, height: this.height, linesCount, opts});
     return {
-      progressive: 20000,
       animation: false,
       grid: {
         height: this.height - 30,
@@ -194,14 +192,11 @@ export class DiscoveryAnnotation {
       this.parsing = false;
       this.rendering = true;
       let initial = false;
-      this.myChart = echarts.init(this.graph, null, {
-        width: this.width,
-        height: this.height
-      });
+      this.myChart = echarts.init(this.graph, null, {width: this.width, height: this.height});
       this.myChart.on('finished', () => {
         this.rendering = false;
         if (initial) {
-          this.drawn();
+          setTimeout(() => this.draw.emit());
           initial = false;
         }
       });
@@ -212,8 +207,8 @@ export class DiscoveryAnnotation {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
-      this.myChart.setOption(this.chartOpts || {}, false, true);
       initial = true;
+      this.myChart.setOption(this.chartOpts || {});
     });
   }
 
@@ -227,10 +222,6 @@ export class DiscoveryAnnotation {
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
-  }
-
-  private drawn() {
-    this.draw.emit();
   }
 
   render() {

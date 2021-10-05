@@ -80,4 +80,10 @@
       }
     }
   }
+
+  @media print {
+    .discovery-dashboard-tile {
+      break-inside: avoid;
+    }
+  }
 }

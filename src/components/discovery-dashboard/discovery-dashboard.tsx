@@ -26,6 +26,7 @@ export class DiscoveryDashboardComponent {
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
+  @Event() rendered: EventEmitter<void>;
 
   @Element() el: HTMLElement;
   @State() width: number;
@@ -45,6 +46,8 @@ export class DiscoveryDashboardComponent {
   private _type: 'scada' | 'dashboard';
   private scadaHeight: number;
   private innerStyles: any;
+  private tiles: Tile[];
+  private done: any = {};
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -76,14 +79,10 @@ export class DiscoveryDashboardComponent {
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
-    this.LOG.debug(['componentWillLoad'], {
-      url: this.url,
-      options: this.options,
-    });
+    this.LOG.debug(['componentWillLoad'], {url: this.url, options: this.options});
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
@@ -104,6 +103,7 @@ export class DiscoveryDashboardComponent {
     this.ws = this.el.innerText;
     if (this.ws && this.ws !== '') {
       this.loaded = false;
+      this.done = {};
       Utils.httpPost(this.url, this.ws)
         .then((res: any) => {
           const result = JSON.parse(res.data as string);
@@ -147,10 +147,15 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             }
           }
           this.result = {...tmpResult};
-        }).catch(e => {
-        this.statusError.emit(e);
-        this.LOG.error(['exec'], e);
-      })
+          this.tiles = [];
+          for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {
+            this.done[i] = 0;
+          }
+        })
+        .catch(e => {
+          this.statusError.emit(e);
+          this.LOG.error(['exec'], e);
+        });
     }
   }
 
@@ -173,7 +178,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
           <div class="discovery-scada-wrapper" style={{height: this.scadaHeight + 'px'}}>
-            {this.result.tiles.map((t) =>
+            {this.result.tiles.map((t, i) =>
               <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
                      left: t.x + 'px',
@@ -190,6 +195,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                       chart-title={t.title}
                                       unit={t.unit}
                                       debug={this.debug}
+                                      id={'chart-' + i}
+                                      ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
                                       vars={JSON.stringify(this.result.vars)}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
@@ -197,6 +204,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                       url={t.endpoint || this.url}
                       result={DiscoveryDashboardComponent.sanitize(t.data)}
                       type={t.type as ChartType}
+                      ref={(el) => this.addTile(el as HTMLDiscoveryTileResultElement, t, i)}
+                      id={'chart-' + i}
                       unit={t.unit}
                       options={DiscoveryDashboardComponent.merge(this.options, t.options)}
                       debug={this.debug}
@@ -215,12 +224,12 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             gridAutoRows: 'minmax(' + (this.result.cellHeight || this.cellHeight) + 'px, auto)',
             gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
           }}>
-            {this.result.tiles.map((t) =>
+            {this.result.tiles.map((t, i) =>
               <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
                      gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
                      gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
-                     height: ((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h- 1) + 5) + 'px',
+                     height: ((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5) + 'px',
                      minHeight: '100%'
                    }}
               >
@@ -230,6 +239,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                       type={t.type as ChartType}
                                       chart-title={t.title}
                                       debug={this.debug}
+                                      id={'chart-' + i}
+                                      ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
                                       vars={JSON.stringify(this.result.vars)}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
@@ -237,7 +248,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                       url={t.endpoint || this.url}
                       result={DiscoveryDashboardComponent.sanitize(t.data)}
                       type={t.type as ChartType}
+                      ref={(el) => this.addTile(el as HTMLDiscoveryTileResultElement, t, i)}
                       unit={t.unit}
+                      id={'chart-' + i}
                       options={DiscoveryDashboardComponent.merge(this.options, t.options)}
                       debug={this.debug}
                       chart-title={t.title}
@@ -272,4 +285,31 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     this.innerStyles = {...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {}};
     return Object.keys(this.innerStyles || {}).map(k => k + ' { ' + this.innerStyles[k] + ' }').join('\n');
   }
+
+  private addTile(el: HTMLDiscoveryTileElement | HTMLDiscoveryTileResultElement, t: Tile, i: number) {
+    this.tiles.push(t);
+    el.addEventListener('draw', () => {
+      this.done[i] = (this.done[i] || 0) + 1;
+      const res = Object.keys(this.done).map(s => {
+        switch (this.tiles[i].type) {
+          case "line":
+          case "area":
+          case "scatter":
+          case "spline-area":
+          case "step-area":
+          case "spline":
+          case 'step':
+          case 'step-after':
+          case 'step-before':
+            return this.done[s] === !!this.tiles[i].macro ? 2 : 1;
+          default:
+            return this.done[s] === 1;
+        }
+      });
+      if (this.result.tiles.length === Object.keys(this.done).length && res.every(r => !!r)) {
+        this.rendered.emit();
+      }
+    });
+  }
+
 }
