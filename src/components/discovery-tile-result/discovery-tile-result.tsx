@@ -213,15 +213,6 @@ export class DiscoveryTileResultComponent {
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
-      case 'plot':
-        return <discovery-plot
-          result={this.innerResult}
-          type={this.type}
-          unit={this.unit}
-          options={this.options}
-          ref={(el) => this.tile = el}
-          debug={this.debug}
-        />;
       case 'svg':
         return <discovery-svg
           result={this.innerResult}
