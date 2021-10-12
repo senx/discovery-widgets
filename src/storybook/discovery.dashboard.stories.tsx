@@ -423,7 +423,32 @@ CustomStyle.args = {
 export const withAutoRefresh = Usage.bind({});
 withAutoRefresh.args = {
   ...Usage.args,
-  options: {autoRefresh: 2}
+  ws: `{
+  'title' 'Discovery test'
+  'description' 'little test dashboard'
+  'options' { 'autoRefresh' 5 }
+  'tiles' [    // Tiles here
+    {
+      'title' 'FLoWS test'
+      'x' 0 'y' 0 'w' 10 'h' 2
+      'type' 'area'
+      'macro' <%
+        // FLoWS here
+        <'
+        g = NEWGTS()
+        RENAME(g, "test")
+        FOR(0, 100, (i) => {
+        ADDVALUE(g, i, NaN, NaN, NaN, SIN(i / 5.0 + RAND()));
+        });
+        return g
+        '>
+        FLOWS
+
+      %>
+    }
+  ]
+}`,
+  options: {autoRefresh: 5}
 }
 
 export const polymorphic = Usage.bind({});

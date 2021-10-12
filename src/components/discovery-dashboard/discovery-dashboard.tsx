@@ -287,29 +287,31 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   private addTile(el: HTMLDiscoveryTileElement | HTMLDiscoveryTileResultElement, t: Tile, i: number) {
-    this.tiles.push(t);
-    el.addEventListener('draw', () => {
-      this.done[i] = (this.done[i] || 0) + 1;
-      const res = Object.keys(this.done).map(s => {
-        switch (this.tiles[i].type) {
-          case "line":
-          case "area":
-          case "scatter":
-          case "spline-area":
-          case "step-area":
-          case "spline":
-          case 'step':
-          case 'step-after':
-          case 'step-before':
-            return this.done[s] === !!this.tiles[i].macro ? 2 : 1;
-          default:
-            return this.done[s] === 1;
+    if(!!el) {
+      this.tiles.push(t);
+      el.addEventListener('draw', () => {
+        this.done[i] = (this.done[i] || 0) + 1;
+        const res = Object.keys(this.done).map(s => {
+          switch (this.tiles[i].type) {
+            case "line":
+            case "area":
+            case "scatter":
+            case "spline-area":
+            case "step-area":
+            case "spline":
+            case 'step':
+            case 'step-after':
+            case 'step-before':
+              return this.done[s] === !!this.tiles[i].macro ? 2 : 1;
+            default:
+              return this.done[s] === 1;
+          }
+        });
+        if (this.result.tiles.length === Object.keys(this.done).length && res.every(r => !!r)) {
+          this.rendered.emit();
         }
       });
-      if (this.result.tiles.length === Object.keys(this.done).length && res.every(r => !!r)) {
-        this.rendered.emit();
-      }
-    });
+    }
   }
 
 }
