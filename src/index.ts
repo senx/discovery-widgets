@@ -11,3 +11,4 @@ export {DiscoveryEvent} from "./model/discoveryEvent";
 export {Label} from "./model/label";
 export {ColorLib} from "./utils/color-lib";
 export {MapLib} from "./utils/map-lib";
+export {Utils} from "./utils/utils";

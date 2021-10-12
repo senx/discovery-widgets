@@ -130,7 +130,7 @@ export class DiscoveryLineComponent {
 
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
-      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
+      if (GTSLib.isGtsToPlot(gts) && gts.v) {
         const c = ColorLib.getColor(gts.id, this.options.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
@@ -212,7 +212,6 @@ export class DiscoveryLineComponent {
         }
         (opts.series as any[]).push(s);
       } else {
-        this.options.timeMode = 'timestamp';
         this.LOG.debug(['convert', 'gts'], gts);
         const c = ColorLib.getColor(gts.id || i, (this.options as Param).scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
