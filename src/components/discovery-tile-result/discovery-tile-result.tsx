@@ -51,6 +51,20 @@ export class DiscoveryTileResultComponent {
     this.parseResult();
   }
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    if (!!this.options && typeof this.options === 'string') {
+      this.options = JSON.parse(this.options);
+      this.parseResult();
+    }
+    if (this.LOG) {
+      this.LOG.debug(['optionsUpdate'], {
+        options: this.options,
+        newValue, oldValue
+      });
+    }
+  }
+
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
