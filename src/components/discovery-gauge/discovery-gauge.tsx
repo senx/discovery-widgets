@@ -31,6 +31,7 @@ export class DiscoveryGauge {
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
+  @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
@@ -45,6 +46,25 @@ export class DiscoveryGauge {
     this.drawChart(true);
   }
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      if (!!this.myChart) {
+        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        setTimeout(() => this.drawChart(true));
+      }
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
+  }
+
   @Method()
   async resize() {
     if (this.myChart) {
@@ -56,13 +76,15 @@ export class DiscoveryGauge {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryGauge, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
       chartOpts: this.chartOpts
     });
     elementResizeEvent(this.el.parentElement, () => this.resize());
@@ -88,7 +110,7 @@ export class DiscoveryGauge {
         color: Utils.getLabelColor(this.el)
       },
       toolbox: {
-        show: (this.options as Param).showControls,
+        show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
@@ -118,9 +140,9 @@ export class DiscoveryGauge {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
-    this.options = {...options};
+    this.innerOptions = {...options};
     const series: any[] = [];
     // noinspection JSUnusedAssignment
     let gtsList = [];
@@ -138,9 +160,9 @@ export class DiscoveryGauge {
       this.LOG.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.options, gtsList});
+    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
-    let overallMax = this.options.maxValue || Number.MIN_VALUE;
+    let overallMax = this.innerOptions.maxValue || Number.MIN_VALUE;
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
@@ -191,7 +213,7 @@ export class DiscoveryGauge {
       if (i % 2 === 0) {
         floor++;
       }
-      const c = ColorLib.getColor(i, (this.options as Param).scheme);
+      const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
       series.push({
         ...this.getCommonSeriesParam(color),

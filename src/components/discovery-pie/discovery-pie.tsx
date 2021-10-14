@@ -31,6 +31,7 @@ export class DiscoveryPieComponent {
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
+  @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
@@ -45,6 +46,25 @@ export class DiscoveryPieComponent {
     setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      if (!!this.myChart) {
+        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      }
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
+  }
+
   @Method()
   async resize() {
     if (this.myChart) {
@@ -56,14 +76,16 @@ export class DiscoveryPieComponent {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryPieComponent, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
     });
     elementResizeEvent(this.el.parentElement, () => this.resize());
   }
@@ -115,9 +137,9 @@ export class DiscoveryPieComponent {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
-    this.options = {...options};
+    this.innerOptions = {...options};
     const series: any[] = [];
     let gtsList;
     if (GTSLib.isArray(data.data)) {
@@ -134,12 +156,12 @@ export class DiscoveryPieComponent {
       this.LOG.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.options, gtsList});
+    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
-      const c = ColorLib.getColor(gts.id || i, this.options.scheme);
+      const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         const values = (gts.v || []);
@@ -162,7 +184,7 @@ export class DiscoveryPieComponent {
           });
         } else {
           Object.keys(gts).forEach((k, j) => {
-            const schemeColor = ColorLib.getColor(j, (this.options as Param).scheme);
+            const schemeColor = ColorLib.getColor(j, this.innerOptions.scheme);
             const datasetColor = ((data.params || [])[i] || {datasetColor: schemeColor}).datasetColor || schemeColor;
             dataStruct.push({
               ...this.getCommonDataParam(datasetColor),
@@ -172,7 +194,6 @@ export class DiscoveryPieComponent {
           });
         }
       }
-
     }
 
     series.push({
@@ -193,7 +214,7 @@ export class DiscoveryPieComponent {
         backgroundColor: 'rgba(255, 255, 255, 0.8)'
       },
       toolbox: {
-        show: (this.options as Param).showControls,
+        show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
@@ -211,7 +232,6 @@ export class DiscoveryPieComponent {
   async export(type: 'png' | 'svg' = 'png') {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
-
 
   componentDidLoad() {
     setTimeout(() => {

@@ -20,16 +20,18 @@ import domtoimage from 'dom-to-image';
 export class DiscoveryMapComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop() options: Param | string = new Param();
   @State() @Prop() width: number;
   @State() @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
 
   @Element() el: HTMLElement;
+
   @Event() draw: EventEmitter<void>;
 
   @State() parsing: boolean = false;
   @State() toDisplay: string[] = [];
+  @State() innerOptions: Param;
 
   private defOptions: Param = {
     ...new Param(), map: {
@@ -71,6 +73,22 @@ export class DiscoveryMapComponent {
     }
   }
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true));
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
+  }
+
   @Method()
   async resize() {
     const dims = Utils.getContentBounds(this.el.parentElement);
@@ -87,13 +105,15 @@ export class DiscoveryMapComponent {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryMapComponent, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
       toDisplay: this.toDisplay,
     });
     const dims = Utils.getContentBounds(this.el.parentElement);
@@ -116,23 +136,23 @@ export class DiscoveryMapComponent {
     let tilesPromise: Promise<void>;
     let zoomPromise: Promise<void>;
     // noinspection JSUnusedAssignment
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
-    this.options = {...options};
+    this.innerOptions = {...options};
     if (!!this.map) {
       this.map.invalidateSize(true);
     }
     let dataList: any[];
     let params: any[];
     this.LOG.debug(['drawMap', 'this.height'], this.height);
-    this.LOG.debug(['drawMap', 'this.options'], {...this.options});
+    this.LOG.debug(['drawMap', 'this.options'], {...this.innerOptions});
     data.data = GTSLib.flatDeep(data.data as any[]);
     dataList = data.data as any[];
     params = data.params;
-    this.mapOpts = this.options.map || {};
+    this.mapOpts = this.innerOptions.map || {};
     this.pointslayer = [];
-    this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, [], this.options.scheme) || [];
-    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.options.scheme) || [];
+    this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, [], this.innerOptions.scheme) || [];
+    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.innerOptions.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
@@ -227,7 +247,7 @@ export class DiscoveryMapComponent {
     const geoJsonSize = (this.geoJson || []).length;
     for (let i = 0; i < geoJsonSize; i++) {
       const m = this.geoJson[i];
-      const color = ColorLib.getColor(i, this.options.scheme);
+      const color = ColorLib.getColor(i, this.innerOptions.scheme);
       const opts = {
         style: () => ({
           color: (data.params && data.params[i]) ? data.params[i].datasetColor || color : color,
@@ -401,9 +421,9 @@ export class DiscoveryMapComponent {
   private addPopup(positionData: any, value: any, ts: any, marker: any) {
     if (!!positionData) {
       let date;
-      if (ts && !(this.options as Param).timeMode || (this.options as Param).timeMode !== 'timestamp') {
-        date = (GTSLib.toISOString(ts, this.divider, (this.options as Param).timeZone) || '')
-          .replace('Z', (this.options as Param).timeZone === 'UTC' ? 'Z' : '');
+      if (ts && !this.innerOptions.timeMode || this.innerOptions.timeMode !== 'timestamp') {
+        date = (GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone) || '')
+          .replace('Z', this.innerOptions.timeZone === 'UTC' ? 'Z' : '');
       }
       let content = '';
       content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value || 'na'}</p>`;
@@ -511,7 +531,6 @@ export class DiscoveryMapComponent {
     }
     this.positionDataLayer.addLayer(group);
   }
-
 
   private patchMapTileGapBug() {
     // Workaround for 1px lines appearing in some browsers due to fractional transforms

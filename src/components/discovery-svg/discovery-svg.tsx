@@ -18,7 +18,7 @@ export class DiscoverySvgComponent {
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() start: number;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop({mutable: true}) width: number;
   @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
@@ -37,6 +37,7 @@ export class DiscoverySvgComponent {
   @State() toDisplay: string[] = [];
   @State() innerStyle: { [k: string]: string };
   @State() innerResult: DataModel
+  @State() innerOptions: Param;
 
   private LOG: Logger;
   private defOptions: Param = new Param();
@@ -46,6 +47,17 @@ export class DiscoverySvgComponent {
   updateRes() {
     this.innerResult = GTSLib.getData(this.result);
     this.parseResult();
+  }
+
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      setTimeout(() => this.parseResult());
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
   }
 
   @Listen('discoveryEvent', {target: 'window'})
@@ -76,11 +88,11 @@ export class DiscoverySvgComponent {
   convert(data: DataModel) {
     const toDisplay = [];
     this.LOG.debug(['convert'], data)
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
-    this.options = {...options};
-    if (this.options.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    this.innerOptions = {...options};
+    if (this.innerOptions.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
     if (GTSLib.isArray(data.data)) {
       (data.data as any[] || []).forEach(img => {
@@ -99,7 +111,7 @@ export class DiscoverySvgComponent {
 
   private processEvent(event: CustomEvent<DiscoveryEvent>) {
     return new Promise(resolve => {
-      const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+      const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
       if (res.style) {
         this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
       }
@@ -134,13 +146,15 @@ export class DiscoverySvgComponent {
     this.parsing = true;
     this.LOG = new Logger(DiscoverySvgComponent, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
     this.innerResult = GTSLib.getData(this.result);
     this.toDisplay = this.convert(this.innerResult || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
       toDisplay: this.toDisplay,
     });
     this.parsing = false;

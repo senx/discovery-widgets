@@ -17,9 +17,9 @@ import elementResizeEvent from "element-resize-event";
   shadow: true,
 })
 export class DiscoveryLinearGauge {
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -31,6 +31,7 @@ export class DiscoveryLinearGauge {
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
+  @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
@@ -45,6 +46,25 @@ export class DiscoveryLinearGauge {
     this.drawChart(true);
   }
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      if (!!this.myChart) {
+        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        setTimeout(() => this.drawChart(true));
+      }
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
+  }
+
   @Method()
   async resize() {
     if (this.myChart) {
@@ -56,13 +76,15 @@ export class DiscoveryLinearGauge {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLinearGauge, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
       chartOpts: this.chartOpts
     });
     elementResizeEvent(this.el.parentElement, () => this.resize());
@@ -73,7 +95,7 @@ export class DiscoveryLinearGauge {
   }
 
   private getCommonSeriesParam(color) {
-    const isHorizontal = !!(this.options as Param).gauge && !!(this.options as Param).gauge.horizontal;
+    const isHorizontal = !!this.innerOptions.gauge && !!this.innerOptions.gauge.horizontal;
     return {
       type: 'bar',
       animation: true,
@@ -81,7 +103,7 @@ export class DiscoveryLinearGauge {
       clip: false,
       lineStyle: {color},
       toolbox: {
-        show: (this.options as Param).showControls,
+        show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
@@ -102,10 +124,10 @@ export class DiscoveryLinearGauge {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
-    this.options = {...options};
-    const isHorizontal = !!(this.options as Param).gauge && !!(this.options as Param).gauge.horizontal;
+    this.innerOptions = {...options};
+    const isHorizontal = !!this.innerOptions.gauge && !!this.innerOptions.gauge.horizontal;
     const series: any[] = [];
     // noinspection JSUnusedAssignment
     let gtsList = [];
@@ -123,9 +145,9 @@ export class DiscoveryLinearGauge {
       this.LOG.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.options, gtsList});
+    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
-    let overallMax = this.options.maxValue || Number.MIN_VALUE;
+    let overallMax = this.innerOptions.maxValue || Number.MIN_VALUE;
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
@@ -181,7 +203,7 @@ export class DiscoveryLinearGauge {
       if (i % 2 === 0) {
         floor++;
       }
-      const c = ColorLib.getColor(i, (this.options as Param).scheme);
+      const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
       overallMax = Math.max(d.max, overallMax)
       title.push({
@@ -200,7 +222,7 @@ export class DiscoveryLinearGauge {
         gridIndex: i,
         boundaryGap: false,
         onZero: false,
-        min: isHorizontal ? (this.options as Param).minValue || 0 : undefined,
+        min: isHorizontal ? this.innerOptions.minValue || 0 : undefined,
         max: isHorizontal ? overallMax : undefined,
         type: isHorizontal ? 'value' : 'category',
         axisLine: {
@@ -216,7 +238,7 @@ export class DiscoveryLinearGauge {
       yAxis.push({
         type: isHorizontal ? 'category' : 'value',
         gridIndex: i,
-        min: !isHorizontal ? (this.options as Param).minValue || 0 : undefined,
+        min: !isHorizontal ? this.innerOptions.minValue || 0 : undefined,
         max: !isHorizontal ? overallMax : undefined,
         name: isHorizontal ? undefined : d.key,
         nameGap: isHorizontal ? undefined : -55,
@@ -270,7 +292,7 @@ export class DiscoveryLinearGauge {
       legend: {bottom: 10, left: 'center', show: false},
       tooltip: {},
       xAxis: xAxis.length > 0 ? xAxis : {
-        min: this.options.minValue || 0,
+        min: this.innerOptions.minValue || 0,
         max: overallMax,
         type: isHorizontal ? 'value' : 'category',
         splitLine: {show: false},
@@ -313,7 +335,6 @@ export class DiscoveryLinearGauge {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 
-
   render() {
     return <div style={{width: '100%', height: '100%'}}>
       <div ref={(el) => this.graph = el as HTMLDivElement}/>
@@ -327,9 +348,7 @@ export class DiscoveryLinearGauge {
   }
 
   private drawChart(update = false) {
-    setTimeout(() => {
-      this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
-    });
+    this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 }

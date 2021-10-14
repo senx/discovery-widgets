@@ -23,18 +23,21 @@ export class DiscoveryDisplayComponent {
 
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop() options: Param | string = new Param();
   @State() @Prop({mutable: true}) width: number;
   @State() @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string = '';
 
   @Element() el: HTMLElement;
+
   @Event() draw: EventEmitter<void>;
+
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() message: string;
   @State() innerStyle: { [k: string]: string; };
+  @State() innerOptions: Param;
 
   private wrapper: HTMLDivElement;
   private defOptions: Param = new Param();
@@ -52,9 +55,26 @@ export class DiscoveryDisplayComponent {
     this.flexFont();
   }
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      this.message = this.convert(this.result as DataModel || new DataModel());
+      this.flexFont();
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
+  }
+
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
     if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
@@ -77,14 +97,16 @@ export class DiscoveryDisplayComponent {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryDisplayComponent, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.message = this.convert(this.result as DataModel || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
     });
     elementResizeEvent(this.el.parentElement, () => this.resize());
   }
@@ -109,11 +131,11 @@ export class DiscoveryDisplayComponent {
   }
 
   private convert(dataModel: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams) as Param;
-    this.options = {...options};
-    if (this.options.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+    this.innerOptions = {...options};
+    if (this.innerOptions.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
     this.LOG.debug(['convert'], 'dataModel', dataModel);
 
@@ -130,12 +152,12 @@ export class DiscoveryDisplayComponent {
         display = display.text;
       }
     }
-    switch ((this.options as Param).timeMode) {
+    switch (this.innerOptions.timeMode) {
       case 'date':
-        display = GTSLib.toISOString(parseInt(display, 10), this.divider, (this.options as Param).timeZone);
+        display = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone);
         break;
       case 'duration':
-        const start = GTSLib.toISOString(parseInt(display, 10), this.divider, (this.options as Param).timeZone);
+        const start = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone);
         display = this.displayDuration(dayjs(start));
         break;
       case 'custom':
@@ -170,7 +192,7 @@ export class DiscoveryDisplayComponent {
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
-      <div style={{color: (this.options as Param).fontColor}}
+      <div style={{color: this.innerOptions.fontColor}}
            class="display-container">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}

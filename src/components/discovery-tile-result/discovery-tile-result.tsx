@@ -30,6 +30,7 @@ export class DiscoveryTileResultComponent {
   @State() bgColor: string;
   @State() fontColor: string;
   @State() innerResult: DataModel | string;
+  @State()  innerOptions: Param;
   @State() innerStyle: { [k: string]: string; };
 
   @Event({
@@ -53,21 +54,22 @@ export class DiscoveryTileResultComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    if (!!this.options && typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
-      this.parseResult();
-    }
-    if (this.LOG) {
-      this.LOG.debug(['optionsUpdate'], {
-        options: this.options,
-        newValue, oldValue
-      });
+    this.LOG.debug(['optionsUpdate'],newValue, oldValue);
+    if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
     }
   }
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
     if (res.data) {
       this.innerResult = res.data;
       this.parseResult();
@@ -87,16 +89,18 @@ export class DiscoveryTileResultComponent {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
       result: this.result
     });
     if (!!this.options && typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options as Param;
     }
     this.innerResult = GTSLib.getData(this.result);
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
       result: this.innerResult
     });
   }
@@ -129,7 +133,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           debug={this.debug}
           onDataZoom={event => this.handleZoom(event)}
           ref={(el) => this.tile = el}
@@ -139,7 +143,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           onDataZoom={event => this.handleZoom(event)}
           debug={this.debug}
@@ -149,7 +153,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           onDataZoom={event => this.handleZoom(event)}
           debug={this.debug}
@@ -159,7 +163,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -167,7 +171,7 @@ export class DiscoveryTileResultComponent {
         return <discovery-map
           result={this.innerResult}
           type={this.type}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -175,7 +179,7 @@ export class DiscoveryTileResultComponent {
         return <discovery-image
           result={this.innerResult}
           type={this.type}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -184,7 +188,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           url={this.url}
           type={this.type}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -194,7 +198,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -203,7 +207,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -214,7 +218,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -223,7 +227,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -232,7 +236,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.type}
           unit={this.unit}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -246,7 +250,7 @@ export class DiscoveryTileResultComponent {
         return <discovery-input
           result={this.innerResult}
           type={this.type}
-          options={this.options}
+          options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
         />;
@@ -270,7 +274,7 @@ export class DiscoveryTileResultComponent {
   }
 
   @Method()
-  async export(type: 'png'|'svg' = 'png') {
+  async export(type: 'png' | 'svg' = 'png') {
     if (this.tile && this.tile['export']) {
       return (this.tile as any).export(type);
     } else {
@@ -297,7 +301,6 @@ export class DiscoveryTileResultComponent {
 
   private parseResult() {
     setTimeout(() => {
-      // this.setSize();
       this.unit = (this.options as Param).unit || this.unit
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])

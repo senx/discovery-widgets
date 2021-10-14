@@ -19,7 +19,7 @@ import elementResizeEvent from "element-resize-event";
 export class DiscoveryBarComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
+  @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
   @Prop() width: number;
   @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
@@ -32,6 +32,7 @@ export class DiscoveryBarComponent {
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
+  @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
@@ -44,6 +45,25 @@ export class DiscoveryBarComponent {
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
     setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+  }
+
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      if (!!this.myChart) {
+        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      }
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
   }
 
   @Method()
@@ -64,14 +84,16 @@ export class DiscoveryBarComponent {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryBarComponent, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
       chartOpts: this.chartOpts
     });
     this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
@@ -83,10 +105,10 @@ export class DiscoveryBarComponent {
   }
 
   private getCommonSeriesParam(color) {
-    const isHorizontal = !!(this.options as Param).bar && !!(this.options as Param).bar.horizontal;
+    const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
     return {
       type: 'bar',
-      stack: ((this.options as Param).bar || {stacked: false}).stacked ? 'total' : undefined,
+      stack: (this.innerOptions.bar || {stacked: false}).stacked ? 'total' : undefined,
       animation: false,
       large: true,
       clip: false,
@@ -107,9 +129,9 @@ export class DiscoveryBarComponent {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
-    this.options = {...options};
+    this.innerOptions = {...options};
     const series: any[] = [];
     let gtsList;
     if (GTSLib.isArray(data.data)) {
@@ -126,22 +148,22 @@ export class DiscoveryBarComponent {
       this.LOG.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.options, gtsList});
+    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        const c = ColorLib.getColor(gts.id || i, this.options.scheme);
+        const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         series.push({
           ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => {
             let ts: number | string = d[0];
-            if ((this.options as Param).timeMode === 'date') {
-              ts = GTSLib.toISOString(d[0], this.divider, (this.options as Param).timeZone);
+            if (this.innerOptions.timeMode === 'date') {
+              ts = GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone);
             }
-            if (!!((this.options as Param).bar || {horizontal: false}).horizontal) {
+            if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
               return [d[d.length - 1], ts];
             } else {
               return [ts, d[d.length - 1]]
@@ -149,16 +171,16 @@ export class DiscoveryBarComponent {
           })
         } as SeriesOption);
       } else {
-        this.options.timeMode = 'custom';
+        this.innerOptions.timeMode = 'custom';
         this.LOG.debug(['convert', 'gts'], gts);
         (gts.columns || []).forEach((label, index) => {
-          const c = ColorLib.getColor(gts.id || index, (this.options as Param).scheme);
+          const c = ColorLib.getColor(gts.id || index, this.innerOptions.scheme);
           const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
           series.push({
             ...this.getCommonSeriesParam(color),
             name: label,
             data: gts.rows.map(r => {
-              if (!!((this.options as Param).bar || {horizontal: false}).horizontal) {
+              if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
                 return [r[index + 1], r[0]];
               } else {
                 return [r[0], r[index + 1]]
@@ -172,7 +194,7 @@ export class DiscoveryBarComponent {
     return {
       animation: false,
       grid: {
-        left: 10, top: !!(this.unit || this.options.unit) ? 30 : 10, bottom: 10, right: 10,
+        left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10, bottom: 10, right: 10,
         containLabel: true
       },
       tooltip: {
@@ -188,7 +210,7 @@ export class DiscoveryBarComponent {
         }
       },
       toolbox: {
-        show: (this.options as Param).showControls,
+        show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
@@ -199,8 +221,8 @@ export class DiscoveryBarComponent {
         show: false
       },
       xAxis: {
-        show: !this.options.hideXAxis,
-        type: !!(this.options.bar || {horizontal: false}).horizontal ? 'value' : 'category',
+        show: !this.innerOptions.hideXAxis,
+        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'value' : 'category',
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -216,10 +238,10 @@ export class DiscoveryBarComponent {
         }
       },
       yAxis: {
-        name: this.unit || (this.options as Param).unit,
-        show: !this.options.hideYAxis,
+        name: this.unit || this.innerOptions.unit,
+        show: !this.innerOptions.hideYAxis,
         nameTextStyle: {color: Utils.getLabelColor(this.el)},
-        type: !!(this.options.bar || {horizontal: false}).horizontal ? 'category' : 'value',
+        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'category' : 'value',
         splitLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -243,7 +265,7 @@ export class DiscoveryBarComponent {
         {
           type: 'slider',
           height: '20px',
-          show: !!this.options.showRangeSelector
+          show: !!this.innerOptions.showRangeSelector
         },
         {
           type: 'inside'
@@ -283,7 +305,6 @@ export class DiscoveryBarComponent {
   async export(type: 'png' | 'svg' = 'png') {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
-
 
   render() {
     return <div style={{width: '100%', height: '100%'}}>

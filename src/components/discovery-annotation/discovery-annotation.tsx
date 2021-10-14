@@ -20,7 +20,7 @@ import elementResizeEvent from "element-resize-event";
 export class DiscoveryAnnotation {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @State() @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -35,6 +35,7 @@ export class DiscoveryAnnotation {
   @State() rendering: boolean = false;
   @State() chartOpts: EChartsOption;
   @State() expanded: boolean = false;
+  @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private defOptions: Param = {...new Param(), timeMode: 'date'};
@@ -48,9 +49,30 @@ export class DiscoveryAnnotation {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
-      this.myChart.resize({width: this.width, height: this.height});
-      this.myChart.setOption(this.chartOpts || {});
+      if (!!this.myChart) {
+        this.myChart.resize({width: this.width, height: this.height});
+        this.myChart.setOption(this.chartOpts || {});
+      }
     });
+  }
+
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      if (!!this.myChart) {
+        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      }
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
   }
 
   @Method()
@@ -64,11 +86,13 @@ export class DiscoveryAnnotation {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryAnnotation, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.options});
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
     elementResizeEvent(this.el.parentElement, () => this.resize());
   }
@@ -78,26 +102,26 @@ export class DiscoveryAnnotation {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
-    this.options = {...options};
+    this.innerOptions = {...options};
     const series: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
-    this.LOG.debug(['convert'], {options: this.options, gtsList});
+    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let linesCount = 1;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
-        const c = ColorLib.getColor(gts.id, this.options.scheme);
+        const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         this.displayExpander = i > 1;
         if (this.expanded) linesCount++;
         series.push({
           type: 'scatter',
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [(this.options as Param).timeMode === 'date'
-            ? GTSLib.toISOString(d[0], this.divider, (this.options as Param).timeZone)
+          data: gts.v.map(d => [this.innerOptions.timeMode === 'date'
+            ? GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone)
             : d[0]
             , (this.expanded ? i : 0) + 0.5]),
           animation: false,
@@ -112,8 +136,13 @@ export class DiscoveryAnnotation {
       }
     }
     this.height = 50 + (linesCount * 30);
-    const opts = this.options as Param;
-    this.LOG.debug(['convert'], {expanded: this.expanded, series, height: this.height, linesCount, opts});
+    this.LOG.debug(['convert'], {
+      expanded: this.expanded,
+      series,
+      height: this.height,
+      linesCount,
+      opts: this.innerOptions
+    });
     return {
       animation: false,
       grid: {
@@ -138,20 +167,20 @@ export class DiscoveryAnnotation {
         }
       },
       toolbox: {
-        show: (this.options as Param).showControls,
+        show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
       xAxis: {
-        type: opts.timeMode === 'date' ? 'time' : 'category',
+        type: this.innerOptions.timeMode === 'date' ? 'time' : 'category',
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLabel: {color: Utils.getLabelColor(this.el)},
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
-        scale: !(opts.bounds && (!!opts.bounds.minDate || !!opts.bounds.maxDate)),
-        min: !!opts.bounds && !!opts.bounds.minDate ? opts.bounds.minDate / this.divider : undefined,
-        max: !!opts.bounds && !!opts.bounds.maxDate ? opts.bounds.maxDate / this.divider : undefined,
+        scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
+        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? this.innerOptions.bounds.minDate / this.divider : undefined,
+        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? this.innerOptions.bounds.maxDate / this.divider : undefined,
       },
       yAxis: {
         show: true,
@@ -175,7 +204,7 @@ export class DiscoveryAnnotation {
         }
       },
       dataZoom: [
-        this.options.showRangeSelector ? {
+        this.innerOptions.showRangeSelector ? {
           type: 'slider',
           height: '20px'
         } : undefined,

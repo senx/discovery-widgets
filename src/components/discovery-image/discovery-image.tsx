@@ -27,7 +27,6 @@ export class DiscoveryImageComponent {
   @State() toDisplay: string[] = [];
 
   private defOptions: Param = new Param();
-  private divider: number = 1000;
   private LOG: Logger;
   private initial = false;
 
@@ -49,7 +48,6 @@ export class DiscoveryImageComponent {
         this.options = JSON.parse(this.options);
       }
       this.result = GTSLib.getData(this.result);
-      this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
       this.toDisplay = this.convert(this.result as DataModel || new DataModel())
       this.LOG.debug(['componentWillLoad'], {
         type: this.type,

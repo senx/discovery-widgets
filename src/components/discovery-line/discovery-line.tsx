@@ -22,7 +22,7 @@ export class DiscoveryLineComponent {
 
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
+  @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
   @State() @Prop() width: number;
   @State() @Prop() height: number;
   @Prop() debug: boolean = false;
@@ -35,6 +35,7 @@ export class DiscoveryLineComponent {
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
+  @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private wrap: HTMLDivElement;
@@ -53,18 +54,39 @@ export class DiscoveryLineComponent {
     }
   }
 
+  @Watch('options')
+  optionsUpdate(newValue: string, oldValue: string) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      if (!!this.options && typeof this.options === 'string') {
+        this.innerOptions = JSON.parse(this.options);
+      } else {
+        this.innerOptions = {...this.options as Param};
+      }
+      if (!!this.myChart) {
+        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      }
+      if (this.LOG) {
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    }
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLineComponent, this.debug);
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
     });
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
     elementResizeEvent(this.el.parentElement, () => this.resize());
   }
@@ -74,9 +96,9 @@ export class DiscoveryLineComponent {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
-    this.options = {...options};
+    this.innerOptions = {...options};
     let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
@@ -92,14 +114,14 @@ export class DiscoveryLineComponent {
       this.LOG.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.options, gtsList});
+    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let multiY = false;
     let multiX = false;
     const opts: EChartsOption = {
       animation: false,
       grid: {
-        left: 10, top: !!(this.unit || this.options.unit) ? 30 : 10, bottom: 10, right: 10,
+        left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10, bottom: 10, right: 10,
         containLabel: true
       },
       responsive: true,
@@ -115,14 +137,14 @@ export class DiscoveryLineComponent {
         }
       },
       toolbox: {
-        show: (this.options as Param).showControls,
+        show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
       legend: {bottom: 10, left: 'center', show: false},
       dataZoom: [
-        {type: 'slider', height: '20px', show: !!this.options.showRangeSelector},
+        {type: 'slider', height: '20px', show: !!this.innerOptions.showRangeSelector},
         {type: 'inside'}
       ],
       series: []
@@ -131,21 +153,21 @@ export class DiscoveryLineComponent {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && gts.v) {
-        const c = ColorLib.getColor(gts.id, this.options.scheme);
+        const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [
-            (this.options as Param).timeMode === 'date'
+            this.innerOptions.timeMode === 'date'
               ? d[0] / this.divider
               : d[0]
             , d[d.length - 1]
           ]),
           animation: false,
           large: true,
-          showSymbol: this.type === 'scatter' || this.options.showDots,
+          showSymbol: this.type === 'scatter' || this.innerOptions.showDots,
           smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
           clip: false,
           step: DiscoveryLineComponent.getStepShape(type),
@@ -213,7 +235,7 @@ export class DiscoveryLineComponent {
         (opts.series as any[]).push(s);
       } else {
         this.LOG.debug(['convert', 'gts'], gts);
-        const c = ColorLib.getColor(gts.id || i, (this.options as Param).scheme);
+        const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         (opts.series as any[]).push({
           ...this.getCommonSeriesParam(color),
@@ -281,35 +303,33 @@ export class DiscoveryLineComponent {
   }
 
   private getYAxis(color?: string): CartesianAxisOption {
-    const opts = this.options as Param;
     return {
       type: 'value',
-      name: this.unit || opts.unit,
-      show: !opts.hideYAxis,
+      name: this.unit || this.innerOptions.unit,
+      show: !this.innerOptions.hideYAxis,
       nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
       axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      scale: !(opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0),
-      min: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[0] : undefined,
-      max: opts.bounds && opts.bounds.yRanges && opts.bounds.yRanges.length > 0 ? opts.bounds.yRanges[1] : undefined,
+      scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
+      min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
+      max: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
     }
   }
 
   private getXAxis(color?: string): CartesianAxisOption {
-    const opts = this.options as Param;
     return {
-      type: opts.timeMode === 'date' ? 'time' : 'value',
-      show: !opts.hideXAxis,
+      type: this.innerOptions.timeMode === 'date' ? 'time' : 'value',
+      show: !this.innerOptions.hideXAxis,
       splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el)},
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      scale: !(opts.bounds && (!!opts.bounds.minDate || !!opts.bounds.maxDate)),
-      min: !!opts.bounds && !!opts.bounds.minDate ? opts.bounds.minDate / this.divider : undefined,
-      max: !!opts.bounds && !!opts.bounds.maxDate ? opts.bounds.maxDate / this.divider : undefined,
+      scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
+      min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? this.innerOptions.bounds.minDate / this.divider : undefined,
+      max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? this.innerOptions.bounds.maxDate / this.divider : undefined,
     }
   }
 
