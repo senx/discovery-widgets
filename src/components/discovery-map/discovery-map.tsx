@@ -333,7 +333,7 @@ export class DiscoveryMapComponent {
     const m = marker !== '' ? marker : 'circle';
     return Leaflet.icon({
       // tslint:disable-next-line:max-line-length
-      iconUrl: `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}-solid&iconSize=14&size=40&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`,
+      iconUrl: `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=14&size=40&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`,
       iconAnchor: this.iconAnchor,
       popupAnchor: this.popupAnchor
     });
