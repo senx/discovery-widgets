@@ -260,7 +260,7 @@ export class DiscoveryInputComponent {
         } else {
           this.values = [data.toString() as string];
         }
-        if (typeof this.values[0] === 'string') {
+        if (typeof this.values[0] === 'string' || typeof this.values[0] === 'number') {
           this.values = this.values.map(s => {
             return {k: s, v: s};
           });

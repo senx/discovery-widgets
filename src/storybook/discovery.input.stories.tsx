@@ -78,6 +78,18 @@ ListInputInitialUsage.args = {
   ] }`
 };
 
+export const ListInputInitialWithNumbers = Usage.bind({});
+ListInputInitialWithNumbers.args = {
+  ...Usage.args,
+  type: 'input:list',
+  ws: `{
+  'data' [ 2017 2018 2019 2020 ]
+  'globalParams' { 'input' { 'value' 2018 } }
+  'events' [
+    { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
+  ] }`
+};
+
 export const ListInputWithCustomStyle = ({url, ws, language, type, options}) => `
 <style>
 :root {
