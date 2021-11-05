@@ -5,7 +5,7 @@ import {DataModel} from "../model/dataModel";
 
 export class Utils {
 
-  static httpPost(theUrl, payload) {
+  static httpPost(theUrl, payload, headers: { [key: string]: string; }) {
     return new Promise((resolve, reject) => {
       const xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = () => {
@@ -14,7 +14,10 @@ export class Utils {
         } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
           reject(xmlHttp.statusText)
         }
-      }
+      };
+      Object.keys(headers || {})
+        .filter(h => h.toLowerCase() !== 'accept' && h.toLowerCase() !== 'content-type')
+        .forEach(h => xmlHttp.setRequestHeader(h, headers[h]));
       xmlHttp.open("POST", theUrl, true); // true for asynchronous
       xmlHttp.send(payload);
     });
@@ -152,13 +155,13 @@ export class Utils {
   };
 
   static generateVars(key: string, value: any): string {
-    if(typeof value === 'string') {
+    if (typeof value === 'string') {
       return `"${value}" "${key}" STORE`;
-    } else  if(typeof value === 'number') {
+    } else if (typeof value === 'number') {
       return `${value} "${key}" STORE`;
     } else {
-      if(value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
-        if(value.type === 'string') {
+      if (value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
+        if (value.type === 'string') {
           return `"${value.value}" "${key}" STORE`;
         } else {
           return `${value.value} "${key}" STORE`;

@@ -104,7 +104,7 @@ export class DiscoveryDashboardComponent {
     if (this.ws && this.ws !== '') {
       this.loaded = false;
       this.done = {};
-      Utils.httpPost(this.url, this.ws)
+      Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
         .then((res: any) => {
           const result = JSON.parse(res.data as string);
           const tmpResult = result.length > 0 ? result[0] : new Dashboard();

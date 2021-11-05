@@ -83,7 +83,7 @@ export class DiscoveryButtonComponent {
   }
 
   private handleClick = () => {
-    Utils.httpPost(this.url, (this.result as DataModel).data + ' EVAL')
+    Utils.httpPost(this.url, (this.result as DataModel).data + ' EVAL', (this.options as Param).httpHeaders)
       .then((res: any) => {
         this.LOG.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);

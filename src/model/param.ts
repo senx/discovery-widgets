@@ -66,6 +66,7 @@ export class Param {
   windowed?: number;
   eventHandler?: string;
   customStyles?: { [key: string]: string; };
+  httpHeaders?: { [key: string]: string; };
 
 
 // components specific params

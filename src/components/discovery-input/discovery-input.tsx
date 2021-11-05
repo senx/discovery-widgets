@@ -190,7 +190,6 @@ export class DiscoveryInputComponent {
 
   private handleSelect(e) {
     this.selectedValue = e.target.value;
-    console.log(e.target, this.selectedValue, !this.innerOptions.input?.showButton)
     if (!!this.display && this.subType === 'slider') {
       const newValue = Number((parseInt(this.selectedValue as string, 10) - this.min) * 100 / (this.max - this.min));
       const newPosition = 10 - (newValue * 0.2);
