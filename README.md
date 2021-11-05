@@ -129,7 +129,7 @@ This Web component displays a Tile based upon a WarpScript (or FLoWS). The WarpS
 | `debug`          | `debug`           | `boolean`                | `false`       | Enable debug messages | 
 | `options`        | `options`         | `Param / string`         | `new Param()` | Serialized JSON options (see Params below) | 
 | `type`           | `type`            | `line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button`  | | Chart type |   
-| `url`            | `url`             | `string`                 | `undefined`   | exec url of your Warp 10 endpoint |
+| `url`            | `url`             | `string`                 | `undefined`   | exec url of your Warp 10 endpoint or Mobius WebSocket endpoint |
 | `lang`            | `lang`             | `warpscript, flows`                 | `warpscript`   | Language used  |
 
 ````html
@@ -190,7 +190,7 @@ dashboard definition, as a field in a tile definition and as a field in executio
 | showLegend |  `boolean` | false | Display chart legend |
 | responsive |  `boolean` | true | Responsive charts |
 | showRangeSelector |  `boolean` | false | Display the skyline below line or area charts |
-| autoRefresh |  `number` | -1 | if positive value, will refresh with a request each `autoRefresh` second |
+| autoRefresh |  `number` | -1 | if positive value, will refresh with a request each `autoRefresh` second for http requests, milliseconds for WebSocket |
 | showErrors |  `boolean` | true | Display errors if any |
 | showStatus |  `boolean` | true | Display the Warp 10 execution status |
 | expandAnnotation |  `boolean` | false | Expand annotations |
@@ -217,7 +217,7 @@ Data are displayed either with `data` or with `macro`. Auto-refresh for tiles on
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | type | `string` | | Chart type  (line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button |
-| endpoint | `string` | | exec url of your Warp 10 endpoint |
+| endpoint | `string` | | exec url of your Warp 10 endpoint or Mobius WebSocket endpoint |
 | title | `string` | | Tile title |
 | unit | `string` | | Unit to be displayed |
 | x | `number` | | X position of the Tile. |
@@ -274,7 +274,7 @@ structure:
 | Name | Type | Description |
 |------|------|-------------|
 | data | `GTS`, `GTS[]`, custom data |  Data to display, numeric GTS only |
-| globalParams |  `Option` | Global options (see above) concerning this tile |
+| globalParams |  `Option` | Global options (see above) concerning this tile, including chat type |
 | params | `Option[]` | List of options (see above) concerning each displayed dataset depending of the index of this array |
 | events | `Events[]` | List of events to emit (see below) |
 

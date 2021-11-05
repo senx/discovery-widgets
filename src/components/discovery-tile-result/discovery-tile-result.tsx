@@ -30,7 +30,7 @@ export class DiscoveryTileResultComponent {
   @State() bgColor: string;
   @State() fontColor: string;
   @State() innerResult: DataModel | string;
-  @State()  innerOptions: Param;
+  @State() innerOptions: Param;
   @State() innerStyle: { [k: string]: string; };
 
   @Event({
@@ -54,8 +54,8 @@ export class DiscoveryTileResultComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'],newValue, oldValue);
-    if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
       } else {
@@ -302,6 +302,7 @@ export class DiscoveryTileResultComponent {
   private parseResult() {
     setTimeout(() => {
       this.unit = (this.options as Param).unit || this.unit
+      this.type = (this.innerResult as unknown as DataModel).globalParams?.type || this.type;
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])
         .filter(e => !!e.value).filter(e => e.type !== 'zoom')

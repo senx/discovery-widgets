@@ -450,7 +450,37 @@ withAutoRefresh.args = {
 }`,
   options: {autoRefresh: 5}
 }
-
+export const withWebSoket = Usage.bind({});
+withWebSoket.args = {
+  ...Usage.args,
+  ws: `{
+  'title' 'Discovery WebSoket'
+  'description' 'little test dashboard'
+  'tiles' [    // Tiles here
+    {
+      'title' 'WebSocket test'
+      'x' 0 'y' 0 'w' 10 'h' 2
+      'type' 'area'
+      'options' { 'autoRefresh' 200 }
+      'endpoint' 'wss://warp.senx.io/api/v0/mobius'
+      'macro' <%
+        NEWGTS 'data' RENAME 'gts' STORE
+        NOW  'now' STORE
+        $now 10 s - $now
+        <% 200 ms + %>
+        <%
+          'i' STORE
+          $i 1e-6 * SIN 'v' STORE
+          $gts $i RAND 10.0 * RAND 10.0 * NaN $v ADDVALUE DROP
+        %> FORSTEP
+        $gts SORT 'data' STORE
+        { 'data' $data 'globalParams' { 'type' <% $now 1 s / 2 % 0 == %> <% 'scatter' %> <% 'area' %> IFTE } }
+      %>
+    }
+  ]
+}`,
+  options: new Param()
+}
 export const polymorphic = Usage.bind({});
 polymorphic.args = {
   ...Usage.args,

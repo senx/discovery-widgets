@@ -83,6 +83,22 @@ UsageWithTitle.args = {
   ...Usage.args,
   title: 'Test'
 }
+export const UsageWithWebSocket = Template.bind({});
+UsageWithWebSocket.args = {
+  ...Usage.args,
+  url: 'wss://warp.senx.io/api/v0/mobius',
+  ws: `NEWGTS 'data' RENAME 'gts' STORE
+NOW  'now' STORE
+$now 10 s - $now
+<% 200 ms + %>
+<%
+  'i' STORE
+  $i 1e-6 * SIN 'v' STORE
+  $gts $i NaN NaN NaN $v ADDVALUE DROP
+%> FORSTEP
+$gts SORT`,
+  options: {...new Param(), autoRefresh: 200}
+}
 export const AutoRefresh = Template.bind({});
 AutoRefresh.args = {
   ...Usage.args,
@@ -187,5 +203,11 @@ export const TileResult = TileResultTemplate.bind({});
 TileResult.args = {
   ...Usage.args,
   options: {},
-  result: [{"c":"","l":{},"a":{},"la":0,"v":[[1634139566040869,0.04070378699014665],[1634139567040871,0.6431964144579836],[1634139568040872,0.0998190270856355],[1634139569040874,0.9466145094577127],[1634139570040875,0.3036104996230803]]}]
+  result: [{
+    "c": "",
+    "l": {},
+    "a": {},
+    "la": 0,
+    "v": [[1634139566040869, 0.04070378699014665], [1634139567040871, 0.6431964144579836], [1634139568040872, 0.0998190270856355], [1634139569040874, 0.9466145094577127], [1634139570040875, 0.3036104996230803]]
+  }]
 }
