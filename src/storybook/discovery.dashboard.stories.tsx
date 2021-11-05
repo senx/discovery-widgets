@@ -454,7 +454,7 @@ export const withWebSoket = Usage.bind({});
 withWebSoket.args = {
   ...Usage.args,
   ws: `{
-  'title' 'Discovery WebSoket'
+  'title' 'Discovery WebSocket'
   'description' 'little test dashboard'
   'tiles' [    // Tiles here
     {
