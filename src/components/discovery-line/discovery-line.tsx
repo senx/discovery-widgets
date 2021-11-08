@@ -32,6 +32,7 @@ export class DiscoveryLineComponent {
 
   @Event() draw: EventEmitter<void>;
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
+  @Event() leftMarginComputed: EventEmitter<number>;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -361,6 +362,13 @@ export class DiscoveryLineComponent {
         if (initial) {
           setTimeout(() => this.draw.emit());
           initial = false;
+          let found  =false;
+          let x = 0;
+          while(!found) {
+            found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
+            x++;
+          }
+          this.leftMarginComputed.emit(x);
         }
       });
       this.myChart.on('dataZoom', (event: any) => {

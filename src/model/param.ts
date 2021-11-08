@@ -67,6 +67,7 @@ export class Param {
   eventHandler?: string;
   customStyles?: { [key: string]: string; };
   httpHeaders?: { [key: string]: string; };
+  leftMargin = 0;
 
 
 // components specific params

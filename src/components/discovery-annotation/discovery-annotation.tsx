@@ -70,7 +70,7 @@ export class DiscoveryAnnotation {
         setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
       }
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue}, this.chartOpts);
       }
     }
   }
@@ -90,6 +90,7 @@ export class DiscoveryAnnotation {
     } else {
       this.innerOptions = this.options;
     }
+    this.expanded = !!this.innerOptions.expandAnnotation;
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
@@ -150,7 +151,7 @@ export class DiscoveryAnnotation {
         right: 10,
         top: 20,
         bottom: 10,
-        left: 10,
+        left: (this.innerOptions.leftMargin || 10),
         containLabel: true
       },
       throttle: 70,

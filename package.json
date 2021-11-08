@@ -46,12 +46,12 @@
     "lint": "tslint -c tslint.json 'src/**/*.ts*'"
   },
   "dependencies": {
-    "@stencil/core": "2.9.0",
+    "@stencil/core": "2.10.0",
     "@stencil/sass": "^2.0.0-0",
     "@tarekraafat/autocomplete.js": "^10.2.6",
     "dayjs": "^1.10.7",
     "dom-to-image": "^2.6.0",
-    "echarts": "^5.2.1",
+    "echarts": "^5.2.2",
     "echarts-gl": "^2.0.8",
     "element-resize-event": "^3.0.6",
     "fitty": "^2.3.5",

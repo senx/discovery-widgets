@@ -49,6 +49,7 @@ export default {
   'statusError',
   'execResult',
   'draw',
+  'leftMarginComputed',
   'dataZoom',
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
@@ -210,4 +211,74 @@ TileResult.args = {
     "la": 0,
     "v": [[1634139566040869, 0.04070378699014665], [1634139567040871, 0.6431964144579836], [1634139568040872, 0.0998190270856355], [1634139569040874, 0.9466145094577127], [1634139570040875, 0.3036104996230803]]
   }]
+}
+
+
+// @ts-ignore
+const CombinedTemplate = ({url, ws, language, type, options, unit, title}) => `
+<div style="height: auto;width: 100%;min-height: 100px;padding: 10px;">
+          <discovery-tile url="${url}" type="annotation" language="${language}"
+          unit="${unit || ''}"
+          chart-title="${title || ''}"
+          @draw="${event => console.error('foo', 'bar', event)}"
+          id="myAnnotationChart"
+          debug options='${JSON.stringify(options)}'
+          >${ws}</discovery-tile>
+</div>
+
+<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+          <discovery-tile url="${url}" type="${type}" language="${language}"
+          unit="${unit || ''}"
+          chart-title="${title || ''}"
+          @draw="${event => console.error('foo', 'bar', event)}"
+          debug options='${JSON.stringify(options)}'
+          id="myChart"
+          >${ws}</discovery-tile>
+</div>
+<script>
+document.querySelector('#myChart').addEventListener('leftMarginComputed', e => {
+  console.log('leftMarginComputed', e.detail);
+  document.querySelector('#myAnnotationChart').setAttribute("options", JSON.stringify({... JSON.parse('${JSON.stringify(options)}'), leftMargin: e.detail}))
+})
+</script>
+`;
+
+export const CombinedUsage = CombinedTemplate.bind({});
+CombinedUsage.args = {
+  url: 'https://warp.senx.io/api/v0/exec',
+  language: 'warpscript',
+  type: 'line',
+  ws: `@training/dataset0
+      // warp.store.hbase.puts.committed is the number of datapoints committed to
+      // HBase since the restart of the Store daemon
+      [ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW 10 d ] FETCH SORT
+      [ SWAP mapper.rate 1 0 0 ] MAP
+      // Keep only 1000 datapoints per GTS
+      1000 LTTB DUP
+      // Detect 5 anomalies per GTS using an ESD (Extreme Studentized Deviate) Test
+      5 false ESDTEST
+      // Convert the ticks identified by ESDTEST into an annotation GTS
+      <%
+      DROP // excude element index
+      NEWGTS // create a new GTS
+      SWAP // get timestamp list
+      <% NaN NaN NaN 'anomaly' ADDVALUE %> FOREACH // for each timestamp
+      %> LMAP 2 ->LIST // Put our GTS in a list
+      ZIP // merge into a list of GTS
+      // Now rename and relabel the anomaly GTS
+      <%
+      DROP // exclude element index
+      LIST-> // flatten list
+      DROP // exclude number of elements of our list
+      SWAP // put our fetched GTS on the top
+      DUP // duplicate the GTS
+      NAME // get the className of the GTS
+      ':anomaly' + 'name' STORE // suffix the name
+      DUP LABELS 'labels' STORE // duplicate the GTS and get labels
+      SWAP // put the anomaly GTS on the top of the stack
+      $name RENAME // rename the GTS
+      $labels RELABEL // put labels
+      2 ->LIST // put both GTS in a list
+      %> LMAP`,
+  options: new Param()
 }
