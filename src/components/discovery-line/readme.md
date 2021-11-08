@@ -20,10 +20,11 @@
 
 ## Events
 
-| Event      | Description | Type                                                                     |
-| ---------- | ----------- | ------------------------------------------------------------------------ |
-| `dataZoom` |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
-| `draw`     |             | `CustomEvent<void>`                                                      |
+| Event                | Description | Type                                                                     |
+| -------------------- | ----------- | ------------------------------------------------------------------------ |
+| `dataZoom`           |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
+| `draw`               |             | `CustomEvent<void>`                                                      |
+| `leftMarginComputed` |             | `CustomEvent<number>`                                                    |
 
 
 ## Methods
