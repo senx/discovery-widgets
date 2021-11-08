@@ -294,7 +294,7 @@ export class DiscoveryBarComponent {
             found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
             x++;
           }
-          this.leftMarginComputed.emit(x);
+          setTimeout(() => this.leftMarginComputed.emit(x));
         }
       });
       this.myChart.on('dataZoom', (event: any) => {
