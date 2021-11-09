@@ -10,7 +10,7 @@ configureActions({
 });
 
 export default {
-  title: 'UI/Dashboard',
+  title: 'Dashboards/Dashboard',
   argTypes: {
     url: {control: 'text'},
     ws: {control: 'text'},

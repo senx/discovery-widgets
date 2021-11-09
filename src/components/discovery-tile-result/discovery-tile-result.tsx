@@ -274,6 +274,22 @@ export class DiscoveryTileResultComponent {
   }
 
   @Method()
+  async show(regexp: string) {
+    if (this.tile && this.tile['show']) {
+      await (this.tile as any).show(regexp);
+    }
+  }
+
+  @Method()
+  async hide(regexp: string) {
+    console.log("hide 1", regexp)
+    if (this.tile && this.tile['hide']) {
+      console.log("hide 2", regexp)
+      await (this.tile as any).hide(regexp);
+    }
+  }
+
+  @Method()
   async export(type: 'png' | 'svg' = 'png') {
     if (this.tile && this.tile['export']) {
       return (this.tile as any).export(type);

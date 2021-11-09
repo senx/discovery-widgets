@@ -9,7 +9,7 @@ configureActions({
 });
 
 export default {
-  title: 'UI/Events',
+  title: 'Events/Events',
   argTypes: {
     url: {control: 'text'},
     ws: {control: 'text'},

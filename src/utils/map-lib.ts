@@ -119,7 +119,7 @@ export class MapLib {
     },
   };
 
-  static toLeafletMapPaths(data: { gts: any[]; params: any[] }, hiddenData: number[], scheme: string) {
+  static toLeafletMapPaths(data: { gts: any[]; params: any[] }, hiddenData: {[key: string]: boolean}, scheme: string) {
     const paths = [];
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
@@ -129,7 +129,7 @@ export class MapLib {
       if (!params) {
         params = {};
       }
-      if (GTSLib.isGtsToPlotOnMap(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0) {
+      if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[GTSLib.serializeGtsMetadata(gts)]) {
         const path: any = {};
         MapLib.extractCommonParameters(path, params, i, scheme);
         path.path = MapLib.gtsToPath(gts);

@@ -8,7 +8,7 @@ import {Utils} from "../../utils/utils";
 import Leaflet, {TileLayerOptions} from 'leaflet';
 import {MapLib} from "../../utils/map-lib";
 import {ColorLib} from "../../utils/color-lib";
-import {antPath} from 'leaflet-ant-path';
+import { AntPath, antPath } from 'leaflet-ant-path';
 import elementResizeEvent from 'element-resize-event';
 import domtoimage from 'dom-to-image';
 
@@ -63,6 +63,7 @@ export class DiscoveryMapComponent {
   private firstDraw: boolean = true;
   private mapOpts: MapParams;
   private initial = false;
+  private hidden: { [key: string]: boolean } = {};
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -99,6 +100,26 @@ export class DiscoveryMapComponent {
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return await domtoimage.toPng(this.mapElement, {height: this.height, width: this.width});
+  }
+
+  @Method()
+  async show(regexp: string) {
+    Object.keys(this.hidden).forEach(k => {
+      if (new RegExp(regexp).test(k)) {
+        this.hidden[k] = false;
+      }
+    });
+    this.drawMap(this.result as DataModel || new DataModel(), true);
+  }
+
+  @Method()
+  async hide(regexp: string) {
+    Object.keys(this.hidden).forEach(k => {
+      if (new RegExp(regexp).test(k)) {
+        this.hidden[k] = true;
+      }
+    });
+    this.drawMap(this.result as DataModel || new DataModel(), true);
   }
 
   componentWillLoad() {
@@ -151,7 +172,15 @@ export class DiscoveryMapComponent {
     params = data.params;
     this.mapOpts = this.innerOptions.map || {};
     this.pointslayer = [];
-    this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, [], this.innerOptions.scheme) || [];
+    dataList.forEach(g => {
+      if (GTSLib.isGts(g)) {
+        const gtsName = GTSLib.serializeGtsMetadata(g);
+        if (!this.hidden[gtsName]) {
+          this.hidden[gtsName] = false;
+        }
+      }
+    })
+    this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, this.hidden, this.innerOptions.scheme) || [];
     this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.innerOptions.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
     if (this.mapOpts.mapType !== 'NONE') {
@@ -400,7 +429,7 @@ export class DiscoveryMapComponent {
     const group = Leaflet.featureGroup();
     if ((path || []).length > 1 && !!gts.line && gts.render === 'dots') {
       if (!!this.mapOpts.animate) {
-        group.addLayer(antPath(path || [], {
+        group.addLayer(new AntPath(path || [], {
           delay: 800, dashArray: [10, 100],
           weight: 5, color: ColorLib.transparentize(gts.color, 0.5),
           pulseColor: gts.color,

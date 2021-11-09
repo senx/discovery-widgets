@@ -318,6 +318,27 @@ export class DiscoveryBarComponent {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 
+  @Method()
+  async show(regexp: string) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).map(s => {
+        return {name: s.name}
+      }).filter(s => new RegExp(regexp).test(s.name))
+    });
+  }
+
+  @Method()
+  async hide(regexp: string) {
+    console.log(this.myChart.getOption().series)
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).map(s => {
+        return {name: s.name}
+      }).filter(s => new RegExp(regexp).test(s.name))
+    });
+  }
+
   render() {
     return <div style={{width: '100%', height: '100%'}}>
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}

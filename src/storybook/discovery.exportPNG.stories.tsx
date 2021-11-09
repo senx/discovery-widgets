@@ -4,7 +4,7 @@ import tile from "./discovery.tile.stories";
 
 export default {
   ...tile,
-  title: 'UI/PNG export',
+  title: 'Events/PNG export',
 };
 
 [

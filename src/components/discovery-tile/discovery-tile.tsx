@@ -24,7 +24,7 @@ export class DiscoveryTileComponent {
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
-  @Event() execResult: EventEmitter;
+  @Event() execResult: EventEmitter<string>;
 
   @Element() el: HTMLElement;
 
@@ -93,6 +93,20 @@ export class DiscoveryTileComponent {
     this.LOG.debug(['componentDidLoad'], 'Tile - resize', this.tileResult);
     if (this.tileResult) {
       return this.tileResult.resize();
+    }
+  }
+
+  @Method()
+  async show(regexp: string) {
+    if (this.tileResult) {
+      await this.tileResult.show(regexp);
+    }
+  }
+
+  @Method()
+  async hide(regexp: string) {
+    if (this.tileResult) {
+      await this.tileResult.hide(regexp);
     }
   }
 

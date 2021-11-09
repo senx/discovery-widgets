@@ -364,13 +364,13 @@ export class DiscoveryLineComponent {
           setTimeout(() => this.draw.emit());
           initial = false;
         }
-        let found  =false;
+        let found = false;
         let x = 0;
-        while(!found) {
+        while (!found) {
           found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
           x++;
         }
-        if(this.leftMargin !== x) {
+        if (this.leftMargin !== x) {
           setTimeout(() => this.leftMarginComputed.emit(x));
           this.leftMargin = x;
         }
@@ -404,6 +404,27 @@ export class DiscoveryLineComponent {
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
+  }
+
+  @Method()
+  async show(regexp: string) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).map(s => {
+        return {name: s.name}
+      }).filter(s => new RegExp(regexp).test(s.name))
+    });
+  }
+
+  @Method()
+  async hide(regexp: string) {
+    console.log(this.myChart.getOption().series)
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).map(s => {
+        return {name: s.name}
+      }).filter(s => new RegExp(regexp).test(s.name))
+    });
   }
 
   render() {

@@ -9,7 +9,7 @@ configureActions({
 });
 
 export default {
-  title: 'UI/Scada',
+  title: 'Dashboards/Scada',
   argTypes: {
     url: {control: 'text'},
     ws: {control: 'text'},

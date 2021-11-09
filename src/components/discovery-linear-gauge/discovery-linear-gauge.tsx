@@ -72,6 +72,27 @@ export class DiscoveryLinearGauge {
     }
   }
 
+  @Method()
+  async show(regexp: string) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).map(s => {
+        return {name: s.name}
+      }).filter(s => new RegExp(regexp).test(s.name))
+    });
+  }
+
+  @Method()
+  async hide(regexp: string) {
+    console.log(this.myChart.getOption().series)
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).map(s => {
+        return {name: s.name}
+      }).filter(s => new RegExp(regexp).test(s.name))
+    });
+  }
+
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLinearGauge, this.debug);
