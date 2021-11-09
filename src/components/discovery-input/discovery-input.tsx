@@ -150,7 +150,6 @@ export class DiscoveryInputComponent {
           events: {
             input: {
               selection: (event) => {
-                console.log(event.detail.selection.value)
                 const selection = event.detail.selection.value.v;
                 this.autoCompleteJS.input.value = selection;
                 this.selectedValue = selection;

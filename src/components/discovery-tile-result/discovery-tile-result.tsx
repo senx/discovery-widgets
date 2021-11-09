@@ -282,9 +282,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async hide(regexp: string) {
-    console.log("hide 1", regexp)
     if (this.tile && this.tile['hide']) {
-      console.log("hide 2", regexp)
       await (this.tile as any).hide(regexp);
     }
   }

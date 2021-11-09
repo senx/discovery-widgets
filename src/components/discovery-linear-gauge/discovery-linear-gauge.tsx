@@ -84,7 +84,6 @@ export class DiscoveryLinearGauge {
 
   @Method()
   async hide(regexp: string) {
-    console.log(this.myChart.getOption().series)
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
       batch: (this.myChart.getOption().series as any[]).map(s => {
