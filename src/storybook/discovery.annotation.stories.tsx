@@ -133,3 +133,40 @@ WithCustomStyle.args = {
      $g
 %> FOR`
 }
+const ShowHideTemplate = ({url, ws, language, type, options, unit, title}) => `<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+  <div class="card-body">
+  <discovery-tile url="${url}" type="${type}" language="${language}"
+  id="chart1"
+unit="${unit || ''}"
+chart-title="${title || ''}"
+@draw="${event => console.error('foo', 'bar', event)}"
+debug options='${JSON.stringify(options)}'
+  >${ws}</discovery-tile>
+</div>
+  <div class="card-footer">
+ <button class="btn btn-primary" id="show">Show</button>
+ <button class="btn btn-primary" id="hide">Hide</button>
+
+</div>
+</div>
+ <script>
+window.onload = () => {
+  const chart = document.querySelector('#chart1');
+  document.querySelector('#show').addEventListener('click', e => {
+    chart.show('gts-2{}')
+  });
+  document.querySelector('#hide').addEventListener('click', e => {
+    chart.hide('gts-2{}')
+  });
+}
+</script>
+`;
+
+export const ShowHide = ShowHideTemplate.bind({});
+ShowHide.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'a' STORE NEWGTS 'gts-' $a TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN T ADDVALUE DROP %> FOR
+  $g %> FOR`
+}

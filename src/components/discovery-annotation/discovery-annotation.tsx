@@ -224,6 +224,7 @@ export class DiscoveryAnnotation {
           }
         }
       },
+      legend: {bottom: 10, left: 'center', show: false},
       dataZoom: [
         this.innerOptions.showRangeSelector ? {
           type: 'slider',
