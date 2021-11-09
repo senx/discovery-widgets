@@ -24,7 +24,7 @@
 
 | Event           | Description | Type                    |
 | --------------- | ----------- | ----------------------- |
-| `execResult`    |             | `CustomEvent<any>`      |
+| `execResult`    |             | `CustomEvent<string>`   |
 | `statusError`   |             | `CustomEvent<any>`      |
 | `statusHeaders` |             | `CustomEvent<string[]>` |
 
@@ -51,6 +51,16 @@ Type: `Promise<any>`
 
 
 
+### `hide(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resize() => Promise<void>`
 
 
@@ -62,6 +72,16 @@ Type: `Promise<void>`
 
 
 ### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `show(regexp: string) => Promise<void>`
 
 
 

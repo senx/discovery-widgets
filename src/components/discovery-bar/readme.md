@@ -39,6 +39,16 @@ Type: `Promise<string>`
 
 
 
+### `hide(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resize() => Promise<void>`
 
 
@@ -50,6 +60,16 @@ Type: `Promise<void>`
 
 
 ### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `show(regexp: string) => Promise<void>`
 
 
 

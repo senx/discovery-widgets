@@ -36,7 +36,27 @@ Type: `Promise<any>`
 
 
 
+### `hide(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resize() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `show(regexp: string) => Promise<void>`
 
 
 
