@@ -98,6 +98,7 @@ export class DiscoveryTileResultComponent {
       this.innerOptions = this.options as Param;
     }
     this.innerResult = GTSLib.getData(this.result);
+    this.type = this.innerResult.globalParams?.type || this.innerOptions.type || this.type;
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
