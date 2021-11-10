@@ -14,7 +14,7 @@ import {DiscoveryEvent} from "../../model/discoveryEvent";
 })
 export class DiscoveryTileResultComponent {
   @Prop() result: DataModel | string;
-  @Prop() type: ChartType;
+  @Prop({mutable: true}) type: ChartType;
   @Prop() start: number;
   @Prop() options: Param | string = new Param();
   @Prop({mutable: true}) width: number;
