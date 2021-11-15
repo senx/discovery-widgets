@@ -15,6 +15,29 @@ InitialUsage.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
+
+export const InitialUsageWithLegend = Usage.bind({});
+InitialUsageWithLegend.args = {
+  ...Usage.args,
+  type: 'line',
+  unit: 'my unit',
+  ws: `1 40 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME  'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {... new Param(), showLegend: true}
+};
+
+export const InitialUsageWithFullDateDisplay = Usage.bind({});
+InitialUsageWithFullDateDisplay.args = {
+  ...Usage.args,
+  type: 'line',
+  unit: 'my unit',
+  ws: `1 40 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME  'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {... new Param(), fullDateDisplay: true}
+};
+
 export const WithXRange = Usage.bind({});
 WithXRange.args = {
   ...Usage.args,

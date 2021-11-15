@@ -123,7 +123,10 @@ export class DiscoveryLineComponent {
     const opts: EChartsOption = {
       animation: false,
       grid: {
-        left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10, bottom: 10, right: 10,
+        left: 10,
+        top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
+        bottom: !!this.innerOptions.showLegend ? 30 : 10,
+        right: 10,
         containLabel: true
       },
       responsive: true,
@@ -144,7 +147,7 @@ export class DiscoveryLineComponent {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
-      legend: {bottom: 10, left: 'center', show: false},
+      legend: {bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll'},
       dataZoom: [
         {type: 'slider', height: '20px', show: !!this.innerOptions.showRangeSelector},
         {type: 'inside'}
@@ -242,7 +245,7 @@ export class DiscoveryLineComponent {
         (opts.series as any[]).push({
           ...this.getCommonSeriesParam(color),
           name: gts.label || '' + i,
-          data: (gts.values || []) // .sort((a, b) => a[0] < b[0] ? -1 : 1)
+          data: (gts.values || [])
         } as SeriesOption);
       }
     }
@@ -327,7 +330,10 @@ export class DiscoveryLineComponent {
       splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      axisLabel: {color: color || Utils.getLabelColor(this.el)},
+      axisLabel: {
+        color: color || Utils.getLabelColor(this.el),
+        formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone) : undefined
+      },
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
       min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? this.innerOptions.bounds.minDate / this.divider : undefined,

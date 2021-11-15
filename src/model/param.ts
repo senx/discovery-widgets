@@ -43,7 +43,8 @@ export class Param {
   xAxis?: number;
   hideYAxis = false;
   hideXAxis = false;
-  showlegend = false;
+  showLegend = false;
+  fullDateDisplay = false;
   responsive?: boolean;
   autoRefresh?: number;
   showControls = false;

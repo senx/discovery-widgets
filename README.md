@@ -182,6 +182,7 @@ dashboard definition, as a field in a tile definition and as a field in executio
 | timeUnit | `string` | 'us' | Warp 10 time unit (us, ms, ns) |
 | scheme | `string` | 'WARP10' | Color scheme (COHESIVE, COHESIVE_2, BELIZE, VIRIDIS, MAGMA, INFERNO, PLASMA, YL_OR_RD, YL_GN_BU, BU_GN, WARP10, NINETEEN_EIGHTY_FOUR, ATLANTIS, DO_ANDROIDS_DREAM, DELOREAN, CTHULHU, ECTOPLASM, T_MAX_400_FILM ) |
 | showLegend | `boolean` | false | Display the chart legend |
+| fullDateDisplay | `boolean` | false | Display full date on the XAxis |
 | unit | `string` | | Unit to be displayed |
 | bgColor |  `string` | | Background color of tiles |
 | datasetColor | `string` | | Only for the `param` field in execution result. Color of the trace |

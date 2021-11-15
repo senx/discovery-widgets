@@ -196,7 +196,9 @@ export class DiscoveryBarComponent {
     return {
       animation: false,
       grid: {
-        left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10, bottom: 10, right: 10,
+        left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
+        bottom: !!this.innerOptions.showLegend ? 30 : 10,
+        right: 10,
         containLabel: true
       },
       tooltip: {
@@ -217,11 +219,7 @@ export class DiscoveryBarComponent {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
-      legend: {
-        bottom: 10,
-        left: 'center',
-        show: false
-      },
+      legend: {bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll'},
       xAxis: {
         show: !this.innerOptions.hideXAxis,
         type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'value' : 'category',
@@ -231,7 +229,8 @@ export class DiscoveryBarComponent {
           }
         },
         axisLabel: {
-          color: Utils.getLabelColor(this.el)
+          color: Utils.getLabelColor(this.el),
+          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone) : undefined
         },
         axisTick: {
           lineStyle: {
@@ -290,13 +289,13 @@ export class DiscoveryBarComponent {
           setTimeout(() => this.draw.emit());
           initial = false;
         }
-        let found  =false;
+        let found = false;
         let x = 0;
-        while(!found) {
+        while (!found) {
           found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
           x++;
         }
-        if(this.leftMargin !== x) {
+        if (this.leftMargin !== x) {
           setTimeout(() => this.leftMarginComputed.emit(x));
           this.leftMargin = x;
         }

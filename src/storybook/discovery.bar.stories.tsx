@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import tile, {Usage} from './discovery.tile.stories';
 import {Param} from "../model/param";
 import {Colors} from "../utils/color-lib";
@@ -13,10 +15,16 @@ InitialUsage.args = {
   type: 'bar',
   unit: 'my unit',
   ws: `NOW 'now' STORE
-1 4 <% DROP NEWGTS 'g' STORE
+1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME  'g' STORE
   1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g
 %> FOR`
+};
+
+export const InitialUsageWithLegend = Usage.bind({});
+InitialUsageWithLegend.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), showLegend: true}
 };
 
 export const InitialUsageWithTimeStamp = InitialUsage.bind({});
@@ -67,6 +75,12 @@ ChartWithCustomData.args = {
 { 'data' $values 'globalParams' { } }`
 }
 
+export const ChartWithCustomDataAndLegend = Usage.bind({});
+ChartWithCustomDataAndLegend.args = {
+  ...ChartWithCustomData.args,
+  options: {... new Param(), showLegend: true}
+}
+
 export const HorizontalStackedBarChart = Usage.bind({});
 HorizontalStackedBarChart.args = {
   ...InitialUsage.args,
@@ -77,6 +91,13 @@ false RESETS
 [ SWAP mapper.delta 1 0 0 ] MAP 'values' STORE
 { 'data' $values 'globalParams' { 'bar' { 'horizontal' true 'stacked' true } } }`
 }
+
+export const HorizontalStackedBarChartAndLegend = Usage.bind({});
+HorizontalStackedBarChartAndLegend.args = {
+  ...HorizontalStackedBarChart.args,
+  options: {... new Param(), showLegend: true}
+}
+
 export const HorizontalStackedBarChartWithCustomData = Usage.bind({});
 HorizontalStackedBarChartWithCustomData.args = {
   ...InitialUsage.args,

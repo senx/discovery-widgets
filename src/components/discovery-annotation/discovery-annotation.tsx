@@ -1,8 +1,7 @@
 import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
 import {ChartType, ECharts} from "../../model/types";
 import {Param} from "../../model/param";
-import * as echarts from "echarts";
-import {EChartsOption} from "echarts";
+import {EChartsOption, init} from "echarts";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
@@ -156,7 +155,7 @@ export class DiscoveryAnnotation {
         } as SeriesOption);
       }
     }
-    this.height = 50 + (linesCount * 30);
+    this.height = 50 + (linesCount * (this.expanded? 26: 30)) + (!!this.innerOptions.showLegend? 30 : 0);
     this.LOG.debug(['convert'], {
       expanded: this.expanded,
       series,
@@ -167,10 +166,10 @@ export class DiscoveryAnnotation {
     return {
       animation: false,
       grid: {
-        height: this.height - 30,
+        height: this.height - (!!this.innerOptions.showLegend? 60 : 30),
         right: 10,
         top: 20,
-        bottom: 10,
+        bottom: !!this.innerOptions.showLegend ? 30 : 10,
         left: (this.innerOptions.leftMargin || 10),
         containLabel: true
       },
@@ -197,7 +196,10 @@ export class DiscoveryAnnotation {
         type: this.innerOptions.timeMode === 'date' ? 'time' : 'category',
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
-        axisLabel: {color: Utils.getLabelColor(this.el)},
+        axisLabel: {
+          color: Utils.getLabelColor(this.el),
+          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone) : undefined
+        },
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
         min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? this.innerOptions.bounds.minDate / this.divider : undefined,
@@ -224,7 +226,7 @@ export class DiscoveryAnnotation {
           }
         }
       },
-      legend: {bottom: 10, left: 'center', show: false},
+      legend: {bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll'},
       dataZoom: [
         this.innerOptions.showRangeSelector ? {
           type: 'slider',
@@ -243,7 +245,10 @@ export class DiscoveryAnnotation {
       this.parsing = false;
       this.rendering = true;
       let initial = false;
-      this.myChart = echarts.init(this.graph, null, {width: this.width, height: this.height});
+      this.myChart = init(this.graph, null, {
+        width: this.width,
+        height: this.height
+      });
       this.myChart.on('finished', () => {
         this.rendering = false;
         if (initial) {
@@ -281,7 +286,8 @@ export class DiscoveryAnnotation {
         ?
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
-      <div class="chart-area" style={{width: this.width + 'px', height: this.height + 'px'}}>
+      <div class="chart-area"
+           style={{width: this.width + 'px', height: (this.height + (!!this.innerOptions.showLegend ? 50 : 0)) + 'px'}}>
         {this.parsing ? <div class="discovery-chart-spinner">
           <discovery-spinner>Parsing data...</discovery-spinner>
         </div> : ''}

@@ -18,6 +18,19 @@ InitialUsage.args = {
   $gts
 %> FOR`
 };
+
+export const InitialUsageWithLegend = Usage.bind({});
+InitialUsageWithLegend.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), showLegend: true}
+};
+
+export const InitialUsageWithFullDateDisplay = Usage.bind({});
+InitialUsageWithFullDateDisplay.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), fullDateDisplay: true}
+};
+
 export const WithXRange = Usage.bind({});
 WithXRange.args = {
   ...Usage.args,
@@ -87,7 +100,7 @@ NEWGTS 'emptyone, stack top' RENAME`
 export const SwitchToTimestamp = Usage.bind({});
 SwitchToTimestamp.args = {
   ...InitialUsage.args,
-  options: {... new Param(), timeMode: 'timestamp'},
+  options: {...new Param(), timeMode: 'timestamp'},
   ws: `NEWGTS 'boolannotation, not ordered' RENAME
 -5 NaN NaN NaN T ADDVALUE
 4 NaN NaN NaN T ADDVALUE
