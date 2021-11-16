@@ -1,6 +1,5 @@
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import * as echarts from 'echarts';
-import {EChartsOption} from 'echarts';
+import {EChartsOption, init} from 'echarts';
 import {GTSLib} from '../../utils/gts.lib';
 import {SeriesOption} from "echarts/lib/util/types";
 import {ColorLib} from "../../utils/color-lib";
@@ -362,7 +361,7 @@ export class DiscoveryLineComponent {
     setTimeout(() => {
       this.parsing = false
       this.rendering = true;
-      this.myChart = echarts.init(this.graph);
+      this.myChart = init(this.graph);
       let initial = false;
       this.myChart.on('finished', () => {
         this.rendering = false;
