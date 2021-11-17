@@ -15,6 +15,19 @@ InitialUsage.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
+export const withNaN = Usage.bind({});
+withNaN.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS
+NOW NaN NaN NaN 42 ADDVALUE
+NOW  1 s + NaN NaN NaN 38 ADDVALUE
+NOW  9 s + NaN NaN NaN 40 ADDVALUE
+NOW  10 s + NaN NaN NaN 48 ADDVALUE
+[ SWAP mapper.todouble 0 0 0 ] MAP
+[ SWAP bucketizer.last 0 1 s 0 ] BUCKETIZE
+[ NaN NaN NaN NaN ] FILLVALUE
+SORT`
+};
 
 export const InitialUsageWithLegend = Usage.bind({});
 InitialUsageWithLegend.args = {

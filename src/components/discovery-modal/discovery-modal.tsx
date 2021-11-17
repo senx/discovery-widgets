@@ -5,6 +5,7 @@ import {ChartType} from "../../model/types";
 import {Utils} from "../../utils/utils";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
+import {JsonLib} from "../../utils/jsonLib";
 
 @Component({
   tag: 'discovery-modal',
@@ -39,7 +40,7 @@ export class DiscoveryModalComponent {
   @Watch('data')
   dataUpdate(newValue: string, oldValue: string) {
     if (!!this.data && typeof this.data === 'string') {
-      this.data = JSON.parse(this.data as string);
+      this.data = new JsonLib().parse(this.data as string);
     }
     this.LOG.debug(['dataUpdate'], {
       data: this.data,
