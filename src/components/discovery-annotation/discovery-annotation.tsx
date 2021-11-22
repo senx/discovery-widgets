@@ -155,7 +155,7 @@ export class DiscoveryAnnotation {
         } as SeriesOption);
       }
     }
-    this.height = 50 + (linesCount * (this.expanded? 26: 30)) + (!!this.innerOptions.showLegend? 30 : 0);
+    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ?50 : 0);
     this.LOG.debug(['convert'], {
       expanded: this.expanded,
       series,
@@ -166,10 +166,10 @@ export class DiscoveryAnnotation {
     return {
       animation: false,
       grid: {
-        height: this.height - (!!this.innerOptions.showLegend? 60 : 30),
+        height: this.height - (!!this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
         right: 10,
         top: 20,
-        bottom: !!this.innerOptions.showLegend ? 30 : 10,
+        bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
         left: (this.innerOptions.leftMargin || 10),
         containLabel: true
       },
@@ -198,7 +198,7 @@ export class DiscoveryAnnotation {
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLabel: {
           color: Utils.getLabelColor(this.el),
-          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone) : undefined
+          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone).replace('T', '\n') : undefined
         },
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
@@ -287,7 +287,10 @@ export class DiscoveryAnnotation {
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
       <div class="chart-area"
-           style={{width: this.width + 'px', height: (this.height + (!!this.innerOptions.showLegend ? 50 : 0)) + 'px'}}>
+           style={{
+             width: this.width + 'px',
+             height: (this.height + (!!this.innerOptions.showLegend ? 50 : 0) + (!!this.innerOptions.fullDateDisplay ? 50 : 0)) + 'px'
+           }}>
         {this.parsing ? <div class="discovery-chart-spinner">
           <discovery-spinner>Parsing data...</discovery-spinner>
         </div> : ''}

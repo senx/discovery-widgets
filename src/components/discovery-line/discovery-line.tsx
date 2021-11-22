@@ -331,7 +331,7 @@ export class DiscoveryLineComponent {
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {
         color: color || Utils.getLabelColor(this.el),
-        formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone) : undefined
+        formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone).replace('T', '\n') : undefined
       },
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
