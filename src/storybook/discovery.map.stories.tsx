@@ -105,6 +105,14 @@ AutoRefresh.args = {
 $g`,
   options: {...Usage.options, autoRefresh: 2}
 }
+export const PathUsage = Usage.bind({});
+PathUsage.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'g' STORE
+1 6 <% 'ts' STORE $g $ts RAND RAND RAND RAND ADDVALUE DROP %> FOR
+{ 'data' $g 'params' [ { 'marker' 'home' 'render' 'path' 'line' true } ] }`,
+  options: {...Usage.options}
+}
 
 const ShowHideTemplate = ({url, ws, language, type, options, unit, title}) => `<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
   <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
@@ -145,10 +153,15 @@ AutoRefreshWithRealData.args = {
   url: 'wss://warp.senx.io/api/v0/mobius',
   ws: `[
   'yaw2XlsczxtKdzZpxYA5DXvE0w9sRQHjJPnyJ2MVZrjf1HK7bH82rkVfuhdkxYuLT1kGGC6DpsFskCTfReqgVsN4nFbpZqLlmgDRncN9oJtEHTkYMDDiQADNpyE5OHww90Ia3SYge3ORSk.NwvjOX.'
-  'fr.bibus.bus' {}
+  'fr.trains' { 'ligne' '470000' }
   NOW 15 m
-] FETCH  [ 'IdVehicle' ] METASORT`,
-  options: {...Usage.options, autoRefresh: 2000}
+] FETCH [ 'numero' ] METASORT  FLATTEN [ 0 ] MVTICKSPLIT 'data' STORE
+{ 'data' $data
+  'params' $data <% DROP
+  { 'marker' 'train' 'render' 'path' 'line' true }
+%> F LMAP
+}`,
+  options: {...Usage.options, autoRefresh: 2000, map: { mapType: 'STADIA_DARK' }}
 }
 
 export const CustomTilesThroughGlobalParams = Usage.bind({});

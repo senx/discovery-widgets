@@ -373,6 +373,31 @@ export class DiscoveryMapComponent {
     let icon;
     let size;
     switch (gts.render) {
+      case 'path': {
+        icon = this.icon(gts.color, gts.marker);
+        size = (gts.path || []).length;
+
+        for (let i = 0; i < size; i++) {
+          const g = gts.path[i];
+          if(i < size-1) {
+            const marker = Leaflet.circleMarker(
+              g, {
+                radius: gts.baseRadius || MapLib.BASE_RADIUS,
+                color: gts.color,
+                fillColor: gts.color,
+                fillOpacity: 1
+              }
+            );
+            this.addPopup(gts, g.val, g.ts, marker);
+            dots.push(marker);
+          } else {
+            const marker = Leaflet.marker(g, {icon, opacity: 1});
+            this.addPopup(gts, g.val, g.ts, marker);
+            dots.push(marker);
+          }
+        }
+        break;
+      }
       case 'marker':
         icon = this.icon(gts.color, gts.marker);
         size = (gts.path || []).length;
@@ -427,7 +452,7 @@ export class DiscoveryMapComponent {
   private updateGtsPath(gts: any) {
     const path = MapLib.pathDataToLeaflet(gts.path);
     const group = Leaflet.featureGroup();
-    if ((path || []).length > 1 && !!gts.line && gts.render === 'dots') {
+    if ((path || []).length > 1 && !!gts.line && ( gts.render === 'dots' || gts.render === 'path')) {
       if (!!this.mapOpts.animate) {
         group.addLayer(new AntPath(path || [], {
           delay: 800, dashArray: [10, 100],
