@@ -48,6 +48,7 @@ export class DiscoveryDashboardComponent {
   private scadaHeight: number;
   private innerStyles: any;
   private tiles: Tile[];
+  private renderedTiles: Tile[];
   private done: any = {};
 
   @Watch('options')
@@ -138,7 +139,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.LOG.debug(['exec', 'macroTiles'], tmpResult.tiles);
             Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', (this.options as Param).httpHeaders).then((t: any) => {
               this.LOG.debug(['exec', 'macroTiles', 'res'], t);
-              tmpResult.tiles = new JsonLib().parse(t.data as string)[0] || []
+              this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
               this.processResult(tmpResult);
             }).catch(e => {
               this.LOG.error(['exec'], e);
@@ -146,6 +147,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               this.processResult(tmpResult);
             });
           } else {
+            this.renderedTiles = tmpResult.tiles;
             this.processResult(tmpResult);
           }
         }).catch(e => {
@@ -198,7 +200,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
           <div class="discovery-scada-wrapper" style={{height: this.scadaHeight + 'px'}}>
-            {(this.result.tiles as Tile[]).map((t, i) =>
+            {this.renderedTiles.map((t, i) =>
               <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
                      left: t.x + 'px',
@@ -245,7 +247,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               gridAutoRows: 'minmax(' + (this.result?.cellHeight || this.cellHeight) + 'px, auto)',
               gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
             }}>
-              {(this.result.tiles as Tile[]).map((t, i) =>
+              {this.renderedTiles.map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
                      style={{
                        gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
@@ -328,7 +330,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               return this.done[s] === 1;
           }
         });
-        if (this.result.tiles.length === Object.keys(this.done).length && res.every(r => !!r)) {
+        if (this.renderedTiles.length === Object.keys(this.done).length && res.every(r => !!r)) {
           this.rendered.emit();
         }
       });
