@@ -5,10 +5,9 @@ export class Dashboard {
   title: string;
   type: 'dashboard' | 'scada' = 'dashboard';
   description: string;
-  tiles: Tile[] = [];
+  tiles: Tile[] | string = [];
   vars: { [key: string]: any; } = {};
   options?: Param;
   cols: 12;
   cellHeight: 220;
-  macroTiles?: any;
 }

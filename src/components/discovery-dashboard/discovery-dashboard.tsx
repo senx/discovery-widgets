@@ -134,9 +134,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           }
           this._type = tmpResult.type || this.type || 'dashboard';
 
-          if (!!tmpResult.macroTiles) {
-            this.LOG.debug(['exec', 'macroTiles'], tmpResult.macroTiles);
-            Utils.httpPost(this.url, tmpResult.macroTiles + ' EVAL', (this.options as Param).httpHeaders).then((t: any) => {
+          if (typeof tmpResult.tiles === 'string') {
+            this.LOG.debug(['exec', 'macroTiles'], tmpResult.tiles);
+            Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', (this.options as Param).httpHeaders).then((t: any) => {
               this.LOG.debug(['exec', 'macroTiles', 'res'], t);
               tmpResult.tiles = new JsonLib().parse(t.data as string)[0] || []
               this.processResult(tmpResult);
@@ -157,7 +157,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
   private processResult(tmpResult: Dashboard) {
     if (this._type === 'scada') {
-      const tiles = tmpResult.tiles;  // items array
+      const tiles = tmpResult.tiles as Tile[];  // items array
       if (tiles.length > 0) {
         let y = 0;
         let height = 0;
@@ -198,7 +198,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
           <div class="discovery-scada-wrapper" style={{height: this.scadaHeight + 'px'}}>
-            {this.result.tiles.map((t, i) =>
+            {(this.result.tiles as Tile[]).map((t, i) =>
               <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
                      left: t.x + 'px',
@@ -245,7 +245,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               gridAutoRows: 'minmax(' + (this.result?.cellHeight || this.cellHeight) + 'px, auto)',
               gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
             }}>
-              {this.result.tiles.map((t, i) =>
+              {(this.result.tiles as Tile[]).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
                      style={{
                        gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
