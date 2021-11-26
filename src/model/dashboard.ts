@@ -10,4 +10,5 @@ export class Dashboard {
   options?: Param;
   cols: 12;
   cellHeight: 220;
+  macroTiles?: any;
 }
