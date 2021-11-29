@@ -107,11 +107,7 @@ export class DiscoveryLinearGauge {
       options: this.innerOptions,
       chartOpts: this.chartOpts
     });
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
+    elementResizeEvent(this.el, () => this.resize());
   }
 
   private getCommonSeriesParam(color) {
@@ -119,6 +115,15 @@ export class DiscoveryLinearGauge {
     return {
       type: 'bar',
       animation: true,
+      symbolRepeat: true,
+      symbolSize: ['80%', '60%'],
+      barCategoryGap: '40%',
+      universalTransition: {
+        enabled: true,
+        delay: function (idx, total) {
+          return (idx / total) * 1000;
+        }
+      },
       large: true,
       clip: false,
       lineStyle: {color},

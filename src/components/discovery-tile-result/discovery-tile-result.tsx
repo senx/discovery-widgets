@@ -32,6 +32,7 @@ export class DiscoveryTileResultComponent {
   @State() innerResult: DataModel | string;
   @State() innerOptions: Param;
   @State() innerStyle: { [k: string]: string; };
+  @State() innerType: ChartType;
 
   @Event({
     eventName: 'discoveryEvent',
@@ -45,6 +46,14 @@ export class DiscoveryTileResultComponent {
   private title: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
+
+
+  @Watch('type')
+  updateType(newValue: string, oldValue: string) {
+    if (newValue !== oldValue) {
+      setTimeout(() => this.innerType = this.type);
+    }
+  }
 
   @Watch('result')
   updateRes() {
@@ -86,6 +95,7 @@ export class DiscoveryTileResultComponent {
   }
 
   componentWillLoad() {
+    this.innerType = this.type;
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
@@ -98,9 +108,9 @@ export class DiscoveryTileResultComponent {
       this.innerOptions = this.options as Param;
     }
     this.innerResult = GTSLib.getData(this.result);
-    this.type = this.innerResult.globalParams?.type || this.innerOptions.type || this.type;
+    this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
     this.LOG.debug(['componentWillLoad'], {
-      type: this.type,
+      type: this.innerType,
       options: this.innerOptions,
       result: this.innerResult
     });
@@ -120,7 +130,7 @@ export class DiscoveryTileResultComponent {
   }
 
   getView() {
-    switch (this.type) {
+    switch (this.innerType) {
       case "line":
       case "area":
       case "scatter":
@@ -132,7 +142,7 @@ export class DiscoveryTileResultComponent {
       case 'step-before':
         return <discovery-line
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           debug={this.debug}
@@ -142,7 +152,7 @@ export class DiscoveryTileResultComponent {
       case 'annotation':
         return <discovery-annotation
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -152,7 +162,7 @@ export class DiscoveryTileResultComponent {
       case 'bar':
         return <discovery-bar
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -162,7 +172,7 @@ export class DiscoveryTileResultComponent {
       case 'display':
         return <discovery-display
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -171,7 +181,7 @@ export class DiscoveryTileResultComponent {
       case 'map':
         return <discovery-map
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
@@ -179,7 +189,7 @@ export class DiscoveryTileResultComponent {
       case 'image':
         return <discovery-image
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
@@ -188,7 +198,7 @@ export class DiscoveryTileResultComponent {
         return <discovery-button
           result={this.innerResult}
           url={this.url}
-          type={this.type}
+          type={this.innerType}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
@@ -197,7 +207,7 @@ export class DiscoveryTileResultComponent {
       case 'circle':
         return <discovery-gauge
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -206,7 +216,7 @@ export class DiscoveryTileResultComponent {
       case 'linear-gauge':
         return <discovery-linear-gauge
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -217,7 +227,7 @@ export class DiscoveryTileResultComponent {
       case 'rose':
         return <discovery-pie
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -226,7 +236,7 @@ export class DiscoveryTileResultComponent {
       case 'tabular':
         return <discovery-tabular
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -235,7 +245,7 @@ export class DiscoveryTileResultComponent {
       case 'svg':
         return <discovery-svg
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
@@ -250,7 +260,7 @@ export class DiscoveryTileResultComponent {
       case 'input:date-range':
         return <discovery-input
           result={this.innerResult}
-          type={this.type}
+          type={this.innerType}
           options={this.innerOptions}
           ref={(el) => this.tile = el}
           debug={this.debug}
@@ -317,7 +327,7 @@ export class DiscoveryTileResultComponent {
   private parseResult() {
     setTimeout(() => {
       this.unit = (this.options as Param).unit || this.unit
-      this.type = (this.innerResult as unknown as DataModel).globalParams?.type || this.type;
+      this.innerType = (this.innerResult as unknown as DataModel).globalParams?.type || this.innerType;
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])
         .filter(e => !!e.value).filter(e => e.type !== 'zoom')
@@ -330,7 +340,7 @@ export class DiscoveryTileResultComponent {
     });
     if (this.LOG) {
       this.LOG.debug(['parseResult'], {
-        type: this.type,
+        type: this.innerType,
         options: this.options,
         result: this.innerResult
       });

@@ -46,6 +46,14 @@ export class DiscoveryLineComponent {
   private myChart: ECharts;
   private leftMargin: number;
 
+  @Watch('type')
+  updateType(newValue: string, oldValue: string) {
+    if (newValue !== oldValue && !!this.myChart) {
+      this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    }
+  }
+
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
@@ -89,11 +97,7 @@ export class DiscoveryLineComponent {
     });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
+    elementResizeEvent(this.el, () => this.resize());
   }
 
   convert(data: DataModel) {

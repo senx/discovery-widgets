@@ -55,7 +55,7 @@ export default {
 
 // @ts-ignore
 const Template = ({url, ws, language, type, options, unit, title}) => `
-<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+<div style="height: 600px;width: 100%;min-height: 100px; resize: both; padding: 10px; overflow: hidden;">
   <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
       <div class="card-body">
           <discovery-tile url="${url}" type="${type}" language="${language}"
@@ -202,6 +202,60 @@ window.onload = () => {
 `;
 export const TileResult = TileResultTemplate.bind({});
 TileResult.args = {
+  ...Usage.args,
+  options: {},
+  result: [{
+    "c": "",
+    "l": {},
+    "a": {},
+    "la": 0,
+    "v": [[1634139566040869, 0.04070378699014665], [1634139567040871, 0.6431964144579836], [1634139568040872, 0.0998190270856355], [1634139569040874, 0.9466145094577127], [1634139570040875, 0.3036104996230803]]
+  }]
+}
+
+
+const TileResultChangeTypeTemplate = ({result, options}) => `
+<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+      <div class="card-body">
+            <discovery-tile-result options="${JSON.stringify(options)}" type="line"
+            id="chart1"
+            debug
+            options='${JSON.stringify(options)}'
+            result='${JSON.stringify(result)}'
+            ></discovery-tile-result>
+    </div>
+  </div>
+</div>
+ <button class="btn btn-primary" id="btn">Line</button>
+ <button class="btn btn-primary" id="btn2">Area</button>
+ <button class="btn btn-primary" id="btn3">Bar</button>
+ <button class="btn btn-primary" id="btn4">Pie</button>
+ <script>
+window.onload = () => {
+  const chart = document.querySelector('#chart1');
+
+  document.querySelector('#btn').addEventListener('click', e => {
+    chart.setAttribute('type', "line")
+  })
+
+  document.querySelector('#btn2').addEventListener('click', e => {
+    chart.setAttribute('type', "area")
+  })
+
+  document.querySelector('#btn3').addEventListener('click', e => {
+    chart.setAttribute('type', "bar")
+  })
+
+  document.querySelector('#btn4').addEventListener('click', e => {
+    chart.setAttribute('type', "pie")
+  })
+
+}
+</script>
+`;
+export const TileResultChangeType = TileResultChangeTypeTemplate.bind({});
+TileResultChangeType.args = {
   ...Usage.args,
   options: {},
   result: [{

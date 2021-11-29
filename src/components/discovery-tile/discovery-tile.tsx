@@ -135,7 +135,6 @@ export class DiscoveryTileComponent {
     });
   }
 
-  // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
     this.LOG.debug(['disconnectedCallback'], 'disconnected');
     if (this.timer) {
@@ -214,6 +213,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           this.socket.onmessage = event => {
             this.result = event.data as string;
             this.LOG.debug(['exec', 'result'], this.result);
+            setTimeout(() => this.loaded = true);
             this.execResult.emit(this.result);
           }
           this.socket.send('<% ' + this.ws + ' %> ' + ((this.options as Param).autoRefresh || 1000) + ' EVERY');

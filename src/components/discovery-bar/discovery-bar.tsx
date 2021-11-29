@@ -99,11 +99,7 @@ export class DiscoveryBarComponent {
       chartOpts: this.chartOpts
     });
     this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
+    elementResizeEvent(this.el, () => this.resize());
   }
 
   private getCommonSeriesParam(color) {

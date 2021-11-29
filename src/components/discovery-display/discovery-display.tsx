@@ -108,7 +108,7 @@ export class DiscoveryDisplayComponent {
       type: this.type,
       options: this.innerOptions,
     });
-    elementResizeEvent(this.el.parentElement, () => this.resize());
+    elementResizeEvent(this.el, () => this.resize());
   }
 
   componentDidLoad() {
@@ -127,7 +127,6 @@ export class DiscoveryDisplayComponent {
     if (this.fitties) {
       this.fitties.unsubscribe();
     }
-    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private convert(dataModel: DataModel) {

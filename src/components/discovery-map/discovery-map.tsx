@@ -141,11 +141,7 @@ export class DiscoveryMapComponent {
     this.width = dims.w;
     this.height = dims.h;
     this.parsing = false;
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
+    elementResizeEvent(this.el, () => this.resize());
   }
 
   componentDidLoad() {

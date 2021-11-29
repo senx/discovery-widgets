@@ -114,11 +114,7 @@ export class DiscoveryAnnotation {
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
+    elementResizeEvent(this.el, () => this.resize());
   }
 
   convert(data: DataModel) {

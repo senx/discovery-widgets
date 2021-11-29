@@ -40,6 +40,14 @@ export class DiscoveryPieComponent {
   private divider: number = 1000;
   private myChart: ECharts;
 
+  @Watch('type')
+  updateType(newValue: string, oldValue: string) {
+    if (newValue !== oldValue && !!this.myChart) {
+      this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    }
+  }
+
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
@@ -107,11 +115,7 @@ export class DiscoveryPieComponent {
       type: this.type,
       options: this.innerOptions,
     });
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
+    elementResizeEvent(this.el, () => this.resize());
   }
 
   private getCommonSeriesParam() {
