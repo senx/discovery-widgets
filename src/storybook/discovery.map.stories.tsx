@@ -105,12 +105,41 @@ AutoRefresh.args = {
 $g`,
   options: {...Usage.options, autoRefresh: 2}
 }
+
 export const PathUsage = Usage.bind({});
 PathUsage.args = {
   ...InitialUsage.args,
   ws: `NEWGTS 'g' STORE
 1 6 <% 'ts' STORE $g $ts RAND RAND RAND RAND ADDVALUE DROP %> FOR
 { 'data' $g 'params' [ { 'marker' 'home' 'render' 'path' 'line' true } ] }`,
+  options: {...Usage.options}
+}
+
+
+const NoDataTemplate = ({url, ws, language, type, options, unit, title}) => `
+<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+  <div class="card-body">
+  <div style="height: 50%;width: 100%;"></div>
+  <div style="height: 50%;width: 100%;">
+  <discovery-tile url="${url}" type="${type}" language="${language}"
+  id="chart1"
+unit="${unit || ''}"
+chart-title="${title || ''}"
+@draw="${event => console.error('foo', 'bar', event)}"
+debug options='${JSON.stringify(options)}'
+  >${ws}</discovery-tile></div>
+</div>
+</div>
+</div>
+`;
+
+export const NoData = NoDataTemplate.bind({});
+NoData.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'g' STORE
+1 6 <% 'ts' STORE $g $ts NaN NaN NaN RAND ADDVALUE DROP %> FOR
+$g`,
   options: {...Usage.options}
 }
 
@@ -161,7 +190,7 @@ AutoRefreshWithRealData.args = {
   { 'marker' 'train' 'render' 'path' 'line' true }
 %> F LMAP
 }`,
-  options: {...Usage.options, autoRefresh: 2000, map: { mapType: 'STADIA_DARK' }}
+  options: {...Usage.options, autoRefresh: 2000, map: {mapType: 'STADIA_DARK'}}
 }
 
 export const CustomTilesThroughGlobalParams = Usage.bind({});
