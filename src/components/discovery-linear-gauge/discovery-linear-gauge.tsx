@@ -107,7 +107,6 @@ export class DiscoveryLinearGauge {
       options: this.innerOptions,
       chartOpts: this.chartOpts
     });
-    elementResizeEvent(this.el, () => this.resize());
   }
 
   private getCommonSeriesParam(color) {
@@ -353,6 +352,7 @@ export class DiscoveryLinearGauge {
     });
     this.drawChart();
     initial = true;
+    elementResizeEvent(this.graph, () => this.resize());
   }
 
   @Method()

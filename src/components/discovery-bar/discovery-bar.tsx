@@ -99,7 +99,6 @@ export class DiscoveryBarComponent {
       chartOpts: this.chartOpts
     });
     this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
-    elementResizeEvent(this.el, () => this.resize());
   }
 
   private getCommonSeriesParam(color) {
@@ -304,6 +303,7 @@ export class DiscoveryBarComponent {
         }
       });
       this.myChart.setOption(this.chartOpts || {});
+      elementResizeEvent(this.graph, () => this.resize());
       initial = true;
     });
   }

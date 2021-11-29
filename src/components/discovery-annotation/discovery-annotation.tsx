@@ -113,8 +113,7 @@ export class DiscoveryAnnotation {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel())
-    elementResizeEvent(this.el, () => this.resize());
+    this.chartOpts = this.convert(this.result as DataModel || new DataModel());
   }
 
   convert(data: DataModel) {
@@ -260,6 +259,7 @@ export class DiscoveryAnnotation {
         }
       });
       initial = true;
+      elementResizeEvent(this.graph, () => this.resize());
       this.myChart.setOption(this.chartOpts || {});
     });
   }

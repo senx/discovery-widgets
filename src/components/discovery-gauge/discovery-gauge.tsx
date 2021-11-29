@@ -115,7 +115,6 @@ export class DiscoveryGauge {
       options: this.innerOptions,
       chartOpts: this.chartOpts
     });
-    elementResizeEvent(this.el, () => this.resize());
   }
 
   private getCommonSeriesParam(color) {
@@ -302,6 +301,7 @@ export class DiscoveryGauge {
       });
       this.drawChart();
       initial = true;
+      elementResizeEvent(this.graph, () => this.resize());
     });
   }
 

@@ -97,7 +97,6 @@ export class DiscoveryLineComponent {
     });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-    elementResizeEvent(this.el, () => this.resize());
   }
 
   convert(data: DataModel) {
@@ -393,6 +392,7 @@ export class DiscoveryLineComponent {
       });
       this.myChart.setOption(this.chartOpts || {});
       initial = true;
+      elementResizeEvent(this.wrap, () => this.resize());
     });
   }
 

@@ -115,7 +115,6 @@ export class DiscoveryPieComponent {
       type: this.type,
       options: this.innerOptions,
     });
-    elementResizeEvent(this.el, () => this.resize());
   }
 
   private getCommonSeriesParam() {
@@ -276,6 +275,7 @@ export class DiscoveryPieComponent {
       });
       this.myChart.setOption(this.chartOpts || {});
       initial = true;
+      elementResizeEvent(this.graph, () => this.resize());
     });
   }
 

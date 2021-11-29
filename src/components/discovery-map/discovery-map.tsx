@@ -8,7 +8,7 @@ import {Utils} from "../../utils/utils";
 import Leaflet, {TileLayerOptions} from 'leaflet';
 import {MapLib} from "../../utils/map-lib";
 import {ColorLib} from "../../utils/color-lib";
-import { AntPath, antPath } from 'leaflet-ant-path';
+import {AntPath, antPath} from 'leaflet-ant-path';
 import elementResizeEvent from 'element-resize-event';
 import domtoimage from 'dom-to-image';
 
@@ -43,6 +43,7 @@ export class DiscoveryMapComponent {
   private divider: number = 1000;
   private LOG: Logger;
   private mapElement: HTMLDivElement;
+  private wrap: HTMLDivElement;
   private map: Leaflet.Map;
   private pointslayer = [];
   private bounds: Leaflet.LatLngBounds;
@@ -141,7 +142,6 @@ export class DiscoveryMapComponent {
     this.width = dims.w;
     this.height = dims.h;
     this.parsing = false;
-    elementResizeEvent(this.el, () => this.resize());
   }
 
   componentDidLoad() {
@@ -347,6 +347,7 @@ export class DiscoveryMapComponent {
     Promise.all([zoomPromise, tilesPromise])
       .then(() => setTimeout(() => {
         if (this.initial) {
+          elementResizeEvent(this.wrap, () => this.resize());
           this.draw.emit();
           this.initial = false;
         }
@@ -375,7 +376,7 @@ export class DiscoveryMapComponent {
 
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
-          if(i < size-1) {
+          if (i < size - 1) {
             const marker = Leaflet.circleMarker(
               g, {
                 radius: gts.baseRadius || MapLib.BASE_RADIUS,
@@ -448,7 +449,7 @@ export class DiscoveryMapComponent {
   private updateGtsPath(gts: any) {
     const path = MapLib.pathDataToLeaflet(gts.path);
     const group = Leaflet.featureGroup();
-    if ((path || []).length > 1 && !!gts.line && ( gts.render === 'dots' || gts.render === 'path')) {
+    if ((path || []).length > 1 && !!gts.line && (gts.render === 'dots' || gts.render === 'path')) {
       if (!!this.mapOpts.animate) {
         group.addLayer(new AntPath(path || [], {
           delay: 800, dashArray: [10, 100],
@@ -604,8 +605,10 @@ export class DiscoveryMapComponent {
   }
 
   render() {
-    return <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
-      <div ref={(el) => this.mapElement = el as HTMLDivElement}/>
+    return <div style={{width: '100%', height: '100%'}} ref={(el) => this.wrap = el as HTMLDivElement}>
+      <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
+        <div ref={(el) => this.mapElement = el as HTMLDivElement}/>
+      </div>
     </div>;
   }
 
