@@ -219,7 +219,7 @@ const TileResultChangeTypeTemplate = ({result, options}) => `
 <div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
   <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
       <div class="card-body">
-            <discovery-tile-result options="${JSON.stringify(options)}" type="line"
+            <discovery-tile-result options="${JSON.stringify(options)}" type="area"
             id="chart1"
             debug
             options='${JSON.stringify(options)}'

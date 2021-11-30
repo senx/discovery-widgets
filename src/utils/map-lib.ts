@@ -19,7 +19,26 @@ import {GTSLib} from './gts.lib';
 import {ColorLib} from './color-lib';
 import {Logger} from './logger';
 import {Param} from '../model/param';
-
+export enum MapTypes {
+  NONE = 'NONE',
+  DEFAULT = 'DEFAULT',
+  HOT = 'HOT',
+  TOPO = 'TOPO',
+  TOPO2 = 'TOPO2',
+  STADIA = 'STADIA',
+  STADIA_DARK = 'STADIA_DARK',
+  TONER = 'TONER',
+  TONER_LITE = 'TONER_LITE',
+  TERRAIN = 'TERRAIN',
+  ESRI = 'ESRI',
+  SATELLITE = 'SATELLITE',
+  OCEANS = 'OCEANS',
+  GRAY = 'GRAY',
+  GRAYSCALE = 'GRAYSCALE',
+  WATERCOLOR = 'WATERCOLOR',
+  CARTODB = 'CARTODB',
+  CARTODB_DARK = 'CARTODB_DARK',
+}
 export class MapLib {
   static BASE_RADIUS = 2;
   private static LOG: Logger = new Logger(MapLib, true);

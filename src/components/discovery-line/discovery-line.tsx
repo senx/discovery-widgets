@@ -239,15 +239,6 @@ export class DiscoveryLineComponent {
 
         }
         (opts.series as any[]).push(s);
-      } else {
-        this.LOG.debug(['convert', 'gts'], gts);
-        const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        (opts.series as any[]).push({
-          ...this.getCommonSeriesParam(color),
-          name: gts.label || '' + i,
-          data: (gts.values || [])
-        } as SeriesOption);
       }
     }
     // multi Y
