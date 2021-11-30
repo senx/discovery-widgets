@@ -1,6 +1,7 @@
 import readme from '../components/discovery-tile/readme.md';
 import {Param} from "../model/param";
 import {action, configureActions} from '@storybook/addon-actions';
+import {MapLib} from "../utils/map-lib";
 
 configureActions({
   depth: 10,

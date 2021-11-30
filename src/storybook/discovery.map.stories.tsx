@@ -143,6 +143,42 @@ $g`,
   options: {...Usage.options}
 }
 
+
+const MapTypesTemplate = ({url, ws, options}) => `
+<div class="row row-cols-1 row-cols-md-3" id="container"></div>
+<script>
+  const types = [
+    'DEFAULT', 'HOT', 'TOPO', 'TOPO2', 'STADIA', 'STADIA_DARK', 'TONER', 'TONER_LITE', 'TERRAIN', 'ESRI',
+    'SATELLITE', 'OCEANS', 'GRAY', 'GRAYSCALE', 'WATERCOLOR', 'CARTODB', 'CARTODB_DARK'
+  ];
+  const options  = JSON.parse('${JSON.stringify(options)}');
+$( document ).ready(() => {
+  const container = $('#container');
+  const ws = \`${ws}\`;
+  types.forEach(t => {
+    const card = $('<div>').addClass('card').css('height', '200px');
+    card.append($('<div>').addClass('card-header').html(t));
+    card.append($('<div>').addClass('card-body p-0').append( $('<discovery-tile>')
+        .attr('url', '${url}')
+        .attr('type', 'map')
+        .attr('debug', true)
+        .attr('options', JSON.stringify({...options, map: {mapType: t}}))
+        .html(ws)));
+    $('<div>').addClass('col col-mb-4 pb-4').append(card).appendTo(container);
+  });
+});
+</script>
+`;
+
+export const MapTypes = MapTypesTemplate.bind({});
+MapTypes.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'g' STORE
+1 6 <% 'ts' STORE $g $ts RAND 15 * RAND 15 * RAND RAND ADDVALUE DROP %> FOR
+$g`,
+  options: {...Usage.options}
+}
+
 const ShowHideTemplate = ({url, ws, language, type, options, unit, title}) => `<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
   <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
   <div class="card-body">
