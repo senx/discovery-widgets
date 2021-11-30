@@ -157,7 +157,7 @@ export class DiscoveryBarComponent {
           data: gts.v.map(d => {
             let ts: number | string = d[0];
             if (this.innerOptions.timeMode === 'date') {
-              ts = GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone);
+              ts =  GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone).replace('T', '\n') ;
             }
             if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
               return [d[d.length - 1], ts];
@@ -166,7 +166,7 @@ export class DiscoveryBarComponent {
             }
           })
         } as SeriesOption);
-      } else {
+      } else if(!gts.v) {
         this.innerOptions.timeMode = 'custom';
         this.LOG.debug(['convert', 'gts'], gts);
         (gts.columns || []).forEach((label, index) => {
