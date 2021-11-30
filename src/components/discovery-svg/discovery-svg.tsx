@@ -6,7 +6,6 @@ import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
-import elementResizeEvent from "element-resize-event";
 import domtoimage from 'dom-to-image';
 
 @Component({
@@ -78,11 +77,6 @@ export class DiscoverySvgComponent {
     this.height = dims.h;
     this.parseResult();
     this.processQueue();
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   convert(data: DataModel) {

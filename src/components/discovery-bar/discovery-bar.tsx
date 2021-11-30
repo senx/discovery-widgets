@@ -9,7 +9,6 @@ import {Utils} from "../../utils/utils";
 import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
 import {DataModel} from "../../model/dataModel";
-import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-bar',
@@ -99,12 +98,7 @@ export class DiscoveryBarComponent {
       chartOpts: this.chartOpts
     });
     this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
-    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
-
-/*  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
-  }*/
 
   private getCommonSeriesParam(color) {
     const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;

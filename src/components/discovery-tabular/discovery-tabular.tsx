@@ -5,7 +5,6 @@ import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
-import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-tabular',
@@ -61,7 +60,6 @@ export class DiscoveryTabular {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h;
-    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
 
   private static getHeaderParam(data: DataModel, i: number, j: number, key: string, def: string): string {
@@ -73,7 +71,7 @@ export class DiscoveryTabular {
   }
 
   private convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'},this.options || {}) as Param;
+    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
     let dataGrid: { name: string, values: any[], headers: string[] }[] = [];
@@ -153,7 +151,7 @@ export class DiscoveryTabular {
     return <div class="tabular-wrapper">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      {this.tabularData.map(d => <discovery-pageable data={d} options={this.options as Param} debug={this.debug} /> )}
+      {this.tabularData.map(d => <discovery-pageable data={d} options={this.options as Param} debug={this.debug}/>)}
     </div>
   }
 }

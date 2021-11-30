@@ -231,6 +231,7 @@ const TileResultChangeTypeTemplate = ({result, options}) => `
  <button class="btn btn-primary" id="btn2">Area</button>
  <button class="btn btn-primary" id="btn3">Bar</button>
  <button class="btn btn-primary" id="btn4">Pie</button>
+ <button class="btn btn-primary" id="btn5">Map</button>
  <script>
 window.onload = () => {
   const chart = document.querySelector('#chart1');
@@ -249,6 +250,10 @@ window.onload = () => {
 
   document.querySelector('#btn4').addEventListener('click', e => {
     chart.setAttribute('type', "pie")
+  })
+
+  document.querySelector('#btn5').addEventListener('click', e => {
+    chart.setAttribute('type', "map")
   })
 
 }

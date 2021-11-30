@@ -10,7 +10,6 @@ import {ChartType, ECharts} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
 import {CartesianAxisOption} from "echarts/lib/coord/cartesian/AxisModel";
 import {GridOption} from "echarts/lib/coord/cartesian/GridModel";
-import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-line',
@@ -47,7 +46,7 @@ export class DiscoveryLineComponent {
   private leftMargin: number;
 
   @Watch('type')
-  updateType(newValue:  string, oldValue: string) {
+  updateType(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
       setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
@@ -97,14 +96,7 @@ export class DiscoveryLineComponent {
     });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
-/*
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
-  }
-*/
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;

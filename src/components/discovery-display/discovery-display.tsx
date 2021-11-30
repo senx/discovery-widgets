@@ -9,7 +9,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
-import elementResizeEvent from "element-resize-event";
 import domtoimage from 'dom-to-image';
 
 dayjs.extend(relativeTime)
@@ -108,7 +107,6 @@ export class DiscoveryDisplayComponent {
       type: this.type,
       options: this.innerOptions,
     });
-    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
 
   componentDidLoad() {
@@ -120,6 +118,7 @@ export class DiscoveryDisplayComponent {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
     if (this.timer) {
       clearInterval(this.timer);
@@ -127,7 +126,6 @@ export class DiscoveryDisplayComponent {
     if (this.fitties) {
       this.fitties.unsubscribe();
     }
-    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private convert(dataModel: DataModel) {

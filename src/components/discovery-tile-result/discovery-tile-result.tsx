@@ -6,6 +6,7 @@ import {DataModel} from "../../model/dataModel";
 import {Utils} from "../../utils/utils";
 import {GTSLib} from "../../utils/gts.lib";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
+import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-tile-result',
@@ -43,14 +44,13 @@ export class DiscoveryTileResultComponent {
 
   private LOG: Logger;
   private wrapper: HTMLDivElement;
+  private tileEleme: HTMLDivElement;
   private title: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
 
-
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
-    console.log(newValue)
     if (newValue !== this.innerType) {
       setTimeout(() => this.innerType = this.type);
     }
@@ -119,6 +119,11 @@ export class DiscoveryTileResultComponent {
 
   componentDidLoad() {
     this.parseResult();
+    elementResizeEvent(this.tileEleme, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el);
   }
 
   handleZoom(event: CustomEvent<{ start: number, end: number }>) {
@@ -148,7 +153,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           debug={this.debug}
           onDataZoom={event => this.handleZoom(event)}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
         />;
       case 'annotation':
         return <discovery-annotation
@@ -156,7 +161,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           onDataZoom={event => this.handleZoom(event)}
           debug={this.debug}
         />;
@@ -166,7 +171,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           onDataZoom={event => this.handleZoom(event)}
           debug={this.debug}
         />;
@@ -176,7 +181,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'map':
@@ -184,7 +189,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'image':
@@ -192,7 +197,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'button':
@@ -201,7 +206,7 @@ export class DiscoveryTileResultComponent {
           url={this.url}
           type={this.innerType}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'gauge':
@@ -211,7 +216,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'linear-gauge':
@@ -220,7 +225,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'pie':
@@ -231,7 +236,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'tabular':
@@ -240,7 +245,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'svg':
@@ -249,7 +254,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       case 'input:text':
@@ -263,7 +268,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}
-          ref={(el) => this.tile = el}
+          ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
       default:
@@ -273,9 +278,11 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async resize() {
-    if (this.tile) {
-      (this.tile as any).resize();
-    }
+    setTimeout(() => {
+      if (this.tile) {
+        (this.tile as any).resize();
+      }
+    });
   }
 
   @Method()
@@ -312,12 +319,13 @@ export class DiscoveryTileResultComponent {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div class="discovery-tile"
+           ref={el => this.tileEleme = el}
            style={{
              backgroundColor: this.bgColor,
              color: this.fontColor,
              height: '100%', width: '100%'
            }}>
-        {this.chartTitle ? <h2 ref={(el) => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
+        {this.chartTitle ? <h2 ref={el => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
         <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el as HTMLDivElement}>
           {this.getView()}
         </div>

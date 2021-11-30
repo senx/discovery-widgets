@@ -9,7 +9,6 @@ import {GTSLib} from "../../utils/gts.lib";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
 import {SeriesOption} from "echarts/lib/util/types";
-import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-linear-gauge',
@@ -107,11 +106,6 @@ export class DiscoveryLinearGauge {
       options: this.innerOptions,
       chartOpts: this.chartOpts
     });
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private getCommonSeriesParam(color) {

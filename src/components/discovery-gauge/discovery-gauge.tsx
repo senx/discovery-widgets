@@ -9,7 +9,6 @@ import {GTSLib} from "../../utils/gts.lib";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
 import {SeriesOption} from "echarts/lib/util/types";
-import elementResizeEvent from "element-resize-event";
 
 @Component({
   tag: 'discovery-gauge',
@@ -107,11 +106,6 @@ export class DiscoveryGauge {
       options: this.innerOptions,
       chartOpts: this.chartOpts
     });
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private getCommonSeriesParam(color) {
@@ -305,7 +299,6 @@ export class DiscoveryGauge {
   async export(type: 'png' | 'svg' = 'png') {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
-
 
   render() {
     return <div style={{width: '100%', height: '100%'}}>

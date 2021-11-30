@@ -9,8 +9,6 @@ import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
 import {DataModel} from "../../model/dataModel";
 
-import elementResizeEvent from "element-resize-event";
-
 @Component({
   tag: 'discovery-annotation',
   styleUrl: 'discovery-annotation.scss',
@@ -114,11 +112,6 @@ export class DiscoveryAnnotation {
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
-    elementResizeEvent(this.el.parentElement, () => this.resize());
-  }
-
-  disconnectedCallback() {
-    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   convert(data: DataModel) {
@@ -155,7 +148,7 @@ export class DiscoveryAnnotation {
         } as SeriesOption);
       }
     }
-    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ?50 : 0);
+    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
     this.LOG.debug(['convert'], {
       expanded: this.expanded,
       series,
