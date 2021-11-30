@@ -47,8 +47,8 @@ export class DiscoveryLineComponent {
   private leftMargin: number;
 
   @Watch('type')
-  updateType(newValue: string, oldValue: string) {
-    if (newValue !== oldValue && !!this.myChart) {
+  updateType(newValue:  string, oldValue: string) {
+    if (newValue !== oldValue) {
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
       setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
     }
@@ -97,7 +97,14 @@ export class DiscoveryLineComponent {
     });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
+/*
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
+  }
+*/
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
@@ -392,7 +399,6 @@ export class DiscoveryLineComponent {
       });
       this.myChart.setOption(this.chartOpts || {});
       initial = true;
-      elementResizeEvent(this.wrap, () => this.resize());
     });
   }
 

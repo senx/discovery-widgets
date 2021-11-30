@@ -78,7 +78,11 @@ export class DiscoverySvgComponent {
     this.height = dims.h;
     this.parseResult();
     this.processQueue();
-    elementResizeEvent(this.el, () => this.resize());
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   convert(data: DataModel) {

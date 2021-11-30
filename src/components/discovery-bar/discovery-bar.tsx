@@ -99,7 +99,12 @@ export class DiscoveryBarComponent {
       chartOpts: this.chartOpts
     });
     this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
+    elementResizeEvent(this.el.parentElement, () => this.resize());
   }
+
+/*  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
+  }*/
 
   private getCommonSeriesParam(color) {
     const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
@@ -303,7 +308,6 @@ export class DiscoveryBarComponent {
         }
       });
       this.myChart.setOption(this.chartOpts || {});
-      elementResizeEvent(this.graph, () => this.resize());
       initial = true;
     });
   }

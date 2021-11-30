@@ -40,14 +40,6 @@ export class DiscoveryGauge {
   private divider: number = 1000;
   private myChart: ECharts;
 
-  @Watch('type')
-  updateType(newValue: string, oldValue: string) {
-    if (newValue !== oldValue && !!this.myChart) {
-      this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-      this.drawChart(true);
-    }
-  }
-
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
@@ -115,6 +107,11 @@ export class DiscoveryGauge {
       options: this.innerOptions,
       chartOpts: this.chartOpts
     });
+    elementResizeEvent(this.el.parentElement, () => this.resize());
+  }
+
+  disconnectedCallback() {
+    elementResizeEvent.unbind(this.el.parentElement);
   }
 
   private getCommonSeriesParam(color) {
@@ -301,7 +298,6 @@ export class DiscoveryGauge {
       });
       this.drawChart();
       initial = true;
-      elementResizeEvent(this.graph, () => this.resize());
     });
   }
 

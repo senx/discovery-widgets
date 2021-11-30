@@ -50,7 +50,8 @@ export class DiscoveryTileResultComponent {
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
-    if (newValue !== oldValue) {
+    console.log(newValue)
+    if (newValue !== this.innerType) {
       setTimeout(() => this.innerType = this.type);
     }
   }
