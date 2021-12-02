@@ -42,4 +42,5 @@ export type MapParams = {
   marker?: string;
   maxNativeZoom?: number;
   maxZoom?: number;
+  track?: boolean;
 };

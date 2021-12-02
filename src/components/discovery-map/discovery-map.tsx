@@ -10,6 +10,7 @@ import {MapLib} from "../../utils/map-lib";
 import {ColorLib} from "../../utils/color-lib";
 import {AntPath, antPath} from 'leaflet-ant-path';
 import domtoimage from 'dom-to-image';
+import 'leaflet-edgebuffer';
 
 @Component({
   tag: 'discovery-map',
@@ -182,7 +183,8 @@ export class DiscoveryMapComponent {
       this.LOG.debug(['displayMap'], 'map', map);
       const mapOpts: TileLayerOptions = {
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
-        maxZoom: this.mapOpts.maxZoom || 40
+        maxZoom: this.mapOpts.maxZoom || 40,
+        edgeBufferTiles: 5
       };
       if (map.attribution) {
         mapOpts.attribution = map.attribution;
@@ -301,11 +303,20 @@ export class DiscoveryMapComponent {
         if (!!this.bounds && this.bounds.isValid()) {
           if ((this.currentLat || this.mapOpts.startLat) && (this.currentLong || this.mapOpts.startLong)) {
             this.LOG.debug(['displayMap', 'setView'], 'fitBounds', 'already have bounds');
-            this.map.setView({
-                lat: this.currentLat || this.mapOpts.startLat || 0,
-                lng: this.currentLong || this.mapOpts.startLong || 0
-              }, this.currentZoom || this.mapOpts.startZoom || 10,
-              {animate: false, duration: 0});
+            if (this.mapOpts.track) {
+              this.map.setView({
+                  lat: this.mapOpts.startLat || 0,
+                  lng: this.mapOpts.startLong || 0
+                }, this.mapOpts.startZoom || 10,
+                {animate: true }
+              );
+            } else {
+              this.map.setView({
+                  lat: this.currentLat || this.mapOpts.startLat || 0,
+                  lng: this.currentLong || this.mapOpts.startLong || 0
+                }, this.currentZoom || this.mapOpts.startZoom || 10,
+                {animate: false});
+            }
           } else {
             this.LOG.debug(['displayMap', 'setView'], 'fitBounds', 'this.bounds', this.bounds);
             this.map.fitBounds(this.bounds, {padding: [1, 1], animate: false, duration: 0});
@@ -321,7 +332,8 @@ export class DiscoveryMapComponent {
             {
               animate: false,
               duration: 0
-            });
+            }
+          );
           zoomPromise = new Promise(resolve => this.map.once("moveend zoomend", () => resolve()));
         }
       }, 10);
@@ -348,7 +360,7 @@ export class DiscoveryMapComponent {
           this.draw.emit();
           this.initial = false;
         }
-      }, 500))
+      }, 500));
   }
 
   private icon(color: string, marker = '') {

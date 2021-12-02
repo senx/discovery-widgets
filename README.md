@@ -970,14 +970,14 @@ Sample:
 You can inject variables into `macro` defined in Tiles and modify value with an event. But variables must be declared at 
 the Dashboard level with an initial value.
 
-| Name | Type | Description |
-|------|------|-------------|
-| type | `variable` |  |
-| tags | `string[]` | Targets  |
-| value |  any | New value for this variable |
-| selector |  `string` | Variable's name |
+| Name | Type | Description                                                        |
+|------|------|--------------------------------------------------------------------|
+| type | `variable` |                                                                    |
+| tags | `string[]` | Targets                                                            |
+| value |  any | New value for this variable or a key/value map value for variables |
+| selector |  `string` | Variable's name                                                    |
 
-Complete Sample:
+Complete Sample for inputs:
 
 ````
 {
@@ -1003,6 +1003,37 @@ Complete Sample:
       'options' { 'eventHandler' 'type=(variable),tag=random' }
     } 
   ]
+}
+````
+For Auto-refreshes:
+````
+{
+ 'title' 'My Dashboard With events'
+ 'vars' {
+    'now' NOW
+ }
+ 'tiles' [
+   {
+     'type' 'display'
+     'title' 'Event data receiver'
+     'w' 2 'h' 1 'x' 2 'y' 0
+     'macro' <% $now %>
+     'options' { 'eventHandler' 'type=variable,tag=random' }
+   }
+   {
+     'type' 'display'
+     'title' 'Event emitter'
+     'w' 2 'h' 1 'x' 0 'y' 0
+     'options' {  'autoRefresh' 1 }
+     'macro' <% {
+        'data' NOW
+        'events' [
+          { 'tags' [ 'random' ] 'type' 'variable' 'value' { 'now' NOW } }
+         ]
+       }
+      %>
+   }
+ ]
 }
 ````
 
