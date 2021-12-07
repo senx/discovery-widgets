@@ -229,6 +229,14 @@ AutoRefreshWithRealData.args = {
   options: {...Usage.options, autoRefresh: 2000, map: {mapType: 'STADIA_DARK'}}
 }
 
+export const SimpleGTS = Usage.bind({});
+SimpleGTS.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING  + RENAME 'g' STORE
+  1 1000 <% 'ts' STORE $g $ts RAND + STU * NOW + RAND RAND RAND RAND ADDVALUE DROP %> FOR
+  $g %> FOR`
+}
+
 export const CustomTilesThroughGlobalParams = Usage.bind({});
 CustomTilesThroughGlobalParams.args = {
   ...InitialUsage.args,

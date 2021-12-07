@@ -48,8 +48,8 @@ export class Param {
   responsive?: boolean;
   autoRefresh?: number;
   showControls = false;
-  showErrors = true;
-  showStatus = true;
+  showErrors?: boolean;
+  showStatus?: boolean;
   expandAnnotation = false;
   showGTSTree?: boolean;
   foldGTSTree?: boolean;

@@ -39,6 +39,14 @@ export class DiscoveryPieComponent {
   private divider: number = 1000;
   private myChart: ECharts;
 
+  @Watch('type')
+  updateType(newValue: string, oldValue: string) {
+    if (newValue !== oldValue) {
+      this.chartOpts = this.convert(GTSLib.getData(this.result));
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    }
+  }
+
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
