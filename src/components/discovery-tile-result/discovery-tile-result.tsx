@@ -50,7 +50,7 @@ export class DiscoveryTileResultComponent {
   private tile: any;
 
   @Watch('type')
-  updateType(newValue: string, oldValue: string) {
+  updateType(newValue: string) {
     if (newValue !== this.innerType) {
       setTimeout(() => this.innerType = this.type);
     }
@@ -122,6 +122,7 @@ export class DiscoveryTileResultComponent {
     elementResizeEvent(this.tileEleme, () => this.resize());
   }
 
+  // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
     elementResizeEvent.unbind(this.el);
   }
@@ -294,6 +295,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async show(regexp: string) {
+    /* tslint:disable:no-string-literal */
     if (this.tile && this.tile['show']) {
       await (this.tile as any).show(regexp);
     }
@@ -301,6 +303,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async hide(regexp: string) {
+    /* tslint:disable:no-string-literal */
     if (this.tile && this.tile['hide']) {
       await (this.tile as any).hide(regexp);
     }
@@ -308,6 +311,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
+    /* tslint:disable:no-string-literal */
     if (this.tile && this.tile['export']) {
       return (this.tile as any).export(type);
     } else {

@@ -97,6 +97,7 @@ export class DiscoveryMapComponent {
     this.height = dims.h - 10;
   }
 
+  // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return await domtoimage.toPng(this.mapElement, {height: this.height, width: this.width});
@@ -207,9 +208,7 @@ export class DiscoveryMapComponent {
         this.tileLayerGroup.clearLayers();
       }
     } else {
-      this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer])
-      this.mainLayer.on('add', () => {
-      })
+      this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer]);
       this.map = Leaflet.map(this.mapElement, {
         preferCanvas: true,
         layers: this.mainLayer,
@@ -218,7 +217,7 @@ export class DiscoveryMapComponent {
       });
       this.geoJsonLayer.bringToBack();
       if (this.tilesLayer) {
-        this.tilesLayer.bringToBack(); // TODO: tester
+        this.tilesLayer.bringToBack(); // TODO: test it
         if (!isRefresh) {
           this.tilesLayer.addTo(this.tileLayerGroup);
         }

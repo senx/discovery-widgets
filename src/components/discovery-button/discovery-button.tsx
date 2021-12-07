@@ -51,6 +51,7 @@ export class DiscoveryButtonComponent {
 
   @Method()
   async resize() {
+    // empty
   }
 
   componentWillLoad() {

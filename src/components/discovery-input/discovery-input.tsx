@@ -79,6 +79,7 @@ export class DiscoveryInputComponent {
 
   @Method()
   async resize() {
+    // empty
   }
 
   componentWillLoad() {

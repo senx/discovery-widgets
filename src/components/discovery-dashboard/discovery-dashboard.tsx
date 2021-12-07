@@ -94,6 +94,7 @@ export class DiscoveryDashboardComponent {
     this.exec();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
     this.LOG.debug(['disconnectedCallback'], 'disconnected');
     if (this.timer) {
@@ -243,7 +244,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
             {this.result.description ? <p>{this.result.description}</p> : ''}
             <div class="discovery-dashboard-wrapper" style={{
-              width: '100%', //height: 'auto',
+              width: '100%',
               gridAutoRows: 'minmax(' + (this.result?.cellHeight || this.cellHeight) + 'px, auto)',
               gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
             }}>
