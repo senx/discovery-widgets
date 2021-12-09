@@ -207,6 +207,7 @@ export const SmallArea = ({url, ws, lang}) => `<div class="card" style="width: 3
         <discovery-tile url="${url}" type="line" lang="${lang}">${ws}</discovery-tile>
     </div>
 </div>`;
+
 SmallArea.args = {
   ...InitialUsage.args,
   ws: `@training/dataset0 $TOKEN AUTHENTICATE 100000000 MAXOPS
@@ -214,6 +215,7 @@ SmallArea.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
+
 export const amzairAaaTestXM1 = Usage.bind({});
 amzairAaaTestXM1.args = {
   ...InitialUsage.args,
@@ -258,4 +260,78 @@ AutoRefresh.args = {
     $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ADDVALUE DROP %> FOR
   $g`,
   options: {...new Param(), autoRefresh: 1}
+};
+
+
+export const FocusPoints = ({url, ws, lang, options}) => `<div class="card" style="width: 100%; height: 500px;">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="line" lang="${lang}"
+        options='${JSON.stringify(options)}'
+         id="chart" debug>${ws}</discovery-tile>
+    </div>
+    <div class="card-footer"><button id="btn" class="btn btn-primary">Focus</button></div>
+</div>
+ <script>
+window.onload = () => {
+  const chart = document.querySelector('#chart');
+  document.querySelector('#btn').addEventListener('click', e => {
+    chart.setFocus('data-[23]', 4).then(()=>{
+    })
+  })
+
+}
+</script>
+`;
+
+FocusPoints.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {... new Param(), timeMode: 'custom'}
+};
+
+export const FocusPointWithDate = ({url, ws, lang, options}) => `<div class="card" style="width: 100%; height: 500px;">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="line" lang="${lang}"
+        options='${JSON.stringify(options)}'
+         id="chart" debug>${ws}</discovery-tile>
+    </div>
+    <div class="card-footer"><button id="btn" class="btn btn-primary">Focus</button></div>
+</div>
+ <script>
+window.onload = () => {
+  const chart = document.querySelector('#chart');
+  document.querySelector('#btn').addEventListener('click', e => {
+    chart.setFocus('.*', 1515419993763851).then(()=>{
+    })
+  })
+
+}
+</script>
+`;
+
+FocusPointWithDate.args = {
+  ...InitialUsage.args,
+  ws: `@training/dataset0
+      // warp.store.hbase.puts.committed is the number of datapoints committed to
+      // HBase since the restart of the Store daemon
+      [ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW 10 d ] FETCH SORT
+      [ SWAP mapper.rate 1 0 0 ] MAP
+      [ SWAP bucketizer.mean $NOW 1 h 0 ] BUCKETIZE`,
+  options: {... new Param()}
+};
+
+
+export const FocusPointWithFullDate = FocusPointWithDate.bind({});
+
+FocusPointWithFullDate.args = {
+  ...InitialUsage.args,
+  ws: `@training/dataset0
+      // warp.store.hbase.puts.committed is the number of datapoints committed to
+      // HBase since the restart of the Store daemon
+      [ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW 10 d ] FETCH SORT
+      [ SWAP mapper.rate 1 0 0 ] MAP
+      [ SWAP bucketizer.mean $NOW 1 h 0 ] BUCKETIZE`,
+  options: {... new Param(), fullDateDisplay: true}
 };

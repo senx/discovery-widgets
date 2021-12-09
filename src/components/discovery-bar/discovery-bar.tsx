@@ -25,6 +25,7 @@ import {Utils} from "../../utils/utils";
 import {ColorLib} from "../../utils/color-lib";
 import {SeriesOption} from "echarts/lib/util/types";
 import {DataModel} from "../../model/dataModel";
+import {XAXisOption} from "echarts/types/dist/shared";
 
 @Component({
   tag: 'discovery-bar',
@@ -45,6 +46,7 @@ export class DiscoveryBarComponent {
   @Event() draw: EventEmitter<void>;
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() leftMarginComputed: EventEmitter<number>;
+  @Event() dataPointOver: EventEmitter<any>;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -57,6 +59,7 @@ export class DiscoveryBarComponent {
   private divider: number = 1000;
   private myChart: ECharts;
   private leftMargin: number;
+  private hasFocus: boolean = false;
 
   @Watch('result')
   updateRes() {
@@ -124,6 +127,28 @@ export class DiscoveryBarComponent {
       animation: false,
       large: true,
       clip: false,
+      emphasis: {
+        focus: 'series',
+        itemStyle: {
+          opacity: 1,
+          borderColor: color,
+          color: ColorLib.transparentize(color, 0.8)
+        }
+      },
+      blur: {
+        lineStyle: {color},
+        itemStyle: {
+          opacity: 0.8,
+          borderColor: color,
+          color: {
+            type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
+            colorStops: [
+              {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+              {offset: 1, color: ColorLib.transparentize(color, 0.3)}
+            ]
+          }
+        }
+      },
       lineStyle: {color},
       itemStyle: {
         opacity: 0.8,
@@ -133,8 +158,7 @@ export class DiscoveryBarComponent {
           colorStops: [
             {offset: 0, color: ColorLib.transparentize(color, 0.7)},
             {offset: 1, color: ColorLib.transparentize(color, 0.3)}
-          ],
-          global: false // false by default
+          ]
         }
       }
     } as SeriesOption
@@ -170,10 +194,10 @@ export class DiscoveryBarComponent {
         series.push({
           ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => {
+          data: gts.v.sort((a,b) => a[0] < b[0]?-1:1).map(d => {
             let ts: number | string = d[0];
-            if (this.innerOptions.timeMode === 'date') {
-              ts =  GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone).replace('T', '\n') ;
+            if (this.innerOptions.timeMode === 'date' && !this.innerOptions.fullDateDisplay) {
+              ts = GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone).replace('T', '\n').replace('Z', '');
             }
             if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
               return [d[d.length - 1], ts];
@@ -182,7 +206,7 @@ export class DiscoveryBarComponent {
             }
           })
         } as SeriesOption);
-      } else if(!gts.v) {
+      } else if (!gts.v) {
         this.innerOptions.timeMode = 'custom';
         this.LOG.debug(['convert', 'gts'], gts);
         (gts.columns || []).forEach((label, index) => {
@@ -219,6 +243,23 @@ export class DiscoveryBarComponent {
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
+          if (this.hasFocus) {
+            console.log(params)
+            const date = this.innerOptions.timeMode === 'date'
+              ? GTSLib.toTimestamp(params[0]?.data[0].replace('\n', 'T'), this.divider, this.innerOptions.timeZone)
+              : params[0]?.data[0];
+            let value = 0;
+            const regexp = '(' + (params as any[]).map(s => {
+              const gts = this.chartOpts.series[s.seriesIndex]
+              const coords = this.myChart.convertFromPixel({
+                yAxisIndex: gts.yAxisIndex || 0,
+                xAxisIndex: gts.xAxisIndex || 0
+              }, pos) || [0, 0];
+              value = coords[1];
+              return s.seriesName;
+            }).join('|') + ')';
+            this.dataPointOver.emit({date, name: regexp, value, meta: {}});
+          }
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
           return obj;
         }
@@ -317,6 +358,8 @@ export class DiscoveryBarComponent {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
+      this.el.addEventListener('mouseover', () => this.hasFocus = true);
+      this.el.addEventListener('mouseout', () => this.hasFocus = false);
       this.myChart.setOption(this.chartOpts || {});
       initial = true;
     });
@@ -346,6 +389,57 @@ export class DiscoveryBarComponent {
       }).filter(s => new RegExp(regexp).test(s.name))
     });
   }
+
+  @Method()
+  async setFocus(regexp: string, ts: number) {
+    let ttp = [];
+    const date = this.innerOptions.timeMode === 'date'
+      ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone).replace('T', '\n').replace('Z', '')
+      : ts;
+    let seriesIndex = 0;
+    let dataIndex = 0;
+    if (!!regexp) {
+      (this.chartOpts.series as any[])
+        .filter(s => new RegExp(regexp).test(s.name))
+        .forEach(s => {
+          seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
+          const data = s.data.filter(d => d[0] === date);
+          if (data && data[0]) {
+            dataIndex = s.data.indexOf(data[0])
+            ttp = [date, data[0][1]]
+          }
+        });
+      this.myChart.dispatchAction({
+        type: 'highlight',
+        seriesName: (this.chartOpts.series as any[]).filter(s => new RegExp(regexp).test(s.name)).map(s => s.name)
+      });
+    }
+    (this.chartOpts.xAxis as XAXisOption).axisPointer = {
+      ...(this.chartOpts.xAxis as XAXisOption).axisPointer || {},
+      value: dataIndex,
+      status: 'show'
+    };
+    (this.chartOpts.tooltip as any).show = true;
+    this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+  }
+
+  @Method()
+  async unFocus() {
+    if (!this.myChart) return;
+    (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
+    (this.chartOpts.xAxis as any).axisPointer = {
+      ...(this.chartOpts.xAxis as any).axisPointer || {},
+      status: 'hide'
+    };
+    (this.chartOpts.yAxis as any).axisPointer = {
+      ...(this.chartOpts.yAxis as any).axisPointer || {},
+      status: 'hide'
+    };
+    this.myChart.dispatchAction({type: 'hideTip'});
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+  }
+
 
   render() {
     return <div style={{width: '100%', height: '100%'}}>

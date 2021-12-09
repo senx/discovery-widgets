@@ -108,7 +108,19 @@ export class DiscoveryTileResultComponent {
         // empty
       });
     }
+    if (res.focus) {
+      this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
+        // empty
+      });
+    }
+  }
 
+
+  @Listen('draw', {capture: false})
+  onDrawHandler() {
+    if (this.tile) {
+      (this.tile as any).resize();
+    }
   }
 
   componentWillLoad() {
@@ -152,6 +164,15 @@ export class DiscoveryTileResultComponent {
       });
   }
 
+  handleDataPointOver(event: CustomEvent) {
+    ((this.innerResult as unknown as DataModel).events || [])
+      .filter(e => e.type === 'focus')
+      .forEach(e => {
+        e.value = event.detail;
+        this.discoveryEvent.emit(e);
+      });
+  }
+
   getView() {
     switch (this.innerType) {
       case "line":
@@ -170,6 +191,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           debug={this.debug}
           onDataZoom={event => this.handleZoom(event)}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           ref={el => this.tile = el || this.tile}
         />;
       case 'annotation':
@@ -180,6 +202,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           onDataZoom={event => this.handleZoom(event)}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'bar':
@@ -190,6 +213,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           onDataZoom={event => this.handleZoom(event)}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'display':
@@ -207,6 +231,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'image':
@@ -234,6 +259,7 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'linear-gauge':
@@ -243,6 +269,7 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'pie':
@@ -254,6 +281,7 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'tabular':
@@ -322,6 +350,22 @@ export class DiscoveryTileResultComponent {
     /* tslint:disable:no-string-literal */
     if (this.tile && this.tile['hide']) {
       await (this.tile as any).hide(regexp);
+    }
+  }
+
+  @Method()
+  async setFocus(regexp: string, ts: number, value?: number) {
+    /* tslint:disable:no-string-literal */
+    if (this.tile && this.tile['setFocus']) {
+      await (this.tile as any).setFocus(regexp, ts, value);
+    }
+  }
+
+  @Method()
+  async unFocus() {
+    /* tslint:disable:no-string-literal */
+    if (this.tile && this.tile['unFocus']) {
+      await (this.tile as any).unFocus();
     }
   }
 

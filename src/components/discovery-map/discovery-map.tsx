@@ -44,6 +44,7 @@ export class DiscoveryMapComponent {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
+  @Event() dataPointOver: EventEmitter<any>;
 
   @State() parsing: boolean = false;
   @State() toDisplay: string[] = [];
@@ -80,6 +81,9 @@ export class DiscoveryMapComponent {
   private mapOpts: MapParams;
   private initial = false;
   private hidden: { [key: string]: boolean } = {};
+  private poputTimeout;
+  private markerOver: Boolean = false;
+  private markersRef: any;
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -111,6 +115,9 @@ export class DiscoveryMapComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h - 10;
+    if (this.map) {
+      this.map.invalidateSize();
+    }
   }
 
   // noinspection JSUnusedLocalSymbols
@@ -323,7 +330,7 @@ export class DiscoveryMapComponent {
                   lat: this.mapOpts.startLat || 0,
                   lng: this.mapOpts.startLong || 0
                 }, this.mapOpts.startZoom || 10,
-                {animate: true }
+                {animate: true}
               );
             } else {
               this.map.setView({
@@ -503,8 +510,52 @@ export class DiscoveryMapComponent {
       let content = '';
       content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value || 'na'}</p>`;
       Object.keys(positionData.properties || []).forEach(k => content += `<b>${k}</b>: ${positionData.properties[k]}<br />`);
-      marker.bindPopup(content);
+      marker.on('mouseover', () => {
+        marker.openPopup();
+        this.markerOver = true;
+        if (!!this.poputTimeout) {
+          clearTimeout(this.poputTimeout)
+        }
+        this.poputTimeout = setTimeout(() => {
+          if (marker.isPopupOpen() && !this.markerOver) marker.closePopup();
+        }, 3000);
+        this.dataPointOver.emit({date: ts, name: positionData.key, value: value, meta: positionData.properties});
+      })
+      this.markersRef = {...this.markersRef || {}}
+      if (!this.markersRef[positionData.key]) {
+        this.markersRef[positionData.key] = {};
+      }
+      this.markersRef[positionData.key][ts] = marker;
+      marker.bindPopup(content, {autoClose: true});
     }
+    marker.on('mouseout', () => {
+      this.markerOver = false;
+    })
+  }
+
+  @Method()
+  async setFocus(regexp: string, ts: number) {
+    Object.keys(this.markersRef)
+      .filter(s => new RegExp(regexp).test(s))
+      .forEach(k => {
+
+        if (!!this.markersRef[k][ts]) {
+          this.markersRef[k][ts].openPopup();
+        }
+      });
+  }
+
+  @Method()
+  async unFocus() {
+    Object.keys(this.markersRef)
+      .forEach(k => {
+        (Object.keys(this.markersRef[k] || {}))
+          .forEach(ts => {
+            if (!!this.markersRef[k][ts]) {
+              if (this.markersRef[k][ts].isPopupOpen() && !this.markerOver) this.markersRef[k][ts].closePopup();
+            }
+          });
+      });
   }
 
   private updatePositionArray(positionData: any) {

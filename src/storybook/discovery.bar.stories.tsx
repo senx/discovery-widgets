@@ -215,3 +215,32 @@ CustomStyleAndAutoRefresh.args = {
     $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ABS ADDVALUE DROP %> FOR
   $g`
 };
+
+// noinspection JSUnresolvedFunction
+const FocusPointsTemplate = ({url, ws, lang, options}) => `<div class="card" style="width: 100%; height: 500px;">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="bar" lang="${lang}"
+        options='${JSON.stringify(options)}'
+         id="chart" debug>${ws}</discovery-tile>
+    </div>
+    <div class="card-footer"><button id="btn" class="btn btn-primary">Focus</button></div>
+</div>
+ <script>
+window.onload = () => {
+  const chart = document.querySelector('#chart');
+  document.querySelector('#btn').addEventListener('click', () => {
+    chart.setFocus('data-[23]', 4).then(()=>{
+    })
+  });
+}
+</script>
+`;
+
+export const FocusPoints = FocusPointsTemplate.bind({});
+FocusPoints.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {...new Param(), timeMode: 'custom'}
+};

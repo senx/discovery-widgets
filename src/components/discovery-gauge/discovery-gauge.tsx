@@ -43,6 +43,7 @@ export class DiscoveryGauge {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
+  @Event() dataPointOver: EventEmitter<any>;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -305,6 +306,9 @@ export class DiscoveryGauge {
           setTimeout(() => this.draw.emit());
           initial = false;
         }
+      });
+      this.myChart.on('mouseover', (event: any) => {
+        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
       this.drawChart();
       initial = true;

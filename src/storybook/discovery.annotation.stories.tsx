@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 /*
  *   Copyright 2021  SenX S.A.S.
  *
@@ -38,13 +40,13 @@ InitialUsage.args = {
 export const InitialUsageWithLegend = Usage.bind({});
 InitialUsageWithLegend.args = {
   ...InitialUsage.args,
-  options: {... new Param(), showLegend: true}
+  options: {...new Param(), showLegend: true}
 };
 
 export const InitialUsageWithFullDateDisplay = Usage.bind({});
 InitialUsageWithFullDateDisplay.args = {
   ...InitialUsage.args,
-  options: {... new Param(), fullDateDisplay: true}
+  options: {...new Param(), fullDateDisplay: true}
 };
 
 export const WithXRange = Usage.bind({});
@@ -182,10 +184,10 @@ debug options='${JSON.stringify(options)}'
  <script>
 window.onload = () => {
   const chart = document.querySelector('#chart1');
-  document.querySelector('#show').addEventListener('click', e => {
+  document.querySelector('#show').addEventListener('click', () => {
     chart.show('gts-2{}')
   });
-  document.querySelector('#hide').addEventListener('click', e => {
+  document.querySelector('#hide').addEventListener('click', () => {
     chart.hide('gts-2{}')
   });
 }
@@ -199,3 +201,32 @@ ShowHide.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN T ADDVALUE DROP %> FOR
   $g %> FOR`
 }
+
+// noinspection JSUnresolvedFunction
+const FocusPointsTemplate = ({url, ws, lang, options}) => `<div class="card" style="width: 100%; height: 500px;">
+    <div class="card-body">
+        <discovery-tile url="${url}" type="annotation" lang="${lang}"
+        options='${JSON.stringify(options)}'
+         id="chart" debug>${ws}</discovery-tile>
+    </div>
+    <div class="card-footer"><button id="btn" class="btn btn-primary">Focus</button></div>
+</div>
+ <script>
+window.onload = () => {
+  const chart = document.querySelector('#chart');
+  document.querySelector('#btn').addEventListener('click', () => {
+    chart.setFocus('data-[23]', 4).then(()=>{
+    })
+  });
+}
+</script>
+`;
+
+export const FocusPoints = FocusPointsTemplate.bind({});
+FocusPoints.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts NaN NaN NaN T ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {...new Param(), timeMode: 'custom'}
+};

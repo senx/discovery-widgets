@@ -68,6 +68,7 @@ export default {
   'draw',
   'leftMarginComputed',
   'dataZoom',
+  'dataPointOver'
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
 // @ts-ignore
@@ -91,7 +92,7 @@ Usage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
   language: 'warpscript',
   type: 'line',
-  ws: `1 4 <% DROP NEWGTS 'g' STORE
+  ws: `1 4 <% TOSTRING 'i' STORE NEWGTS 'data-' $i + RENAME 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`,
   options: new Param()

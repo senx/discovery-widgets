@@ -126,6 +126,20 @@ export class DiscoveryTileComponent {
     }
   }
 
+  @Method()
+  async setFocus(regexp: string, ts: number, value?: number) {
+    if (this.tileResult) {
+      await this.tileResult.setFocus(regexp, ts, value);
+    }
+  }
+
+  @Method()
+  async unFocus() {
+    if (this.tileResult) {
+      await this.tileResult.unFocus();
+    }
+  }
+
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {

@@ -21,6 +21,39 @@ import {DataModel} from "../model/dataModel";
 
 export class Utils {
 
+  static throttle(func, wait, leading, trailing, context) {
+    let ctx, args, result;
+    let timeout = null;
+    let previous = 0;
+    let later = () => {
+      previous = new Date().getMilliseconds();
+      timeout = null;
+      result = func.apply(ctx, args);
+    };
+    return () => {
+      let now = new Date().getMilliseconds();
+      if (!previous && !leading) previous = now;
+      const remaining = wait - (now - previous);
+      ctx = context || this;
+      args = arguments;
+      // Si la période d'attente est écoulée
+      if (remaining <= 0) {
+        // Réinitialiser les compteurs
+        clearTimeout(timeout);
+        timeout = null;
+        // Enregistrer le moment du dernier appel
+        previous = now;
+        // Appeler la fonction
+        result = func.apply(ctx, args);
+      } else if (!timeout && trailing) {
+        // Sinon on s’endort pendant le temps restant
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
+
+
   static httpPost(theUrl, payload, headers: { [key: string]: string; }) {
     return new Promise((resolve, reject) => {
       const xmlHttp = new XMLHttpRequest();
@@ -103,6 +136,7 @@ export class Utils {
       vars: undefined,
       audio: undefined,
       zoom: undefined,
+      focus: undefined,
     }
     if (eventHandler) {
       let tag = '.*';
@@ -141,6 +175,9 @@ export class Utils {
             break;
           case 'zoom':
             parsed.zoom = evt.value;
+            break;
+          case 'focus':
+            parsed.focus = evt.value;
             break;
           default:
           // nothing

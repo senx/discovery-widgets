@@ -43,6 +43,7 @@ export class DiscoveryAnnotation {
 
   @Event() draw: EventEmitter<void>;
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
+  @Event() dataPointOver: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -56,6 +57,7 @@ export class DiscoveryAnnotation {
   private displayExpander: boolean = false;
   private myChart: ECharts;
   private divider: number = 1000;
+  private hasFocus: boolean = false;
 
   @Watch('result')
   updateRes() {
@@ -186,11 +188,22 @@ export class DiscoveryAnnotation {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'line'
+          type: 'line',
+          lineStyle: {
+            color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
+          }
+
         },
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
+          if (this.hasFocus) {
+            const date = this.innerOptions.timeMode === 'date'
+              ? params[0]?.data[0] * this.divider
+              : params[0]?.data[0];
+            const regexp = '(' + (params as any[]).map(s => s.seriesName).join('|') + ')';
+            this.dataPointOver.emit({date, name: regexp, value: 0, meta: {}});
+          }
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
           return obj;
         }
@@ -265,6 +278,9 @@ export class DiscoveryAnnotation {
           initial = false;
         }
       });
+      this.myChart.on('mouseover', (event: any) => {
+        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      });
       this.myChart.on('dataZoom', (event: any) => {
         const {start, end} = (event.batch || [])[0] || {};
         if (start && end) {
@@ -272,6 +288,8 @@ export class DiscoveryAnnotation {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
+      this.el.addEventListener('mouseover', () => this.hasFocus = true);
+      this.el.addEventListener('mouseout', () => this.hasFocus = false);
       initial = true;
       this.myChart.setOption(this.chartOpts || {});
     });
@@ -287,6 +305,78 @@ export class DiscoveryAnnotation {
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
+  }
+
+  @Method()
+  async setFocus(regexp: string, ts: number) {
+    if(!this.myChart) return;
+    if (typeof ts === 'string') ts = parseInt(ts, 10);
+    let ttp = [];
+    const date = this.innerOptions.timeMode === 'date'
+      ? ts / this.divider
+      : ts;
+    let seriesIndex = 0;
+    let dataIndex = 0;
+    if (!!regexp) {
+      (this.chartOpts.series as any[])
+        .filter(s => new RegExp(regexp).test(s.name))
+        .forEach(s => {
+          seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
+          const data = s.data.filter(d => d[0] === date);
+          if (data && data[0]) {
+            dataIndex = s.data.indexOf(data[0])
+            s.markPoint = {
+              symbol: 'rect',
+              symbolSize: [4, 30],
+              data: [{
+                name: s.name,
+                itemStyle: {
+                  color: '#fff',
+                  borderColor: s.itemStyle.color,
+                },
+                yAxis: data[0][1],
+                xAxis: date
+              }]
+            }
+            ttp = [date, data[0][1]]
+          }
+        });
+      this.myChart.dispatchAction({
+        type: 'highlight',
+        seriesName: (this.chartOpts.series as any[]).filter(s => new RegExp(regexp).test(s.name)).map(s => s.name)
+      });
+    }
+    (this.chartOpts.xAxis as any).axisPointer = {
+      ...(this.chartOpts.xAxis as any).axisPointer || {},
+      value: date,
+      status: 'show'
+    };
+    (this.chartOpts.tooltip as any).show = true;
+    this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+  }
+
+  @Method()
+  async unFocus() {
+    if(!this.myChart) return;
+    (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
+    (this.chartOpts.xAxis as any).axisPointer = {
+      ...(this.chartOpts.xAxis as any).axisPointer || {},
+      status: 'hide'
+    };
+
+    (this.chartOpts.yAxis as any).axisPointer = {
+      ...(this.chartOpts.yAxis as any).axisPointer || {},
+      status: 'hide'
+    };
+    this.myChart.dispatchAction({type: 'hideTip'});
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+  }
+
+  private hideMarkers() {
+    if(!this.myChart) return;
+    (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   render() {
@@ -306,7 +396,7 @@ export class DiscoveryAnnotation {
         {this.rendering ? <div class="discovery-chart-spinner">
           <discovery-spinner>Rendering data...</discovery-spinner>
         </div> : ''}
-        <div ref={(el) => this.graph = el as HTMLDivElement}/>
+        <div ref={(el) => this.graph = el as HTMLDivElement} onMouseOver={() => this.hideMarkers()}/>
       </div>
     </Host>
   }

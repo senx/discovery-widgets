@@ -1,19 +1,3 @@
-/*
- *   Copyright 2021  SenX S.A.S.
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- */
-
 /* eslint-disable */
 /* tslint:disable */
 /**
@@ -24,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DataModel } from "./model/dataModel";
 import { ChartType } from "./model/types";
 import { Param } from "./model/param";
+import { XAXisOption } from "echarts/types/dist/shared";
 import { DiscoveryEvent } from "./model/discoveryEvent";
 import { Tile } from "./model/tile";
 import { Dashboard } from "./model/dashboard";
@@ -36,9 +21,11 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setFocus": (regexp: string, ts: number) => Promise<void>;
         "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "type": ChartType;
+        "unFocus": () => Promise<void>;
         "unit": string;
         "width": number;
     }
@@ -50,9 +37,11 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setFocus": (regexp: string, ts: number) => Promise<void>;
         "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "type": ChartType;
+        "unFocus": () => Promise<void>;
         "unit": string;
         "width": number;
     }
@@ -128,9 +117,11 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
         "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "type": ChartType;
+        "unFocus": () => Promise<void>;
         "unit": string;
         "width": number;
     }
@@ -155,8 +146,10 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setFocus": (regexp: string, ts: number) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "type": ChartType;
+        "unFocus": () => Promise<void>;
         "width": number;
     }
     interface DiscoveryModal {
@@ -223,9 +216,11 @@ export namespace Components {
         "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
+        "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
         "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "type": ChartType;
+        "unFocus": () => Promise<void>;
         "unit": string;
         "url": string;
         "vars": string;
@@ -239,10 +234,12 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
+        "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
         "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "start": number;
         "type": ChartType;
+        "unFocus": () => Promise<void>;
         "unit": string;
         "url": string;
         "width": number;
@@ -389,6 +386,7 @@ declare namespace LocalJSX {
     interface DiscoveryAnnotation {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
@@ -400,6 +398,7 @@ declare namespace LocalJSX {
     interface DiscoveryBar {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: CustomEvent<number>) => void;
@@ -448,6 +447,7 @@ declare namespace LocalJSX {
     interface DiscoveryGauge {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -481,6 +481,7 @@ declare namespace LocalJSX {
     interface DiscoveryLine {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: CustomEvent<number>) => void;
@@ -493,6 +494,7 @@ declare namespace LocalJSX {
     interface DiscoveryLinearGauge {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -503,6 +505,7 @@ declare namespace LocalJSX {
     interface DiscoveryMap {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -525,6 +528,7 @@ declare namespace LocalJSX {
     interface DiscoveryPie {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

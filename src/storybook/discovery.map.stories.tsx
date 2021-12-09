@@ -203,6 +203,7 @@ const ShowHideTemplate = ({url, ws, language, type, options, unit, title}) => `<
 unit="${unit || ''}"
 chart-title="${title || ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
+@dataPointOver="${event => console.log('dataPointOver', event)}"
 debug options='${JSON.stringify(options)}'
   >${ws}</discovery-tile>
 </div>
@@ -273,8 +274,7 @@ CustomTilesThroughGlobalParams.args = {
 export const CustomTilesThroughOptions = Usage.bind({});
 CustomTilesThroughOptions.args = {
   ...InitialUsage.args,
-  ws: `
-      NEWGTS 'g' STORE
+  ws: `NEWGTS 'g' STORE
 0 100 <% 'ts' STORE $g NOW $ts 10000 - * RAND RAND RAND RAND ADDVALUE DROP %> FOR
 $g`,
   options: {...Usage.options, map: {mapType: 'NONE', tiles: ['http://a.tile.stamen.com/toner/{z}/{x}/{y}.png']}}
