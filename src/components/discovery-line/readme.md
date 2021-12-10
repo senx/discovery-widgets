@@ -22,6 +22,7 @@
 
 | Event                | Description | Type                                                                     |
 | -------------------- | ----------- | ------------------------------------------------------------------------ |
+| `dataPointOver`      |             | `CustomEvent<any>`                                                       |
 | `dataZoom`           |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
 | `draw`               |             | `CustomEvent<void>`                                                      |
 | `leftMarginComputed` |             | `CustomEvent<number>`                                                    |
@@ -59,6 +60,16 @@ Type: `Promise<void>`
 
 
 
+### `setFocus(regexp: string, ts: number, value?: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
 
 
@@ -70,6 +81,16 @@ Type: `Promise<void>`
 
 
 ### `show(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `unFocus() => Promise<void>`
 
 
 

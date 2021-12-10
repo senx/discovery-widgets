@@ -71,6 +71,16 @@ Type: `Promise<void>`
 
 
 
+### `setFocus(regexp: string, ts: number, value?: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
 
 
@@ -82,6 +92,16 @@ Type: `Promise<void>`
 
 
 ### `show(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `unFocus() => Promise<void>`
 
 
 

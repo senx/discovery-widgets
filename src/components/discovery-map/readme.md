@@ -19,9 +19,10 @@
 
 ## Events
 
-| Event  | Description | Type                |
-| ------ | ----------- | ------------------- |
-| `draw` |             | `CustomEvent<void>` |
+| Event           | Description | Type                |
+| --------------- | ----------- | ------------------- |
+| `dataPointOver` |             | `CustomEvent<any>`  |
+| `draw`          |             | `CustomEvent<void>` |
 
 
 ## Methods
@@ -56,7 +57,27 @@ Type: `Promise<void>`
 
 
 
+### `setFocus(regexp: string, ts: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `show(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `unFocus() => Promise<void>`
 
 
 

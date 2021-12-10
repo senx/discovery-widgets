@@ -20,9 +20,10 @@
 
 ## Events
 
-| Event  | Description | Type                |
-| ------ | ----------- | ------------------- |
-| `draw` |             | `CustomEvent<void>` |
+| Event           | Description | Type                |
+| --------------- | ----------- | ------------------- |
+| `dataPointOver` |             | `CustomEvent<any>`  |
+| `draw`          |             | `CustomEvent<void>` |
 
 
 ## Methods
