@@ -364,7 +364,7 @@ $g`,
 
 
 // @ts-ignore
-const FocusSyncDashboardTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
+const FocusSyncDashboardTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div class="card bg-dark" style="width: 100%;min-height: 500px">
 <div class="card-body">
 <discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"
@@ -375,7 +375,7 @@ debug options='${JSON.stringify(options)}'
 </div>
 </div>`;
 
-export const FocusSyncWithinDashbord = ZoomSyncDashboardTemplate.bind({});
+export const FocusSyncWithinDashbord = FocusSyncDashboardTemplate.bind({});
 FocusSyncWithinDashbord.args = {
   cols: 12,
   cellHeight: 220,
@@ -383,10 +383,44 @@ FocusSyncWithinDashbord.args = {
   url: 'https://warp.senx.io/api/v0/exec',
   ws: `{
      'title' 'My Dashboard with focus sync'
+     'options' {
+        'scheme' 'CHARTANA'
+        'map' { 'mapType' 'STADIA_DARK'  }
+          'customStyles' {
+            '.discovery-dashboard-main'
+            <'
+    font-size       : 12px;
+    line-height     : 1.52;
+    background-color: #333540;
+    color           : #FFFFFF;
+
+    --wc-split-gutter-color            : #404040;
+    --warp-view-pagination-bg-color    : #343a40 !important;
+    --warp-view-pagination-border-color: #6c757d;
+    --warp-view-datagrid-odd-bg-color  : rgba(255, 255, 255, .05);
+    --warp-view-datagrid-odd-color     : #FFFFFF;
+    --warp-view-datagrid-even-bg-color : #212529;
+    --warp-view-datagrid-even-color    : #FFFFFF;
+    --warp-view-font-color             : #FFFFFF;
+    --warp-view-chart-label-color      : #FFFFFF;
+    --gts-stack-font-color             : #FFFFFF;
+    --warp-view-resize-handle-color    : #111111;
+    --warp-view-chart-legend-bg        : #000;
+    --gts-labelvalue-font-color        : #ccc;
+    --gts-separator-font-color         : #FFFFFF;
+    --gts-labelname-font-color         : rgb(105, 223, 184);
+    --gts-classname-font-color         : rgb(126, 189, 245);
+    --warp-view-chart-legend-color     : #FFFFFF;
+    --wc-tab-header-color              : #FFFFFF;
+    --wc-tab-header-selected-color     : #404040;
+    --warp-view-tile-background        : #3A3C46;
+            '>
+        }
+     }
      'tiles' [
         {
-          'type' 'line' 'x' 0 'y' 0 'w' 6 'h' 1
-          'options' { 'eventHandler' 'type=focus,tag=chart1' }
+          'type' 'area' 'x' 0 'y' 0 'w' 6 'h' 1
+          'options' { 'eventHandler' 'type=focus,tag=(chart1|map)' }
           'macro' <%
            NEWGTS 'g' STORE
             0 10 <% 'ts' STORE $g NOW ->TSELEMENTS [ 0 5 ] SUBLIST TSELEMENTS-> $ts s - RAND RAND RAND RAND ADDVALUE DROP %> FOR
@@ -400,8 +434,8 @@ FocusSyncWithinDashbord.args = {
           %>
         }
         {
-          'type' 'line' 'x' 6 'y' 0 'w' 6 'h' 1
-          'options' { 'eventHandler' 'type=focus,tag=chart2' }
+          'type' 'area' 'x' 6 'y' 0 'w' 6 'h' 1
+          'options' { 'eventHandler' 'type=focus,tag=(chart2|map)' }
           'macro' <%
             NEWGTS 'g' STORE
             0 10 <% 'ts' STORE $g NOW ->TSELEMENTS [ 0 5 ] SUBLIST TSELEMENTS-> $ts s - RAND RAND RAND RAND ADDVALUE DROP %> FOR
@@ -410,6 +444,21 @@ FocusSyncWithinDashbord.args = {
               'data' $data
               'events' [
                 { 'tags' [ 'chart1' ] 'type' 'focus' }
+              ]
+            }
+          %>
+        }
+        {
+          'type' 'map' 'x' 0 'y' 1 'w' 12 'h' 2
+          'options' { 'eventHandler' 'type=focus,tag=chart.*' }
+          'macro' <%
+            NEWGTS 'g' STORE
+            0 10 <% 'ts' STORE $g NOW ->TSELEMENTS [ 0 5 ] SUBLIST TSELEMENTS-> $ts s - RAND 50 * RAND  50 * RAND RAND ADDVALUE DROP %> FOR
+            $g 'data' STORE
+            {
+              'data' $data
+              'events' [
+                { 'tags' [ 'map' ] 'type' 'focus' }
               ]
             }
           %>

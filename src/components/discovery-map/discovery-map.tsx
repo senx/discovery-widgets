@@ -114,7 +114,7 @@ export class DiscoveryMapComponent {
   async resize() {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
-    this.height = dims.h - 10;
+    this.height = dims.h;
     if (this.map) {
       this.map.invalidateSize();
     }
