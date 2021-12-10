@@ -313,6 +313,38 @@ export class DiscoveryLineComponent {
       (opts.grid as GridOption).top = 30 * (i - 1);
     }
     this.LOG.debug(['convert', 'opts'], {opts});
+
+
+    const markArea = (this.innerOptions.thresholds || [])
+      .filter(t => !!t.fill)
+      .map(t => {
+        return [{
+          itemStyle: {color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0)},
+          yAxis: t.value || 0
+        }, {yAxis: 0}];
+      });
+
+    const markLine = (this.innerOptions.thresholds || [])
+      .map(t => {
+        return {
+          name: t.value || 0,
+          label: {color: t.color || '#D81B60', position: 'insideEndTop'},
+          lineStyle: {color: t.color || '#D81B60', type: 'dashed'},
+          yAxis: t.value || 0
+        }
+      });
+    (opts.series as SeriesOption[]).push({
+      name: '',
+      type: 'line',
+      symbolSize: 0,
+      data: [],
+      markArea: {data: markArea},
+      markLine: {
+        emphasis: {lineStyle: {width: 1}},
+        symbol: ['none', 'none'],
+        data: markLine
+      }
+    });
     return opts as EChartsOption;
   }
 
@@ -446,7 +478,7 @@ export class DiscoveryLineComponent {
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
-    if(!this.myChart) return;
+    if (!this.myChart) return;
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
       ? ts / this.divider
@@ -504,7 +536,7 @@ export class DiscoveryLineComponent {
 
   @Method()
   async unFocus() {
-    if(!this.myChart) return;
+    if (!this.myChart) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     if (GTSLib.isArray(this.chartOpts.xAxis)) {
       (this.chartOpts.xAxis as any[])

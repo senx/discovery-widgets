@@ -335,3 +335,15 @@ FocusPointWithFullDate.args = {
       [ SWAP bucketizer.mean $NOW 1 h 0 ] BUCKETIZE`,
   options: {... new Param(), fullDateDisplay: true}
 };
+
+
+export const WithThreshold = Usage.bind({});
+WithThreshold.args = {
+  ...Usage.args,
+  type: 'line',
+  unit: 'my unit',
+  ws: `1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {... new Param(), thresholds: [ { value: 0.25, color: '#77BE69', fill: true }, { value: 0.5, color: '#ff9900' } , { value: 0.75 } ]}
+};
