@@ -194,7 +194,7 @@ export class DiscoveryBarComponent {
         series.push({
           ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.sort((a,b) => a[0] < b[0]?-1:1).map(d => {
+          data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
             let ts: number | string = d[0];
             if (this.innerOptions.timeMode === 'date' && !this.innerOptions.fullDateDisplay) {
               ts = GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone).replace('T', '\n').replace('Z', '');
@@ -244,7 +244,6 @@ export class DiscoveryBarComponent {
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
           if (this.hasFocus) {
-            console.log(params)
             const date = this.innerOptions.timeMode === 'date'
               ? GTSLib.toTimestamp(params[0]?.data[0].replace('\n', 'T'), this.divider, this.innerOptions.timeZone)
               : params[0]?.data[0];
@@ -326,29 +325,44 @@ export class DiscoveryBarComponent {
       series
     } as EChartsOption;
     const markArea = (this.innerOptions.thresholds || [])
-      .filter(t => !!t.fill)
+      // .filter(t => !!t.fill)
       .map(t => {
-        return [{
-          itemStyle: {color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0)},
-          yAxis: t.value || 0
-        }, {yAxis: 0}];
+        const m = [{itemStyle: {color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0)}}, {}] as any[];
+        if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
+          m[0].xAxis = t.value || 0;
+          m[1].xAxis = 0;
+          m[0].name = `${t.value || 0}`
+          m[0].label = {color: t.color || '#f44336', position: 'insideTopRight'}
+        } else {
+          m[0].yAxis = t.value || 0;
+          m[1].yAxis = 0;
+        }
+        return m;
       });
 
     const markLine = (this.innerOptions.thresholds || [])
       .map(t => {
-        return {
+        const m = {
           name: t.value || 0,
-          label: {color: t.color || '#D81B60', position: 'insideEndTop'},
-          lineStyle: {color: t.color || '#D81B60', type: 'dashed'},
-          yAxis: t.value || 0
+          label: {color: t.color || '#f44336', position: 'insideEndTop'},
+          lineStyle: {color: t.color || '#f44336', type: 'dashed'}
+        } as any;
+        if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
+          m.xAxis = t.value || 0;
+          m.label.show = false;
+        } else {
+          m.yAxis = t.value || 0;
         }
+        return m;
       });
     (opts.series as SeriesOption[]).push({
       name: '',
       type: 'line',
       symbolSize: 0,
       data: [],
-      markArea: {data: markArea},
+      markArea: {
+        data: markArea
+      },
       markLine: {
         emphasis: {lineStyle: {width: 1}},
         symbol: ['none', 'none'],

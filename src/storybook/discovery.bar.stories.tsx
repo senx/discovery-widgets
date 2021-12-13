@@ -78,7 +78,7 @@ InitialUsageWithMixedData.args = {
 export const InitialUsageWithLegend = Usage.bind({});
 InitialUsageWithLegend.args = {
   ...InitialUsage.args,
-  options: {... new Param(), showLegend: true}
+  options: {...new Param(), showLegend: true}
 };
 
 export const InitialUsageWithTimeStamp = InitialUsage.bind({});
@@ -90,7 +90,7 @@ InitialUsageWithTimeStamp.args = {
   1 10 <% 'ts' STORE $g $ts NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g
 %> FOR`,
-options: {...InitialUsage.args.options, timeMode: 'timestamp'}
+  options: {...InitialUsage.args.options, timeMode: 'timestamp'}
 };
 
 export const RealData = Usage.bind({});
@@ -132,7 +132,7 @@ ChartWithCustomData.args = {
 export const ChartWithCustomDataAndLegend = Usage.bind({});
 ChartWithCustomDataAndLegend.args = {
   ...ChartWithCustomData.args,
-  options: {... new Param(), showLegend: true}
+  options: {...new Param(), showLegend: true}
 }
 
 export const HorizontalStackedBarChart = Usage.bind({});
@@ -149,7 +149,7 @@ false RESETS
 export const HorizontalStackedBarChartAndLegend = Usage.bind({});
 HorizontalStackedBarChartAndLegend.args = {
   ...HorizontalStackedBarChart.args,
-  options: {... new Param(), showLegend: true}
+  options: {...new Param(), showLegend: true}
 }
 
 export const HorizontalStackedBarChartWithCustomData = Usage.bind({});
@@ -203,7 +203,7 @@ WithCustomStyle.args = {
 %> FOR`
 };
 
-export const  CustomStyleAndAutoRefresh= WithCustomStyle.bind({});
+export const CustomStyleAndAutoRefresh = WithCustomStyle.bind({});
 CustomStyleAndAutoRefresh.args = {
   ...Usage.args,
   type: 'bar',
@@ -245,7 +245,6 @@ FocusPoints.args = {
   options: {...new Param(), timeMode: 'custom'}
 };
 
-
 export const WithThreshold = Usage.bind({});
 WithThreshold.args = {
   ...InitialUsage.args,
@@ -253,5 +252,30 @@ WithThreshold.args = {
   ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
  0 10 <% 'ts' STORE $g NOW ->TSELEMENTS [ 0 5 ] SUBLIST TSELEMENTS-> $ts s - RAND 50 * RAND  50 * RAND RAND ADDVALUE DROP %> FOR
   $g %> FOR`,
-  options: {... new Param(), thresholds: [ { value: 0.25, color: '#77BE69', fill: true }, { value: 0.5, color: '#ff9900' } , { value: 0.75 } ]}
+  options: {
+    ...new Param(),
+    thresholds: [{value: 0.25, color: '#77BE69', fill: true}, {value: 0.5, color: '#ff9900'}, {value: 0.75}]
+  }
+};
+
+
+export const StackedHorizontalCustomDataWithThreshold = Usage.bind({});
+StackedHorizontalCustomDataWithThreshold.args = {
+  ...InitialUsage.args,
+  unit: 'my unit',
+  ws: `{
+'title' 'Test'
+'columns'  [ 'A' 'B' 'C' 'D' ]
+'rows' [
+  [ 'label X' 15 56 44 22 ]
+  [ 'label Y' 1 5 4 2 ]
+  [ 'label Z' 14 45 78 12 ]
+]
+} 'values' STORE
+{ 'data' $values }`,
+  options: {
+    ...new Param(),
+    bar: {horizontal: true, stacked: true},
+    thresholds: [{value: 30, color: '#77BE69', fill: true}, {value: 60, color: '#ff9900'}, {value: 120}]
+  }
 };
