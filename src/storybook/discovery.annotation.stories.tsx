@@ -31,7 +31,7 @@ InitialUsage.args = {
   ws: `0 5 <% 'j' STORE
   NEWGTS 'serie' $j TOSTRING + RENAME 'gts' STORE
   0 30 <%
-   'ts' STORE $gts $ts RAND + STU * NOW +  NaN NaN NaN "t" ADDVALUE DROP
+   'ts' STORE $gts $ts RAND + STU * NOW +  NaN NaN NaN T ADDVALUE DROP
   %> FOR
   $gts
 %> FOR`

@@ -58,6 +58,7 @@ export class DiscoveryAnnotation {
   private myChart: ECharts;
   private divider: number = 1000;
   private hasFocus: boolean = false;
+  private gtsList = [];
 
   @Watch('result')
   updateRes() {
@@ -138,12 +139,14 @@ export class DiscoveryAnnotation {
     this.innerOptions = {...options};
     const series: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
+    this.gtsList = [];
     this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let linesCount = 1;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
+        this.gtsList.push(gts);
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         this.displayExpander = i > 1;
@@ -187,6 +190,14 @@ export class DiscoveryAnnotation {
       throttle: 70,
       tooltip: {
         trigger: 'axis',
+        formatter: (params) => {
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${params[0].axisValueLabel}</div>
+               ${params.map(s => {
+            const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
+            return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${value[value.length - 1]}</span>`
+          }).join('<br>')}`;
+        },
         axisPointer: {
           type: 'line',
           lineStyle: {
@@ -309,7 +320,7 @@ export class DiscoveryAnnotation {
 
   @Method()
   async setFocus(regexp: string, ts: number) {
-    if(!this.myChart) return;
+    if (!this.myChart) return;
     if (typeof ts === 'string') ts = parseInt(ts, 10);
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
@@ -352,7 +363,7 @@ export class DiscoveryAnnotation {
       status: 'show'
     };
     (this.chartOpts.tooltip as any).show = true;
-    if(ttp.length > 0) {
+    if (ttp.length > 0) {
       this.myChart.dispatchAction({type: 'showTip', dataIndex, seriesIndex});
     } else {
       this.myChart.dispatchAction({type: 'hideTip'});
@@ -362,7 +373,7 @@ export class DiscoveryAnnotation {
 
   @Method()
   async unFocus() {
-    if(!this.myChart) return;
+    if (!this.myChart) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     (this.chartOpts.xAxis as any).axisPointer = {
       ...(this.chartOpts.xAxis as any).axisPointer || {},
@@ -378,7 +389,7 @@ export class DiscoveryAnnotation {
   }
 
   private hideMarkers() {
-    if(!this.myChart) return;
+    if (!this.myChart) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
