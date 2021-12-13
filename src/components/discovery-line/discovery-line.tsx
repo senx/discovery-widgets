@@ -280,6 +280,7 @@ export class DiscoveryLineComponent {
         (opts.series as any[]).push(s);
       } else if (this.type === 'scatter' && gts.label && gts.values) {
         // Custom data for scatter
+        this.innerOptions.timeMode = 'custom';
         const c = ColorLib.getColor(i, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const max = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
