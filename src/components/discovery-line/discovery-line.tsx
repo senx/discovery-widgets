@@ -278,6 +278,85 @@ export class DiscoveryLineComponent {
 
         }
         (opts.series as any[]).push(s);
+      } else if (this.type === 'scatter' && gts.label && gts.values) {
+        // Custom data for scatter
+        const c = ColorLib.getColor(i, this.innerOptions.scheme);
+        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+        const max = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
+        const min = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
+        const s = {
+          type: 'scatter',
+          name: gts.label,
+          data: gts.values[0] && gts.values[0].length === 3 ? (gts.values || []).map(v => {
+            return {
+              value: [v[0], v[1]],
+              symbolSize: 50 * v[2] / (max - min)
+            }
+          }) : gts.values,
+          animation: false,
+          large: true,
+          showSymbol: true,
+          itemStyle: {
+            opacity: 0.8,
+            borderColor: color,
+            color: gts.values[0] && gts.values[0].length === 3
+              ? {
+                type: 'radial', x: 0.5, y: 0.5, x2: 1, y2: 1,
+                colorStops: [
+                  {offset: 0, color: ColorLib.transparentize(color, 0.3)},
+                  {offset: 1, color: ColorLib.transparentize(color, 0.7)}
+                ]
+              }
+              : color,
+          }
+        } as SeriesOption;
+        if (!!data.params) {
+          // multi Y
+          if (!!data.params[i] && data.params[i].yAxis !== undefined) {
+            multiY = true;
+            if (data.params[i].yAxis > 0) {
+              (s as any).yAxisIndex = data.params[i].yAxis;
+              const y = this.getYAxis(color);
+              (y as any).position = 'right';
+              if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
+              (opts.yAxis as any)[data.params[i].yAxis] = y;
+            } else {
+              const y = this.getYAxis(color);
+              (y as any).position = 'left';
+              if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
+              (opts.yAxis as any)[0] = y;
+            }
+          } else if (multiY) {
+            const y = this.getYAxis();
+            (y as any).position = 'left';
+            if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
+            (opts.yAxis as any)[0] = y;
+          }
+
+          // multi X
+          if (!!data.params[i] && data.params[i].xAxis !== undefined) {
+            multiX = true;
+            if (data.params[i].xAxis > 0) {
+              (s as any).xAxisIndex = data.params[i].xAxis;
+              const x = this.getXAxis(color);
+              (x as any).position = 'top';
+              if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+              (opts.xAxis as CartesianAxisOption)[data.params[i].xAxis] = x;
+            } else {
+              const x = this.getXAxis(color);
+              (x as any).position = 'bottom';
+              if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+              (opts.xAxis as CartesianAxisOption)[0] = x;
+            }
+          } else if (multiX) {
+            const x = this.getXAxis();
+            (x as any).position = 'bottom';
+            if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+            (opts.xAxis as CartesianAxisOption)[0] = x;
+          }
+
+        }
+        (opts.series as any[]).push(s);
       }
     }
     // multi Y
