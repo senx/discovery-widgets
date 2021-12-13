@@ -227,7 +227,7 @@ export class DiscoveryBarComponent {
       }
     }
     this.LOG.debug(['convert', 'series'], series);
-    return {
+    const opts = {
       animation: false,
       grid: {
         left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
@@ -325,6 +325,37 @@ export class DiscoveryBarComponent {
       ],
       series
     } as EChartsOption;
+    const markArea = (this.innerOptions.thresholds || [])
+      .filter(t => !!t.fill)
+      .map(t => {
+        return [{
+          itemStyle: {color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0)},
+          yAxis: t.value || 0
+        }, {yAxis: 0}];
+      });
+
+    const markLine = (this.innerOptions.thresholds || [])
+      .map(t => {
+        return {
+          name: t.value || 0,
+          label: {color: t.color || '#D81B60', position: 'insideEndTop'},
+          lineStyle: {color: t.color || '#D81B60', type: 'dashed'},
+          yAxis: t.value || 0
+        }
+      });
+    (opts.series as SeriesOption[]).push({
+      name: '',
+      type: 'line',
+      symbolSize: 0,
+      data: [],
+      markArea: {data: markArea},
+      markLine: {
+        emphasis: {lineStyle: {width: 1}},
+        symbol: ['none', 'none'],
+        data: markLine
+      }
+    });
+    return opts;
   }
 
   componentDidLoad() {

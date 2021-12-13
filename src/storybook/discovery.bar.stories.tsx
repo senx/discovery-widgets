@@ -244,3 +244,14 @@ FocusPoints.args = {
   $g %> FOR`,
   options: {...new Param(), timeMode: 'custom'}
 };
+
+
+export const WithThreshold = Usage.bind({});
+WithThreshold.args = {
+  ...InitialUsage.args,
+  unit: 'my unit',
+  ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
+ 0 10 <% 'ts' STORE $g NOW ->TSELEMENTS [ 0 5 ] SUBLIST TSELEMENTS-> $ts s - RAND 50 * RAND  50 * RAND RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {... new Param(), thresholds: [ { value: 0.25, color: '#77BE69', fill: true }, { value: 0.5, color: '#ff9900' } , { value: 0.75 } ]}
+};

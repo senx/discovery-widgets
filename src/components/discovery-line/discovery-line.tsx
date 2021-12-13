@@ -313,8 +313,6 @@ export class DiscoveryLineComponent {
       (opts.grid as GridOption).top = 30 * (i - 1);
     }
     this.LOG.debug(['convert', 'opts'], {opts});
-
-
     const markArea = (this.innerOptions.thresholds || [])
       .filter(t => !!t.fill)
       .map(t => {

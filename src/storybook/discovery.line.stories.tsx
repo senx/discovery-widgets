@@ -336,7 +336,6 @@ FocusPointWithFullDate.args = {
   options: {... new Param(), fullDateDisplay: true}
 };
 
-
 export const WithThreshold = Usage.bind({});
 WithThreshold.args = {
   ...Usage.args,
