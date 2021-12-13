@@ -152,7 +152,7 @@ export class DiscoveryAnnotation {
           type: 'scatter',
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [this.innerOptions.timeMode === 'date'
-            ? GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone)
+            ? d[0] / this.divider
             : d[0]
             , (this.expanded ? i : 0) + 0.5]),
           animation: false,
@@ -199,8 +199,8 @@ export class DiscoveryAnnotation {
           const obj = {top: 10};
           if (this.hasFocus) {
             const date = this.innerOptions.timeMode === 'date'
-              ? params[0]?.data[0] * this.divider
-              : params[0]?.data[0];
+              ? (params[0]?.axisValue || 0) * this.divider
+              : params[0]?.axisValue;
             const regexp = '(' + (params as any[]).map(s => s.seriesName).join('|') + ')';
             this.dataPointOver.emit({date, name: regexp, value: 0, meta: {}});
           }
@@ -352,7 +352,11 @@ export class DiscoveryAnnotation {
       status: 'show'
     };
     (this.chartOpts.tooltip as any).show = true;
-    this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
+    if(ttp.length > 0) {
+      this.myChart.dispatchAction({type: 'showTip', dataIndex, seriesIndex});
+    } else {
+      this.myChart.dispatchAction({type: 'hideTip'});
+    }
     setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 

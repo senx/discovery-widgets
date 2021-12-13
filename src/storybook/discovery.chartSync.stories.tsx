@@ -256,11 +256,11 @@ const FocusSyncUsageWithAnnotationTemplate = ({url, ws, options, title, unit}) =
   })
   chart1.addEventListener('dataPointOver', event => {
     // noinspection JSUnresolvedFunction
-    chart2.setFocus(event.detail.name, event.detail.date, event.detail.value);
+    chart2.setFocus('.*', event.detail.date, event.detail.value);
   });
   chart2.addEventListener('dataPointOver', event => {
     // noinspection JSUnresolvedFunction
-    chart1.setFocus(event.detail.name, event.detail.date, event.detail.value);
+    chart1.setFocus('.*', event.detail.date, event.detail.value);
   });
 </script>`;
 export const FocusSyncUsageWithAnnotation = FocusSyncUsageWithAnnotationTemplate.bind({});
