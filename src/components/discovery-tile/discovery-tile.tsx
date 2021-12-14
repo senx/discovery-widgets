@@ -62,9 +62,9 @@ export class DiscoveryTileComponent {
   optionsUpdate(newValue: string, oldValue: string) {
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
-      this.exec(true).then(() => {
+      /*this.exec(true).then(() => {
         // empty
-      });
+      });*/
     }
     if (this.LOG) {
       this.LOG.debug(['optionsUpdate'], {

@@ -15,6 +15,7 @@
  */
 
 import tile, {Usage} from './discovery.tile.stories';
+import {Param} from "../model/param";
 
 export default {
   ...tile,
@@ -227,6 +228,48 @@ ShowHide.args = {
   ws: `1 4 <% 'a' STORE NEWGTS 'gts-' $a TOSTRING + RENAME 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + RAND RAND RAND RAND ADDVALUE DROP %> FOR
   $g %> FOR`,
+}
+
+const TilesChangeTemplate = ({url, ws, language, type, options, unit, title}) => `<div style="height: 600px;width: 100%;min-height: 300px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+  <div class="card-body">
+  <discovery-tile url="${url}" type="${type}" language="${language}"
+  id="chart1"
+unit="${unit || ''}"
+chart-title="${title || ''}"
+@draw="${event => console.error('foo', 'bar', event)}"
+@dataPointOver="${event => console.log('dataPointOver', event)}"
+debug options='${JSON.stringify(options)}'
+  >${ws}</discovery-tile>
+</div>
+  <div class="card-footer">
+ <button class="btn btn-primary" id="light">TOPO</button>
+ <button class="btn btn-primary" id="dark">STADIA_DARK</button>
+</div>
+</div>
+ <script>
+window.onload = () => {
+  const opts = JSON.parse('${JSON.stringify(options)}');
+  const chart = document.querySelector('#chart1');
+  document.querySelector('#light').addEventListener('click', e => {
+    opts.map.mapType = 'TOPO';
+    chart.setAttribute('options', JSON.stringify(opts))
+  });
+  document.querySelector('#dark').addEventListener('click', e => {
+    opts.map.mapType = 'STADIA_DARK';
+    chart.setAttribute('options', JSON.stringify(opts))
+  });
+}
+</script>
+`;
+
+export const TilesChange = TilesChangeTemplate.bind({});
+TilesChange.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'a' STORE NEWGTS 'gts-' $a TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + RAND 20 * RAND 20 * RAND RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {... new Param(), map: { mapType: 'TOPO' }}
 }
 
 export const AutoRefreshWithRealData = Usage.bind({});

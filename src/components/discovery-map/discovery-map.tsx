@@ -103,7 +103,7 @@ export class DiscoveryMapComponent {
       } else {
         this.innerOptions = {...this.options as Param};
       }
-      setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true));
+      setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true, true));
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
@@ -172,7 +172,7 @@ export class DiscoveryMapComponent {
     this.drawMap(this.result as DataModel || new DataModel());
   }
 
-  drawMap(data: DataModel, isRefresh = false) {
+  drawMap(data: DataModel, isRefresh = false, optionUpdate: boolean = false) {
     let tilesPromise: Promise<void>;
     let zoomPromise: Promise<void>;
     // noinspection JSUnusedAssignment
@@ -204,7 +204,6 @@ export class DiscoveryMapComponent {
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
-      this.LOG.debug(['displayMap'], 'map', map);
       const mapOpts: TileLayerOptions = {
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
         maxZoom: this.mapOpts.maxZoom || 40,
@@ -216,19 +215,22 @@ export class DiscoveryMapComponent {
       if (map.subdomains) {
         mapOpts.subdomains = map.subdomains;
       }
-      if (!isRefresh) {
+      if (!isRefresh || optionUpdate) {
+        this.LOG.debug(['displayMap'], 'map', map);
         this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
         tilesPromise = new Promise(resolve => setTimeout(() => this.tilesLayer.on("load", () => resolve())));
       }
-
     }
     if (!!this.map) {
       this.LOG.debug(['displayMap'], 'map exists');
       this.pathDataLayer.clearLayers();
       this.positionDataLayer.clearLayers();
       this.geoJsonLayer.clearLayers();
-      if (!isRefresh) {
+      if (!isRefresh || optionUpdate) {
         this.tileLayerGroup.clearLayers();
+        if(optionUpdate) {
+          this.tilesLayer.addTo(this.tileLayerGroup);
+        }
       }
     } else {
       this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer]);

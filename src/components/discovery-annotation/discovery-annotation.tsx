@@ -320,7 +320,7 @@ export class DiscoveryAnnotation {
 
   @Method()
   async setFocus(regexp: string, ts: number) {
-    if (!this.myChart) return;
+    if (!this.myChart || this.gtsList.length === 0) return;
     if (typeof ts === 'string') ts = parseInt(ts, 10);
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
