@@ -98,7 +98,7 @@ export class DiscoveryDashboardComponent {
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {url: this.url, options: this.options});
-    if (!!this.options && typeof this.options === 'string') {
+    if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       this.options = JSON.parse(this.options);
     }
     const dims = Utils.getContentBounds(this.el.parentElement);
@@ -164,7 +164,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               this.processResult(tmpResult);
             });
           } else {
-            this.renderedTiles = tmpResult.tiles;
+            this.renderedTiles = tmpResult.tiles || [];
             this.processResult(tmpResult);
           }
         }).catch(e => {

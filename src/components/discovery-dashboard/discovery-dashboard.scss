@@ -44,10 +44,13 @@
         box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
         overflow: visible;
         background: var(--warp-view-tile-background);
-      //  position: relative;
 
         &.annotation, &.plot {
           height: 100% !important;
+        }
+
+        &.empty {
+          opacity: 0;
         }
 
         & > div {
@@ -78,7 +81,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        border:  var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
+        border: var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
         box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
         overflow: visible;
         background: var(--warp-view-tile-background);
@@ -86,6 +89,10 @@
         &.annotations, &.plot {
           overflow-y: auto;
           overflow-x: hidden;
+        }
+
+        &.empty {
+          opacity: 0;
         }
 
         & > div {

@@ -60,7 +60,7 @@ export class DiscoveryTileResultComponent {
 
   private LOG: Logger;
   private wrapper: HTMLDivElement;
-  private tileEleme: HTMLDivElement;
+  private tileElem: HTMLDivElement;
   private title: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
@@ -131,7 +131,7 @@ export class DiscoveryTileResultComponent {
       options: this.innerOptions,
       result: this.result
     });
-    if (!!this.options && typeof this.options === 'string') {
+    if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       this.innerOptions = JSON.parse(this.options);
     } else {
       this.innerOptions = this.options as Param;
@@ -147,7 +147,7 @@ export class DiscoveryTileResultComponent {
 
   componentDidLoad() {
     this.parseResult();
-    elementResizeEvent(this.tileEleme, () => this.resize());
+    elementResizeEvent(this.tileElem, () => this.resize());
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -316,6 +316,14 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
+      case 'empty':
+        return <discovery-empty
+          result={this.innerResult}
+          type={this.innerType}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          debug={this.debug}
+        />;
       default:
         return '';
     }
@@ -383,7 +391,7 @@ export class DiscoveryTileResultComponent {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div class="discovery-tile"
-           ref={el => this.tileEleme = el}
+           ref={el => this.tileElem = el}
            style={{
              backgroundColor: this.bgColor,
              color: this.fontColor,
@@ -403,7 +411,8 @@ export class DiscoveryTileResultComponent {
       this.innerType = (this.innerResult as unknown as DataModel).globalParams?.type || this.innerType;
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])
-        .filter(e => !!e.value).filter(e => e.type !== 'zoom')
+        .filter(e => !!e.value)
+        .filter(e => e.type !== 'zoom')
         .forEach(e => {
           if (this.LOG) {
             this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});

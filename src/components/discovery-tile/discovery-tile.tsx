@@ -149,7 +149,7 @@ export class DiscoveryTileComponent {
       language: this.language,
       innerVars: this.innerVars,
     });
-    if (!!this.options && typeof this.options === 'string') {
+    if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       this.options = JSON.parse(this.options);
     }
     this.innerVars = JSON.parse(this.vars || '{}');
@@ -157,7 +157,6 @@ export class DiscoveryTileComponent {
     this.width = dims.w - 15;
     this.height = dims.h;
   }
-
 
   componentDidLoad() {
     this.exec().then(() => {

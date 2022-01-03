@@ -31,7 +31,9 @@ export type ChartType =
   | 'tabular'
   | 'svg'
   | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider' | 'input:date' | 'input:date-range'
-  | 'button';
+  | 'button'
+  | 'empty'
+  ;
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
 export type ECharts = ReturnType<typeof echarts.init>;

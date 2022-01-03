@@ -254,13 +254,6 @@ export class GTSLib {
     return (gts.v || []).some(v => v.length >= 3);
   }
 
-  static isSingletonGTS(gts) {
-    if (!GTSLib.isGts(gts) || gts.v.length === 0) {
-      return false;
-    }
-    return (gts.v || []).length === 1;
-  }
-
   static isGtsToAnnotate(gts) {
     if (!GTSLib.isGts(gts) || gts.v.length === 0) {
       return false;
@@ -292,12 +285,14 @@ export class GTSLib {
       } else {
         return {data: new JsonLib().parse(`[${data}]`)};
       }
-    } else if (data && data.hasOwnProperty('data')) {
+    } else if (data && (data.hasOwnProperty('data') || data.hasOwnProperty('events'))) {
+      data.data = data.data || [];
       if (!GTSLib.isArray(data.data)) {
         data.data = [data.data];
       }
       return data as DataModel;
-    } else if (GTSLib.isArray(data) && data.length > 0 && data[0].data) {
+    } else if (GTSLib.isArray(data) && data.length > 0 && (data[0].data || data[0].events)) {
+      data[0].data = data[0].data || [];
       return data[0] as DataModel;
     } else if (GTSLib.isArray(data)) {
       return {data: data as GTS[]} as DataModel;
