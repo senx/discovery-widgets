@@ -190,11 +190,14 @@ export class DiscoveryInputComponent {
     }
     (this.innerResult?.events || []).forEach(e => {
       if (!!this.selectedValue && e.type === 'variable') {
+        if(this.subType === 'date-range' &&  this.selectedValue.length !== 2) {
+          return;
+        }
         if (!e.value) {
           e.value = {};
         }
         e.value[e.selector] = this.selectedValue;
-        this.LOG.debug(['handleClick', 'emit'], {discoveryEvent: e});
+        this.LOG.debug(['handleClick', 'emit'], {discoveryEvent: e, subtype: this.subType}, this.selectedValue);
         this.discoveryEvent.emit(e);
       }
     });
@@ -319,11 +322,11 @@ export class DiscoveryInputComponent {
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "date":
-        return <input type="text" class="discovery-input" onInput={e => this.handleSelect(e)}
+        return <input type="text" class="discovery-input"
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "date-range":
-        return <input type="text" class="discovery-input" onInput={e => this.handleSelect(e)}
+        return <input type="text" class="discovery-input"
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "autocomplete":
