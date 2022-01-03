@@ -303,6 +303,15 @@ CustomTilesThroughOptions.args = {
 $g`,
   options: {...Usage.options, map: {mapType: 'NONE', tiles: ['http://a.tile.stamen.com/toner/{z}/{x}/{y}.png']}}
 }
+export const MapTypeInGlobalParams = Usage.bind({});
+MapTypeInGlobalParams.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'g' STORE
+0 100 <% 'ts' STORE $g NOW $ts 10000 - * RAND 100 *  RAND  100 *  RAND RAND ADDVALUE DROP %> FOR
+$g 'data' STORE
+{ 'data' $data 'globalParams' { 'map' { 'mapType' 'WATERCOLOR' } } }
+`
+}
 
 
 export const WeightedDots = Usage.bind({});

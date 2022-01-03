@@ -90,7 +90,7 @@ export class DiscoveryMapComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.initial = true;
-      this.drawMap(this.result as DataModel || new DataModel(), true);
+      setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true, true));
     }
   }
 
@@ -177,6 +177,7 @@ export class DiscoveryMapComponent {
     let zoomPromise: Promise<void>;
     // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
+    this.LOG.debug(['drawMap', 'this.options 2 '], {...data.globalParams});
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
     this.innerOptions = {...options};
     if (!!this.map) {
@@ -184,6 +185,7 @@ export class DiscoveryMapComponent {
     }
     let dataList: any[];
     let params: any[];
+    this.LOG.debug(['drawMap', 'data'], data);
     this.LOG.debug(['drawMap', 'this.height'], this.height);
     this.LOG.debug(['drawMap', 'this.options'], {...this.innerOptions});
     data.data = GTSLib.flatDeep(data.data as any[]);
@@ -207,8 +209,7 @@ export class DiscoveryMapComponent {
       const mapOpts: TileLayerOptions = {
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
         maxZoom: this.mapOpts.maxZoom || 40,
-        edgeBufferTiles: 5,
-        noWrap: true
+        edgeBufferTiles: 5
       };
       if (map.attribution) {
         mapOpts.attribution = map.attribution;
@@ -216,6 +217,7 @@ export class DiscoveryMapComponent {
       if (map.subdomains) {
         mapOpts.subdomains = map.subdomains;
       }
+      this.LOG.debug(['displayMap'], {isRefresh, optionUpdate});
       if (!isRefresh || optionUpdate) {
         this.LOG.debug(['displayMap'], 'map', map);
         this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
@@ -229,7 +231,7 @@ export class DiscoveryMapComponent {
       this.geoJsonLayer.clearLayers();
       if (!isRefresh || optionUpdate) {
         this.tileLayerGroup.clearLayers();
-        if (optionUpdate) {
+        if (optionUpdate && !!this.tilesLayer) {
           this.tilesLayer.addTo(this.tileLayerGroup);
         }
       }
