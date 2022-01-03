@@ -207,7 +207,8 @@ export class DiscoveryMapComponent {
       const mapOpts: TileLayerOptions = {
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
         maxZoom: this.mapOpts.maxZoom || 40,
-        edgeBufferTiles: 5
+        edgeBufferTiles: 5,
+        noWrap: true
       };
       if (map.attribution) {
         mapOpts.attribution = map.attribution;
@@ -228,7 +229,7 @@ export class DiscoveryMapComponent {
       this.geoJsonLayer.clearLayers();
       if (!isRefresh || optionUpdate) {
         this.tileLayerGroup.clearLayers();
-        if(optionUpdate) {
+        if (optionUpdate) {
           this.tilesLayer.addTo(this.tileLayerGroup);
         }
       }
@@ -238,6 +239,9 @@ export class DiscoveryMapComponent {
         preferCanvas: true,
         layers: this.mainLayer,
         zoomAnimation: true,
+        maxBoundsViscocity: 1,
+        worldCopyJump: true,
+        maxBounds: new Leaflet.LatLngBounds(new Leaflet.latLng(-89.98155760646617, -180), new Leaflet.LatLng(89.99346179538875, 180)),
         maxZoom: this.mapOpts.maxZoom || 19
       });
       this.geoJsonLayer.bringToBack();
