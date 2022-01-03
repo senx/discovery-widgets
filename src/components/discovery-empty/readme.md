@@ -1,4 +1,4 @@
-# discovery-button
+# discovery-empty
 
 
 
@@ -14,31 +14,15 @@
 | `options` | `options` |             | `Param \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                   | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                                                                                                                                                                                               | `undefined`   |
 | `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "step-area" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "linear-gauge" \| "circle" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "input:text" \| "input:list" \| "input:secret" \| "input:autocomplete" \| "input:slider" \| "input:date" \| "input:date-range" \| "button" \| "empty"` | `undefined`   |
-| `url`     | `url`     |             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
+| `unit`    | `unit`    |             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                            | `''`          |
 | `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
 
 
 ## Events
 
-| Event            | Description | Type                          |
-| ---------------- | ----------- | ----------------------------- |
-| `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
-| `draw`           |             | `CustomEvent<void>`           |
-| `execResult`     |             | `CustomEvent<any[]>`          |
-| `statusError`    |             | `CustomEvent<any>`            |
-
-
-## Methods
-
-### `resize() => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
-
-
+| Event  | Description | Type                |
+| ------ | ----------- | ------------------- |
+| `draw` |             | `CustomEvent<void>` |
 
 
 ## Dependencies
@@ -50,8 +34,8 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  discovery-tile-result --> discovery-button
-  style discovery-button fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-tile-result --> discovery-empty
+  style discovery-empty fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------
