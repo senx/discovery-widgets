@@ -237,18 +237,18 @@ export class DiscoveryLineComponent {
             multiY = true;
             if (data.params[i].yAxis > 0) {
               (s as any).yAxisIndex = data.params[i].yAxis;
-              const y = this.getYAxis(color);
+              const y = this.getYAxis(color, data.params[i].unit);
               (y as any).position = 'right';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[data.params[i].yAxis] = y;
             } else {
-              const y = this.getYAxis(color);
+              const y = this.getYAxis(color, data.params[i].unit);
               (y as any).position = 'left';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[0] = y;
             }
           } else if (multiY) {
-            const y = this.getYAxis();
+            const y = this.getYAxis(undefined, data.params[i].unit);
             (y as any).position = 'left';
             if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
             (opts.yAxis as any)[0] = y;
@@ -317,18 +317,18 @@ export class DiscoveryLineComponent {
             multiY = true;
             if (data.params[i].yAxis > 0) {
               (s as any).yAxisIndex = data.params[i].yAxis;
-              const y = this.getYAxis(color);
+              const y = this.getYAxis(color, data.params[i].unit);
               (y as any).position = 'right';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[data.params[i].yAxis] = y;
             } else {
-              const y = this.getYAxis(color);
+              const y = this.getYAxis(color, data.params[i].unit);
               (y as any).position = 'left';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[0] = y;
             }
           } else if (multiY) {
-            const y = this.getYAxis();
+            const y = this.getYAxis(undefined, data.params[i].unit);
             (y as any).position = 'left';
             if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
             (opts.yAxis as any)[0] = y;
@@ -337,23 +337,27 @@ export class DiscoveryLineComponent {
           // multi X
           if (!!data.params[i] && data.params[i].xAxis !== undefined) {
             multiX = true;
+            if (data.data[i].length > 0) {
+              if (data.params[i].xAxis > 0) {
+                (s as any).xAxisIndex = data.params[i].xAxis;
+                const x = this.getXAxis(color);
+                (x as any).position = 'top';
+                if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+                (opts.xAxis as CartesianAxisOption)[data.params[i].xAxis] = x;
+              } else {
+                const x = this.getXAxis(color);
+                (x as any).position = 'bottom';
+                if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
+                (opts.xAxis as CartesianAxisOption)[0] = x;
+              }
+            }
+          } else if (multiX) {
             if (data.params[i].xAxis > 0) {
-              (s as any).xAxisIndex = data.params[i].xAxis;
-              const x = this.getXAxis(color);
-              (x as any).position = 'top';
-              if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
-              (opts.xAxis as CartesianAxisOption)[data.params[i].xAxis] = x;
-            } else {
-              const x = this.getXAxis(color);
+              const x = this.getXAxis();
               (x as any).position = 'bottom';
               if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
               (opts.xAxis as CartesianAxisOption)[0] = x;
             }
-          } else if (multiX) {
-            const x = this.getXAxis();
-            (x as any).position = 'bottom';
-            if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
-            (opts.xAxis as CartesianAxisOption)[0] = x;
           }
 
         }
@@ -385,12 +389,12 @@ export class DiscoveryLineComponent {
       let i = 0;
       xAxis.forEach((x: CartesianAxisOption) => {
         if (x.position === 'top') {
-          x.offset = 30 * i;
+          x.offset = 30 * (i + 1);
           i++;
         }
         (opts.xAxis as any).push(x);
       });
-      (opts.grid as GridOption).top = 30 * (i - 1);
+      (opts.grid as GridOption).top = Math.max(30, 30 * i);
     }
     this.LOG.debug(['convert', 'opts'], {opts});
     const markArea = (this.innerOptions.thresholds || [])
@@ -426,10 +430,17 @@ export class DiscoveryLineComponent {
     return opts as EChartsOption;
   }
 
-  private getYAxis(color?: string): CartesianAxisOption {
+  private getYAxis(color?: string, unit?: string): CartesianAxisOption {
+    if (!!(unit || this.unit || this.innerOptions.unit) && !!this.myChart) {
+      const opts = {...this.chartOpts};
+      if (opts.grid) {
+        opts.grid['top'] = 30;
+        setTimeout(() => this.myChart.setOption(opts as EChartsOption));
+      }
+    }
     return {
       type: 'value',
-      name: this.unit || this.innerOptions.unit,
+      name: unit || this.unit || this.innerOptions.unit,
       show: !this.innerOptions.hideYAxis,
       nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},

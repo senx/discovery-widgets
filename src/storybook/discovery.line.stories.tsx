@@ -235,9 +235,10 @@ multiYAxis.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND $i 2 * * ADDVALUE DROP %> FOR
   $g
 %> FOR STACKTOLIST 'data' STORE
-{ 'data' $data 'params' [ { 'yAxis' 0 } { 'yAxis' 0 } { 'yAxis' 1 } { 'yAxis' 2 } ] }
+{ 'data' $data 'params' [ { 'yAxis' 0 'unit' 'a' } { 'yAxis' 0 'unit' 'a' } { 'yAxis' 1 'unit' 'b' } { 'yAxis' 2 'unit' 'c' } ] }
 `
 };
+
 export const multiXAxis = Usage.bind({});
 multiXAxis.args = {
   ...InitialUsage.args,
@@ -247,6 +248,23 @@ multiXAxis.args = {
 %> FOR STACKTOLIST 'data' STORE
 { 'data' $data 'params' [ { 'xAxis' 0 } { 'xAxis' 1 } { 'xAxis' 1 } { 'xAxis' 2 } ] }
 `
+};
+
+
+export const multiYAxisWithEmptyGTS = Usage.bind({});
+multiYAxisWithEmptyGTS.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'data' RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+ { 'data' [ $g NEWGTS 'empty' RENAME ] 'params' [ { 'yAxis' 0 } { 'yAxis' 1 } ] }`
+};
+
+export const multiXAxisWithEmptyGTS = Usage.bind({});
+multiXAxisWithEmptyGTS.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'data' RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+ { 'data' [ $g NEWGTS 'empty' RENAME ] 'params' [ { 'xAxis' 0 } { 'xAxis' 1 } ] }`
 };
 
 export const AutoRefresh = Usage.bind({});
@@ -274,7 +292,8 @@ export const FocusPoints = ({url, ws, lang, options}) => `<div class="card" styl
  <script>
 window.onload = () => {
   const chart = document.querySelector('#chart');
-  document.querySelector('#btn').addEventListener('click', e => {
+  document.querySelector('#btn').addEventListener('click', () => {
+    // noinspection JSUnresolvedFunction
     chart.setFocus('data-[23]', 4).then(()=>{
     })
   })
@@ -302,7 +321,8 @@ export const FocusPointWithDate = ({url, ws, lang, options}) => `<div class="car
  <script>
 window.onload = () => {
   const chart = document.querySelector('#chart');
-  document.querySelector('#btn').addEventListener('click', e => {
+  document.querySelector('#btn').addEventListener('click', () => {
+    // noinspection JSUnresolvedFunction
     chart.setFocus('.*', 1515419993763851).then(()=>{
     })
   })
