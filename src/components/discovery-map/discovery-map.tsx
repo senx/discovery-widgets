@@ -27,6 +27,7 @@ import {ColorLib} from "../../utils/color-lib";
 import {AntPath, antPath} from 'leaflet-ant-path';
 import domtoimage from 'dom-to-image';
 import 'leaflet-edgebuffer';
+import 'leaflet.heat';
 
 @Component({
   tag: 'discovery-map',
@@ -52,7 +53,6 @@ export class DiscoveryMapComponent {
 
   private defOptions: Param = {
     ...new Param(), map: {
-      heatControls: false,
       tiles: [],
       animate: false
     }
@@ -77,6 +77,8 @@ export class DiscoveryMapComponent {
   private geoJsonLayer = Leaflet.featureGroup();
   private tilesLayer: Leaflet.TileLayer;
   private mainLayer: Leaflet.LayerGroup;
+  private heatmapLayer = Leaflet.featureGroup();
+  private shadowHeatmapLayer = Leaflet.featureGroup();
   private firstDraw: boolean = true;
   private mapOpts: MapParams;
   private initial = false;
@@ -204,6 +206,8 @@ export class DiscoveryMapComponent {
     this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, this.hidden, this.innerOptions.scheme) || [];
     this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.innerOptions.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
+
+
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
       const mapOpts: TileLayerOptions = {
@@ -229,6 +233,8 @@ export class DiscoveryMapComponent {
       this.pathDataLayer.clearLayers();
       this.positionDataLayer.clearLayers();
       this.geoJsonLayer.clearLayers();
+      this.heatmapLayer.clearLayers();
+      this.shadowHeatmapLayer.clearLayers();
       if (!isRefresh || optionUpdate) {
         this.tileLayerGroup.clearLayers();
         if (optionUpdate && !!this.tilesLayer) {
@@ -236,7 +242,7 @@ export class DiscoveryMapComponent {
         }
       }
     } else {
-      this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer]);
+      this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.heatmapLayer, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer]);
       this.map = Leaflet.map(this.mapElement, {
         preferCanvas: true,
         layers: this.mainLayer,
@@ -299,6 +305,7 @@ export class DiscoveryMapComponent {
         maxZoom: this.mapOpts.maxZoom || 19
       }));
     });
+
     const geoJsonSize = (this.geoJson || []).length;
     for (let i = 0; i < geoJsonSize; i++) {
       const m = this.geoJson[i];
@@ -325,9 +332,38 @@ export class DiscoveryMapComponent {
       }
       geoShape.addTo(this.geoJsonLayer);
     }
-    if (this.pathData.length > 0 || this.positionData.length > 0 || this.geoJson.length > 0) {
+    let hasHeatmap = false;
+    // HeatMap
+    const size = (dataList || []).length;
+    for (let i = 0; i < size; i++) {
+      let p = (params || [])[i];
+      if (!p) {
+        p = {};
+      }
+      if (!!p.map?.heatmap && dataList[i].v[0] && dataList[i].v[0].length >= 3) {
+        const g = dataList[i];
+        let max = Number.MIN_SAFE_INTEGER;
+        let min = Number.MAX_SAFE_INTEGER;
+        hasHeatmap = true;
+        const data = g.v.map(v => {
+          max = Math.max(max, v[v.length - 1]);
+          min = Math.min(min, v[v.length - 1]);
+          Leaflet.circleMarker([v[1], v[2]], {radius: 1}).addTo(this.shadowHeatmapLayer);
+          return [v[1], v[2], v[v.length - 1]]
+        });
+        Leaflet.heatLayer(data, {
+          radius: p.map?.heatRadius || this.innerOptions.map?.heatRadius || 25,
+          minOpacity: p.map?.heatOpacity || this.innerOptions.map?.heatOpacity || 0.05,
+          maxZoom: 0,
+          max,
+          blur: p.map?.heatBlur || this.innerOptions.map?.heatBlur || 15,
+        }).addTo(this.heatmapLayer);
+      }
+    }
+
+    if (this.pathData.length > 0 || this.positionData.length > 0 || this.geoJson.length > 0 || hasHeatmap) {
       // Fit map to curves
-      const group = Leaflet.featureGroup([this.geoJsonLayer, this.positionDataLayer, this.pathDataLayer]);
+      const group = Leaflet.featureGroup([this.geoJsonLayer, this.positionDataLayer, this.pathDataLayer, this.shadowHeatmapLayer]);
       this.bounds = group.getBounds();
       setTimeout(() => {
         if (!!this.bounds && this.bounds.isValid()) {

@@ -147,7 +147,7 @@ export class MapLib {
       if (!params) {
         params = {};
       }
-      if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[GTSLib.serializeGtsMetadata(gts)]) {
+      if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[GTSLib.serializeGtsMetadata(gts)] && !params.map?.heatmap) {
         const path: any = {};
         MapLib.extractCommonParameters(path, params, i, scheme);
         path.path = MapLib.gtsToPath(gts);
@@ -267,7 +267,11 @@ export class MapLib {
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
-      if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0) {
+      let params = (data.params || [])[i];
+      if (!params) {
+        params = {};
+      }
+      if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0  && !params.map?.heatmap) {
         this.LOG.debug(['toLeafletMapPositionArray'], gts, data.params ? data.params[i] : '');
         const posArray = gts;
         const params = data.params ? data.params[i] || {} : {};

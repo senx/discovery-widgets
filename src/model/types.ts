@@ -39,23 +39,14 @@ export type TimeUnit = 'us' | 'ms' | 'ns';
 export type ECharts = ReturnType<typeof echarts.init>;
 export type MapParams = {
   tiles?: any[];
+  heatmap?: boolean;
   heatRadius?: number;
   heatBlur?: number;
   heatOpacity?: number;
-  heatControls?: boolean;
   mapType?: string;
-  showTimeSlider?: boolean;
-  showTimeRange?: boolean;
-  timeSliderMin?: number;
-  timeSliderMax?: number;
-  timeSliderStep?: number;
-  timeSliderMode?: 'timestamp' | 'date' | 'custom';
-  timeStart?: number,
-  timeSpan?: number,
   startLat?: number;
   startLong?: number;
   startZoom?: number;
-  timeSpanList?: any[],
   animate?: boolean;
   marker?: string;
   maxNativeZoom?: number;
