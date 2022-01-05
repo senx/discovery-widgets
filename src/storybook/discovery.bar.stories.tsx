@@ -13,13 +13,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-// noinspection JSUnusedGlobalSymbols
-
 import tile, {Usage} from './discovery.tile.stories';
 import {Param} from "../model/param";
 import {Colors} from "../utils/color-lib";
 
+// noinspection JSUnusedGlobalSymbols
 export default {
   ...tile,
   title: 'Charts/Bar'
@@ -179,7 +177,8 @@ BarChartWithAutoRefresh.args = {
   options: {...new Param(), autoRefresh: 1}
 }
 
-export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
+export const WithCustomStyle = ({url, ws, language, options, unit, title, type}) => `
+<div style="height: 600px;width: 100%;min-height: 600px;background-color: #404040;">
 <style>
 :root {
     --warp-view-chart-grid-color: #35b779;
@@ -188,19 +187,28 @@ export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => 
     --warp-view-bg-color: #1C1E25;
     }
 </style>
-    <discovery-tile url="${url}" type="${type}" lang="${lang}"
-        unit="${unit || ''}" chart-title="${title || ''}" debug
-    options='${JSON.stringify(options)}'>${ws}</discovery-tile>
+<div class="card" style="height: 100%;width: 100%;min-height: 100%;background-color: #404040">
+      <div class="card-body">
+          <discovery-tile url="${url}" type="${type}" language="${language}"
+          unit="${unit || ''}"
+          chart-title="${title || ''}"
+          @draw="${event => console.error('foo', 'bar', event)}"
+          debug options='${JSON.stringify(options)}'
+          >${ws}</discovery-tile>
+      </div>
+  </div>
 </div>`;
 WithCustomStyle.args = {
-  ...Usage.args,
-  type: 'bar',
+  ...InitialUsage.args,
   options: {...Usage.args.options, scheme: Colors.ATLANTIS},
   ws: `NOW 'now' STORE
-1 4 <% DROP NEWGTS 'g' STORE
-  1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
-  $g
-%> FOR`
+  [ 1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME  'g' STORE
+    1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
+    $g
+  %> FOR ] 'data' STORE
+  { 'data' $data 'params' [ { 'datasetColor' '#ff9900' } ] }
+
+  `
 };
 
 export const CustomStyleAndAutoRefresh = WithCustomStyle.bind({});
