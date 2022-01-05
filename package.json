@@ -46,7 +46,7 @@
     "lint": "tslint -c tslint.json 'src/**/*.ts*'"
   },
   "dependencies": {
-    "@stencil/core": "2.10.0",
+    "@stencil/core": "2.12.1",
     "@stencil/sass": "^2.0.0-0",
     "@tarekraafat/autocomplete.js": "^10.2.6",
     "dayjs": "^1.10.7",
@@ -61,7 +61,7 @@
     "leaflet-edgebuffer": "^1.0.6",
     "leaflet.heat": "^0.2.0",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33"
+    "moment-timezone": "^0.5.34"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
