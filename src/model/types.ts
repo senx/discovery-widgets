@@ -33,6 +33,7 @@ export type ChartType =
   | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider' | 'input:date' | 'input:date-range'
   | 'button'
   | 'empty'
+  | 'marauder'
   ;
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
@@ -52,4 +53,6 @@ export type MapParams = {
   maxNativeZoom?: number;
   maxZoom?: number;
   track?: boolean;
+  step?: number;
+  delay?: number;
 };

@@ -593,8 +593,8 @@ export class DiscoveryLineComponent {
                 yAxis: data[0][1],
                 xAxis: date
               }]
-            }
-            ttp = [date, data[0][1]]
+            };
+            ttp = [date, data[0][1]];
           }
         });
     }
