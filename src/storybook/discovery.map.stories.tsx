@@ -16,6 +16,7 @@
 
 import tile, {Usage} from './discovery.tile.stories';
 import {Param} from "../model/param";
+import {MapTypes} from "../utils/map-lib";
 
 export default {
   ...tile,
@@ -118,7 +119,7 @@ export const AutoRefresh = Usage.bind({});
 AutoRefresh.args = {
   ...InitialUsage.args,
   ws: `NEWGTS 'g' STORE
-1 6 <% 'ts' STORE $g $ts RAND RAND RAND RAND ADDVALUE DROP %> FOR
+1 6 <% 'ts' STORE $g $ts RAND 100 * RAND 100 * RAND RAND ADDVALUE DROP %> FOR
 $g`,
   options: {...Usage.options, autoRefresh: 2}
 }
@@ -168,8 +169,8 @@ $( document ).ready(() => {
 </script>
 `;
 
-export const MapTypes = MapTypesTemplate.bind({});
-MapTypes.args = {
+export const MapTypesTpl = MapTypesTemplate.bind({});
+MapTypesTpl.args = {
   ...InitialUsage.args,
   ws: `NEWGTS 'g' STORE
 1 6 <% 'ts' STORE $g $ts RAND 15 * RAND 15 * RAND RAND ADDVALUE DROP %> FOR
@@ -250,24 +251,22 @@ TilesChange.args = {
   ws: `1 4 <% 'a' STORE NEWGTS 'gts-' $a TOSTRING + RENAME 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + RAND 20 * RAND 20 * RAND RAND ADDVALUE DROP %> FOR
   $g %> FOR`,
-  options: {... new Param(), map: { mapType: 'TOPO' }}
+  options: {...new Param(), map: {mapType: 'TOPO'}}
 }
 
 export const AutoRefreshWithRealData = Usage.bind({});
 AutoRefreshWithRealData.args = {
   ...InitialUsage.args,
   url: 'wss://warp.senx.io/api/v0/mobius',
-  ws: `[
-  'yaw2XlsczxtKdzZpxYA5DXvE0w9sRQHjJPnyJ2MVZrjf1HK7bH82rkVfuhdkxYuLT1kGGC6DpsFskCTfReqgVsN4nFbpZqLlmgDRncN9oJtEHTkYMDDiQADNpyE5OHww90Ia3SYge3ORSk.NwvjOX.'
-  'fr.trains' { 'ligne' '470000' }
-  NOW 15 m
-] FETCH [ 'numero' ] METASORT  FLATTEN [ 0 ] MVTICKSPLIT 'data' STORE
-{ 'data' $data
-  'params' $data <% DROP
-  { 'marker' 'train' 'render' 'path' 'line' true }
-%> F LMAP
-}`,
-  options: {...Usage.options, autoRefresh: 2000, map: {mapType: 'STADIA_DARK'}}
+  ws: ` [
+            'yaw2XlsczxtKdzZpxYA5DXvE0w9sRQHjJPnyJ2MVZrjf1HK7bH82rkVfuhdkxYuLT1kGGC6DpsFskCTfReqgVsN4nFbpZqLlmgDRncN9oJtEHTkYMDDiQADNpyE5OHww90Ia3SYge3ORSk.NwvjOX.'
+            'fr.bibus.bus.gtfs'
+            {  } NOW 10 m ] FETCH 'data' STORE
+            {
+                'data' $data [ 'IdVehicle' ] METASORT
+                'params' $data <% DROP { 'marker' 'bus' 'render' 'path' 'line' true } %> F LMAP
+            }`,
+  options: {...Usage.options, autoRefresh: 2000, map: {mapType: MapTypes.CARTODB_DARK}}
 }
 
 export const SimpleGTS = Usage.bind({});

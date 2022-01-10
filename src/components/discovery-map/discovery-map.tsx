@@ -256,6 +256,7 @@ export class DiscoveryMapComponent {
       if (this.tilesLayer) {
         this.tilesLayer.bringToBack(); // TODO: test it
         if (!isRefresh) {
+          this.tileLayerGroup.clearLayers();
           this.tilesLayer.addTo(this.tileLayerGroup);
         }
       }
