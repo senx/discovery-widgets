@@ -84,7 +84,7 @@ export class DiscoveryMapComponent {
   private initial = false;
   private hidden: { [key: string]: boolean } = {};
   private poputTimeout;
-  private markerOver: Boolean = false;
+  private markerOver: boolean = false;
   private markersRef: any;
 
   @Watch('result')
@@ -346,13 +346,13 @@ export class DiscoveryMapComponent {
         let max = Number.MIN_SAFE_INTEGER;
         let min = Number.MAX_SAFE_INTEGER;
         hasHeatmap = true;
-        const data = g.v.map(v => {
+        const hasHeatmapData = g.v.map(v => {
           max = Math.max(max, v[v.length - 1]);
           min = Math.min(min, v[v.length - 1]);
           Leaflet.circleMarker([v[1], v[2]], {radius: 1}).addTo(this.shadowHeatmapLayer);
           return [v[1], v[2], v[v.length - 1]]
         });
-        Leaflet.heatLayer(data, {
+        Leaflet.heatLayer(hasHeatmapData, {
           radius: p.map?.heatRadius || this.innerOptions.map?.heatRadius || 25,
           minOpacity: p.map?.heatOpacity || this.innerOptions.map?.heatOpacity || 0.05,
           maxZoom: 0,
@@ -564,7 +564,12 @@ export class DiscoveryMapComponent {
         this.poputTimeout = setTimeout(() => {
           if (marker.isPopupOpen() && !this.markerOver) marker.closePopup();
         }, 3000);
-        this.dataPointOver.emit({date: ts, name: positionData.key, value: value, meta: positionData.properties});
+        this.dataPointOver.emit({
+          date: ts,
+          name: positionData.key,
+          value,
+          meta: positionData.properties
+        });
       })
       this.markersRef = {...this.markersRef || {}}
       if (!this.markersRef[positionData.key]) {

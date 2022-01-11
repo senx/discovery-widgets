@@ -438,7 +438,9 @@ export class DiscoveryLineComponent {
     if (!!(unit || this.unit || this.innerOptions.unit) && !!this.myChart) {
       const opts = {...this.chartOpts};
       if (opts.grid) {
-        opts.grid['top'] = 30;
+        if ('top' in opts.grid) {
+          opts.grid.top = 30;
+        }
         setTimeout(() => this.myChart.setOption(opts as EChartsOption));
       }
     }
