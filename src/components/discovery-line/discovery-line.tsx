@@ -169,8 +169,8 @@ export class DiscoveryLineComponent {
             const regexp = '(' + (params as any[]).map(s => {
               const gts = this.chartOpts.series[s.seriesIndex]
               const coords = this.myChart.convertFromPixel({
-                yAxisIndex: gts.yAxisIndex || 0,
-                xAxisIndex: gts.xAxisIndex || 0
+                yAxisIndex: gts?.yAxisIndex || 0,
+                xAxisIndex: gts?.xAxisIndex || 0
               }, pos) || [0, 0];
               value = coords[1];
               return s.seriesName;
