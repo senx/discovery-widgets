@@ -69,6 +69,7 @@ export class Param {
   customStyles?: { [key: string]: string; };
   httpHeaders?: { [key: string]: string; };
   leftMargin = 0;
+  showLoader = false;
 
 
 // components specific params

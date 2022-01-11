@@ -67,7 +67,7 @@ export class DiscoveryLineComponent {
   updateType(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      this.setOpts();
     }
   }
 
@@ -76,7 +76,7 @@ export class DiscoveryLineComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      this.setOpts();
     }
   }
 
@@ -91,7 +91,7 @@ export class DiscoveryLineComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+        this.setOpts();
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -114,6 +114,10 @@ export class DiscoveryLineComponent {
     });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+  }
+
+  setOpts() {
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   convert(data: DataModel) {
@@ -620,7 +624,7 @@ export class DiscoveryLineComponent {
     }
     (this.chartOpts.tooltip as any).show = true;
     this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    this.setOpts();
   }
 
   @Method()
@@ -646,13 +650,13 @@ export class DiscoveryLineComponent {
       };
     }
     this.myChart.dispatchAction({type: 'hideTip'});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    this.setOpts();
   }
 
   private hideMarkers() {
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     if (!!this.myChart) {
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      this.setOpts();
     }
   }
 

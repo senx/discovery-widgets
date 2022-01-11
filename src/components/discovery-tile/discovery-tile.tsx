@@ -50,6 +50,7 @@ export class DiscoveryTileComponent {
   @State() height: number;
   @State() headers: any;
   @State() start: number;
+  @State() showLoader: boolean = false;
 
   private LOG: Logger;
   private ws: string;
@@ -78,6 +79,7 @@ export class DiscoveryTileComponent {
   varsUpdate(newValue: string, oldValue: string) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
+
       this.exec(true).then(() => {
         // empty
       });
@@ -200,6 +202,9 @@ FLOWS`;
           .map(k => Utils.generateVars(k, this.innerVars[k])).join("\n") + "\n" + this.ws;
       }
       if (this.url.toLowerCase().startsWith('http')) {
+        if((this.options as Param).showLoader) {
+          setTimeout(() => this.showLoader = true);
+        }
         Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
           .then((res: any) => {
             this.result = res.data as string;
@@ -227,10 +232,16 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             }
             this.LOG.debug(['exec', 'result'], this.result);
             this.execResult.emit(this.result);
-            setTimeout(() => this.loaded = true);
+            setTimeout(() => {
+              this.loaded = true;
+              this.showLoader = false;
+            });
           }).catch(e => {
           this.statusError.emit(e);
-          setTimeout(() => this.loaded = true);
+          setTimeout(() => {
+            this.loaded = true;
+            this.showLoader = false;
+          });
           this.LOG.error(['exec'], e);
         });
       } else if (this.url.toLowerCase().startsWith('ws')) {
@@ -278,6 +289,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           <discovery-spinner>Requesting data...</discovery-spinner>
         </div>
       }
+      {this.showLoader ? <div class="discovery-tile-spinner">
+        <discovery-spinner>Requesting data...</discovery-spinner>
+      </div> : ''}
       <pre id="ws"><slot/></pre>
     </Host>;
   }

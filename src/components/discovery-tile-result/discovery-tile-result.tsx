@@ -436,13 +436,13 @@ export class DiscoveryTileResultComponent {
 
   private handleCSSColors() {
     let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000000');
-    fontColor = ((this.options as Param) || {fontColor}).fontColor || fontColor;
+    fontColor = ((this.innerOptions as Param) || {fontColor}).fontColor || fontColor;
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.innerResult as unknown as DataModel) || {
       globalParams: {bgColor, fontColor}
     }).globalParams || {bgColor, fontColor}) as Param;
-    this.bgColor = dm.bgColor;
-    this.fontColor = dm.fontColor;
+    this.bgColor = dm.bgColor || bgColor;
+    this.fontColor = dm.fontColor || fontColor;
   }
 }

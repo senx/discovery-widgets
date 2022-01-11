@@ -206,7 +206,7 @@ WithCustomStyle.args = {
     1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND ADDVALUE DROP %> FOR
     $g
   %> FOR ] 'data' STORE
-  { 'data' $data 'params' [ { 'datasetColor' '#ff9900' } ] }
+  { 'data' $data 'params' [ { 'datasetColor' '#ff9900' } ] 'globalParams' { 'bar' { 'stacked' true } } }
 
   `
 };
