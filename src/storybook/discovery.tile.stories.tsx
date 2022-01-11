@@ -118,6 +118,24 @@ $now 10 s - $now
 $gts SORT`,
   options: {...new Param(), autoRefresh: 200}
 }
+
+export const ErrorUseCase = Template.bind({});
+ErrorUseCase.args = {
+  ...Usage.args,
+  type: 'display',
+  ws: 'RAND 0.5 > <% "Error message" MSGFAIL %> <% RAND 100 * ROUND %>  IFTE',
+  options: {...new Param(), autoRefresh: 5, showErrors: true}
+}
+
+export const ErrorUseCaseWithWebSockets = Template.bind({});
+ErrorUseCaseWithWebSockets.args = {
+  ...Usage.args,
+  url: 'wss://warp.senx.io/api/v0/mobius',
+  type: 'display',
+  ws: 'LINEON RAND 0.5 > <% "Error message" MSGFAIL %> <% RAND 100 * ROUND %>  IFTE',
+  options: {...new Param(), autoRefresh: 5000, showErrors: true}
+}
+
 export const AutoRefresh = Template.bind({});
 AutoRefresh.args = {
   ...Usage.args,

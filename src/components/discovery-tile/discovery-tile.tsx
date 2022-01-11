@@ -51,6 +51,8 @@ export class DiscoveryTileComponent {
   @State() headers: any;
   @State() start: number;
   @State() showLoader: boolean = false;
+  @State() hasError: boolean = false;
+  @State() errorMessage: string = '';
 
   private LOG: Logger;
   private ws: string;
@@ -202,9 +204,13 @@ FLOWS`;
           .map(k => Utils.generateVars(k, this.innerVars[k])).join("\n") + "\n" + this.ws;
       }
       if (this.url.toLowerCase().startsWith('http')) {
-        if((this.options as Param).showLoader) {
-          setTimeout(() => this.showLoader = true);
-        }
+        setTimeout(() => {
+          this.hasError = false;
+          this.errorMessage = '';
+          if ((this.options as Param).showLoader) {
+            this.showLoader = true;
+          }
+        });
         Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
           .then((res: any) => {
             this.result = res.data as string;
@@ -241,6 +247,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           setTimeout(() => {
             this.loaded = true;
             this.showLoader = false;
+            this.hasError = (this.options as Param).showErrors;
+            this.errorMessage = e;
           });
           this.LOG.error(['exec'], e);
         });
@@ -252,9 +260,18 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.socket = new WebSocket(this.url);
         this.socket.onopen = () => {
           this.socket.onmessage = event => {
-            this.result = event.data as string;
-            this.LOG.debug(['exec', 'result'], this.result);
-            this.execResult.emit(this.result);
+            const res = event.data as string;
+            if (res.startsWith('["Exception at \'EVERY')) {
+              this.hasError = (this.options as Param).showErrors;
+              this.errorMessage = JSON.parse(res)[0] || 'Error';
+              this.statusError.emit(this.errorMessage);
+            } else {
+              this.result = res;
+              this.hasError = false;
+              this.errorMessage = '';
+              this.LOG.debug(['exec', 'result'], this.result);
+              this.execResult.emit(this.result);
+            }
           }
           this.socket.send('<% ' + this.ws + ' %> ' + ((this.options as Param).autoRefresh || 1000) + ' EVERY');
         };
@@ -270,21 +287,23 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   render() {
     return <Host>
       {this.loaded ?
-        <div style={{width: '100%', height: '100%'}}>
-          <discovery-tile-result
-            url={this.url}
-            start={this.start}
-            result={this.result}
-            type={this.type}
-            options={this.options}
-            unit={this.unit}
-            debug={this.debug}
-            height={this.height}
-            width={this.width}
-            chart-title={this.chartTitle}
-            ref={(el) => this.tileResult = el as HTMLDiscoveryTileResultElement}
-          />
-        </div>
+        this.hasError
+          ? <div class="discovery-tile-error">{this.errorMessage}</div>
+          : <div style={{width: '100%', height: '100%'}}>
+            <discovery-tile-result
+              url={this.url}
+              start={this.start}
+              result={this.result}
+              type={this.type}
+              options={this.options}
+              unit={this.unit}
+              debug={this.debug}
+              height={this.height}
+              width={this.width}
+              chart-title={this.chartTitle}
+              ref={(el) => this.tileResult = el as HTMLDiscoveryTileResultElement}
+            />
+          </div>
         : <div class="discovery-tile-spinner">
           <discovery-spinner>Requesting data...</discovery-spinner>
         </div>
