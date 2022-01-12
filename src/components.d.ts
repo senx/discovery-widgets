@@ -55,6 +55,19 @@ export namespace Components {
         "url": string;
         "width": number;
     }
+    interface DiscoveryCalendar {
+        "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "height": number;
+        "hide": (regexp: string) => Promise<void>;
+        "options": Param | string;
+        "resize": () => Promise<void>;
+        "result": DataModel | string;
+        "show": (regexp: string) => Promise<void>;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoveryDashboard {
         "autoRefresh": number;
         "cellHeight": number;
@@ -273,6 +286,12 @@ declare global {
         prototype: HTMLDiscoveryButtonElement;
         new (): HTMLDiscoveryButtonElement;
     };
+    interface HTMLDiscoveryCalendarElement extends Components.DiscoveryCalendar, HTMLStencilElement {
+    }
+    var HTMLDiscoveryCalendarElement: {
+        prototype: HTMLDiscoveryCalendarElement;
+        new (): HTMLDiscoveryCalendarElement;
+    };
     interface HTMLDiscoveryDashboardElement extends Components.DiscoveryDashboard, HTMLStencilElement {
     }
     var HTMLDiscoveryDashboardElement: {
@@ -379,6 +398,7 @@ declare global {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-bar": HTMLDiscoveryBarElement;
         "discovery-button": HTMLDiscoveryButtonElement;
+        "discovery-calendar": HTMLDiscoveryCalendarElement;
         "discovery-dashboard": HTMLDiscoveryDashboardElement;
         "discovery-display": HTMLDiscoveryDisplayElement;
         "discovery-empty": HTMLDiscoveryEmptyElement;
@@ -435,6 +455,17 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "url"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryCalendar {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
         "width"?: number;
     }
     interface DiscoveryDashboard {
@@ -619,6 +650,7 @@ declare namespace LocalJSX {
         "discovery-annotation": DiscoveryAnnotation;
         "discovery-bar": DiscoveryBar;
         "discovery-button": DiscoveryButton;
+        "discovery-calendar": DiscoveryCalendar;
         "discovery-dashboard": DiscoveryDashboard;
         "discovery-display": DiscoveryDisplay;
         "discovery-empty": DiscoveryEmpty;
@@ -645,6 +677,7 @@ declare module "@stencil/core" {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-bar": LocalJSX.DiscoveryBar & JSXBase.HTMLAttributes<HTMLDiscoveryBarElement>;
             "discovery-button": LocalJSX.DiscoveryButton & JSXBase.HTMLAttributes<HTMLDiscoveryButtonElement>;
+            "discovery-calendar": LocalJSX.DiscoveryCalendar & JSXBase.HTMLAttributes<HTMLDiscoveryCalendarElement>;
             "discovery-dashboard": LocalJSX.DiscoveryDashboard & JSXBase.HTMLAttributes<HTMLDiscoveryDashboardElement>;
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
             "discovery-empty": LocalJSX.DiscoveryEmpty & JSXBase.HTMLAttributes<HTMLDiscoveryEmptyElement>;
