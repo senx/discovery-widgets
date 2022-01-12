@@ -324,6 +324,14 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
+      case 'calendar':
+        return <discovery-calendar
+          result={this.innerResult}
+          type={this.innerType}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          debug={this.debug}
+        />;
       default:
         return '';
     }

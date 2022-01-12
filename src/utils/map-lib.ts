@@ -57,7 +57,7 @@ export class MapLib {
     TOPO: {
       link: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
       attribution: `Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors,
- <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>
+ <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>
   (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)`
     },
     TOPO2: {
@@ -67,30 +67,30 @@ export class MapLib {
     },
     STADIA: {
       link: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-      attribution: `&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors`
+      attribution: `&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors`
     },
     STADIA_DARK: {
       link: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-      attribution: `&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors`
+      attribution: `&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors`
     },
     TONER: {
       link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
-      attribution: `Map tiles by <a href="http://stamen.com">Stamen Design</a>,
- <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
+      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
+ <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
   <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
       subdomains: 'abcd'
     },
     TONER_LITE: {
       link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
-      attribution: `Map tiles by <a href="http://stamen.com">Stamen Design</a>,
- <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
+      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
+ <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
   <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
       subdomains: 'abcd',
     },
     TERRAIN: {
       link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png',
-      attribution: `Map tiles by <a href="http://stamen.com">Stamen Design</a>,
- <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
+      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
+ <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
  <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
       subdomains: 'abcd',
     },
@@ -118,8 +118,8 @@ export class MapLib {
     },
     WATERCOLOR: {
       link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
-      attribution: `Map tiles by <a href="http://stamen.com">Stamen Design</a>,
- <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
+      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
+ <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
   <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
       subdomains: 'abcd',
     },
@@ -267,27 +267,27 @@ export class MapLib {
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
-      let params = (data.params || [])[i];
-      if (!params) {
-        params = {};
+      let globalParams = (data.params || [])[i];
+      if (!globalParams) {
+        globalParams = {};
       }
-      if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0  && !params.map?.heatmap) {
+      if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0  && !globalParams.map?.heatmap) {
         this.LOG.debug(['toLeafletMapPositionArray'], gts, data.params ? data.params[i] : '');
         const posArray = gts;
-        const params = data.params ? data.params[i] || {} : {};
-        MapLib.extractCommonParameters(posArray, params, i, scheme);
-        posArray.render = params.render || 'dots';
-        posArray.maxValue = params.maxValue || 0;
-        posArray.minValue = params.minValue || 0;
-        posArray.line = params.hasOwnProperty('line') ? params.line : false;
+        const gtsParam = data.params ? data.params[i] || {} : {};
+        MapLib.extractCommonParameters(posArray, gtsParam, i, scheme);
+        posArray.render = gtsParam.render || 'dots';
+        posArray.maxValue = gtsParam.maxValue || 0;
+        posArray.minValue = gtsParam.minValue || 0;
+        posArray.line = gtsParam.hasOwnProperty('line') ? gtsParam.line : false;
         if (posArray.render === 'weightedDots') {
-          MapLib.validateWeightedDotsPositionArray(posArray, params);
+          MapLib.validateWeightedDotsPositionArray(posArray, gtsParam);
         }
         if (posArray.render === 'coloredWeightedDots') {
-          MapLib.validateWeightedColoredDotsPositionArray(posArray, params);
+          MapLib.validateWeightedColoredDotsPositionArray(posArray, gtsParam);
         }
         if (posArray.render === 'marker') {
-          posArray.marker = params.marker;
+          posArray.marker = gtsParam.marker;
         }
         if (data.params && data.params[i] && data.params[i].color) {
           posArray.color = data.params[i].color;
@@ -394,84 +394,6 @@ export class MapLib {
         }
       }
     });
-  }
-
-  static getBoundsArray(paths, positionsData, annotationsData, geoJson) {
-    const pointsArray = [];
-    let size;
-    this.LOG.debug(['getBoundsArray', 'paths'], paths);
-    size = (paths || []).length;
-    for (let i = 0; i < size; i++) {
-      const path = paths[i];
-      const s = (path.path || []).length;
-      for (let j = 0; j < s; j++) {
-        const p = path.path[j];
-        pointsArray.push([p.lat, p.lon]);
-      }
-    }
-    this.LOG.debug(['getBoundsArray', 'positionsData'], positionsData);
-    size = (positionsData || []).length;
-    for (let i = 0; i < size; i++) {
-      const position = positionsData[i];
-      const s = (position.positions || []).length;
-      for (let j = 0; j < s; j++) {
-        const p = position.positions[j];
-        pointsArray.push([p[0], p[1]]);
-      }
-    }
-    this.LOG.debug(['getBoundsArray', 'annotationsData'], annotationsData);
-    size = (annotationsData || []).length;
-    for (let i = 0; i < size; i++) {
-      const annotation = annotationsData[i];
-      const s = (annotation.path || []).length;
-      for (let j = 0; j < s; j++) {
-        const p = annotation.path[j];
-        pointsArray.push([p.lat, p.lon]);
-      }
-    }
-    size = (geoJson || []).length;
-    for (let i = 0; i < size; i++) {
-      const g = geoJson[i];
-      switch (g.geometry.type) {
-        case 'MultiPolygon':
-          g.geometry.coordinates.forEach(c => c.forEach(m => m.forEach(p => pointsArray.push([p[1], p[0]]))));
-          break;
-        case 'Polygon':
-          g.geometry.coordinates.forEach(c => c.forEach(p => pointsArray.push([p[1], p[0]])));
-          break;
-        case 'LineString':
-          g.geometry.coordinates.forEach(p => pointsArray.push([p[1], p[0]]));
-          break;
-        case 'Point':
-          pointsArray.push([g.geometry.coordinates[1], g.geometry.coordinates[0]]);
-          break;
-      }
-    }
-    if (pointsArray.length === 1) {
-      return pointsArray;
-    }
-    let south = 90;
-    let west = -180;
-    let north = -90;
-    let east = 180;
-    this.LOG.debug(['getBoundsArray'], pointsArray);
-    size = (pointsArray || []).length;
-    for (let i = 0; i < size; i++) {
-      const point = pointsArray[i];
-      if (point[0] > north) {
-        north = point[0];
-      }
-      if (point[0] < south) {
-        south = point[0];
-      }
-      if (point[1] > west) {
-        west = point[1];
-      }
-      if (point[1] < east) {
-        east = point[1];
-      }
-    }
-    return [[south, west], [north, east]];
   }
 
   static pathDataToLeaflet(pathData: any[]) {

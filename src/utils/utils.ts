@@ -22,16 +22,18 @@ import {DataModel} from "../model/dataModel";
 export class Utils {
 
   static throttle(func, wait, leading, trailing, context) {
-    let ctx, args, result;
+    let ctx;
+    let args;
+    let result;
     let timeout = null;
     let previous = 0;
-    let later = () => {
+    const later = () => {
       previous = new Date().getMilliseconds();
       timeout = null;
       result = func.apply(ctx, args);
     };
     return () => {
-      let now = new Date().getMilliseconds();
+      const now = new Date().getMilliseconds();
       if (!previous && !leading) previous = now;
       const remaining = wait - (now - previous);
       ctx = context || this;
@@ -52,7 +54,6 @@ export class Utils {
       return result;
     };
   };
-
 
   static httpPost(theUrl, payload, headers: { [key: string]: string; }) {
     return new Promise((resolve, reject) => {
@@ -78,7 +79,6 @@ export class Utils {
     }
     return {...new Param(), ...options as Param, ...options2}
   }
-
 
   static sanitize(data: string | DataModel) {
     if (typeof data === 'string') return '["' + data + '"]';

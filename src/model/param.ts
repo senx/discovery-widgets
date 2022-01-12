@@ -53,7 +53,6 @@ export class Param {
   expandAnnotation = false;
   showGTSTree?: boolean;
   foldGTSTree?: boolean;
-  delta?: number;
   split?: 'Y' | 'M' | 'D' | 'h' | 'm' | 's';
   popupButtonValidateClass?: string;
   popupButtonValidateLabel?: string;
@@ -70,8 +69,6 @@ export class Param {
   httpHeaders?: { [key: string]: string; };
   leftMargin = 0;
   showLoader = false;
-
-
 // components specific params
   bar?: {
     horizontal: boolean,
@@ -90,8 +87,7 @@ export class Param {
     max?: number
   }
   map?: MapParams;
-  histo?: {
-    histnorm: 'percent' | 'probability' | 'density' | 'probability density';
-    histfunc: 'count' | 'sum' | 'avg' | 'min' | 'max';
+  calendar?: {
+    horizontal: boolean
   };
 }

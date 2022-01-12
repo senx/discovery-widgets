@@ -37,6 +37,27 @@ export enum Colors {
   MATRIX = 'MATRIX',
   CHARTANA = 'CHARTANA',
 }
+export enum HeatMaps {
+  COHESIVE = 'COHESIVE',
+  COHESIVE_2 = 'COHESIVE_2',
+  BELIZE = 'BELIZE',
+  VIRIDIS = 'VIRIDIS',
+  MAGMA = 'MAGMA',
+  INFERNO = 'INFERNO',
+  PLASMA = 'PLASMA',
+  YL_OR_RD = 'YL_OR_RD',
+  YL_GN_BU = 'YL_GN_BU',
+  BU_GN = 'BU_GN',
+  NINETEEN_EIGHTY_FOUR = 'NINETEEN_EIGHTY_FOUR',
+  ATLANTIS = 'ATLANTIS',
+  DO_ANDROIDS_DREAM = 'DO_ANDROIDS_DREAM',
+  DELOREAN = 'DELOREAN',
+  CTHULHU = 'CTHULHU',
+  ECTOPLASM = 'ECTOPLASM',
+  T_MAX_400_FILM = 'T_MAX_400_FILM',
+  MATRIX = 'MATRIX',
+  DEFAULT = 'DEFAULT',
+}
 
 export class ColorLib {
   static color = {
@@ -76,6 +97,32 @@ export class ColorLib {
     CHARTANA: ['#77BE69', '#FADE2B', '#F24865', '#5694F2',
       '#FF9830', '#B876D9'],
   };
+
+  static heatMaps = {
+    COHESIVE: ColorLib.color.COHESIVE,
+    COHESIVE_2: ColorLib.color.COHESIVE_2,
+    VIRIDIS: ColorLib.color.VIRIDIS,
+    MAGMA: ColorLib.color.MAGMA,
+    INFERNO: ColorLib.color.INFERNO,
+    PLASMA: ColorLib.color.PLASMA,
+    YL_OR_RD: ColorLib.color.YL_OR_RD,
+    YL_GN_BU: ColorLib.color.YL_GN_BU,
+    BU_GN: ColorLib.color.BU_GN,
+    NINETEEN_EIGHTY_FOUR: ColorLib.color.NINETEEN_EIGHTY_FOUR,
+    ATLANTIS: ColorLib.color.ATLANTIS,
+    DO_ANDROIDS_DREAM: ColorLib.color.DO_ANDROIDS_DREAM,
+    DELOREAN: ColorLib.color.DELOREAN,
+    CTHULHU: ColorLib.color.CTHULHU,
+    ECTOPLASM: ColorLib.color.ECTOPLASM,
+    T_MAX_400_FILM: ColorLib.color.T_MAX_400_FILM,
+    MATRIX: ColorLib.color.MATRIX,
+    DEFAULT: ['#bf444c', '#d88273', '#f6efa6']
+  };
+
+
+  static getHeatMap(scheme: string) {
+    return ColorLib.heatMaps[scheme] || ColorLib.heatMaps['DEFAULT'];
+  }
 
   static getColor(i: number, scheme: string) {
     if (!ColorLib.color[scheme]) {
