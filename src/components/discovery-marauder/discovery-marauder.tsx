@@ -466,51 +466,55 @@ export class DiscoveryMarauder {
   }
 
   private getPositions(gtsidx, tick): (number)[] | (any | number)[] {
-    let offset = ((gtsidx * this.ticks) + tick) * 4;
-    // ARGB
-    let lat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
-    let lon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
-    if (0 === lat && 0 === lon) {
-      lat = NaN;
-      lon = NaN;
-    } else {
-      lat = this.lllat + (lat * this.latstep);
-      lon = this.lllon + (lon * this.lonstep);
-    }
-    if (tick < this.step) {
-      return [NaN, NaN, lat, lon];
-    } else {
-      //
-      // Check if within the previous 'step' ticks one is absent, in which case
-      // the function will return NaN/NaN as the previous position
-      //
-      let prevlat = null;
-      let prevlon = null;
+    try {
+      let offset = ((gtsidx * this.ticks) + tick) * 4;
+      // ARGB
+      let lat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
+      let lon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
+      if (0 === lat && 0 === lon) {
+        lat = NaN;
+        lon = NaN;
+      } else {
+        lat = this.lllat + (lat * this.latstep);
+        lon = this.lllon + (lon * this.lonstep);
+      }
+      if (tick < this.step) {
+        return [NaN, NaN, lat, lon];
+      } else {
+        //
+        // Check if within the previous 'step' ticks one is absent, in which case
+        // the function will return NaN/NaN as the previous position
+        //
+        let prevlat = null;
+        let prevlon = null;
 
-      if (this.step > 1) {
-        for (let j = 1; j < this.step; j++) {
-          offset = ((gtsidx * this.ticks) + tick - j) * 4;
-          if (0 === this.data[offset] && 0 === this.data[offset + 1] && 0 === this.data[offset + 2] && 0 === this.data[offset + 3]) {
-            prevlat = NaN;
-            prevlon = NaN;
-            break;
+        if (this.step > 1) {
+          for (let j = 1; j < this.step; j++) {
+            offset = ((gtsidx * this.ticks) + tick - j) * 4;
+            if (0 === this.data[offset] && 0 === this.data[offset + 1] && 0 === this.data[offset + 2] && 0 === this.data[offset + 3]) {
+              prevlat = NaN;
+              prevlon = NaN;
+              break;
+            }
           }
         }
-      }
 
-      if (null === prevlat) {
-        offset = ((gtsidx * this.ticks) + tick - this.step) * 4;
-        prevlat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
-        prevlon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
-        if (0 === prevlat && 0 === prevlon) {
-          prevlat = NaN;
-          prevlon = NaN;
-        } else {
-          prevlat = this.lllat + (prevlat * this.latstep);
-          prevlon = this.lllon + (prevlon * this.lonstep);
+        if (null === prevlat) {
+          offset = ((gtsidx * this.ticks) + tick - this.step) * 4;
+          prevlat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
+          prevlon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
+          if (0 === prevlat && 0 === prevlon) {
+            prevlat = NaN;
+            prevlon = NaN;
+          } else {
+            prevlat = this.lllat + (prevlat * this.latstep);
+            prevlon = this.lllon + (prevlon * this.lonstep);
+          }
         }
+        return [prevlat, prevlon, lat, lon];
       }
-      return [prevlat, prevlon, lat, lon];
+    } catch (e) {
+      this.LOG.error(['getPositions'], e);
     }
   }
 
@@ -533,7 +537,7 @@ export class DiscoveryMarauder {
         if (drawTraces) {
           histctx.strokeStyle = ColorLib.getColor(particle, this.innerOptions.scheme);
           // Draw line if the previous position is not NaN/NaN
-          if (this.TRACKS && !isNaN(positions[0]) && !isNaN(positions[1]) && !isNaN(positions[2]) && !isNaN(positions[3])) {
+          if (this.TRACKS && !!positions && !!positions[0] && !isNaN(positions[0]) && !isNaN(positions[1]) && !isNaN(positions[2]) && !isNaN(positions[3])) {
             histctx.beginPath();
             histctx.lineWidth = this.trackWidth;
             let dot;
@@ -548,7 +552,6 @@ export class DiscoveryMarauder {
         }
 
         // Draw marker at current location
-
         if (!isNaN(positions[2]) && !isNaN(positions[3])) {
           let dot;
           dot = info.layer._map.latLngToContainerPoint([positions[2], positions[3]]);
@@ -688,12 +691,16 @@ export class DiscoveryMarauder {
   }
 
   private handleSelect(e) {
-    this.setSliderPosition(parseInt(e.target.value as string, 10))
+    this.setSliderPosition(parseInt(e.target.value as string, 10), true)
   }
 
-  private setSliderPosition(pos: number) {
+  private setSliderPosition(pos: number, setTick = false) {
     const newValue = pos * 100 / this.ticks;
     const newPosition = 10 - (newValue * 0.2);
+    if (setTick) {
+      this.tick = pos;
+      this.drawOnMap(this.info, true);
+    }
     this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
   }
 
