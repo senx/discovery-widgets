@@ -519,7 +519,7 @@ export class DiscoveryMarauder {
     const ctx = canvas.getContext('2d');
     const histctx = this.histcanvas.getContext('2d');
     if (this.tick < this.ticks) {
-      this.markers.fill(null);
+      this.markers?.fill(null);
       histctx.fillStyle = this.trackMarkerColor;
       for (let particle = 0; particle < this.gts; particle++) {
         if (!!this.particles && !this.particles.includes(particle)) {

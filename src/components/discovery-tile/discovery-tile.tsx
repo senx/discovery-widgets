@@ -185,7 +185,7 @@ export class DiscoveryTileComponent {
   @Method()
   async exec(refresh = false) {
     if (!refresh) {
-      setTimeout(() => this.loaded = true);
+      setTimeout(() => this.loaded = false);
     }
     if (this.el.innerText && this.el.innerText !== '') {
       this.ws = LangUtils.prepare(this.el.innerText, this.innerVars || {},this.type, this.language);
