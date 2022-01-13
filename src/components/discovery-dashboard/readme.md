@@ -63,7 +63,8 @@ graph TD;
   discovery-tile-result --> discovery-tabular
   discovery-tile-result --> discovery-svg
   discovery-tile-result --> discovery-input
-  discovery-tile-result --> discovery-empty
+  discovery-tile-result --> discovery-hidden
+  discovery-tile-result --> discovery-calendar
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
@@ -75,6 +76,7 @@ graph TD;
   discovery-tabular --> discovery-spinner
   discovery-tabular --> discovery-pageable
   discovery-svg --> discovery-spinner
+  discovery-calendar --> discovery-spinner
   discovery-modal --> discovery-dashboard
   style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px
 ```

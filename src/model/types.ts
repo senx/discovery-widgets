@@ -32,7 +32,7 @@ export type ChartType =
   | 'svg'
   | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider' | 'input:date' | 'input:date-range'
   | 'button'
-  | 'empty'
+  | 'hidden'
   | 'calendar'
   ;
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';

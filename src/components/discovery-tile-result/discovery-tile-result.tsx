@@ -316,8 +316,8 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
-      case 'empty':
-        return <discovery-empty
+      case 'hidden':
+        return <discovery-hidden
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}

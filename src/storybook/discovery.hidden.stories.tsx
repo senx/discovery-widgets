@@ -22,7 +22,7 @@ import tile from './discovery.tile.stories';
 
 export default {
   ...tile,
-  title: 'Charts/Empty'
+  title: 'Charts/Hidden'
 };
 const Template = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
@@ -55,7 +55,7 @@ InitialUsage.args = {
         'endpoint' 'wss://sandbox.senx.io/api/v0/mobius' // Uses WebSockets
         'options' { 'autoRefresh' 1000 'timeMode' 'custom' } // refresh each second
         'x' 0 'y' 0 'w' 1 'h' 1
-        'type' 'empty'
+        'type' 'hidden'
         'macro' <%
           NOW 'now' STORE
           { 'data' '' 'events' [ { 'tags' [ 'start' ] 'type' 'variable' 'value' { 'start' $now }  } ] }

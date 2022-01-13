@@ -312,7 +312,6 @@ $g 'data' STORE
 `
 }
 
-
 export const Heatmap = Usage.bind({});
 Heatmap.args = {
   ...InitialUsage.args,
@@ -323,61 +322,6 @@ Heatmap.args = {
 'globalParams' { 'map' { 'heatRadius' 25 'heatOpacity' 0.5 } } }
 `
 }
-export const Heatmap2 = Usage.bind({});
-Heatmap2.args = {
-  ...InitialUsage.args,
-  url: 'https://warp.imensi.io/api/v0/exec',
-  ws: `
-LINEON
- <%
-      NEWGTS 'g' STORE
-        0 'i' STORE
-        <%
-        'humidity35' SHMLOAD 'humidity35' STORE
-        %>
-        <%
-          NOW ->TSELEMENTS [ 0 2 ] SUBLIST 9 +! TSELEMENTS-> ISO8601 0 50  @kitempu/getHumidityInCorsica 'humidity35' STORE
-          $humidity35 'humidity35'  SHMSTORE
-        %>
-        <% %> TRY
-        <%
-        'humidity45' SHMLOAD 'humidity45' STORE
-        %>
-        <%
-          NOW ->TSELEMENTS [ 0 2 ] SUBLIST 9 +! TSELEMENTS-> ISO8601 51 60  @kitempu/getHumidityInCorsica 'humidity45' STORE
-          $humidity45 'humidity45'  SHMSTORE
-        %>
-        <% %> TRY
-
-
-         $humidity45 <%
-        'mapping' STORE
-        $mapping 1 GET  'LAT' STORE # LAT
-        $mapping 2 GET  'LON' STORE # LON
-        $mapping 4 GET   'VALUE' STORE # VALUE
-        $g $i $LAT $LON NaN  $VALUE '%25' SPLIT 0 GET TRIM TODOUBLE ADDVALUE DROP
-        $i 1 + 'i' STORE
-       %>
-       FOREACH
-      $humidity35
-        <%
-        'mapping' STORE
-        $mapping 1 GET  'LAT' STORE # LAT
-        $mapping 2 GET  'LON' STORE # LON
-        $mapping 4 GET   'VALUE' STORE # VALUE
-        $g $i $LAT $LON NaN $VALUE '%25' SPLIT 0 GET TRIM TODOUBLE ADDVALUE DROP
-        $i 1 + 'i' STORE
-       %>
-       FOREACH
-
-{ 'data' [ $g ] 'params' [ { 'map' { 'heatmap' true } } ]
-'globalParams' { 'map' { 'heatRadius' 0.5 'heatBlur' 0.5 'heatOpacity' 0.05 'mapType' 'CARTODB_DARK'  } } }
-
-
-        %>
-        'humidity' MUTEX`
-}
-
 
 export const WeightedDots = Usage.bind({});
 WeightedDots.args = {

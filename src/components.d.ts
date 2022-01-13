@@ -89,15 +89,6 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
-    interface DiscoveryEmpty {
-        "debug": boolean;
-        "height": number;
-        "options": Param | string;
-        "result": DataModel | string;
-        "type": ChartType;
-        "unit": string;
-        "width": number;
-    }
     interface DiscoveryGauge {
         "debug": boolean;
         "export": (type?: 'png' | 'svg') => Promise<string>;
@@ -107,6 +98,15 @@ export namespace Components {
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "show": (regexp: string) => Promise<void>;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
+    interface DiscoveryHidden {
+        "debug": boolean;
+        "height": number;
+        "options": Param | string;
+        "result": DataModel | string;
         "type": ChartType;
         "unit": string;
         "width": number;
@@ -304,17 +304,17 @@ declare global {
         prototype: HTMLDiscoveryDisplayElement;
         new (): HTMLDiscoveryDisplayElement;
     };
-    interface HTMLDiscoveryEmptyElement extends Components.DiscoveryEmpty, HTMLStencilElement {
-    }
-    var HTMLDiscoveryEmptyElement: {
-        prototype: HTMLDiscoveryEmptyElement;
-        new (): HTMLDiscoveryEmptyElement;
-    };
     interface HTMLDiscoveryGaugeElement extends Components.DiscoveryGauge, HTMLStencilElement {
     }
     var HTMLDiscoveryGaugeElement: {
         prototype: HTMLDiscoveryGaugeElement;
         new (): HTMLDiscoveryGaugeElement;
+    };
+    interface HTMLDiscoveryHiddenElement extends Components.DiscoveryHidden, HTMLStencilElement {
+    }
+    var HTMLDiscoveryHiddenElement: {
+        prototype: HTMLDiscoveryHiddenElement;
+        new (): HTMLDiscoveryHiddenElement;
     };
     interface HTMLDiscoveryImageElement extends Components.DiscoveryImage, HTMLStencilElement {
     }
@@ -401,8 +401,8 @@ declare global {
         "discovery-calendar": HTMLDiscoveryCalendarElement;
         "discovery-dashboard": HTMLDiscoveryDashboardElement;
         "discovery-display": HTMLDiscoveryDisplayElement;
-        "discovery-empty": HTMLDiscoveryEmptyElement;
         "discovery-gauge": HTMLDiscoveryGaugeElement;
+        "discovery-hidden": HTMLDiscoveryHiddenElement;
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-input": HTMLDiscoveryInputElement;
         "discovery-line": HTMLDiscoveryLineElement;
@@ -491,9 +491,10 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
-    interface DiscoveryEmpty {
+    interface DiscoveryGauge {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -501,10 +502,9 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
-    interface DiscoveryGauge {
+    interface DiscoveryHidden {
         "debug"?: boolean;
         "height"?: number;
-        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -653,8 +653,8 @@ declare namespace LocalJSX {
         "discovery-calendar": DiscoveryCalendar;
         "discovery-dashboard": DiscoveryDashboard;
         "discovery-display": DiscoveryDisplay;
-        "discovery-empty": DiscoveryEmpty;
         "discovery-gauge": DiscoveryGauge;
+        "discovery-hidden": DiscoveryHidden;
         "discovery-image": DiscoveryImage;
         "discovery-input": DiscoveryInput;
         "discovery-line": DiscoveryLine;
@@ -680,8 +680,8 @@ declare module "@stencil/core" {
             "discovery-calendar": LocalJSX.DiscoveryCalendar & JSXBase.HTMLAttributes<HTMLDiscoveryCalendarElement>;
             "discovery-dashboard": LocalJSX.DiscoveryDashboard & JSXBase.HTMLAttributes<HTMLDiscoveryDashboardElement>;
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
-            "discovery-empty": LocalJSX.DiscoveryEmpty & JSXBase.HTMLAttributes<HTMLDiscoveryEmptyElement>;
             "discovery-gauge": LocalJSX.DiscoveryGauge & JSXBase.HTMLAttributes<HTMLDiscoveryGaugeElement>;
+            "discovery-hidden": LocalJSX.DiscoveryHidden & JSXBase.HTMLAttributes<HTMLDiscoveryHiddenElement>;
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-input": LocalJSX.DiscoveryInput & JSXBase.HTMLAttributes<HTMLDiscoveryInputElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;

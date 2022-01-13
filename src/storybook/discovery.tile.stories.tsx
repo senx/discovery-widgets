@@ -35,14 +35,14 @@ export default {
         'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
         'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
         'input:list', 'input:secret', 'input:autocomplete', 'input:slider', 'input:date', 'input:date-range', 'image',
-        'scatter', 'step-area', 'empty', 'calendar' ].sort(),
+        'scatter', 'step-area', 'hidden', 'calendar' ].sort(),
       control: {
         type: 'select',
         labels: [
           'line', 'area', 'spline', 'step', 'step-after', 'step-before', 'spline-area', 'annotation', 'bar', 'display',
           'gauge', 'circle', 'map', 'pie', 'rose', 'doughnut', 'tabular', 'plot', 'linear-gauge', 'button', 'input:text',
           'input:list', 'input:secret', 'input:autocomplete', 'input:slider', 'input:date', 'input:date-range', 'image',
-          'scatter', 'step-area', 'empty', 'calendar' ].sort()
+          'scatter', 'step-area', 'hidden', 'calendar' ].sort()
       }
     },
     language: {

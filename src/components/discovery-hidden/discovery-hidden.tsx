@@ -25,11 +25,11 @@ import {DiscoveryEvent} from "../../model/discoveryEvent";
 import {Utils} from "../../utils/utils";
 
 @Component({
-  tag: 'discovery-empty',
-  styleUrl: 'discovery-empty.scss',
+  tag: 'discovery-hidden',
+  styleUrl: 'discovery-hidden.scss',
   shadow: true,
 })
-export class DiscoveryEmpty {
+export class DiscoveryHidden {
 
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
@@ -85,7 +85,7 @@ export class DiscoveryEmpty {
 
   componentWillLoad() {
     this.parsing = true;
-    this.LOG = new Logger(DiscoveryEmpty, this.debug);
+    this.LOG = new Logger(DiscoveryHidden, this.debug);
     if (typeof this.options === 'string') {
       this.innerOptions = JSON.parse(this.options);
     } else {
