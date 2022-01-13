@@ -45,7 +45,7 @@ export class DiscoveryMapComponent {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
-  @Event() dataPointOver: EventEmitter<any>;
+  @Event() dataPointOver: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() toDisplay: string[] = [];

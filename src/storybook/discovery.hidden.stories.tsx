@@ -14,12 +14,9 @@
  *   limitations under the License.
  */
 
-// noinspection JSUnusedGlobalSymbols
-
-// noinspection JSUnusedGlobalSymbols
-
 import tile from './discovery.tile.stories';
 
+// noinspection JSUnusedGlobalSymbols
 export default {
   ...tile,
   title: 'Charts/Hidden'

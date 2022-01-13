@@ -13,13 +13,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-// noinspection JSUnusedGlobalSymbols
-
 import tile, {Usage} from './discovery.tile.stories';
 import {Param} from "../model/param";
 import {Colors} from "../utils/color-lib";
 
+// noinspection JSUnusedGlobalSymbols
 export default {
   ...tile,
   title: 'Charts/Annotation'

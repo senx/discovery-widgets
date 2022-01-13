@@ -26,7 +26,7 @@ export class DiscoveryCalendar {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
-  @Event() dataPointOver: EventEmitter<any>;
+  @Event() dataPointOver: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -144,13 +144,11 @@ export class DiscoveryCalendar {
     this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let cal = 0;
-    let s = 0;
     let seriesIndex = 0;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       let min = Number.MAX_SAFE_INTEGER;
       let max = Number.MIN_SAFE_INTEGER;
-      let currentRange;
       let dataStruct = {};
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         // add title

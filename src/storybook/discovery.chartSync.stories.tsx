@@ -14,12 +14,11 @@
  *   limitations under the License.
  */
 
-// noinspection JSUnusedGlobalSymbols
-
 import {Param} from "../model/param";
 import {action} from '@storybook/addon-actions';
 import tile from "./discovery.tile.stories";
 
+// noinspection JSUnusedGlobalSymbols
 export default {
   ...tile,
   title: 'Events/Charts Sync',

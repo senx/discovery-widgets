@@ -16,6 +16,7 @@
 
 import tile, {Usage} from './discovery.tile.stories';
 
+// noinspection JSUnusedGlobalSymbols
 export default {
   ...tile,
   title: 'UI/Button'

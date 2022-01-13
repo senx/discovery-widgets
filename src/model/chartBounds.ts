@@ -14,6 +14,7 @@
  *   limitations under the License.
  */
 
+// noinspection JSUnusedGlobalSymbols
 export class ChartBounds {
   tsmin = 0;
   tsmax = 0;

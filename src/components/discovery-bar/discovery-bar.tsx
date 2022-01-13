@@ -46,7 +46,7 @@ export class DiscoveryBarComponent {
   @Event() draw: EventEmitter<void>;
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() leftMarginComputed: EventEmitter<number>;
-  @Event() dataPointOver: EventEmitter<any>;
+  @Event() dataPointOver: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;

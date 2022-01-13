@@ -14,12 +14,11 @@
  *   limitations under the License.
  */
 
-import {Component, Host, h, Prop, State, Element, Event, EventEmitter, Watch, Listen} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
-import {FittyInstance} from "fitty";
 import {GTSLib} from "../../utils/gts.lib";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
 import {Utils} from "../../utils/utils";
@@ -50,7 +49,6 @@ export class DiscoveryHidden {
   @State() innerOptions: Param;
 
   private wrapper: HTMLDivElement;
-  private defOptions: Param = new Param();
   private divider: number = 1000;
   private LOG: Logger;
   private initial = false;
@@ -109,8 +107,8 @@ export class DiscoveryHidden {
 
   render() {
     return [
-      <div style={{display: 'hidden'}} >
-        <div ref={(el) => this.wrapper = el as HTMLDivElement} />
+      <div style={{display: 'hidden'}}>
+        <div ref={(el) => this.wrapper = el as HTMLDivElement}/>
       </div>
     ]
   }

@@ -18,6 +18,7 @@ import tile, {Usage} from './discovery.tile.stories';
 import {Param} from "../model/param";
 import {Colors} from "../utils/color-lib";
 
+// noinspection JSUnusedGlobalSymbols
 export default {
   ...tile,
   title: 'Charts/Doughnut'

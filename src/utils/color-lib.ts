@@ -15,6 +15,7 @@
  */
 
 // @dynamic
+// noinspection JSUnusedGlobalSymbols
 export enum Colors {
   COHESIVE = 'COHESIVE',
   COHESIVE_2 = 'COHESIVE_2',
@@ -37,6 +38,7 @@ export enum Colors {
   MATRIX = 'MATRIX',
   CHARTANA = 'CHARTANA',
 }
+// noinspection JSUnusedGlobalSymbols
 export enum HeatMaps {
   COHESIVE = 'COHESIVE',
   COHESIVE_2 = 'COHESIVE_2',

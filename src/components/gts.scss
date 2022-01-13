@@ -13,6 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+@import "./vars";
 
 .gts-classname {
   color: var(--gts-classname-font-color, $w10-blue);

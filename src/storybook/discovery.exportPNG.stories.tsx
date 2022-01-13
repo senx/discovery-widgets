@@ -33,7 +33,7 @@ export default {
 
 // @ts-ignore
 const Template = ({url, ws, options, title, type, unit}) => `
-<div class="row row-cols-1 row-cols-md-2" style="mheight: 300px">
+<div class="row row-cols-1 row-cols-md-2" style="height: 300px">
 <div class="col-6" style="height: 300px">
    <div class="card h-100">
       <div class="card-body">
@@ -80,7 +80,7 @@ window.onload = () => {
     chart.export('png').then(png =>  img.setAttribute('src', png));
   })
 
-  document.querySelector('#exportChart1').addEventListener('click', e => {
+  document.querySelector('#exportChart1').addEventListener('click', () => {
     chart.export('png').then(png => saveBase64AsFile(png, 'myChjart1.png'));
   })
 

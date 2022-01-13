@@ -198,8 +198,8 @@ debug options='${JSON.stringify(options)}'
  <script>
 window.onload = () => {
   const chart = document.querySelector('#chart1');
-  document.querySelector('#show').addEventListener('click', e => chart.show('gts-2{}'));
-  document.querySelector('#hide').addEventListener('click', e => chart.hide('gts-2.*'));
+  document.querySelector('#show').addEventListener('click', () => chart.show('gts-2{}'));
+  document.querySelector('#hide').addEventListener('click', () => chart.hide('gts-2.*'));
 }
 </script>
 `;
@@ -233,11 +233,11 @@ debug options='${JSON.stringify(options)}'
 window.onload = () => {
   const opts = JSON.parse('${JSON.stringify(options)}');
   const chart = document.querySelector('#chart1');
-  document.querySelector('#light').addEventListener('click', e => {
+  document.querySelector('#light').addEventListener('click', () => {
     opts.map.mapType = 'TOPO';
     chart.setAttribute('options', JSON.stringify(opts))
   });
-  document.querySelector('#dark').addEventListener('click', e => {
+  document.querySelector('#dark').addEventListener('click', () => {
     opts.map.mapType = 'STADIA_DARK';
     chart.setAttribute('options', JSON.stringify(opts))
   });
@@ -288,7 +288,7 @@ CustomTilesThroughGlobalParams.args = {
   'globalParams' {
     'map' {
       'mapType' 'NONE'
-      'tiles' [ 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png' ]
+      'tiles' [ 'https://a.tile.stamen.com/toner/{z}/{x}/{y}.png' ]
     }
   }
 }`
@@ -300,7 +300,7 @@ CustomTilesThroughOptions.args = {
   ws: `NEWGTS 'g' STORE
 0 100 <% 'ts' STORE $g NOW $ts 10000 - * RAND RAND RAND RAND ADDVALUE DROP %> FOR
 $g`,
-  options: {...Usage.options, map: {mapType: 'NONE', tiles: ['http://a.tile.stamen.com/toner/{z}/{x}/{y}.png']}}
+  options: {...Usage.options, map: {mapType: 'NONE', tiles: ['https://a.tile.stamen.com/toner/{z}/{x}/{y}.png']}}
 }
 export const MapTypeInGlobalParams = Usage.bind({});
 MapTypeInGlobalParams.args = {

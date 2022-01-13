@@ -43,7 +43,7 @@ export class DiscoveryLinearGauge {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
-  @Event() dataPointOver: EventEmitter<any>;
+  @Event() dataPointOver: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -381,6 +381,7 @@ export class DiscoveryLinearGauge {
     </div>
   }
 
+  // noinspection JSUnusedLocalSymbols
   private drawChart(update = false) {
     this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
     setTimeout(() => this.myChart.setOption(this.chartOpts || {}));

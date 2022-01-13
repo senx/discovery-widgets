@@ -25,6 +25,7 @@ configureActions({
   allowFunction: true
 });
 
+// noinspection JSUnusedGlobalSymbols
 export default {
   title: 'Dashboards/Dashboard',
   argTypes: {

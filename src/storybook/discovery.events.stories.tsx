@@ -125,9 +125,9 @@ Usage.args = {
 
 
             <% $v 33 < %>
-            <% 'http://soundbible.com/grab.php?id=1818&type=mp3' %>
-            <% $v 66 < %> <% 'http://soundbible.com/grab.php?id=2015&type=mp3' %>
-            <% 'http://soundbible.com/grab.php?id=1937&type=mp3' %>
+            <% 'https://soundbible.com/grab.php?id=1818&type=mp3' %>
+            <% $v 66 < %> <% 'https://soundbible.com/grab.php?id=2015&type=mp3' %>
+            <% 'https://soundbible.com/grab.php?id=1937&type=mp3' %>
             2 SWITCH 'sound' STORE
 
 
@@ -396,7 +396,7 @@ UsageWithActionButtons.args = {
 }
 
 // @ts-ignore
-const ScadaTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div class="card" style="width: 100%;min-height: 500px">
+const ScadaTemplate = ({url, ws, options, title}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
 <discovery-dashboard url="${url}"
 dashboard-title="${title ? title : ''}"

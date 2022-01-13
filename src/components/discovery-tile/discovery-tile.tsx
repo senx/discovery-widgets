@@ -281,7 +281,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
   @Method()
   async setZoom(dataZoom: { start: number, end: number }) {
-    this.tileResult.setZoom(dataZoom);
+    await this.tileResult.setZoom(dataZoom);
   }
 
   render() {

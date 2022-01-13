@@ -90,7 +90,7 @@ export class DiscoveryTabular {
     let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
-    let dataGrid: { name: string, values: any[], headers: string[] }[] = [];
+    let dataGrid: { name: string, values: any[], headers: string[] }[];
     if (GTSLib.isArray(data.data)) {
       const dataList = GTSLib.flatDeep(data.data as any[]);
       this.LOG.debug(['convert', 'isArray'], dataList, options);
@@ -116,7 +116,7 @@ export class DiscoveryTabular {
       };
       flatData.push(dataSet);
     });
-    this.LOG.debug(['parseCustomData', 'flatData'], flatData);
+    this.LOG.debug(['parseCustomData', 'flatData'], flatData, dataModel);
     return flatData;
   }
 
