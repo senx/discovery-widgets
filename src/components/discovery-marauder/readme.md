@@ -1,4 +1,4 @@
-# discovery-gauge
+# discovery-marauder
 
 
 
@@ -14,51 +14,31 @@
 | `options` | `options` |             | `Param \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
 | `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "step-area" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "linear-gauge" \| "circle" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "input:text" \| "input:list" \| "input:secret" \| "input:autocomplete" \| "input:slider" \| "input:date" \| "input:date-range" \| "button" \| "hidden" \| "calendar" \| "marauder"` | `undefined`   |
-| `unit`    | `unit`    |             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `undefined`   |
 | `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `undefined`   |
 
 
 ## Events
 
-| Event           | Description | Type                |
-| --------------- | ----------- | ------------------- |
-| `dataPointOver` |             | `CustomEvent<any>`  |
-| `draw`          |             | `CustomEvent<void>` |
+| Event           | Description | Type                   |
+| --------------- | ----------- | ---------------------- |
+| `dataPointOver` |             | `CustomEvent<any>`     |
+| `draw`          |             | `CustomEvent<void>`    |
+| `pausedEvent`   |             | `CustomEvent<boolean>` |
 
 
 ## Methods
 
-### `export(type?: 'png' | 'svg') => Promise<string>`
+### `export(type?: 'png' | 'svg') => Promise<any>`
 
 
 
 #### Returns
 
-Type: `Promise<string>`
-
-
-
-### `hide(regexp: string) => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
+Type: `Promise<any>`
 
 
 
 ### `resize() => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
-### `show(regexp: string) => Promise<void>`
 
 
 
@@ -75,16 +55,11 @@ Type: `Promise<void>`
 
  - [discovery-tile-result](../discovery-tile-result)
 
-### Depends on
-
-- [discovery-spinner](../discovery-spinner)
-
 ### Graph
 ```mermaid
 graph TD;
-  discovery-gauge --> discovery-spinner
-  discovery-tile-result --> discovery-gauge
-  style discovery-gauge fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-tile-result --> discovery-marauder
+  style discovery-marauder fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------
