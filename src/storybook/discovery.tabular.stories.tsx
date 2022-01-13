@@ -37,6 +37,17 @@ InitialUsage.args = {
 %> FOR`
 };
 
+export const SmallAmountOfData = Usage.bind({});
+SmallAmountOfData.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'serie' RENAME 'g' STORE
+  1 3 <%
+    'ts' STORE
+    NOW $ts STU * 50.0 / - 'ts' STORE
+    $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ADDVALUE DROP %> FOR
+  $g`
+};
+
 export const CustomData = Usage.bind({});
 CustomData.args = {
   ...InitialUsage.args,

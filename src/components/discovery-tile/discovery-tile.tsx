@@ -21,6 +21,7 @@ import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
+import {LangUtils} from "../../utils/lang-utils";
 
 @Component({
   tag: 'discovery-tile',
@@ -65,9 +66,6 @@ export class DiscoveryTileComponent {
   optionsUpdate(newValue: string, oldValue: string) {
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
-      /*this.exec(true).then(() => {
-        // empty
-      });*/
     }
     if (this.LOG) {
       this.LOG.debug(['optionsUpdate'], {
@@ -189,20 +187,9 @@ export class DiscoveryTileComponent {
     if (!refresh) {
       setTimeout(() => this.loaded = true);
     }
-    this.ws = this.el.innerText;
-    if (this.ws && this.ws !== '') {
+    if (this.el.innerText && this.el.innerText !== '') {
+      this.ws = LangUtils.prepare(this.el.innerText, this.innerVars || {},this.type, this.language);
       this.LOG.debug(['exec'], this.ws, this.type);
-      if (this.language === 'flows') {
-        this.ws = Object.keys(this.innerVars || {})
-          .map(k => Utils.generateVars(k, this.innerVars[k])).join("\n") + "\n" + this.ws;
-        this.ws = `<'
-${this.ws}
-'>
-FLOWS`;
-      } else {
-        this.ws = Object.keys(this.innerVars || {})
-          .map(k => Utils.generateVars(k, this.innerVars[k])).join("\n") + "\n" + this.ws;
-      }
       if (this.url.toLowerCase().startsWith('http')) {
         setTimeout(() => {
           this.hasError = false;

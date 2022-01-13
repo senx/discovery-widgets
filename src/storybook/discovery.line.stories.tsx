@@ -278,7 +278,7 @@ AutoRefresh.args = {
     NOW $ts STU * 50.0 / - 'ts' STORE
     $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ADDVALUE DROP %> FOR
   $g`,
-  options: {...new Param(), autoRefresh: 1, showLoader: true}
+  options: {...new Param(), autoRefresh: 1, showLoader: false}
 };
 
 
