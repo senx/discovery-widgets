@@ -25,21 +25,27 @@
 </head>
 <body>
 <discovery-dashboard url="https://warp.senx.io/api/v0/exec" dashboard-title="Test">
-  {
+{
   'title' 'Test'
   'description' 'Dashboard test'
   'tiles' [
-  {
-  'title' 'test'
-  'options' { 'autoRefresh' 1 }
-  'x' 0 'y' 0 'w' 12 'h' 4
-  'type' 'area' 'macro' <%
-  1 4 <% DROP NEWGTS 'g' STORE
-  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
-  $g %> FOR %>
-  }
+    {
+      'title' 'test'
+      'options' { 'autoRefresh' 1 }
+      'x' 0 'y' 0 'w' 12 'h' 4
+      'type' 'area'
+      'macro' <%
+        1 4 <% 
+            DROP NEWGTS 'g' STORE
+            1 10 <% 
+                'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP 
+            %> FOR
+            $g 
+        %> FOR 
+      %>
+    }
   ]
-  }
+}
 </discovery-dashboard>
 <script nomodule src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
 <script type="module" src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
@@ -66,7 +72,7 @@ Through a WarpScript:
                 $g %> FOR %> 
         }
     ] 
-}
+} { 'endpoint' 'https://sandbox.senx.io/api/v0/exec' } 
 @senx/discovery2/render
 ```
 
