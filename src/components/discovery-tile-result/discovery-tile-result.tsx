@@ -332,6 +332,14 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
+      case 'marauder':
+        return <discovery-marauder
+          result={this.innerResult}
+          type={this.innerType}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          debug={this.debug}
+        />;
       default:
         return '';
     }

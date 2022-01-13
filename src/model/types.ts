@@ -34,6 +34,7 @@ export type ChartType =
   | 'button'
   | 'hidden'
   | 'calendar'
+  | 'marauder'
   ;
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';
@@ -53,4 +54,6 @@ export type MapParams = {
   maxNativeZoom?: number;
   maxZoom?: number;
   track?: boolean;
+  step?: number;
+  delay?: number;
 };

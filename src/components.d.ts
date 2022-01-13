@@ -174,6 +174,16 @@ export namespace Components {
         "unFocus": () => Promise<void>;
         "width": number;
     }
+    interface DiscoveryMarauder {
+        "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "height": number;
+        "options": Param | string;
+        "resize": () => Promise<void>;
+        "result": DataModel | string;
+        "type": ChartType;
+        "width": number;
+    }
     interface DiscoveryModal {
         "data": Tile | Dashboard;
         "debug": boolean;
@@ -346,6 +356,12 @@ declare global {
         prototype: HTMLDiscoveryMapElement;
         new (): HTMLDiscoveryMapElement;
     };
+    interface HTMLDiscoveryMarauderElement extends Components.DiscoveryMarauder, HTMLStencilElement {
+    }
+    var HTMLDiscoveryMarauderElement: {
+        prototype: HTMLDiscoveryMarauderElement;
+        new (): HTMLDiscoveryMarauderElement;
+    };
     interface HTMLDiscoveryModalElement extends Components.DiscoveryModal, HTMLStencilElement {
     }
     var HTMLDiscoveryModalElement: {
@@ -408,6 +424,7 @@ declare global {
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-linear-gauge": HTMLDiscoveryLinearGaugeElement;
         "discovery-map": HTMLDiscoveryMapElement;
+        "discovery-marauder": HTMLDiscoveryMarauderElement;
         "discovery-modal": HTMLDiscoveryModalElement;
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
@@ -569,6 +586,17 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "width"?: number;
     }
+    interface DiscoveryMarauder {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "onPausedEvent"?: (event: CustomEvent<boolean>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "width"?: number;
+    }
     interface DiscoveryModal {
         "data"?: Tile | Dashboard;
         "debug"?: boolean;
@@ -660,6 +688,7 @@ declare namespace LocalJSX {
         "discovery-line": DiscoveryLine;
         "discovery-linear-gauge": DiscoveryLinearGauge;
         "discovery-map": DiscoveryMap;
+        "discovery-marauder": DiscoveryMarauder;
         "discovery-modal": DiscoveryModal;
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
@@ -687,6 +716,7 @@ declare module "@stencil/core" {
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-linear-gauge": LocalJSX.DiscoveryLinearGauge & JSXBase.HTMLAttributes<HTMLDiscoveryLinearGaugeElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;
+            "discovery-marauder": LocalJSX.DiscoveryMarauder & JSXBase.HTMLAttributes<HTMLDiscoveryMarauderElement>;
             "discovery-modal": LocalJSX.DiscoveryModal & JSXBase.HTMLAttributes<HTMLDiscoveryModalElement>;
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;

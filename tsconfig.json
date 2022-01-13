@@ -13,11 +13,13 @@
     "target": "es2017",
     "noImplicitAny": false,
     "strict": false,
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "strictNullChecks": false,
+    "importHelpers": true,
     "skipLibCheck": true,
     "jsx": "react",
     "jsxFactory": "h"
