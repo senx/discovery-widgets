@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType, MapParams} from "../../model/types";
 import {Param} from "../../model/param";
@@ -38,6 +38,7 @@ export class DiscoveryMarauder {
   @State() currentTick: number;
   @State() paused: boolean = true;
 
+  private modal: HTMLDivElement;
   private defOptions: Param = {
     ...new Param(), map: {
       tiles: [],
@@ -76,7 +77,7 @@ export class DiscoveryMarauder {
   private selectedCenterLatLng: any;
   private ctrlPressed: Boolean;
   private selectedCenter: any;
-  private selectionSize: any;
+  private selectionSize = 50;
   private tilesLayer: Leaflet.TileLayer;
   private tileLayerGroup = Leaflet.featureGroup();
   private info: any;
@@ -110,6 +111,8 @@ export class DiscoveryMarauder {
   private display: HTMLDivElement;
   private sliderMin: string = '0';
   private sliderMax: string = '0';
+  private popup: any;
+  @State() selected: any[] = [];
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -150,6 +153,22 @@ export class DiscoveryMarauder {
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return await domtoimage.toPng(this.mapElement, {height: this.height, width: this.width});
+  }
+
+  @Listen('keydown', {target: 'document'})
+  async handleKeyDown(ev: KeyboardEvent) {
+    this.LOG.debug(['handleKeydown'], ev);
+    if (ev.key === 'Shift') {
+      this.ctrlPressed = true;
+    }
+  }
+
+  @Listen('keyup', {target: 'document'})
+  async handleKeyUp(ev: KeyboardEvent) {
+    this.LOG.debug(['handleKeyUp'], ev);
+    if (ev.key === 'Shift') {
+      this.ctrlPressed = false;
+    }
   }
 
   componentWillLoad() {
@@ -240,12 +259,13 @@ export class DiscoveryMarauder {
         if (!this.inZoom) {
           this.previousPause = this.paused;
         }
-        /*if (this.popup) {
+        if (this.popup) {
           this.popup.removeFrom(this.map);
           this.popup = undefined;
-        }*/
+        }
         this.emitPause(true);
       });
+
       this.map.on('moveend', () => {
         this.emitPause(this.previousPause);
         this.selectedSquare = undefined;
@@ -262,20 +282,20 @@ export class DiscoveryMarauder {
         this.emitPause(true);
       });
       this.map.on('zoomend', () => {
-        /*  if (this.popup) {
-            this.popup.removeFrom(this.map);
-            this.popup = undefined;
-          }*/
+        if (this.popup) {
+          this.popup.removeFrom(this.map);
+          this.popup = undefined;
+        }
         if (this.selectedCenterLatLng) {
           this.map.panTo(this.selectedCenterLatLng);
         }
         this.emitPause(this.previousPause);
       });
       this.map.on('click', e => {
-        /*if (this.popup) {
+        if (this.popup) {
           this.popup.removeFrom(this.map);
           this.popup = undefined;
-        }*/
+        }
         if (this.ctrlPressed || this.selectedSquare) {
           this.emitPause(true);
           this.selectedCenterLatLng = e.latlng;
@@ -285,56 +305,38 @@ export class DiscoveryMarauder {
             this.map.layerPointToLatLng(Leaflet.point(this.selectedCenter.x + this.selectionSize, this.selectedCenter.y + this.selectionSize))
           ];
           this.selectedSquare = Leaflet.rectangle(bounds, {color: 'blue', weight: 1}).addTo(this.map);
-          //    this.eventBus.emit(new EventData('LoadShips', undefined));
-          this.getDetails(this.ctrlPressed && !this.selectedSquare);
+          this.getDetails();
         }
       });
 
       const mapCanvasLayer = new CanvasLayer();
       // If we do not inherit from L.CanvasLayer we can setup a delegate to receive events from L.CanvasLayer
       mapCanvasLayer.delegate(this);
-
       (mapCanvasLayer as any).addTo(this.map);
     } /* else {
       this.map.setView([this.lat, this.long]);
       this.map.setZoom(9);
     } */
 
+    Promise.all([tilesPromise])
+      .then(() => setTimeout(() => {
+        if (this.initial) {
+          this.draw.emit();
+          this.initial = false;
+        }
+      }, 500));
     this.paused = false;
     this.initMap(data);
   }
 
-  render() {
-    return <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
-      <div class="commands-wrapper">
-        <div class="slider-wrapper">
-          <div class="range-outside-wrapper">
-            <div class="range-wrap">
-              <div class="range-value" ref={el => this.display = el as HTMLDivElement}>
-                <span>{this.formatSlider(this.currentTick + '')}</span>
-              </div>
-              <input type="range" class="discovery-input" value={this.currentTick}
-                     min={this.sliderMin} max={this.sliderMax} onInput={e => this.handleSelect(e)}
-                     ref={el => this.slider = el as HTMLInputElement}
-              />
-            </div>
-          </div>
-          <div class="labels-wrapper">
-            <span class="slider-bounds" innerHTML={this.formatSlider(this.sliderMin) || '&nbsp;'}/>
-            <span class="slider-bounds" innerHTML={this.formatSlider(this.sliderMax) || '&nbsp;'}/>
-          </div>
-        </div>
-        <button type="button" class={
-          {
-            'discovery-btn': true,
-            'paused': this.paused,
-            'play': !this.paused,
-          }
-        } onClick={() => this.togglePlayPause()}
-        />
-      </div>
-      <div ref={(el) => this.mapElement = el as HTMLDivElement} class="map-wrapper"/>
-    </div>;
+  private openModal() {
+    this.modal.style.display = 'block';
+  }
+
+  private closeModal() {
+    if (this.modal) {
+      this.modal.style.display = 'none'
+    }
   }
 
   private initMap(data): void {
@@ -361,7 +363,6 @@ export class DiscoveryMarauder {
     // Extract parameters
     const json = png.tabs.iTXt['Discovery'];
     const params = JSON.parse(json);
-    // this.eventBus.emit(new EventData('gts', {gts: params.gts, count: params.positions}));
     console.log(params);
     this.infos = params.infos;
     this.ticks = params.bucketcount;
@@ -386,24 +387,38 @@ export class DiscoveryMarauder {
     this.currentTick = 0;
     this.tick = 0;
     this.done = true;
-    /* this.eventBus.emit(new EventData('mapDataSlider', {
-       stopTick: this.stopTick - this.extraTicks,
-       bucketspan: this.bucketspan,
-       bucketcount: this.bucketcount,
-       lastbucket: this.lastbucket,
-       duration: this.mapParams.duration
-     }));*/
     this.emitPause(this.paused);
   }
 
   private emitPause(b: boolean) {
+    this.paused = b;
+    if (!this.paused && this.selectedSquare) {
+      this.map.removeLayer(this.selectedSquare);
+      this.selectedSquare = undefined;
+    }
     this.pausedEvent.emit(b);
   }
 
-  private getDetails(b: boolean) {
-
+  private getDetails() {
+    this.selected = [];
+    for (let particle = 0; particle < this.gts; particle++) {
+      const positions = this.getPositions(particle, Math.max(this.tick - 1, 0));
+      if (!!positions && !!positions[2] && !isNaN(positions[2]) && !isNaN(positions[3])) {
+        const p = this.map.latLngToLayerPoint([positions[2], positions[3]]);
+        if (
+          p.x > this.selectedCenter.x - this.selectionSize
+          && p.x < this.selectedCenter.x + this.selectionSize
+          && p.y > this.selectedCenter.y - this.selectionSize
+          && p.y < this.selectedCenter.y + this.selectionSize
+        ) {
+          this.selected.push({index: particle, info: this.infos[particle]});
+        }
+      }
+    }
+    this.openModal();
   }
 
+  // noinspection JSUnusedLocalSymbols
   private onDrawLayer(info): void {
     info.canvas.getContext('2d').clearRect(0, 0, info.canvas.width, info.canvas.height);
 
@@ -442,7 +457,6 @@ export class DiscoveryMarauder {
             ];
             this.selectedSquare = Leaflet.rectangle(bounds, {color: 'blue', weight: 1}).addTo(this.map);
             if (!this.inMove || this.inZoom) {
-              //    this.eventBus.emit(new EventData('LoadShips', undefined));
               this.getAllDetails();
             }
           } else {
@@ -466,55 +480,52 @@ export class DiscoveryMarauder {
   }
 
   private getPositions(gtsidx, tick): (number)[] | (any | number)[] {
-    try {
-      let offset = ((gtsidx * this.ticks) + tick) * 4;
-      // ARGB
-      let lat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
-      let lon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
-      if (0 === lat && 0 === lon) {
-        lat = NaN;
-        lon = NaN;
-      } else {
-        lat = this.lllat + (lat * this.latstep);
-        lon = this.lllon + (lon * this.lonstep);
-      }
-      if (tick < this.step) {
-        return [NaN, NaN, lat, lon];
-      } else {
-        //
-        // Check if within the previous 'step' ticks one is absent, in which case
-        // the function will return NaN/NaN as the previous position
-        //
-        let prevlat = null;
-        let prevlon = null;
+    let offset = ((gtsidx * this.ticks) + tick) * 4;
+    if (!this.data) return;
+    // ARGB
+    let lat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
+    let lon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
+    if (0 === lat && 0 === lon) {
+      lat = NaN;
+      lon = NaN;
+    } else {
+      lat = this.lllat + (lat * this.latstep);
+      lon = this.lllon + (lon * this.lonstep);
+    }
+    if (tick < this.step) {
+      return [NaN, NaN, lat, lon];
+    } else {
+      //
+      // Check if within the previous 'step' ticks one is absent, in which case
+      // the function will return NaN/NaN as the previous position
+      //
+      let prevlat = null;
+      let prevlon = null;
 
-        if (this.step > 1) {
-          for (let j = 1; j < this.step; j++) {
-            offset = ((gtsidx * this.ticks) + tick - j) * 4;
-            if (0 === this.data[offset] && 0 === this.data[offset + 1] && 0 === this.data[offset + 2] && 0 === this.data[offset + 3]) {
-              prevlat = NaN;
-              prevlon = NaN;
-              break;
-            }
-          }
-        }
-
-        if (null === prevlat) {
-          offset = ((gtsidx * this.ticks) + tick - this.step) * 4;
-          prevlat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
-          prevlon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
-          if (0 === prevlat && 0 === prevlon) {
+      if (this.step > 1) {
+        for (let j = 1; j < this.step; j++) {
+          offset = ((gtsidx * this.ticks) + tick - j) * 4;
+          if (0 === this.data[offset] && 0 === this.data[offset + 1] && 0 === this.data[offset + 2] && 0 === this.data[offset + 3]) {
             prevlat = NaN;
             prevlon = NaN;
-          } else {
-            prevlat = this.lllat + (prevlat * this.latstep);
-            prevlon = this.lllon + (prevlon * this.lonstep);
+            break;
           }
         }
-        return [prevlat, prevlon, lat, lon];
       }
-    } catch (e) {
-      this.LOG.error(['getPositions'], e);
+
+      if (null === prevlat) {
+        offset = ((gtsidx * this.ticks) + tick - this.step) * 4;
+        prevlat = ((this.data[offset + 3] << 8) | (this.data[offset] & 0xFF)) & 0xFFFF;
+        prevlon = ((this.data[offset + 1] << 8) | (this.data[offset + 2] & 0xFF)) & 0xFFFF;
+        if (0 === prevlat && 0 === prevlon) {
+          prevlat = NaN;
+          prevlon = NaN;
+        } else {
+          prevlat = this.lllat + (prevlat * this.latstep);
+          prevlon = this.lllon + (prevlon * this.lonstep);
+        }
+      }
+      return [prevlat, prevlon, lat, lon];
     }
   }
 
@@ -552,7 +563,7 @@ export class DiscoveryMarauder {
         }
 
         // Draw marker at current location
-        if (!isNaN(positions[2]) && !isNaN(positions[3])) {
+        if (!!positions && !!positions[3] && !isNaN(positions[2]) && !isNaN(positions[3])) {
           let dot;
           dot = info.layer._map.latLngToContainerPoint([positions[2], positions[3]]);
           this.markers[particle] = dot;
@@ -608,7 +619,7 @@ export class DiscoveryMarauder {
       }
       histctx.putImageData(imgdata, 0, 0);
       // Draw the current markers
-      if (this.MARKERS && this.tick < this.ticks) {
+      if (this.MARKERS && this.tick < this.ticks && !!this.markers) {
         for (let particle = 0; particle < this.gts; particle++) {
           const dot = this.markers[particle];
           if (dot) {
@@ -716,5 +727,62 @@ export class DiscoveryMarauder {
       this.divider, this.innerOptions.timeZone
     )?.replace('T', '');
   }
+
+  render() {
+    return <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
+      <div class="modal" onClick={() => this.closeModal()}
+           ref={(el) => this.modal = el as HTMLDivElement}>
+        <div class="modal-content">
+          <span class="close" onClick={() => this.closeModal()}>&times;</span>
+          {!!this.selected && this.selected.length > 0
+            ? <table>
+              <thead>
+              <tr>
+                <th>#</th>
+                {Object.keys(this.selected[0].info).filter(k => !k.startsWith('.')).map(k => <th><b>{k}</b></th>)}
+              </tr>
+              </thead>
+              <tbody>
+              {this.selected.map((s, i) =>
+                <tr class={i % 2 === 0 ? 'odd' : 'even'}>
+                  <td>{s.index}</td>
+                  {Object.keys(s.info).filter(k => !k.startsWith('.')).map(k => <td>{s.info[k]}</td>)}
+                </tr>)}
+              </tbody>
+            </table>
+            : ''}
+        </div>
+      </div>
+      <div class="commands-wrapper">
+        <div class="slider-wrapper">
+          <div class="range-outside-wrapper">
+            <div class="range-wrap">
+              <div class="range-value" ref={el => this.display = el as HTMLDivElement}>
+                <span>{this.formatSlider(this.currentTick + '')}</span>
+              </div>
+              <input type="range" class="discovery-input" value={this.currentTick}
+                     min={this.sliderMin} max={this.sliderMax} onInput={e => this.handleSelect(e)}
+                     ref={el => this.slider = el as HTMLInputElement}
+              />
+            </div>
+          </div>
+          <div class="labels-wrapper">
+            <span class="slider-bounds" innerHTML={this.formatSlider(this.sliderMin) || '&nbsp;'}/>
+            <span class="slider-bounds" innerHTML={this.formatSlider(this.sliderMax) || '&nbsp;'}/>
+          </div>
+        </div>
+        <button type="button" class={
+          {
+            'discovery-btn': true,
+            'paused': this.paused,
+            'play': !this.paused,
+          }
+        } onClick={() => this.togglePlayPause()}
+        />
+      </div>
+      <div ref={(el) => this.mapElement = el as HTMLDivElement} class="map-wrapper"/>
+    </div>;
+  }
+
 }
 
