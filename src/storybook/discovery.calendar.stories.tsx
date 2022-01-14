@@ -27,16 +27,26 @@ export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
   ...Usage.args,
   type: 'calendar',
- options: {...new Param(), scheme: HeatMaps.DEFAULT},
-  ws: `// 0 2 <% 'j' STORE
-  0 'j' STORE
-    NEWGTS 'serie-' $j TOSTRING + RENAME 'g' STORE
+  options: {...new Param(), scheme: HeatMaps.DEFAULT},
+  ws: `
+    NEWGTS 'serie' RENAME 'g' STORE
    1 500 <% 'i' STORE $g NOW $i d - NaN NaN NaN RAND ADDVALUE DROP %> FOR
-   $g SORT
-// %> FOR`
+   $g SORT`
 };
 
-export const MultiGTSUsage= Usage.bind({});
+export const Localize = Usage.bind({});
+Localize.args = {
+  ...InitialUsage.args,
+  options: {
+    ...new Param(), scheme: HeatMaps.DO_ANDROIDS_DREAM, calendar: {
+      firstDay: 1,
+      dayLabel: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+      monthLabel: ['Jan.', 'Fev.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Dec'],
+    }
+  },
+
+}
+export const MultiGTSUsage = Usage.bind({});
 MultiGTSUsage.args = {
   ...InitialUsage.args,
   ws: `0 1 <% 'j' STORE
@@ -47,7 +57,7 @@ MultiGTSUsage.args = {
    `
 };
 
-export const RealData= Usage.bind({});
+export const RealData = Usage.bind({});
 RealData.args = {
   ...InitialUsage.args,
   ws: `@training/dataset0

@@ -156,7 +156,7 @@ export class DiscoveryCalendar {
           text: GTSLib.serializeGtsMetadata(gts),
           left: 'center',
           textStyle: {height: 20, fontSize: 12},
-          top: this.CAL_SIZE * cal + seriesIndex  * 20,
+          top: this.CAL_SIZE * cal + seriesIndex * 20,
         });
         // Find min/max
         (gts.v || []).forEach(v => {
@@ -179,7 +179,14 @@ export class DiscoveryCalendar {
           calendar.push({
             top: this.CAL_SIZE * cal + (seriesIndex + 1) * 20 + 20,
             range: currentRange,
-            cellSize: ['auto', 15]
+            cellSize: ['auto', 15],
+            dayLabel: {
+              firstDay: this.innerOptions.calendar?.firstDay || 0,
+              nameMap:  this.innerOptions.calendar?.dayLabel
+            },
+            monthLabel: {
+              nameMap:  this.innerOptions.calendar?.monthLabel
+            }
           });
           series.push({
             type: 'heatmap',
@@ -192,7 +199,7 @@ export class DiscoveryCalendar {
         seriesIndex++;
       }
     }
-    this.height = this.CAL_SIZE * cal + titles.length * 20 + 40;
+    this.height = this.CAL_SIZE * cal + titles.length * 20 + 40 ;
     if (!!this.myChart) {
       this.myChart.resize({
         height: this.height

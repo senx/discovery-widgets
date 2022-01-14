@@ -88,6 +88,9 @@ export class Param {
   }
   map?: MapParams;
   calendar?: {
-    horizontal: boolean
+    horizontal?: boolean,
+    firstDay?: number,
+    dayLabel?: string[],
+    monthLabel?: string[],
   };
 }
