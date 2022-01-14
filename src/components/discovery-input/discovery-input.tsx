@@ -120,15 +120,12 @@ export class DiscoveryInputComponent {
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
-    this.parseResult();
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       innerOptions: this.innerOptions,
       innerResult: this.innerResult,
       result: this.result
     });
-
-    this.draw.emit();
   }
 
   componentDidLoad() {
@@ -182,6 +179,16 @@ export class DiscoveryInputComponent {
       default:
         break;
     }
+
+    this.parseResult();
+    this.LOG.debug(['componentDidLoad'], {
+      type: this.type,
+      innerOptions: this.innerOptions,
+      innerResult: this.innerResult,
+      result: this.result
+    });
+
+    this.draw.emit();
   }
 
   private handleClick = () => {
@@ -249,6 +256,7 @@ export class DiscoveryInputComponent {
           this.value = (data as any[]).sort();
         }
         this.selectedValue = this.value;
+        console.log(this.flatpickrInstance, this.value)
         if (this.flatpickrInstance) {
           this.flatpickrInstance.config.mode = 'range';
           this.flatpickrInstance.setDate(
