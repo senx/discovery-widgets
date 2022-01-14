@@ -584,9 +584,9 @@ export class DiscoveryLineComponent {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(s.name))
         .forEach(s => {
-          seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
           const data = s.data.filter(d => d[0] === date);
-          if (data && data[0]) {
+          if (data && data.length > 0 && data[0]) {
+            seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
             dataIndex = s.data.indexOf(data[0])
             s.markPoint = {
               symbol: 'circle', data: [{

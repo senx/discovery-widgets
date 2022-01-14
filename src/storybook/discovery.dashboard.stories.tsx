@@ -539,6 +539,52 @@ tileRefreshAndEvents.args = {
   options: new Param()
 }
 
+export const tileFocusEvents = Usage.bind({});
+tileFocusEvents.args = {
+  ...Usage.args,
+  ws: `{
+  'title' 'Discovery focus'
+  'cellHeight' 50
+  'vars' {
+    'NOW' NOW
+    'start' [ 2021 01 01 ] TSELEMENTS->
+     'end' [ 2021 02 01 ] TSELEMENTS->
+  }
+  'tiles' [
+    {
+      'x' 3 'y' 0 'w' 2 'h' 1
+      'type' 'display'
+      'endpoint' 'wss://warp.senx.io/api/v0/mobius' // Uses WebSockets
+      'options' { 'autoRefresh' 1000 }
+      'macro' <%
+           NOW $NOW - 1 s / 1 +  'd' STORE
+           $end $start $d d + MIN 'val' STORE
+        {
+          'data' $val ISO8601
+          'events' [
+            { 'type' 'focus' 'tags' 'dataset' 'value' { 'date' $val 'name' '.*'  } }
+          ]
+        }
+      %>
+    }
+    {
+      'type' 'area'
+      'x' 0 'y' 1 'w' 8 'h' 4
+      'options' { 'unit' '%25' 'eventHandler' 'type=focus,tag=dataset' }
+      'macro' <%
+          NEWGTS 'data' RENAME 'g' STORE
+          $start $end <% 1 d + %> <%
+            'i' STORE
+            $g $i NaN NaN NaN RAND 100.0 * ROUND ADDVALUE DROP
+          %> FORSTEP
+          $g
+       %>
+    }
+  ]
+}`,
+  options: new Param()
+}
+
 export const withWebSocket = Usage.bind({});
 withWebSocket.args = {
   ...Usage.args,
