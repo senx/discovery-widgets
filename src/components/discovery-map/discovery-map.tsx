@@ -174,13 +174,14 @@ export class DiscoveryMapComponent {
     this.drawMap(this.result as DataModel || new DataModel());
   }
 
-  drawMap(data: DataModel, isRefresh = false, optionUpdate: boolean = false) {
+  drawMap(data: DataModel, isRefresh = false, optionUpdate?: boolean) {
     let tilesPromise: Promise<void>;
     let zoomPromise: Promise<void>;
     // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     this.LOG.debug(['drawMap', 'this.options 2 '], {...data.globalParams});
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
+    optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
     this.innerOptions = {...options};
     if (!!this.map) {
       this.map.invalidateSize(true);
@@ -206,7 +207,6 @@ export class DiscoveryMapComponent {
     this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, this.hidden, this.innerOptions.scheme) || [];
     this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.innerOptions.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
-
 
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
@@ -452,7 +452,7 @@ export class DiscoveryMapComponent {
 
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
-          if (i < size - 1) {
+          if (i > 0 || !gts.marker) {
             const marker = Leaflet.circleMarker(
               g, {
                 radius: gts.baseRadius || MapLib.BASE_RADIUS,

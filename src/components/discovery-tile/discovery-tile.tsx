@@ -248,6 +248,10 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.socket.onopen = () => {
           this.socket.onmessage = event => {
             const res = event.data as string;
+            setTimeout(() => {
+              this.loaded = true;
+              this.showLoader = false;
+            });
             if (res.startsWith('["Exception at \'EVERY')) {
               this.hasError = (this.options as Param).showErrors;
               this.errorMessage = JSON.parse(res)[0] || 'Error';

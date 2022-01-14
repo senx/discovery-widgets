@@ -258,10 +258,10 @@ export const AutoRefreshWithRealData = Usage.bind({});
 AutoRefreshWithRealData.args = {
   ...InitialUsage.args,
   url: 'wss://warp.senx.io/api/v0/mobius',
-  ws: ` [
+  ws: `[
             'yaw2XlsczxtKdzZpxYA5DXvE0w9sRQHjJPnyJ2MVZrjf1HK7bH82rkVfuhdkxYuLT1kGGC6DpsFskCTfReqgVsN4nFbpZqLlmgDRncN9oJtEHTkYMDDiQADNpyE5OHww90Ia3SYge3ORSk.NwvjOX.'
             'fr.bibus.bus.gtfs'
-            {  } NOW 10 m ] FETCH 'data' STORE
+            { } NOW 10 m ] FETCH 'data' STORE
             {
                 'data' $data [ 'IdVehicle' ] METASORT
                 'params' $data <% DROP { 'marker' 'bus' 'render' 'path' 'line' true } %> F LMAP
