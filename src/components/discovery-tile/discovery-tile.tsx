@@ -79,7 +79,6 @@ export class DiscoveryTileComponent {
   varsUpdate(newValue: string, oldValue: string) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-
       this.exec(true).then(() => {
         // empty
       });
@@ -97,7 +96,7 @@ export class DiscoveryTileComponent {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
       this.innerVars = {...JSON.parse(this.vars), ...res.vars};
-      this.exec().then(() => {
+      this.exec(true).then(() => {
         // empty
       });
     }

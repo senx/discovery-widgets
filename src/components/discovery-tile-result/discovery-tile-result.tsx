@@ -95,7 +95,10 @@ export class DiscoveryTileResultComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
+    if(!this.innerOptions?.eventHandler) {
+      return;
+    }
+    const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '');
     if (res.data) {
       this.innerResult = res.data;
       this.parseResult();

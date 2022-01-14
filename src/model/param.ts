@@ -71,8 +71,9 @@ export class Param {
   showLoader = false;
 // components specific params
   bar?: {
-    horizontal: boolean,
-    stacked: boolean,
+    horizontal?: boolean,
+    stacked?: boolean,
+    animate?: boolean
   };
   button?: {
     label: string

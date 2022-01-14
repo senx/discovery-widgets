@@ -664,7 +664,7 @@ export class DiscoveryLineComponent {
 
   render() {
     return <div style={{width: '100%', height: '100%'}} ref={(el) => this.wrap = el as HTMLDivElement}>
-      {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
+      {this.parsing && !!this.innerOptions?.showLoader ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el as HTMLDivElement} onMouseOver={() => this.hideMarkers()}/>
     </div>

@@ -467,8 +467,80 @@ withAutoRefresh.args = {
 }`,
   options: {autoRefresh: 5}
 }
-export const withWebSoket = Usage.bind({});
-withWebSoket.args = {
+
+export const tileRefresh = Usage.bind({});
+tileRefresh.args = {
+  ...Usage.args,
+  ws: `{
+  'title' 'Discovery tileRefresh'
+  'tiles' [
+    {
+      'x' 0 'y' 0 'w' 10 'h' 2
+      'type' 'area'
+      'options' { 'autoRefresh' 1 }
+      'macro' <%
+        NEWGTS 'data' RENAME 'gts' STORE
+        NOW  'now' STORE
+        $now 10 s - $now
+        <% 200 ms + %>
+        <%
+          'i' STORE
+          $i 1e-6 * SIN 'v' STORE
+          $gts $i RAND 10.0 * RAND 10.0 * NaN $v ADDVALUE DROP
+        %> FORSTEP
+        $gts SORT 'data' STORE
+        { 'data' $data 'globalParams' { 'type' <% $now 1 s / 2 % 0 == %> <% 'scatter' %> <% 'area' %> IFTE } }
+      %>
+    }
+  ]
+}`,
+  options: new Param()
+}
+export const tileRefreshAndEvents = Usage.bind({});
+tileRefreshAndEvents.args = {
+  ...Usage.args,
+  ws: `{
+  'title' 'Discovery tileRefresh'
+  'cellHeight' 50
+  'vars' {
+    'dataset' [ NEWGTS ] WRAP
+  }
+  'tiles' [
+    {
+      'x' 3 'y' 0 'w' 2 'h' 1
+      'type' 'display'
+      'endpoint' 'wss://warp.senx.io/api/v0/mobius' // Uses WebSockets
+      'options' { 'autoRefresh' 1000 }
+      'macro' <%
+        NEWGTS 'data' RENAME 'gts' STORE
+        NOW  'now' STORE
+        $now 10 s - $now
+        <% 200 ms + %>
+        <%
+          'i' STORE
+          $i 1e-6 * SIN 'v' STORE
+          $gts $i RAND 10.0 * RAND 10.0 * NaN $v ADDVALUE DROP
+        %> FORSTEP
+        $gts SORT 'data' STORE
+        {
+          'data' NOW ISO8601
+          'events' [ { 'type' 'variable' 'tags' 'dataset' 'value' { 'dataset' $data WRAP } } ]
+        }
+      %>
+    }
+    {
+      'type' 'area'
+      'x' 0 'y' 1 'w' 8 'h' 4
+      'options' { 'unit' '%25' 'eventHandler' 'type=variable,tag=dataset' }
+      'macro' <% $dataset UNWRAP %>
+    }
+  ]
+}`,
+  options: new Param()
+}
+
+export const withWebSocket = Usage.bind({});
+withWebSocket.args = {
   ...Usage.args,
   ws: `{
   'title' 'Discovery WebSocket'

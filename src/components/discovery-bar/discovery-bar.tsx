@@ -124,7 +124,7 @@ export class DiscoveryBarComponent {
     return {
       type: 'bar',
       stack: (this.innerOptions.bar || {stacked: false}).stacked ? 'total' : undefined,
-      animation: false,
+      animation: !!this.innerOptions?.bar?.animate,
       large: true,
       clip: false,
       emphasis: {
@@ -228,7 +228,7 @@ export class DiscoveryBarComponent {
     }
     this.LOG.debug(['convert', 'series'], series);
     const opts = {
-      animation: false,
+      animation: !!this.innerOptions?.bar?.animate,
       grid: {
         left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
         bottom: !!this.innerOptions.showLegend ? 30 : 10,
