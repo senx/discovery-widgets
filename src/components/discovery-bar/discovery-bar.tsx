@@ -286,7 +286,9 @@ export class DiscoveryBarComponent {
           lineStyle: {
             color: Utils.getGridColor(this.el)
           }
-        }
+        },
+        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? this.innerOptions.bounds.minDate / this.divider : undefined,
+        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? this.innerOptions.bounds.maxDate / this.divider : undefined,
       },
       yAxis: {
         name: this.unit || this.innerOptions.unit,
@@ -310,7 +312,9 @@ export class DiscoveryBarComponent {
           lineStyle: {
             color: Utils.getGridColor(this.el)
           }
-        }
+        },
+        min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
+        max: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
       },
       dataZoom: [
         {

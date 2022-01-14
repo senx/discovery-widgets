@@ -287,3 +287,16 @@ StackedHorizontalCustomDataWithThreshold.args = {
     thresholds: [{value: 30, color: '#77BE69', fill: true}, {value: 60, color: '#ff9900'}, {value: 120}]
   }
 };
+
+export const YMinMaxScale = InitialUsage.bind({});
+YMinMaxScale.args = {
+  ...InitialUsage.args,
+  ws: `
+  NOW 'now' STORE
+1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME  'g' STORE
+  1 10 <% 'ts' STORE $g $now $ts STU * - NaN NaN NaN RAND 100 * ADDVALUE DROP %> FOR
+  $g
+%> FOR
+  `,
+  options: {...InitialUsage.args.options, bounds: { yRanges: [ -20,  200] } }
+};
