@@ -26,11 +26,19 @@ export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
   ...Usage.args,
   type: 'area',
-  ws: `@training/dataset0 $TOKEN AUTHENTICATE 100000000 MAXOPS
-  1 4 <% DROP NEWGTS 'g' STORE
+  ws: `1 4 <% DROP NEWGTS 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
+
+export const InitialUsageWithNanoSeconds = Usage.bind({});
+InitialUsageWithNanoSeconds.args = {
+  ...InitialUsage.args,
+  type: 'area',
+  url: 'http://localhost:9080/api/v0/exec',
+  options: {... new Param(), timeUnit: 'ns'}
+};
+
 export const InitialUsageWithMixedData = Usage.bind({});
 InitialUsageWithMixedData.args = {
   ...Usage.args,

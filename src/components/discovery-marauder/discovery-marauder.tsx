@@ -317,10 +317,7 @@ export class DiscoveryMarauder {
       // If we do not inherit from L.CanvasLayer we can setup a delegate to receive events from L.CanvasLayer
       mapCanvasLayer.delegate(this);
       (mapCanvasLayer as any).addTo(this.map);
-    } /* else {
-      this.map.setView([this.lat, this.long]);
-      this.map.setZoom(9);
-    } */
+    }
 
     Promise.all([tilesPromise])
       .then(() => setTimeout(() => {
@@ -726,10 +723,13 @@ export class DiscoveryMarauder {
 
   private formatSlider(v: string) {
     if (!v || v === 'undefined') return undefined;
-    return GTSLib.toISOString(
-      this.lastbucket - (this.bucketcount - parseInt(v, 10)) * this.bucketspan,
-      this.divider, this.innerOptions.timeZone
-    )?.replace('T', '');
+    const ts = this.lastbucket - (this.bucketcount - parseInt(v, 10)) * this.bucketspan;
+    return this.innerOptions.timeMode === 'date'
+      ? GTSLib.toISOString(
+        ts,
+        this.divider, this.innerOptions.timeZone
+      )?.replace('T', '')
+      : ts.toString()
   }
 
   render() {

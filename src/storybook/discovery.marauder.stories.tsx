@@ -15,6 +15,7 @@
  */
 
 import tile, {Usage} from './discovery.tile.stories';
+import {Param} from "../model/param";
 
 export default {
   ...tile,
@@ -43,3 +44,9 @@ InitialUsage.args = {
     }
   }`
 };
+
+export const TimestampUsage = Usage.bind({});
+TimestampUsage.args= {
+  ...InitialUsage.args,
+  options: { ... new Param(), timeMode: 'timestamp'}
+}
