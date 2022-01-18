@@ -287,8 +287,8 @@ export class DiscoveryBarComponent {
             color: Utils.getGridColor(this.el)
           }
         },
-        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? this.innerOptions.bounds.minDate / this.divider : undefined,
-        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? this.innerOptions.bounds.maxDate / this.divider : undefined,
+        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? GTSLib.toISOString(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone) : undefined,
+        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? GTSLib.toISOString(this.innerOptions.bounds.maxDate , this.divider, this.innerOptions.timeZone) : undefined,
       },
       yAxis: {
         name: this.unit || this.innerOptions.unit,

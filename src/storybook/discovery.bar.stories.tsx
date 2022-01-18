@@ -300,3 +300,15 @@ YMinMaxScale.args = {
   `,
   options: {...InitialUsage.args.options, bounds: { yRanges: [ -20,  200] } }
 };
+
+export const WithXRange = Usage.bind({});
+WithXRange.args = {
+  ...InitialUsage.args,
+  ws: `
+  {
+  'data' [ 1 4 <% DROP NEWGTS 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR ]
+  'globalParams' { 'bounds' { 'maxDate' NOW 1 m + 'minDate' NOW 1 m - } }
+  }`
+};
