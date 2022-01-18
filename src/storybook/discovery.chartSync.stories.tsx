@@ -410,6 +410,7 @@ FocusSyncWithinDashbord.args = {
     --gts-labelname-font-color         : rgb(105, 223, 184);
     --gts-classname-font-color         : rgb(126, 189, 245);
     --warp-view-chart-legend-color     : #FFFFFF;
+                { 'tags' [ 'chart2' ] 'type' 'focus' }
     --wc-tab-header-color              : #FFFFFF;
     --wc-tab-header-selected-color     : #404040;
     --warp-view-tile-background        : #3A3C46;

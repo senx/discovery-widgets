@@ -1009,3 +1009,159 @@ AnnotationResize.args = {
    }`,
   options: new Param()
 }
+
+export const FullSample = Usage.bind({});
+FullSample.args = {
+  ...Usage.args,
+  cols: 12,
+  cellHeight: 120,
+  ws: `@training/dataset0
+[ $TOKEN '~warp.*committed' { 'cell' 'prod' } ] FINDSETS
+STACKTOLIST  1 GET 'hname' GET 'hnames' STORE
+
+$NOW 2 d - 12 h - 'start'  STORE
+1 d 'duration' STORE
+{
+    'title' 'My Cluster'
+    'cellHeight' 50
+    'options' {
+        'eventHandler' 'type=.*,tag=popup'
+    }
+    'vars' {
+        'TOKEN' $TOKEN
+        'NOW' $NOW
+        'start' $start
+        'duration' $duration
+    }
+    'tiles' [
+        {
+            'type' 'area'
+            'x' 0 'y' 1 'w' 12 'h' 6
+            'options' {
+                'thresholds' [ { 'value' 20000 } ]
+                'bounds' { 'yRanges' [ 0 30000 ] }
+            }
+            'macro' <%
+                [ $TOKEN '~warp.*committed' { 'cell' 'prod' }
+                $start $duration ] FETCH 'gts' STORE [ $gts
+                mapper.rate 1 0 0 ] MAP 'data' STORE
+                { 'data' $data 500 LTTB  'globalParams' { } }
+            %>
+        }
+
+        $hnames <%
+            'i' STORE
+            'h' STORE
+            {
+                'x' $i 3 *  'y' 0 'h' 1 'w' 3
+                'type' 'display'
+                'data'
+                    [ $TOKEN '~warp.*committed' { 'cell' 'prod' 'hname' $h }
+                    $start $duration ] FETCH 'gts' STORE
+                    [ $gts mapper.rate 1 0 0 ] MAP 0 GET 'd' STORE
+                    $d 20000.0 THRESHOLDTEST SIZE 'outliers' STORE
+                    $d TICKLIST 'ticks' STORE
+                    { 'maxDate' $ticks $ticks SIZE 1 - GET 'minDate' $ticks 0 GET } 'bounds' STORE
+                    {
+                        'data' $h
+                        'globalParams' {
+                            'fontColor' '#ffffff'
+                            'bgColor'  $outliers 0 >  <% '#D32F2F' %> <% '#689F38' %> IFTE
+                        }
+                        $outliers 0 >
+                        <%
+                            'events' [
+                                { 'tags' [ 'popup' ] 'type' 'popup'
+
+                                'value'
+                                {
+                                    'title' $h
+                                    'cellHeight' 120
+                                    'options' {
+                                        'bounds' $bounds
+                                    }
+                                    'vars' {
+                                        'TOKEN' $TOKEN
+                                        'NOW' $NOW
+                                        'start' $start
+                                        'duration' $duration
+                                        'h' $h
+                                        'gts' $gts WRAP
+                                    }
+                                    'tiles' [
+                                        {
+                                            'type' 'annotation'
+                                            'w' 12 'h' 1 'x' 0 'y' 0
+                                            'options' { 'eventHandler' 'type=(zoom|focus),tag=chart1' }
+                                            'macro' <%
+                                                $gts UNWRAP 'gts' STORE
+                                                [ $gts mapper.rate 1 0 0 ] MAP 0 GET 'gts' STORE
+                                                NEWGTS
+                                                $gts NAME '' +  RENAME
+                                                $gts LABELS RELABEL
+                                                'g' STORE
+                                                $gts 20000.0 THRESHOLDTEST <%
+                                                    't' STORE
+                                                    $g $t NaN NaN NaN T ADDVALUE DROP
+                                                %> FOREACH
+                                                {
+                                                    'data' $g
+                                                    'params' [ { 'datasetColor' '#D32F2F' } ]
+                                                    'events' [
+                                                        { 'tags' [ 'chart2' ] 'type' 'zoom' }
+                                                        { 'tags' [ 'chart2' ] 'type' 'focus' }
+                                                    ]
+                                                }
+                                            %>
+
+                                        }
+                                        {
+                                        'type' 'area'
+                                        'w' 12 'h' 2 'x' 0 'y' 1
+                                        'options' {
+                                            'eventHandler' 'type=(zoom|focus),tag=chart2'
+                                            'thresholds' [ { 'value' 20000 } ]
+                                        }
+                                        'macro' <%
+
+                                            [ $gts UNWRAP mapper.rate 1 0 0 ] MAP 0 GET 'gts' STORE
+                                            {
+                                                'data' $gts
+                                                'params' [ { 'datasetColor' '#D32F2F' } ]
+                                                'events' [
+                                                    { 'tags' [ 'chart1' ] 'type' 'zoom' }
+                                                    { 'tags' [ 'chart1' ] 'type' 'focus' }
+                                                ]
+                                            }
+                                        %>
+                                        }
+                                        {
+                                        'type' 'area'
+                                        'w' 6 'h' 2 'x' 0 'y' 3
+                                        'macro' <%
+                                            {
+                                                'data' $gts UNWRAP
+                                            }
+                                        %>
+                                        }
+                                        {
+                                        'type' 'area'
+                                        'w' 6 'h' 2 'x' 6 'y' 3
+                                        'macro' <%
+                                            {
+                                                'data' [ $gts UNWRAP mapper.delta 1 0 0 ] MAP
+                                            }
+                                        %>
+                                        }
+                                    ]
+                                }
+                            }
+                            ]
+                        %> IFT
+                    }
+
+            }
+        %> T FOREACH
+    ]
+}`,
+}

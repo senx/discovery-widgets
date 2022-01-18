@@ -29,7 +29,7 @@
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 
     .modal-content {
-      background-color: #fefefe;
+      background-color: var(--warp-view-modal-bg-color, #fefefe);
       margin: 5% auto;
       padding: 20px;
       border: 1px solid #888;
@@ -38,9 +38,12 @@
       position: relative;
 
       .modal-wrapper {
-        height: calc(100% - 40px);
+        height: calc(100% - 50px);
         width: calc(100% - 40px);
         position: absolute;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin-top: 10px;
 
         .discovery-dashboard-tile {
           width: 100%;

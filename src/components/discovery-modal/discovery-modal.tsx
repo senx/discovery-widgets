@@ -88,14 +88,14 @@ export class DiscoveryModalComponent {
     }
   }
 
-  private closeModal() {
-    if (this.modal) {
+  private closeModal(bypass = false) {
+    if (this.modal && !bypass) {
       this.modal.style.display = 'none'
     }
   }
 
   render() {
-    return <div class="modal" onClick={() => this.closeModal()}
+    return <div class="modal"
                 ref={(el) => this.modal = el as HTMLDivElement}>
       <div class="modal-content">
         <span class="close" onClick={() => this.closeModal()}>&times;</span>
