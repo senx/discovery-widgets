@@ -41,7 +41,7 @@ export const SmallAmountOfData = Usage.bind({});
 SmallAmountOfData.args = {
   ...InitialUsage.args,
   ws: `NEWGTS 'serie' RENAME 'g' STORE
-  1 3 <%
+  1 16 <%
     'ts' STORE
     NOW $ts STU * 50.0 / - 'ts' STORE
     $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ADDVALUE DROP %> FOR

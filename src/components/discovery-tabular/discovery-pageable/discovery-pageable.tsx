@@ -79,7 +79,11 @@ export class DiscoveryPageable {
       Math.max(0, this.elemsCount * this.page),
       Math.min(this.elemsCount * (this.page + 1), (this.data.values || []).length)
     );
-    this.LOG.debug(['drawGridData', 'data'], this.data);
+    this.LOG.debug(['drawGridData', 'data'], this.data, {
+      windowed: this.windowed,
+      elemsCount: this.elemsCount,
+      displayedValues: this.displayedValues,
+    });
   }
 
   private static formatLabel(name: string) {
@@ -111,7 +115,7 @@ export class DiscoveryPageable {
           : ''}
       </span>)}
           {this.page + this.windowed < this.pages.length ? <div class="index disabled">...</div> : ''}
-          {this.page + this.windowed < (this.data.values || []).length - 1 ?
+          {this.page + this.elemsCount < (this.data.values || []).length - 1 ?
             <div class="next hoverable" onClick={() => this.next()}>&gt;</div> : ''}
         </div>
       </div>
