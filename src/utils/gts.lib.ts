@@ -236,9 +236,10 @@ export class GTSLib {
   }
 
   static isGtsToPlot(gts) {
-    if (!GTSLib.isGts(gts) || gts.v.length === 0) {
+    if (!GTSLib.isGts(gts)) {
       return false;
     }
+    if(gts.v.length === 0) return true;
     // We look at the first non-null value, if it's a String or Boolean it's an annotation GTS,
     // if it's a number it's a GTS to plot
     return (gts.v || []).some(v => {

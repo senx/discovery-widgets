@@ -257,8 +257,15 @@ multiYAxisWithEmptyGTS.args = {
   ...InitialUsage.args,
   ws: `NEWGTS 'data' RENAME 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
- { 'data' [ $g NEWGTS 'empty' RENAME ] 'params' [ { 'yAxis' 0 } { 'yAxis' 1 } ] }`
+ { 'data' [ NEWGTS 'empty' RENAME $g ] 'params' [ { 'yAxis' 0 } { 'yAxis' 1 } ] }`
 };
+
+export const emptyGTS = Usage.bind({});
+emptyGTS.args = {
+  ...InitialUsage.args,
+  ws: `NEWGTS 'data' RENAME`
+};
+
 
 export const multiXAxisWithEmptyGTS = Usage.bind({});
 multiXAxisWithEmptyGTS.args = {
