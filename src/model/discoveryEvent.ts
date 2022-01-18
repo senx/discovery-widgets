@@ -16,7 +16,7 @@
 
 export class DiscoveryEvent {
   tags: string[];
-  type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus';
+  type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus' | 'margin';
   value: any;
   selector?: string;
 }

@@ -95,9 +95,13 @@ export class DiscoveryTileResultComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    if(!this.innerOptions?.eventHandler) {
+    if (!this.innerOptions?.eventHandler) {
       return;
     }
+    this.LOG.debug(['discoveryEventHandler'], {
+      type: event.detail.type,
+      event: event.detail
+    });
     const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '');
     if (res.data) {
       this.innerResult = res.data;
@@ -116,14 +120,25 @@ export class DiscoveryTileResultComponent {
         // empty
       });
     }
+    if (res.margin) {
+      this.innerOptions = {...this.innerOptions, leftMargin: res.margin};
+    }
   }
-
 
   @Listen('draw', {capture: false})
   onDrawHandler() {
     if (this.tile) {
       (this.tile as any).resize();
     }
+  }
+
+  @Listen('leftMarginComputed', {capture: false})
+  onLeftMarginComputed(event: CustomEvent) {
+    ((this.innerResult as unknown as DataModel).events || [])
+      .filter(e => e.type === 'margin')
+      .forEach(e => {
+        this.discoveryEvent.emit({type: 'margin', tags: e.tags, value: event.detail})
+      })
   }
 
   componentWillLoad() {
@@ -431,7 +446,7 @@ export class DiscoveryTileResultComponent {
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel).events || [])
         .filter(e => !!e.value)
-        .filter(e => e.type !== 'zoom')
+        .filter(e => e.type !== 'zoom' && e.type !== 'margin')
         .forEach(e => {
           if (this.LOG) {
             this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});

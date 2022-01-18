@@ -137,6 +137,7 @@ export class Utils {
       audio: undefined,
       zoom: undefined,
       focus: undefined,
+      margin: undefined
     }
     if (eventHandler) {
       let tag = '.*';
@@ -178,6 +179,9 @@ export class Utils {
             break;
           case 'focus':
             parsed.focus = evt.value;
+            break;
+          case 'margin':
+            parsed.margin = evt.value;
             break;
           default:
           // nothing

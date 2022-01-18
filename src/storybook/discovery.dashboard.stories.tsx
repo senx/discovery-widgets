@@ -1077,9 +1077,7 @@ $NOW 2 d - 12 h - 'start'  STORE
                                 {
                                     'title' $h
                                     'cellHeight' 120
-                                    'options' {
-                                        'bounds' $bounds
-                                    }
+                                    'options' { 'bounds' $bounds }
                                     'vars' {
                                         'TOKEN' $TOKEN
                                         'NOW' $NOW
@@ -1092,7 +1090,7 @@ $NOW 2 d - 12 h - 'start'  STORE
                                         {
                                             'type' 'annotation'
                                             'w' 12 'h' 1 'x' 0 'y' 0
-                                            'options' { 'eventHandler' 'type=(zoom|focus),tag=chart1' }
+                                            'options' { 'eventHandler' 'type=(zoom|focus|margin),tag=chart1' }
                                             'macro' <%
                                                 $gts UNWRAP 'gts' STORE
                                                 [ $gts mapper.rate 1 0 0 ] MAP 0 GET 'gts' STORE
@@ -1131,6 +1129,7 @@ $NOW 2 d - 12 h - 'start'  STORE
                                                 'events' [
                                                     { 'tags' [ 'chart1' ] 'type' 'zoom' }
                                                     { 'tags' [ 'chart1' ] 'type' 'focus' }
+                                                    { 'tags' [ 'chart1' ] 'type' 'margin' }
                                                 ]
                                             }
                                         %>

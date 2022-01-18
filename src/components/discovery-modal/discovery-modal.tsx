@@ -103,6 +103,7 @@ export class DiscoveryModalComponent {
           ? <discovery-tile url={this.tile.endpoint || this.url}
                             type={this.tile.type as ChartType}
                             chart-title={this.tile.title}
+                            debug={this.debug}
                             options={JSON.stringify(Utils.merge(this.options, this.tile.options))}
           >{this.tile.macro + ' EVAL'}</discovery-tile>
           : <discovery-tile-result
