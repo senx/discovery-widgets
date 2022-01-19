@@ -170,6 +170,42 @@ Usage.args = {
    }`,
   options: new Param()
 }
+
+export const DataEvent = Usage.bind({});
+DataEvent.args = {
+  ...Usage.args,
+  ws: `{
+    'title' 'My Dashboard With events'
+    'tiles' [
+      {
+        'type' 'display' 'title' 'Tile A'
+        'w' 1 'h' 1 'x' 0 'y' 0
+        'data' ''
+        'options' {  // Events handler
+          'eventHandler' 'type=(data|style),tag=tes.*'
+        }
+      }
+      {
+         'type' 'button' 'title' 'Tile B'
+         'options' { 'button' { 'label' 'Click me' } }
+         'w' 1 'h' 1 'x' 1 'y' 0
+         'macro' <%
+
+           { 'data' <% // macro executed on click
+             // compute a random value
+             RAND 100 * ROUND 'v' STORE
+             {
+               'data' ''
+               'events' [
+                 { 'tags' [ 'test' ] 'type' 'data' 'value' $v } // Event emitter
+               ]
+             } %>
+         } %>
+       }
+    ]
+}`
+}
+
 export const UsageWithActionButtons = Template.bind({});
 UsageWithActionButtons.args = {
   ...Usage.args,
@@ -485,7 +521,7 @@ ScadaVersion.args = {
 
 export const GTSEvents = Template.bind({});
 GTSEvents.args = {
-  ... Usage.args,
+  ...Usage.args,
   ws: `
   'zizNn2DCXw0qtsbWx_F4WvA9ORyQBAtDScaTVaGGqJ1f5DMhE1ijFr6JDQQhPncn1bE4WQZrUN.ZIaJtCl_SOlx9oZ8H0e83U3afcX.iUPodyj.vqSgjHgToKfeO1_ZaG5fNfi3e7l71mlmJhs8Fl.' 'token' STORE
 'France'  'country' STORE

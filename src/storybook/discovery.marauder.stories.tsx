@@ -32,7 +32,7 @@ InitialUsage.args = {
   20000000 LIMIT
   100000000 MAXOPS
   2000000 MAXPIXELS
-  [ $token 'fr.trains' {  } NOW 4 h ] FETCH
+  [ $token 'fr.trains' {  } NOW 12 h ] FETCH
   [ 1 ] { 1 'train' } MVINDEXSPLIT FLATTEN ->GTS VALUELIST FLATTEN 'data' STORE
   {
     'data' $data

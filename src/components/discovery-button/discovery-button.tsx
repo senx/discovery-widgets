@@ -105,8 +105,8 @@ export class DiscoveryButtonComponent {
         this.LOG.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);
         this.LOG.debug(['handleClick', 'getData'], result);
-        if (result && result.data && GTSLib.isArray(result.data) && result.data.length > 0) {
-          (result.data[0].events || []).forEach(e => {
+        if (!!result) {
+          (result.events || []).forEach(e => {
             this.LOG.debug(['handleClick', 'emit'], {discoveryEvent: e});
             this.discoveryEvent.emit(e);
           });

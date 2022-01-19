@@ -40,7 +40,9 @@ export class DiscoveryMarauder {
 
   private modal: HTMLDivElement;
   private defOptions: Param = {
-    ...new Param(), map: {
+    ...new Param(),
+    timeMode: 'date',
+    map: {
       tiles: [],
       animate: false
     }
