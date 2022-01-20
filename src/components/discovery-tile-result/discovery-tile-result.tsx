@@ -442,9 +442,9 @@ export class DiscoveryTileResultComponent {
   private parseResult() {
     setTimeout(() => {
       this.unit = (this.options as Param).unit || this.unit
-      this.innerType = (this.innerResult as unknown as DataModel).globalParams?.type || this.innerType;
+      this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
       this.handleCSSColors();
-      ((this.innerResult as unknown as DataModel).events || [])
+      ((this.innerResult as unknown as DataModel)?.events || [])
         .filter(e => !!e.value)
         .filter(e => e.type !== 'zoom' && e.type !== 'margin')
         .forEach(e => {
