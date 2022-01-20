@@ -16,6 +16,7 @@
 import {ChartType, MapParams, TimeMode, TimeUnit} from "./types";
 
 export class Param {
+  skipedVars?: string[];
   scheme = 'WARP10';
   bgColor?: string;
   datasetColor?: string;

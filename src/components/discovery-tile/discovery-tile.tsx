@@ -95,7 +95,7 @@ export class DiscoveryTileComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
-      this.innerVars = {...JSON.parse(this.vars), ...res.vars};
+      this.innerVars = {...JSON.parse(this.vars), ...this.innerVars, ...res.vars};
       this.exec(true).then(() => {
         // empty
       });
@@ -187,7 +187,12 @@ export class DiscoveryTileComponent {
       setTimeout(() => this.loaded = false);
     }
     if (this.el.innerText && this.el.innerText !== '') {
-      this.ws = LangUtils.prepare(this.el.innerText, this.innerVars || {},this.type, this.language);
+      this.ws = LangUtils.prepare(
+        this.el.innerText,
+        this.innerVars || {},
+        (this.options as Param)?.skipedVars || [],
+        this.type,
+        this.language);
       this.LOG.debug(['exec'], this.ws, this.type);
       if (this.url.toLowerCase().startsWith('http')) {
         setTimeout(() => {

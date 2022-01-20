@@ -17,12 +17,12 @@
 import {ChartType} from "../model/types";
 
 export class LangUtils {
-  static prepare(ws: string, vars: any = {}, type: ChartType, lang: ('warpscript' | 'flows') = 'warpscript') {
+  static prepare(ws: string, vars: any = {}, skipedVars: string[], type: ChartType, lang: ('warpscript' | 'flows') = 'warpscript') {
     switch (lang) {
       case "flows":
-        return LangUtils.generateFlows(ws, vars, type)
+        return LangUtils.generateFlows(ws, vars, skipedVars, type)
       case "warpscript":
-        return LangUtils.generateWarpscript(ws, vars, type)
+        return LangUtils.generateWarpscript(ws, vars, skipedVars, type)
     }
   }
 
@@ -67,8 +67,9 @@ ${JSON.stringify(value)}
   }
 
   // noinspection JSUnusedLocalSymbols
-  private static generateFlows(ws: string, vars: any, type: ChartType) {
+  private static generateFlows(ws: string, vars: any, skipedVars: string[], type: ChartType) {
     const varsStr = Object.keys(vars || {})
+      .filter(k => !(skipedVars || []).includes(k))
       .map(k => LangUtils.generateFlowsVars(k, vars[k])).join("\n") + "\n";
     return `<'
 ${varsStr}
@@ -78,9 +79,10 @@ FLOWS`;
   }
 
   // noinspection JSUnusedLocalSymbols
-  private static generateWarpscript(ws: string, vars: any, type: ChartType) {
+  private static generateWarpscript(ws: string, vars: any, skipedVars: string[], type: ChartType) {
     let addOn = '';
     const varsStr = Object.keys(vars || {})
+      .filter(k => !(skipedVars || []).includes(k))
       .map(k => LangUtils.generateWarpscriptVars(k, vars[k])).join("\n") + "\n";
     switch (type) {
       case 'marauder':

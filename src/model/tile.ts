@@ -24,7 +24,7 @@ export class Tile {
   x: number;
   y: number;
   z?: number;
-  data?: string|DataModel;
+  data?: string | DataModel;
   title?: string;
   macro?: string;
   endpoint?: string;
