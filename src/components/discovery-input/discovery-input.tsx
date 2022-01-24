@@ -132,16 +132,23 @@ export class DiscoveryInputComponent {
     switch (this.subType) {
       case "date":
       case "date-range":
-        this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, {
+        const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+        const opts = {
           enableTime: true,
           appendTo: this.root,
           positionElement: this.inputField,
           static: true,
           enableSeconds: true,
           dateFormat: 'Y/m/d H:i:S'
-        });
+        } as any;
+        if(!!this.innerOptions.input && !!this.innerOptions.input.min) {
+          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone);
+        }
+        if(!!this.innerOptions.input && !!this.innerOptions.input.max) {
+          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, this.innerOptions.timeZone);
+        }
+        this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
         this.flatpickrInstance.config.onChange.push((d, s) => {
-          const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
           if (this.subType === 'date-range') {
             this.selectedValue = d
               .map(date => date.toISOString())
