@@ -279,6 +279,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                         type={t.type as ChartType}
                                         chart-title={t.title}
                                         debug={this.debug}
+                                        unit={t.unit}
                                         id={'chart-' + i}
                                         ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
                                         vars={JSON.stringify(this.result.vars)}

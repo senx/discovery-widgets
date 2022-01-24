@@ -257,7 +257,7 @@ export class DiscoveryGauge {
         data: [{value: d.value, name: d.key}],
         radius: radius + '%',
         detail: {
-          formatter: '{value}' + (this.unit || ''),
+          formatter: '{value}' + (this.unit || this.innerOptions.unit || ''),
           fontSize: 12,
           offsetCenter: [0, this.type === 'gauge' ? '-20%' : 0],
           color: Utils.getLabelColor(this.el)

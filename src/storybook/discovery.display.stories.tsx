@@ -26,7 +26,7 @@ export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
   ...Usage.args,
   type: 'display',
-  unit: '°C',
+  options: {... new Param(), unit: '°C'},
   ws: `{ 'data' 42 'globalParams' {
   'timeMode' 'custom'
   'bgColor' 'darkblue'

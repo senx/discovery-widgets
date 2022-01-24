@@ -46,7 +46,8 @@ CustomDataFormat.args = {
 { 'data' $data 'params' [ { 'maxValue' 5 } { 'maxValue' 2 } { 'maxValue' 1 } ] }`
 }
 
-export const SingleValueAndCustomStyle =  ({url, ws, lang, options, unit, title, type}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
+export const SingleValueAndCustomStyle =  ({url, ws, lang, options, unit, title, type}) => `
+<div style="height: 600px;width: 100%; min-height: 500px;background-color: #404040">
 <style>
 :root {
     --warp-view-chart-grid-color: #35b779;
@@ -71,8 +72,7 @@ export const CircularGauge = Usage.bind({});
 CircularGauge.args = {
   ...InitialUsage.args,
   title: 'My Gauge',
-  unit: '°C',
-  ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] }`,
+  ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] 'globalParams' { 'unit' '%25' } }`,
   type: 'circle'
 }
 export const HorizontalLinearGauge = Usage.bind({});
@@ -87,7 +87,7 @@ export const HorizontalLinearGaugeSingleValue = Usage.bind({});
 HorizontalLinearGaugeSingleValue.args = {
   ...HorizontalLinearGauge.args,
   type: 'linear-gauge',
-  options: { gauge: { horizontal: false }},
+  options: { gauge: { horizontal: false }, unit: '%'},
   ws: `{ 'data' 42 'params' [ { 'maxValue' 100 } ] 'globalParams' { 'gauge' { 'horizontal' true } } }`
 }
 export const VerticalLinearGauge = Usage.bind({});

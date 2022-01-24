@@ -310,7 +310,7 @@ export class DiscoveryLinearGauge {
           position: isHorizontal ? 'insideRight' : 'insideTop',
           align: isHorizontal ? undefined : 'right',
           verticalAlign: isHorizontal ? undefined : 'middle',
-          formatter: '{c}' + (this.unit || ''),
+          formatter: '{c}' + (this.unit || this.innerOptions.unit || ''),
           rotate: isHorizontal ? undefined : 90,
           show: true,
           color: '#fff'
