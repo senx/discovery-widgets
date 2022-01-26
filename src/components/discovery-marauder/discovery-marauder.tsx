@@ -37,6 +37,7 @@ export class DiscoveryMarauder {
   @State() loading: boolean = true;
   @State() currentTick: number;
   @State() paused: boolean = true;
+  @State() selected: any[] = [];
 
   private modal: HTMLDivElement;
   private defOptions: Param = {
@@ -114,7 +115,7 @@ export class DiscoveryMarauder {
   private sliderMin: string = '0';
   private sliderMax: string = '0';
   private popup: any;
-  @State() selected: any[] = [];
+  private drawn = false;
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -277,11 +278,16 @@ export class DiscoveryMarauder {
         if (this.selectedCenterLatLng) {
           this.inMove = true;
         }
+        if (!!this.info && !!this.info.canvas) {
+          this.info.canvas.getContext('2d').clearRect(0, 0, this.info.canvas.width, this.info.canvas.height);
+          this.drawOnMap(this.info, false);
+        }
       });
       this.map.on('zoomstart', () => {
         this.inZoom = true;
         this.previousPause = this.paused;
         this.emitPause(true);
+
       });
       this.map.on('zoomend', () => {
         if (this.popup) {
@@ -366,7 +372,6 @@ export class DiscoveryMarauder {
     // Extract parameters
     const json = png.tabs.iTXt['Discovery'];
     const params = JSON.parse(json);
-    console.log(params);
     this.infos = params.infos;
     this.ticks = params.bucketcount;
     this.sliderMax = this.ticks + '';
@@ -423,12 +428,12 @@ export class DiscoveryMarauder {
 
   // noinspection JSUnusedLocalSymbols
   private onDrawLayer(info): void {
-    info.canvas.getContext('2d').clearRect(0, 0, info.canvas.width, info.canvas.height);
-
-    this.info = info;
-    if (this.scheduled) {
+    if (!!this.drawn || !!this.scheduled) {
       return;
     }
+    info.canvas.getContext('2d').clearRect(0, 0, info.canvas.width, info.canvas.height);
+    this.drawn = true;
+    this.info = info;
     if (this.done) {
       this.done = false;
       if (!this.needRedraw) {
@@ -543,11 +548,7 @@ export class DiscoveryMarauder {
         if (!!this.particles && !this.particles.includes(particle)) {
           continue;
         }
-        if (this.done) {
-          // return;
-        }
         const positions = this.getPositions(particle, this.tick);
-
         if (drawTraces) {
           histctx.strokeStyle = ColorLib.getColor(particle, this.innerOptions.scheme);
           // Draw line if the previous position is not NaN/NaN
@@ -678,7 +679,6 @@ export class DiscoveryMarauder {
     if (!this.paused && this.tick < this.stopTick) {
       this.currentTick = this.tick;
       this.setSliderPosition(this.currentTick);
-      //   this.zone.run(() => this.eventBus.emit(new EventData('mapData', this.currentTick)));
       const start = window.performance.now();
       this.drawOnMap(this.drawContext.info);
       const end = window.performance.now();
@@ -730,7 +730,7 @@ export class DiscoveryMarauder {
       ? GTSLib.toISOString(
         ts,
         this.divider, this.innerOptions.timeZone
-      )?.replace('T', '')
+      )?.replace('T', ' ')
       : ts.toString()
   }
 

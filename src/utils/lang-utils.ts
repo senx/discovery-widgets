@@ -207,7 +207,7 @@ PupdatePixels
   ]
 }
 Pencode 'img' STORE
-$long $lat $img`
+{ 'data' [ $img $lat $long ] 'globalParams' $globalParams }`
         break;
       default:
         break;
