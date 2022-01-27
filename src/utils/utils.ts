@@ -65,10 +65,10 @@ export class Utils {
           reject(xmlHttp.statusText)
         }
       };
+      xmlHttp.open("POST", theUrl, true); // true for asynchronous
       Object.keys(headers || {})
         .filter(h => h.toLowerCase() !== 'accept' && h.toLowerCase() !== 'content-type')
         .forEach(h => xmlHttp.setRequestHeader(h, headers[h]));
-      xmlHttp.open("POST", theUrl, true); // true for asynchronous
       xmlHttp.send(payload);
     });
   }
