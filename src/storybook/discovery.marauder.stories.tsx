@@ -56,21 +56,21 @@ export const Bus = Usage.bind({});
 Bus.args= {
   ...InitialUsage.args,
   ws: `
-  'yaw2XlsczxtKdzZpxYA5DXvE0w9sRQHjJPnyJ2MVZrjf1HK7bH82rkVfuhdkxYuLT1kGGC6DpsFskCTfReqgVsN4nFbpZqLlmgDRncN9oJtEHTkYMDDiQADNpyE5OHww90Ia3SYge3ORSk.NwvjOX.' 'token' STORE
-  $token AUTHENTICATE
-  10000000 MAXOPS
+    'yaw2XlsczxtKdzZpxYA5DXvE0w9sRQHjJPnyJ2MVZrjf1HK7bH82rkVfuhdkxYuLT1kGGC6DpsFskCTfReqgVsN4nFbpZqLlmgDRncN9oJtEHTkYMDDiQADNpyE5OHww90Ia3SYge3ORSk.NwvjOX.' 'token' STORE
+    $token AUTHENTICATE
+    10000000 MAXOPS
 
-  [ $token
-            'fr.bibus.bus.gtfs'
-            {  } NOW 12 h ] FETCH 'data' STORE
-  {
-    'data' $data
-    'globalParams' {
-      'map' {
-        'step' 1 m
-        'delay' 100 // ms
-        'mapType' 'CARTODB'
+    [ $token
+              'fr.bibus.bus.gtfs'
+              {  } NOW 12 h ] FETCH 'data' STORE
+    {
+      'data' $data
+      'globalParams' {
+        'map' {
+          'step' 1 m
+          'delay' 100 // ms
+          'mapType' 'CARTODB'
+        }
       }
-    }
-  }`
+    }`
 }
