@@ -116,6 +116,8 @@ export class DiscoveryMarauder {
   private sliderMax: string = '0';
   private popup: any;
   private drawn = false;
+  private endDate = 0;
+  private startDate = 0;
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -374,7 +376,7 @@ export class DiscoveryMarauder {
     const params = JSON.parse(json);
     this.infos = params.infos;
     this.ticks = params.bucketcount;
-    this.sliderMax = this.ticks + '';
+    this.sliderMax = params.bucketcount;
     this.bucketspan = params.bucketspan;
     this.bucketcount = params.bucketcount;
     this.gts = params.gts;
@@ -385,7 +387,12 @@ export class DiscoveryMarauder {
     this.lllon = params.lllon;
     this.urlat = params.urlat;
     this.urlon = params.urlon;
+    this.startDate = params.first;
+    this.endDate = params.last;
+    this.urlon = params.urlon;
     this.delay = this.innerOptions.map?.delay || 1000;
+    this.sliderMin = '0';
+    this.sliderMax = this.bucketspan + '';
     this.map.fitBounds([
       [this.lllat, this.lllon],
       [this.urlat, this.urlon]
@@ -699,7 +706,6 @@ export class DiscoveryMarauder {
     }
   }
 
-
   private getAllDetails() {
 
   }
@@ -723,14 +729,11 @@ export class DiscoveryMarauder {
     this.emitPause(this.paused);
   }
 
-  private formatSlider(v: string) {
-    if (!v || v === 'undefined') return undefined;
-    const ts = this.lastbucket - (this.bucketcount - parseInt(v, 10)) * this.bucketspan;
+  private formatSlider(v: number) {
+    if (isNaN(v)) return undefined;
+    const ts = this.startDate + v * this.bucketspan * this.divider;
     return this.innerOptions.timeMode === 'date'
-      ? GTSLib.toISOString(
-        ts,
-        this.divider, this.innerOptions.timeZone
-      )?.replace('T', ' ')
+      ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone)?.replace('T', ' ').replace('Z', '')
       : ts.toString()
   }
 
@@ -764,17 +767,17 @@ export class DiscoveryMarauder {
           <div class="range-outside-wrapper">
             <div class="range-wrap">
               <div class="range-value" ref={el => this.display = el as HTMLDivElement}>
-                <span>{this.formatSlider(this.currentTick + '')}</span>
+                <span>{this.formatSlider(this.currentTick)}</span>
               </div>
-              <input type="range" class="discovery-input" value={this.currentTick}
-                     min={this.sliderMin} max={this.sliderMax} onInput={e => this.handleSelect(e)}
+              <input type="range" class="discovery-input" value={this.currentTick + ''}
+                     min={'0'} max={this.ticks + ''} onInput={e => this.handleSelect(e)}
                      ref={el => this.slider = el as HTMLInputElement}
               />
             </div>
           </div>
           <div class="labels-wrapper">
-            <span class="slider-bounds" innerHTML={this.formatSlider(this.sliderMin) || '&nbsp;'}/>
-            <span class="slider-bounds" innerHTML={this.formatSlider(this.sliderMax) || '&nbsp;'}/>
+            <span class="slider-bounds" innerHTML={this.formatSlider(0) || '&nbsp;'}/>
+            <span class="slider-bounds" innerHTML={this.formatSlider(this.ticks) || '&nbsp;'}/>
           </div>
         </div>
         <button type="button" class={

@@ -95,6 +95,7 @@ $globalParams 'map' GET 'map' STORE
 <% $map ISNULL %> <% { 'step' 10 m } 'map' STORE %> IFT
 $map 'step' GET 'b' STORE
 $data LASTTICK 'last' STORE
+$data FIRSTTICK 'first' STORE
 
 [ $data bucketizer.mean $last 0 1 ] BUCKETIZE
 [ SWAP [] reducer.mean ] REDUCE 0 GET LOCATIONS 2 ->LIST FLATTEN LIST-> DROP [ 'lat' 'long' ] STORE
@@ -201,6 +202,8 @@ PupdatePixels
         'gts' $gts SIZE
         'positions' $gts SIZE $bucketcount * PUSHR0 -
         'infos' $infos
+        'last' $last
+        'first' $first
       } ->JSON
       'compressionFlag' true
     }

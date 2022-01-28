@@ -201,12 +201,10 @@ export class DiscoveryLineComponent {
 
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
-      console.log(GTSLib.isGtsToPlot(gts), gts)
       if (GTSLib.isGtsToPlot(gts)) {
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
-        console.log(gts.v.length, this.type === 'scatter' || gts.v.length <= 1)
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
           name: GTSLib.serializeGtsMetadata(gts),
@@ -433,7 +431,6 @@ export class DiscoveryLineComponent {
         data: markLine
       }
     });
-    console.log(opts)
     return opts as EChartsOption;
   }
 
