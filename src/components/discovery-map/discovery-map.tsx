@@ -372,9 +372,9 @@ export class DiscoveryMapComponent {
             this.LOG.debug(['displayMap', 'setView'], 'fitBounds', 'already have bounds');
             if (this.mapOpts.track) {
               this.map.setView({
-                  lat: this.mapOpts.startLat || 0,
-                  lng: this.mapOpts.startLong || 0
-                }, this.mapOpts.startZoom || 10,
+                  lat: this.mapOpts.startLat || this.bounds.getCenter().lat || 0,
+                  lng: this.mapOpts.startLong || this.bounds.getCenter().lng || 0
+                }, this.mapOpts.startZoom || this.map.getBoundsZoom(this.bounds) || 10,
                 {animate: true}
               );
             } else {

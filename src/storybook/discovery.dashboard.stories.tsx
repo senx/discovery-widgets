@@ -1195,3 +1195,116 @@ EmptyDataAndErrors.args = {
 }
   `
 };
+
+
+export const MapTrackingOnEvent = Usage.bind({});
+MapTrackingOnEvent.args = {
+  ...Usage.args,
+  cols: 12,
+  ws: `@training/dataset1
+  [ $TOKEN 'data.fuel' {} ] FINDSETS
+  STACKTOLIST 1 GET 'labels' STORE
+{
+  'title' 'Prix carburant'
+  'cellHeight' 80
+  'vars' {
+    'cp' '29200'
+    'type' 'sp95'
+    'labels' $labels
+  }
+  'tiles' [
+  {
+    'title' 'Code postal'
+    'type' 'input:autocomplete'
+    'x' 0 'y' 0 'w' 4 'h' 1
+    'macro' <%
+      $labels 'cp' GET 'data' STORE
+      {
+        'data' $data
+        'globalParams' { 'input' { 'value' $cp } }
+        'events' [
+          {
+            'type' 'variable'
+            'tags' [ 'cp' ] 'selector' 'cp' }
+        ]
+      }
+    %>
+  }
+  {
+    'title' 'Carburant'
+    'type' 'input:list'
+    'x' 4 'y' 0 'w' 4 'h' 1
+    'macro' <%
+      $labels 'type' GET 'data' STORE
+      {
+        'data' $data
+        'globalParams' { 'input' { 'value' $type } }
+        'events' [
+          {
+            'type' 'variable'
+            'tags' [ 'type' ] 'selector' 'type'
+          }
+        ]
+      }
+    %>
+  }
+  {
+    'type' 'display'
+    'x' 8 'y' 0 'w' 4 'h' 1
+    'title' 'Tarif au plus bas'
+    'unit' '€'
+    'options' {
+      'eventHandler' 'type=variable,tag=(cp|type)'
+    }
+    'macro' <%
+    @training/dataset1
+    [
+      $TOKEN 'data.fuel'
+      { 'type' $type 'cp' $cp }
+       NOW -1
+    ] FETCH NOW 30 d TIMECLIP NONEMPTY 'gts' STORE
+    [ $gts bucketizer.last NOW 0 1 ] BUCKETIZE 'gts' STORE
+    [ $gts [] reducer.min  ] REDUCE VALUES 0 GET
+    %>
+  }
+  {
+    'x' 0 'y' 1 'w' 12 'h' 2
+    'type' 'line'
+    'options' {
+      'eventHandler' 'type=variable,tag=(cp|type)'
+    }
+    'macro' <%
+        @training/dataset1
+        [
+          $TOKEN 'data.fuel'
+          { 'type' $type 'cp' $cp }
+          NOW 15 d
+        ] FETCH 'gts' STORE
+        [ $gts bucketizer.last NOW 1 d 0 ] BUCKETIZE
+        FILLPREVIOUS SORT 'gts' STORE
+        [ $gts [] reducer.mean ] REDUCE
+      %>
+    }
+    {
+      'type' 'map'
+      'x' 0 'y' 3 'w' 12 'h' 4
+      'options' {
+        'eventHandler' 'type=variable,tag=cp'
+        'map' {
+          'track' 'true'
+        }
+      }
+      'macro' <%
+      @training/dataset1
+      [
+        $TOKEN 'data.fuel'
+        { 'type' $type 'cp' $cp }
+         NOW -1
+      ] FETCH NOW 30 d TIMECLIP NONEMPTY 'gts' STORE
+      [ $gts bucketizer.last NOW 1 d 0 ] BUCKETIZE
+        FILLPREVIOUS SORT
+      %>
+    }
+  ]
+}`
+}
