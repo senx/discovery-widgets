@@ -1164,3 +1164,34 @@ $NOW 2 d - 12 h - 'start'  STORE
     ]
 }`,
 }
+
+export const EmptyDataAndErrors = Usage.bind({});
+EmptyDataAndErrors.args = {
+  ...Usage.args,
+  cols: 12,
+  ws: `
+{
+  'title' 'test'
+  'tiles' [
+    {
+      'title' 'Empty'
+      'type' 'line'
+      'x' 0 'y' 0 'h' 1 'w' 4
+      'macro' <% %>
+    }
+    {
+      'title' 'Empty GTS'
+      'type' 'line'
+      'x' 4 'y' 0 'h' 1 'w' 4
+      'macro' <% NEWGTS %>
+    }
+    {
+      'title' 'Error'
+      'type' 'line'
+      'x' 8 'y' 0 'h' 1 'w' 4
+      'macro' <% 'Arg' MSGFAIL %>
+    }
+  ]
+}
+  `
+};

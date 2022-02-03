@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -280,7 +280,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   render() {
-    return <Host>
+    return <div>
       {this.loaded ?
         this.hasError
           ? <div class="discovery-tile-error">{this.errorMessage}</div>
@@ -307,6 +307,6 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         <discovery-spinner>Requesting data...</discovery-spinner>
       </div> : ''}
       <pre id="ws"><slot/></pre>
-    </Host>;
+    </div>;
   }
 }
