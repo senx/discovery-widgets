@@ -1308,3 +1308,22 @@ MapTrackingOnEvent.args = {
   ]
 }`
 }
+export const SpecialChars = Usage.bind({});
+SpecialChars.args = {
+  ...Usage.args,
+  cols: 12,
+  ws: `{
+  'title' 'Tést'
+  'description' 'Dashboard test'
+  'tiles' [
+  {
+    'title' 'test'
+    'options' { 'autoRefresh' 1 }
+    'x' 0 'y' 0 'w' 12 'h' 2
+    'type' 'display' 'macro' <%
+        'démo'
+      %>
+    }
+  ]
+}`
+}

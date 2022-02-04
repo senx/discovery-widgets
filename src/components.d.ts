@@ -635,6 +635,7 @@ declare namespace LocalJSX {
     }
     interface DiscoverySlider {
         "debug"?: boolean;
+        "onStartDrag"?: (event: CustomEvent<void>) => void;
         "onValueChanged"?: (event: CustomEvent<number>) => void;
         "options"?: Param | string;
     }

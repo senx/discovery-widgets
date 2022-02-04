@@ -160,6 +160,7 @@ graph TD;
   discovery-svg --> discovery-spinner
   discovery-input --> discovery-slider
   discovery-calendar --> discovery-spinner
+  discovery-marauder --> discovery-slider
   discovery-dashboard --> discovery-tile-result
   discovery-modal --> discovery-tile-result
   discovery-tile --> discovery-tile-result

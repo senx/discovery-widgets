@@ -55,9 +55,14 @@ Type: `Promise<void>`
 
  - [discovery-tile-result](../discovery-tile-result)
 
+### Depends on
+
+- [discovery-slider](../discovery-slider)
+
 ### Graph
 ```mermaid
 graph TD;
+  discovery-marauder --> discovery-slider
   discovery-tile-result --> discovery-marauder
   style discovery-marauder fill:#f9f,stroke:#333,stroke-width:4px
 ```

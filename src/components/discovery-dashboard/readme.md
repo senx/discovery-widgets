@@ -79,6 +79,7 @@ graph TD;
   discovery-svg --> discovery-spinner
   discovery-input --> discovery-slider
   discovery-calendar --> discovery-spinner
+  discovery-marauder --> discovery-slider
   discovery-modal --> discovery-dashboard
   style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px
 ```

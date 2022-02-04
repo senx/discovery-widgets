@@ -17,6 +17,7 @@
 
 | Event          | Description | Type                  |
 | -------------- | ----------- | --------------------- |
+| `startDrag`    |             | `CustomEvent<void>`   |
 | `valueChanged` |             | `CustomEvent<number>` |
 
 
@@ -38,11 +39,13 @@ Type: `Promise<void>`
 ### Used by
 
  - [discovery-input](../discovery-input)
+ - [discovery-marauder](../discovery-marauder)
 
 ### Graph
 ```mermaid
 graph TD;
   discovery-input --> discovery-slider
+  discovery-marauder --> discovery-slider
   style discovery-slider fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

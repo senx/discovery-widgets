@@ -35,11 +35,13 @@ export class DiscoverySlider {
   @State() innerOptions: Param;
 
   @Event() valueChanged: EventEmitter<number>;
+  @Event() startDrag: EventEmitter<void>;
 
   private sliderDiv: HTMLDivElement;
   private LOG: Logger;
   private slider: API;
   private divider: number;
+  private innerValue: number;
 
 
   @Watch('options')
@@ -51,6 +53,7 @@ export class DiscoverySlider {
       } else {
         this.innerOptions = {...this.options as Param};
       }
+      this.slider.updateOptions(this.getSliderOptions(), false);
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
@@ -68,7 +71,7 @@ export class DiscoverySlider {
     let options = Utils.mergeDeep<Param>({
       ...new Param(),
       input: {
-        min: 0, max: 100, horizontal: true
+        min: 0, max: 100, horizontal: true, showTicks: true
       }
     }, this.innerOptions || {}) as Param;
     this.innerOptions = {...options};
@@ -77,46 +80,20 @@ export class DiscoverySlider {
   }
 
   componentDidLoad() {
-    let minmax = {min: this.innerOptions.input?.min || 0, max: this.innerOptions.input?.max || 100}
-    let start = this.innerOptions.input?.value as number || this.innerOptions.input?.min || 0;
-    const range = minmax.max - minmax.min;
-    const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
-    const format = {
-      to: v => this.innerOptions.timeMode === 'date'
-        ? GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone)?.replace('T', '<br />').replace('Z', '')
-        : v,
-      from: Number
-    };
-    if (this.innerOptions.timeMode === 'date') {
-      this.sliderDiv.classList.add('discovery-date');
-    } else {
-      this.sliderDiv.classList.remove('discovery-date');
-    }
-    this.slider = noUiSlider.create(this.sliderDiv, {
-      format,
-      start,
-      connect: this.innerOptions.input?.progress ? 'lower' : false,
-      orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
-      tooltips: true,
-      step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
-      range: minmax,
-      pips: {
-        mode: 'steps',
-        stepped: false,
-        density: 4,
-        format
-      } as any
-    } as any);
-    this.slider.on('set', e => {
+    this.innerValue = this.innerValue || this.innerOptions.input?.value as number || this.innerOptions.input?.min || 0;
+    this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
+    this.slider.on('end', e => {
       const r = this.innerOptions.timeMode === 'date'
         ? GTSLib.toTimestamp((e[0] as string).replace('<br />', 'T') + 'Z', this.divider, this.innerOptions.timeZone)
         : Number(e[0]);
-      this.valueChanged.emit(r)
+      this.valueChanged.emit(r);
     });
+    this.slider.on('start', () => this.startDrag.emit());
   }
 
   @Method()
   async setValue(value: number) {
+    this.innerValue = value;
     this.slider.set(value);
   }
 
@@ -128,4 +105,38 @@ export class DiscoverySlider {
     );
   }
 
+  private getSliderOptions() {
+    let minmax = {min: this.innerOptions.input?.min || 0, max: this.innerOptions.input?.max || 100}
+    let start = this.innerValue;
+    const range = minmax.max - minmax.min;
+    const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
+    const format = {
+      to: v => {
+        return this.innerOptions.timeMode === 'date'
+          ? GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone)?.replace('T', '<br />').replace('Z', '')
+          : v;
+      },
+      from: Number
+    };
+    if (this.innerOptions.timeMode === 'date') {
+      this.sliderDiv.classList.add('discovery-date');
+    } else {
+      this.sliderDiv.classList.remove('discovery-date');
+    }
+    return {
+      format,
+      start,
+      connect: this.innerOptions.input?.progress ? 'lower' : false,
+      orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
+      tooltips: true,
+      step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
+      range: minmax,
+      pips: this.innerOptions.input?.showTicks ? {
+        mode: 'steps',
+        stepped: false,
+        density: 4,
+        format,
+      } as any : undefined
+    } as any;
+  }
 }

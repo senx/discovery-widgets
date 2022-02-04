@@ -110,8 +110,7 @@ export class DiscoveryMarauder {
   private SQUARE_MARKERS = false;
   private SQUARE_TRACK_MARKERS = false;
   private resetOnZoom = true;
-  private slider: HTMLInputElement;
-  private display: HTMLDivElement;
+  private slider: HTMLDiscoverySliderElement;
   private sliderMin: string = '0';
   private sliderMax: string = '0';
   private popup: any;
@@ -402,6 +401,13 @@ export class DiscoveryMarauder {
     this.currentTick = 0;
     this.tick = 0;
     this.done = true;
+    this.innerOptions.input = {
+      min: this.startDate,
+      max: this.endDate,
+      value: this.startDate,
+      progress: true,
+      showTicks: this.innerOptions.timeMode === 'date'
+    }
     this.emitPause(this.paused);
   }
 
@@ -545,6 +551,7 @@ export class DiscoveryMarauder {
   }
 
   drawOnMap(info: any, drawTraces: boolean = true): void {
+    if (!info) return;
     const canvas = info.canvas;
     const ctx = canvas.getContext('2d');
     const histctx = this.histcanvas.getContext('2d');
@@ -711,30 +718,27 @@ export class DiscoveryMarauder {
   }
 
   private handleSelect(e) {
-    this.setSliderPosition(parseInt(e.target.value as string, 10), true)
+    const tick = Math.round((e.detail - this.startDate) / this.bucketspan / this.divider);
+    this.setSliderPosition(tick, true)
   }
 
   private setSliderPosition(pos: number, setTick = false) {
-    const newValue = pos * 100 / this.ticks;
-    const newPosition = 10 - (newValue * 0.2);
     if (setTick) {
       this.tick = pos;
       this.drawOnMap(this.info, true);
     }
-    this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
+    if (!!this.slider) {
+      setTimeout(() =>
+        this.slider.setValue(this.startDate + pos * this.bucketspan * this.divider)
+          .then(() => {
+          })
+      );
+    }
   }
 
   private togglePlayPause() {
     this.paused = !this.paused;
     this.emitPause(this.paused);
-  }
-
-  private formatSlider(v: number) {
-    if (isNaN(v)) return undefined;
-    const ts = this.startDate + v * this.bucketspan * this.divider;
-    return this.innerOptions.timeMode === 'date'
-      ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone)?.replace('T', ' ').replace('Z', '')
-      : ts.toString()
   }
 
   render() {
@@ -764,21 +768,12 @@ export class DiscoveryMarauder {
       </div>
       <div class="commands-wrapper">
         <div class="slider-wrapper">
-          <div class="range-outside-wrapper">
-            <div class="range-wrap">
-              <div class="range-value" ref={el => this.display = el as HTMLDivElement}>
-                <span>{this.formatSlider(this.currentTick)}</span>
-              </div>
-              <input type="range" class="discovery-input" value={this.currentTick + ''}
-                     min={'0'} max={this.ticks + ''} onInput={e => this.handleSelect(e)}
-                     ref={el => this.slider = el as HTMLInputElement}
-              />
-            </div>
-          </div>
-          <div class="labels-wrapper">
-            <span class="slider-bounds" innerHTML={this.formatSlider(0) || '&nbsp;'}/>
-            <span class="slider-bounds" innerHTML={this.formatSlider(this.ticks) || '&nbsp;'}/>
-          </div>
+          <discovery-slider options={this.innerOptions}
+                            onValueChanged={e => this.handleSelect(e)}
+                            onStartDrag={() => this.emitPause(true)}
+                            debug={this.debug}
+                            ref={el => this.slider = el as HTMLDiscoverySliderElement}
+          />
         </div>
         <button type="button" class={
           {
