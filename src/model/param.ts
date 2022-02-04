@@ -84,9 +84,12 @@ export class Param {
   };
   input?: {
     showButton?: boolean,
-    value?: string,
+    value?: string | number,
     min?: number,
-    max?: number
+    max?: number,
+    step?: number,
+    stepCount?: number,
+    horizontal?: boolean,
   }
   map?: MapParams;
   calendar?: {

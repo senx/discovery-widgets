@@ -211,6 +211,13 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoverySlider {
+        "debug": boolean;
+        "options": Param | string;
+        "progress": boolean;
+        "setValue": (value: number) => Promise<void>;
+        "stepCount": number;
+    }
     interface DiscoverySpinner {
         "message": string;
     }
@@ -380,6 +387,12 @@ declare global {
         prototype: HTMLDiscoveryPieElement;
         new (): HTMLDiscoveryPieElement;
     };
+    interface HTMLDiscoverySliderElement extends Components.DiscoverySlider, HTMLStencilElement {
+    }
+    var HTMLDiscoverySliderElement: {
+        prototype: HTMLDiscoverySliderElement;
+        new (): HTMLDiscoverySliderElement;
+    };
     interface HTMLDiscoverySpinnerElement extends Components.DiscoverySpinner, HTMLStencilElement {
     }
     var HTMLDiscoverySpinnerElement: {
@@ -428,6 +441,7 @@ declare global {
         "discovery-modal": HTMLDiscoveryModalElement;
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
+        "discovery-slider": HTMLDiscoverySliderElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-svg": HTMLDiscoverySvgElement;
         "discovery-tabular": HTMLDiscoveryTabularElement;
@@ -621,6 +635,13 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
+    interface DiscoverySlider {
+        "debug"?: boolean;
+        "onValueChanged"?: (event: CustomEvent<number>) => void;
+        "options"?: Param | string;
+        "progress"?: boolean;
+        "stepCount"?: number;
+    }
     interface DiscoverySpinner {
         "message"?: string;
     }
@@ -692,6 +713,7 @@ declare namespace LocalJSX {
         "discovery-modal": DiscoveryModal;
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
+        "discovery-slider": DiscoverySlider;
         "discovery-spinner": DiscoverySpinner;
         "discovery-svg": DiscoverySvg;
         "discovery-tabular": DiscoveryTabular;
@@ -720,6 +742,7 @@ declare module "@stencil/core" {
             "discovery-modal": LocalJSX.DiscoveryModal & JSXBase.HTMLAttributes<HTMLDiscoveryModalElement>;
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
+            "discovery-slider": LocalJSX.DiscoverySlider & JSXBase.HTMLAttributes<HTMLDiscoverySliderElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-svg": LocalJSX.DiscoverySvg & JSXBase.HTMLAttributes<HTMLDiscoverySvgElement>;
             "discovery-tabular": LocalJSX.DiscoveryTabular & JSXBase.HTMLAttributes<HTMLDiscoveryTabularElement>;

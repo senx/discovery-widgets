@@ -20,7 +20,7 @@
 :host {
   table {
     width: 100%;
-    color: var(--warp-view-font-color, $w10-black);
+    color: var(--warp-view-font-color, $w10-charcoal);
 
     td, th {
       padding: var(--warp-view-datagrid-cell-padding, 5px);
@@ -45,7 +45,7 @@
       display: inline-block;
 
       .index, .next, .prev {
-        color: var(--warp-view-font-color, $w10-black);
+        color: var(--warp-view-font-color, $w10-charcoal);
         float: left;
         padding: 8px 16px;
         text-decoration: none;

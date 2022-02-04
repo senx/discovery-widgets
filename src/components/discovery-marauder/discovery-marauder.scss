@@ -114,7 +114,7 @@
 
   table {
     width: 100%;
-    color: var(--warp-view-font-color, $w10-black);
+    color: var(--warp-view-font-color, $w10-charcoal);
 
     td, th {
       padding: var(--warp-view-datagrid-cell-padding, 5px);
@@ -128,7 +128,7 @@
 
     .even {
       background-color: var(--warp-view-datagrid-even-bg-color, $w10-lightgrey);
-      color: var(--warp-view-datagrid-even-color, $w10-black);
+      color: var(--warp-view-datagrid-even-color, $w10-charcoal);
     }
   }
 

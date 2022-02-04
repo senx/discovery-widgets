@@ -469,7 +469,7 @@ export class DiscoveryTileResultComponent {
   }
 
   private handleCSSColors() {
-    let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000000');
+    let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#404040');
     fontColor = ((this.innerOptions as Param) || {fontColor}).fontColor || fontColor;
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;

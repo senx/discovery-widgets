@@ -62,7 +62,8 @@
     "leaflet-edgebuffer": "^1.0.6",
     "leaflet.heat": "^0.2.0",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.34"
+    "moment-timezone": "^0.5.34",
+    "nouislider": "^15.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
