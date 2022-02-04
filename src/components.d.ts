@@ -214,6 +214,7 @@ export namespace Components {
     interface DiscoverySlider {
         "debug": boolean;
         "options": Param | string;
+        "progress": boolean;
         "setValue": (value: number) => Promise<void>;
     }
     interface DiscoverySpinner {
@@ -638,6 +639,7 @@ declare namespace LocalJSX {
         "onStartDrag"?: (event: CustomEvent<void>) => void;
         "onValueChanged"?: (event: CustomEvent<number>) => void;
         "options"?: Param | string;
+        "progress"?: boolean;
     }
     interface DiscoverySpinner {
         "message"?: string;

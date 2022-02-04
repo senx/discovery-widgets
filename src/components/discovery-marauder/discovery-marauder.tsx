@@ -772,6 +772,7 @@ export class DiscoveryMarauder {
                             onValueChanged={e => this.handleSelect(e)}
                             onStartDrag={() => this.emitPause(true)}
                             debug={this.debug}
+                            progress={true}
                             ref={el => this.slider = el as HTMLDiscoverySliderElement}
           />
         </div>

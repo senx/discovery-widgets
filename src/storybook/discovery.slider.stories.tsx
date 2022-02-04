@@ -50,7 +50,6 @@ const Template = ({options}) => `
 
 export const InitialUsage = Template.bind({});
 InitialUsage.args = {
-  progress: true,
   options: {
     ...new Param(),
     input: {
@@ -64,7 +63,6 @@ InitialUsage.args = {
 
 export const WithDates = InitialUsage.bind({});
 WithDates.args = {
-  progress: false,
   options: {
     ...new Param(),
     timeMode: 'date',
@@ -73,6 +71,7 @@ WithDates.args = {
       max: 1643896256873055,
       value: 1643723480406273,
       step: 86400000000,
+      progress: true
     }
   }
 };
@@ -106,7 +105,6 @@ window.onload = () => {
 
 export const SetValue = SetValueTemplate.bind({});
 SetValue.args = {
-  progress: true,
   options: {
     ...new Param(),
     timeMode: 'date',
@@ -114,7 +112,7 @@ SetValue.args = {
       min: 1643291469951990,
       max: 1643896256873055,
       value: 1643723480406273,
-      step: 86400000000,
+      step: 86400000000
     }
   }
 };
@@ -145,5 +143,15 @@ export const SliderInputWithCustomStyle = ({options}) => `
     </div>
 </div>`;
 SliderInputWithCustomStyle.args = {
-  ...InitialUsage.args
+  ...InitialUsage.args,
+  options: {
+    ...new Param(),
+    input: {
+      min: 0,
+      max: 100,
+      value: 42,
+      step: 10,
+      progress: true
+    }
+  }
 }

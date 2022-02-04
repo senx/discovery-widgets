@@ -30,6 +30,7 @@ import {Utils} from "../../utils/utils";
 export class DiscoverySlider {
 
   @Prop() debug: boolean;
+  @Prop() progress: boolean;
   @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
 
   @State() innerOptions: Param;
@@ -126,7 +127,7 @@ export class DiscoverySlider {
     return {
       format,
       start,
-      connect: this.innerOptions.input?.progress ? 'lower' : false,
+      connect: this.innerOptions.input?.progress || this.progress? 'lower' : false,
       orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
       tooltips: true,
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
