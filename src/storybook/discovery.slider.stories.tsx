@@ -23,7 +23,7 @@ export default {
   title: 'UI/Slider',
   notes: readme,
   argTypes: {
-    progress: {control: 'boolean'}
+    options: {control: 'object'},
   },
   parameters: {
     docs: {
@@ -38,12 +38,11 @@ export default {
   'valueChanged',
 ].forEach(evt => window.addEventListener(evt, (e: CustomEvent) => action(evt)(e.detail)));
 
-const Template = ({options, progress}) => `
+const Template = ({options}) => `
 <div class="card" style="width: 100%;">
   <div class="card-body">
     <discovery-slider
         options='${JSON.stringify(options)}'
-        progress="${progress}"
         debug
     ></discovery-slider>
   </div>
@@ -121,7 +120,7 @@ SetValue.args = {
 };
 
 
-export const SliderInputWithCustomStyle = ({options, progress}) => `
+export const SliderInputWithCustomStyle = ({options}) => `
 <style>
 :root {
    --warp-view-handle-bg-color:      #c8e020;
@@ -141,7 +140,6 @@ export const SliderInputWithCustomStyle = ({options, progress}) => `
         <discovery-slider
         id="slider"
         options='${JSON.stringify(options)}'
-        progress="${progress}"
         debug
     ></discovery-slider>
     </div>

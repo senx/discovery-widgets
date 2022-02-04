@@ -47,9 +47,14 @@ Type: `Promise<void>`
 
  - [discovery-tile-result](../discovery-tile-result)
 
+### Depends on
+
+- [discovery-slider](../discovery-slider)
+
 ### Graph
 ```mermaid
 graph TD;
+  discovery-input --> discovery-slider
   discovery-tile-result --> discovery-input
   style discovery-input fill:#f9f,stroke:#333,stroke-width:4px
 ```

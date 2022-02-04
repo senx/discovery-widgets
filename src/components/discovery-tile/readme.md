@@ -156,6 +156,7 @@ graph TD;
   discovery-tabular --> discovery-spinner
   discovery-tabular --> discovery-pageable
   discovery-svg --> discovery-spinner
+  discovery-input --> discovery-slider
   discovery-calendar --> discovery-spinner
   discovery-dashboard --> discovery-tile
   discovery-modal --> discovery-tile

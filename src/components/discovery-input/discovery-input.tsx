@@ -63,8 +63,7 @@ export class DiscoveryInputComponent {
   private defOptions: Param = new Param();
   private innerOptions: Param = new Param();
   private LOG: Logger;
-  private inputField: HTMLInputElement | HTMLSelectElement;
-  private display: HTMLDivElement;
+  private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement;
   private disabled: boolean = false;
   private min = 0;
   private max = 100;
@@ -141,10 +140,10 @@ export class DiscoveryInputComponent {
           enableSeconds: true,
           dateFormat: 'Y/m/d H:i:S'
         } as any;
-        if(!!this.innerOptions.input && !!this.innerOptions.input.min) {
+        if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
           opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone);
         }
-        if(!!this.innerOptions.input && !!this.innerOptions.input.max) {
+        if (!!this.innerOptions.input && !!this.innerOptions.input.max) {
           opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, this.innerOptions.timeZone);
         }
         this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
@@ -200,11 +199,13 @@ export class DiscoveryInputComponent {
 
   private handleClick = () => {
     if (this.inputField && this.subType !== 'date' && this.subType !== 'date-range') {
-      this.selectedValue = this.inputField.value;
+      if ("value" in this.inputField) {
+        this.selectedValue = this.inputField.value;
+      }
     }
     (this.innerResult?.events || []).forEach(e => {
       if (!!this.selectedValue && e.type === 'variable') {
-        if(this.subType === 'date-range' &&  this.selectedValue.length !== 2) {
+        if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
           return;
         }
         if (!e.value) {
@@ -222,12 +223,7 @@ export class DiscoveryInputComponent {
   }
 
   private handleSelect(e) {
-    this.selectedValue = e.target.value;
-    if (!!this.display && this.subType === 'slider') {
-      const newValue = Number((parseInt(this.selectedValue as string, 10) - this.min) * 100 / (this.max - this.min));
-      const newPosition = 10 - (newValue * 0.2);
-      this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
-    }
+    this.selectedValue = e.target.value || e.detail;
     if (!this.innerOptions.input?.showButton) {
       this.handleClick();
     }
@@ -263,7 +259,6 @@ export class DiscoveryInputComponent {
           this.value = (data as any[]).sort();
         }
         this.selectedValue = this.value;
-        console.log(this.flatpickrInstance, this.value)
         if (this.flatpickrInstance) {
           this.flatpickrInstance.config.mode = 'range';
           this.flatpickrInstance.setDate(
@@ -276,14 +271,15 @@ export class DiscoveryInputComponent {
         break;
       case "slider":
         if (GTSLib.isArray(data) && data.length > 0) {
-          this.value = data[0].toString();
+          this.value = data[0];
         } else {
-          this.value = (data.toString() as string);
+          this.value = data;
         }
         this.selectedValue = this.value;
-        const newValue = Number((parseInt(this.value as string, 10) - this.min) * 100 / (this.max - this.min));
-        const newPosition = 10 - (newValue * 0.2);
-        this.display.style.left = `calc(${newValue}% + (${newPosition}px))`;
+        this.innerOptions.input = this.innerOptions.input || {};
+        this.innerOptions.input.value = this.value as number;
+        (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number).then(() => {
+        })
         break;
       case "list":
       case 'autocomplete':
@@ -305,10 +301,12 @@ export class DiscoveryInputComponent {
             src: this.values,
             keys: 'v',
             filter: (list) => list.filter(item => {
-              const inputValue = this.inputField.value.toLowerCase();
-              const itemValue = item.value.v.toLowerCase();
-              if (itemValue.startsWith(inputValue)) {
-                return item.value;
+              if ("value" in this.inputField) {
+                const inputValue = this.inputField.value.toLowerCase();
+                const itemValue = item.value.v.toLowerCase();
+                if (itemValue.startsWith(inputValue)) {
+                  return item.value;
+                }
               }
             })
           }
@@ -349,17 +347,10 @@ export class DiscoveryInputComponent {
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "slider":
-        return <div class="range-outside-wrapper">
-          <div class="range-wrap">
-            <div class="range-value" ref={el => this.display = el as HTMLDivElement}>
-              <span>{this.selectedValue}</span>
-            </div>
-            <input type="range" class="discovery-input" value={this.value as string}
-                   min={this.min} max={this.max} onInput={e => this.handleSelect(e)}
-                   ref={el => this.inputField = el as HTMLInputElement}
-            />
-          </div>
-        </div>
+        return <discovery-slider options={this.innerOptions}
+                                 onValueChanged={e => this.handleSelect(e)}
+                                 ref={el => this.inputField = el as HTMLDiscoverySliderElement}
+        />
       case "list":
         return <select class="discovery-input" onInput={e => this.handleSelect(e)}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}

@@ -94,6 +94,15 @@ displayOnlyText.args = {
 }
 
 
+
+export const specialChars = Usage.bind({});
+specialChars.args = {
+  ...Usage.args,
+  type: 'display',
+  ws: ` 'd%C3%83%C2%A9mo' `
+}
+
+
 export const WithAutoRefreshAndColorChange = Usage.bind({});
 WithAutoRefreshAndColorChange.args = {
   ...InitialUsage.args,

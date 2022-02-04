@@ -90,6 +90,7 @@ export class Param {
     step?: number,
     stepCount?: number,
     horizontal?: boolean,
+    progress?: boolean
   }
   map?: MapParams;
   calendar?: {

@@ -7,12 +7,10 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type              | Default                              |
-| ----------- | ------------ | ----------- | ----------------- | ------------------------------------ |
-| `debug`     | `debug`      |             | `boolean`         | `undefined`                          |
-| `options`   | `options`    |             | `Param \| string` | `{...new Param(), timeMode: 'date'}` |
-| `progress`  | `progress`   |             | `boolean`         | `undefined`                          |
-| `stepCount` | `step-count` |             | `number`          | `undefined`                          |
+| Property  | Attribute | Description | Type              | Default                              |
+| --------- | --------- | ----------- | ----------------- | ------------------------------------ |
+| `debug`   | `debug`   |             | `boolean`         | `undefined`                          |
+| `options` | `options` |             | `Param \| string` | `{...new Param(), timeMode: 'date'}` |
 
 
 ## Events
@@ -34,6 +32,19 @@ Type: `Promise<void>`
 
 
 
+
+## Dependencies
+
+### Used by
+
+ - [discovery-input](../discovery-input)
+
+### Graph
+```mermaid
+graph TD;
+  discovery-input --> discovery-slider
+  style discovery-slider fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

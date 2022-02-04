@@ -174,7 +174,7 @@ export const SliderInputInitialUsage = Usage.bind({});
 SliderInputInitialUsage.args = {
   ...Usage.args,
   type: 'input:slider',
-  ws: `{ 'data' 42 'globalParams' { 'input' { 'min' 0 'max' 0 } } 'events' [
+  ws: `{ 'data' 42 'globalParams' { 'input' { 'min' 0 'max' 50 } } 'events' [
     { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
   ] }`
 };
@@ -182,16 +182,16 @@ SliderInputInitialUsage.args = {
 export const SliderInputWithCustomStyle = ({url, ws, language, type, options}) => `
 <style>
 :root {
-  --warp-view-input-border-color: #c8e020;
+   --warp-view-handle-bg-color:      #c8e020;
+  --warp-view-input-border-color: #e53b2c;
   --warp-view-input-bg-color: #3b528b;
-  --warp-view-input-border-radius: 20px;
   --warp-view-input-label-color: #c8e020;
-
-  --warp-view-button-border-color: #c8e020;
-  --warp-view-button-bg-color: #3b528b;
-  --warp-view-button-label-color: #c8e020;
-  --warp-view-button-width: 500px;
-  --warp-view-button-border-radius: 20px;
+  --warp-view-active-input-bg-color: #e342f5;
+  --warp-view-tooltip-bg-color: #311a40;
+  --warp-view-tooltip-label-color: #ffffff;
+  --warp-view-tooltip-border-color: #9e8819;
+    --warp-view-chart-grid-color: blue;
+    --warp-view-chart-label-color: teal;
   }
 </style>
 <div class="card" style="width: 100%;min-height: 500px">

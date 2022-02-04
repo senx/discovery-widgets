@@ -29,9 +29,7 @@ import {Utils} from "../../utils/utils";
 })
 export class DiscoverySlider {
 
-  @Prop() stepCount: number;
   @Prop() debug: boolean;
-  @Prop() progress: boolean;
   @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
 
   @State() innerOptions: Param;
@@ -82,7 +80,7 @@ export class DiscoverySlider {
     let minmax = {min: this.innerOptions.input?.min || 0, max: this.innerOptions.input?.max || 100}
     let start = this.innerOptions.input?.value as number || this.innerOptions.input?.min || 0;
     const range = minmax.max - minmax.min;
-    const pips = this.innerOptions.input?.step || Math.round(range / (this.stepCount || range));
+    const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
     const format = {
       to: v => this.innerOptions.timeMode === 'date'
         ? GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone)?.replace('T', '<br />').replace('Z', '')
@@ -97,10 +95,10 @@ export class DiscoverySlider {
     this.slider = noUiSlider.create(this.sliderDiv, {
       format,
       start,
-      connect: this.progress ? 'lower' : false,
+      connect: this.innerOptions.input?.progress ? 'lower' : false,
       orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
       tooltips: true,
-      step: pips,
+      step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
       range: minmax,
       pips: {
         mode: 'steps',
@@ -110,7 +108,6 @@ export class DiscoverySlider {
       } as any
     } as any);
     this.slider.on('set', e => {
-      console.log('valueChanged', e)
       const r = this.innerOptions.timeMode === 'date'
         ? GTSLib.toTimestamp((e[0] as string).replace('<br />', 'T') + 'Z', this.divider, this.innerOptions.timeZone)
         : Number(e[0]);
