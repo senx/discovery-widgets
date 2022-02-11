@@ -37,7 +37,7 @@
 
     .discovery-dashboard-wrapper {
       display: grid;
-      grid-gap: var(--warp-view-dashboard-gap,10px);
+      grid-gap: var(--warp-view-dashboard-gap, 10px);
 
       .discovery-dashboard-tile {
         width: 100%;
@@ -71,9 +71,10 @@
       min-width: 200px;
       min-height: 500px;
     }
+
     .discovery-dashboard-tile {
       flex-grow: 1;
-      margin: var(--warp-view-dashboard-gap,10px);
+      margin: var(--warp-view-dashboard-gap, 10px);
     }
   }
 

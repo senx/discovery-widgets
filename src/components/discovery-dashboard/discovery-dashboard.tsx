@@ -211,7 +211,6 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   private getRendering() {
-    console.log(this._type)
     switch (this._type) {
       case "scada":
         return <div class="discovery-scada-main">
