@@ -271,6 +271,7 @@ export class DiscoveryTileResultComponent {
         />;
       case 'gauge':
       case 'circle':
+      case 'compass':
         return <discovery-gauge
           result={this.innerResult}
           type={this.innerType}

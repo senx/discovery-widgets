@@ -61,10 +61,12 @@ export const Usage = Template.bind({});
 Usage.args = {
   url: 'https://warp.senx.io/api/v0/exec',
   cols: 8,
+  type: 'flex',
   cellHeight: 220,
   ws: `{
   'title' 'My Dashboard'
   'description' 'Dashboard over 8 columns (default is 12)'
+  'type' 'flex'
      'tiles' [
        {
          'type' 'display'

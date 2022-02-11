@@ -134,12 +134,6 @@ export class DiscoveryGauge {
       startAngle: 180,
       endAngle: 0,
       lineStyle: {color},
-      pointer: {show: false},
-      title: {
-        fontSize: 12,
-        offsetCenter: [0, 10],
-        color: Utils.getLabelColor(this.el)
-      },
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
@@ -147,14 +141,7 @@ export class DiscoveryGauge {
         }
       },
       splitLine: {show: false},
-      axisLabel: {show: false},
       splitNumber: 4, // The number of split segments on the axis
-      axisTick: {
-        distance: 0,
-        splitNumber: 4,
-        lineStyle: {width: 1, color: Utils.getGridColor(this.el)}
-      },
-      axisLine: {roundCap: false, lineStyle: {width: 20}},
       itemStyle: {
         opacity: 0.8,
         borderColor: color,
@@ -219,12 +206,12 @@ export class DiscoveryGauge {
         dataStruct.push({key: GTSLib.serializeGtsMetadata(gts), value, max, min});
       } else {
         // custom data format
-        let max: number = Number.MIN_VALUE;
+        let max: number = this.innerOptions.maxValue || Number.MIN_VALUE;
         if (!!data.params && !!data.params[i] && !!data.params[i].maxValue) {
           max = data.params[i].maxValue;
         } else {
-          if (overallMax < gts.value || Number.MIN_VALUE) {
-            overallMax = gts.value || Number.MIN_VALUE;
+          if (overallMax < gts || Number.MIN_VALUE) {
+            overallMax = gts || Number.MIN_VALUE;
           }
         }
         let min: number = 0;
@@ -238,7 +225,8 @@ export class DiscoveryGauge {
         }
       }
     }
-    const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * 0.8;
+    const radius = Math.round(100 / Math.ceil(gtsCount / 2)) *
+      (this.type === 'compass' ? 0.8 : 0.8);
     let floor = 1;
     dataStruct.forEach((d, i) => {
       if (i % 2 === 0) {
@@ -246,38 +234,77 @@ export class DiscoveryGauge {
       }
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      const angles = DiscoveryGauge.getAngles(this.type)
       series.push({
         ...this.getCommonSeriesParam(color),
         name: d.key,
         min: d.min,
         max: Math.max(d.max, overallMax),
-        startAngle: this.type === 'gauge' ? 180 : 270,
-        endAngle: this.type === 'gauge' ? 0 : -90,
-        progress: {show: true, roundCap: false, width: 20},
+        startAngle: angles.s,
+        endAngle: angles.e,
+        tooltip: {formatter: '{a} <br/>{b} : {c}%'},
+        title: {
+          fontSize: 12,
+          offsetCenter: this.type === 'compass' ? [0, '110%'] : [0, 10],
+          color: Utils.getLabelColor(this.el)
+        },
+        axisLine: this.type === 'compass' ? {
+          lineStyle: {
+            color: [[1, Utils.getGridColor(this.el)]],
+            width: 1
+          }
+        } : {roundCap: false, lineStyle: {width: 20}},
+        axisTick: this.type === 'compass' ? {
+          distance: 0,
+          length: 10,
+          lineStyle: {color: Utils.getGridColor(this.el)}
+        } : {
+          distance: 0,
+          splitNumber: 4,
+          lineStyle: {width: 1, color: Utils.getGridColor(this.el)}
+        },
+        axisLabel: this.type === 'compass' ? {
+          color: Utils.getLabelColor(this.el),
+          distance: 0,
+          formatter: value => value === d.max ? '' : value + ''
+        } : {show: false},
+        progress: this.type === 'compass'
+          ? {show: false}
+          : {show: true, roundCap: false, width: 20},
         data: [{value: d.value, name: d.key}],
+        anchor: this.type === 'compass' ? {
+          show: true,
+          size: 10,
+          itemStyle: {borderColor: color, borderWidth: 10}
+        } : {show: false},
+        pointer: this.type === 'compass' ? {
+          offsetCenter: [0, '40%'],
+          length: '140%',
+          itemStyle: {color}
+        } : {show: false},
         radius: radius + '%',
         detail: {
           formatter: '{value}' + (this.unit || this.innerOptions.unit || ''),
           fontSize: 12,
-          offsetCenter: [0, this.type === 'gauge' ? '-20%' : 0],
+          offsetCenter: [0, this.type === 'gauge' ? '-20%' : this.type === 'compass' ? 40 : 0],
           color: Utils.getLabelColor(this.el)
         },
         center: [
           (gtsCount === 1 ? '50' : i % 2 === 0 ? '25' : '75') + '%',
-          (gtsCount === 1 ? (this.type === 'gauge' ? '65' : '50') : (radius * (floor - 1) - radius / 2 + 10)) + '%'
+          (gtsCount === 1
+            ? (this.type === 'gauge' ? '65' : '50')
+            : (radius * (floor - 1) - radius / 2 + (floor > 2 ? 15 : 5))) + '%'
         ]
-      })
+      });
+      console.log(floor)
     });
+    console.log(series)
     return {
       grid: {
         left: 10, top: 10, bottom: 10, right: 10,
         containLabel: true
       },
-      legend: {
-        bottom: 10,
-        left: 'center',
-        show: false
-      },
+      legend: {show: false},
       series
     } as EChartsOption;
   }
@@ -343,5 +370,16 @@ export class DiscoveryGauge {
       this.chartOpts.series = series;
       setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
     });
+  }
+
+  private static getAngles(type: ChartType) {
+    switch (type) {
+      case 'compass':
+        return {s: 90, e: -270};
+      case 'gauge':
+        return {s: 180, e: 0};
+      default:
+        return {s: 270, e: -90};
+    }
   }
 }

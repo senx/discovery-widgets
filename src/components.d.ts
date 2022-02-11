@@ -75,7 +75,7 @@ export namespace Components {
         "dashboardTitle": string;
         "debug": boolean;
         "options": Param | string;
-        "type": 'scada' | 'dashboard';
+        "type": 'scada' | 'dashboard' | 'flex';
         "url": string;
     }
     interface DiscoveryDisplay {
@@ -508,7 +508,7 @@ declare namespace LocalJSX {
         "onStatusError"?: (event: CustomEvent<any>) => void;
         "onStatusHeaders"?: (event: CustomEvent<string[]>) => void;
         "options"?: Param | string;
-        "type"?: 'scada' | 'dashboard';
+        "type"?: 'scada' | 'dashboard' | 'flex';
         "url"?: string;
     }
     interface DiscoveryDisplay {

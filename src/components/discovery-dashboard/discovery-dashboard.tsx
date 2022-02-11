@@ -39,7 +39,7 @@ export class DiscoveryDashboardComponent {
   @Prop({mutable: true}) autoRefresh: number = -1;
   @Prop() cellHeight: number = 220;
   @Prop() cols: number = 12;
-  @Prop() type: 'scada' | 'dashboard' = 'dashboard';
+  @Prop() type: 'scada' | 'dashboard' | 'flex' = 'dashboard';
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
@@ -60,7 +60,7 @@ export class DiscoveryDashboardComponent {
   private ws: string;
   private timer: any;
   private modal: HTMLDiscoveryModalElement;
-  private _type: 'scada' | 'dashboard';
+  private _type: 'scada' | 'dashboard' | 'flex';
   private scadaHeight: number;
   private innerStyles: any;
   private tiles: Tile[];
@@ -211,6 +211,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   private getRendering() {
+    console.log(this._type)
     switch (this._type) {
       case "scada":
         return <div class="discovery-scada-main">
@@ -300,6 +301,51 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                 </div>)
               }</div>
           </div> : '';
+      case "flex":
+        return this.result ?
+          <div class="discovery-flex-main">
+            {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
+            {this.result.description ? <p>{this.result.description}</p> : ''}
+            <div class="discovery-flex-wrapper">
+              {this.renderedTiles.map((t, i) =>
+                <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
+                     style={{
+                       backgroundColor: 'dodgerblue',
+                       // gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
+                       //        gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
+                       height: ((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5) + 'px',
+                       minHeight: '100%',
+                       width: 'calc(100% / ' + this.cols + ' * ' + t.w + ')'
+                     }}
+                >
+                  <div>
+                    {t.macro
+                      ? <discovery-tile url={t.endpoint || this.url}
+                                        type={t.type as ChartType}
+                                        chart-title={t.title}
+                                        debug={this.debug}
+                                        unit={t.unit}
+                                        id={'chart-' + i}
+                                        ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
+                                        vars={JSON.stringify(this.result.vars)}
+                                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                      >{t.macro + ' EVAL'}</discovery-tile>
+                      : <discovery-tile-result
+                        url={t.endpoint || this.url}
+                        result={DiscoveryDashboardComponent.sanitize(t.data)}
+                        type={t.type as ChartType}
+                        ref={(el) => this.addTile(el as HTMLDiscoveryTileResultElement, t, i)}
+                        unit={t.unit}
+                        id={'chart-' + i}
+                        options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                        debug={this.debug}
+                        chart-title={t.title}
+                      />
+                    }</div>
+                </div>)
+              }</div>
+          </div> : '';
+
       default:
         return '';
     }

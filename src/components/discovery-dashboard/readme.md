@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property         | Attribute         | Description | Type                     | Default       |
-| ---------------- | ----------------- | ----------- | ------------------------ | ------------- |
-| `autoRefresh`    | `auto-refresh`    |             | `number`                 | `-1`          |
-| `cellHeight`     | `cell-height`     |             | `number`                 | `220`         |
-| `cols`           | `cols`            |             | `number`                 | `12`          |
-| `dashboardTitle` | `dashboard-title` |             | `string`                 | `undefined`   |
-| `debug`          | `debug`           |             | `boolean`                | `false`       |
-| `options`        | `options`         |             | `Param \| string`        | `new Param()` |
-| `type`           | `type`            |             | `"dashboard" \| "scada"` | `'dashboard'` |
-| `url`            | `url`             |             | `string`                 | `undefined`   |
+| Property         | Attribute         | Description | Type                               | Default       |
+| ---------------- | ----------------- | ----------- | ---------------------------------- | ------------- |
+| `autoRefresh`    | `auto-refresh`    |             | `number`                           | `-1`          |
+| `cellHeight`     | `cell-height`     |             | `number`                           | `220`         |
+| `cols`           | `cols`            |             | `number`                           | `12`          |
+| `dashboardTitle` | `dashboard-title` |             | `string`                           | `undefined`   |
+| `debug`          | `debug`           |             | `boolean`                          | `false`       |
+| `options`        | `options`         |             | `Param \| string`                  | `new Param()` |
+| `type`           | `type`            |             | `"dashboard" \| "flex" \| "scada"` | `'dashboard'` |
+| `url`            | `url`             |             | `string`                           | `undefined`   |
 
 
 ## Events

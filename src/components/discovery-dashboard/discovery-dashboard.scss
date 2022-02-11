@@ -37,14 +37,14 @@
 
     .discovery-dashboard-wrapper {
       display: grid;
-      grid-gap: 10px;
+      grid-gap: var(--warp-view-dashboard-gap,10px);
 
       .discovery-dashboard-tile {
         width: 100%;
         border: var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
         box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
         overflow: visible;
-        background: var(--warp-view-tile-background);
+        background: var(--warp-view-tile-background, $w10-transparent);
 
         &.annotation, &.plot {
           height: 100% !important;
@@ -60,6 +60,20 @@
           margin-bottom: -20px;
         }
       }
+    }
+  }
+
+  .discovery-flex-main {
+    .discovery-flex-wrapper {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      min-width: 200px;
+      min-height: 500px;
+    }
+    .discovery-dashboard-tile {
+      flex-grow: 1;
+      margin: var(--warp-view-dashboard-gap,10px);
     }
   }
 

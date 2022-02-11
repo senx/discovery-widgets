@@ -133,3 +133,25 @@ CircularGaugeWithAutoRefreshAndColorChange.args = {
   }`,
   options: { ... new Param(), autoRefresh: 5}
 }
+
+export const CompassGauge = Usage.bind({});
+CompassGauge.args = {
+  ...InitialUsage.args,
+  title: 'My Compass',
+  unit: '°',
+  type: 'compass',
+  ws: `RAND 360 * ROUND`,
+  options: { ... new Param(), maxValue: 360}
+}
+
+export const GTSCompassGauge = Usage.bind({});
+GTSCompassGauge.args = {
+  ...InitialUsage.args,
+  title: 'My Compass',
+  unit: '',
+  type: 'compass',
+  ws: `@training/dataset0
+[ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW -1 ] FETCH`,
+  options: { ... new Param()}
+}
+

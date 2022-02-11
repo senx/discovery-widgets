@@ -23,7 +23,7 @@ export type ChartType =
   | 'display'
   | 'image'
   | 'map'
-  | 'gauge' | 'linear-gauge' | 'circle'
+  | 'gauge' | 'linear-gauge' | 'circle' | 'compass'
   | 'pie'
   | 'plot'
   | 'doughnut'
