@@ -26,9 +26,21 @@ export const InitialUsage = Usage.bind({});
 InitialUsage.args = {
   ...Usage.args,
   type: 'area',
-  ws: `1 4 <% DROP NEWGTS 'g' STORE
+  ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
+};
+
+export const InitialUsageWithRangeSlider = Usage.bind({});
+InitialUsageWithRangeSlider.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), showRangeSelector: true}
+};
+
+export const InitialUsageWithRangeSliderAndLegend = Usage.bind({});
+InitialUsageWithRangeSliderAndLegend.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), showRangeSelector: true, showLegend: true}
 };
 
 export const InitialUsageWithNanoSeconds = Usage.bind({});

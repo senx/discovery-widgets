@@ -148,7 +148,7 @@ export class DiscoveryLineComponent {
       grid: {
         left: 10,
         top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
-        bottom: !!this.innerOptions.showLegend ? 30 : 10,
+        bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (!!this.innerOptions.showRangeSelector? 40: 0),
         right: 10,
         containLabel: true
       },
@@ -193,7 +193,7 @@ export class DiscoveryLineComponent {
       },
       legend: {bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll'},
       dataZoom: [
-        {type: 'slider', height: '20px', show: !!this.innerOptions.showRangeSelector},
+        {type: 'slider', height: '20px', show: !!this.innerOptions.showRangeSelector, bottom: !!this.innerOptions.showLegend?30: 20},
         {type: 'inside'}
       ],
       series: []
