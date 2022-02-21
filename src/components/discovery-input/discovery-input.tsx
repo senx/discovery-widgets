@@ -53,8 +53,8 @@ export class DiscoveryInputComponent {
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
-  @State() value: string | number | number[] = '';
-  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' = 'text';
+  @State() value: string | number | number[] | string[] = '';
+  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label: string = 'Ok';
@@ -71,6 +71,7 @@ export class DiscoveryInputComponent {
   private root: HTMLDivElement;
   private flatpickrInstance: any;
   private autoCompleteJS: any;
+  private checkBoxes: HTMLDivElement;
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -224,6 +225,16 @@ export class DiscoveryInputComponent {
 
   private handleSelect(e) {
     this.selectedValue = e.target.value || e.detail;
+    if (this.type === 'input:multi' && e.target?.options) {
+      this.selectedValue = Array.from(e.target.options)
+        .filter((o: HTMLOptionElement) => o.selected)
+        .map((o: HTMLOptionElement) => o.value);
+    }
+    if (this.type === 'input:multi-cb' && this.checkBoxes) {
+      this.selectedValue = Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+        .filter((o: HTMLInputElement) => o.checked)
+        .map((o: HTMLInputElement) => o.value);
+    }
     if (!this.innerOptions.input?.showButton) {
       this.handleClick();
     }
@@ -282,6 +293,8 @@ export class DiscoveryInputComponent {
         })
         break;
       case "list":
+      case "multi":
+      case "multi-cb":
       case 'autocomplete':
         this.values = [];
         if (GTSLib.isArray(data) && data.length > 0) {
@@ -322,6 +335,24 @@ export class DiscoveryInputComponent {
     return (GTSLib.toISOString(parseInt(timestamp, 10), divider, this.innerOptions.timeZone) || '').replace('Z', '');
   }
 
+  private selectAll(e) {
+    if (this.type === 'input:multi-cb' && this.checkBoxes) {
+      Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+        .filter((o: HTMLInputElement) => !o.checked)
+        .forEach((o: HTMLInputElement) => o.checked = true);
+      this.handleSelect(e);
+    }
+  }
+
+  private selectNone(e) {
+    if (this.type === 'input:multi-cb' && this.checkBoxes) {
+      Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+        .filter((o: HTMLInputElement) => o.checked)
+        .forEach((o: HTMLInputElement) => o.checked = false);
+      this.handleSelect(e);
+    }
+  }
+
   private getInput() {
     switch (this.subType) {
       case "text":
@@ -355,6 +386,36 @@ export class DiscoveryInputComponent {
         return <select class="discovery-input" onInput={e => this.handleSelect(e)}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
         </select>
+      case "multi":
+        return <select class="discovery-input" onInput={e => this.handleSelect(e)} multiple>
+          {this.values.map(v => (
+            <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
+        </select>
+      case "multi-cb":
+        return <div class="multi-cb-wrapper">
+          <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el as HTMLDivElement}>
+            {this.values.map(v => (
+              <div class="multi-cb-item-wrapper">
+                <input type="checkbox" value={v.k}
+                       checked={(this.value as string[] || []).includes(v.k)}
+                       onInput={e => this.handleSelect(e)}
+                       name={v.v}/>
+                <label htmlFor={v.v}>{v.v}</label>
+              </div>
+            ))}
+          </div>
+          <div class="multi-cb-buttons-wrapper">
+            <div>
+              <button class="discovery-btn secondary" type="button" onClick={e => this.selectAll(e)}>All</button>
+              <button class="discovery-btn secondary" type="button" onClick={e => this.selectNone(e)}>None</button>
+            </div>
+            {this.innerOptions.input?.showButton ?
+              <div class="discovery-input-btn-wrapper">
+                <button class="discovery-btn" disabled={this.disabled} type="button"
+                        onClick={this.handleClick}>{this.label}</button>
+              </div> : ''}
+          </div>
+        </div>
       default:
         return '';
     }
@@ -366,7 +427,7 @@ export class DiscoveryInputComponent {
       <div ref={el => this.root = el}>
         <div class="discovery-input-wrapper">
           {this.getInput()}
-          {this.innerOptions.input?.showButton ?
+          {this.innerOptions.input?.showButton && this.type !== 'input:multi-cb' ?
             <div class="discovery-input-btn-wrapper">
               <button
                 class="discovery-btn"

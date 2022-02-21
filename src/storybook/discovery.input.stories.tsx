@@ -132,6 +132,43 @@ ListInputWithCustomStyle.args = {
   ...ListInputInitialUsage.args
 }
 
+export const MultiInputInitialUsage = Usage.bind({});
+MultiInputInitialUsage.args = {
+  ...Usage.args,
+  type: 'input:multi',
+  ws: `{
+  'data' [ "admiring" "adoring" "agitated" "amazing" "angry" "awesome" "backstabbing" "berserk" "big" "boring" "clever" "cocky" "compassionate" "condescending" "cranky" "desperate" "determined" "distracted" "dreamy" "drunk" "ecstatic" "elated" "elegant" "evil" "fervent" "focused" "furious" "gigantic" "gloomy" "goofy" "grave" "happy" "high" "hopeful" "hungry" "insane" "jolly" "jovial" "kickass" "lonely" "loving" "mad" "modest" "naughty" "nauseous" "nostalgic" "pedantic" "pensive" "prickly" "reverent" "romantic" "sad" "serene" "sharp" "sick" "silly" "sleepy" "small" "stoic" "stupefied" "suspicious" "tender" "thirsty" "tiny" "trusting"  ]
+  'globalParams' { 'input' { 'value' [ 'cranky' 'angry' ] } }
+  'events' [
+    { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
+  ] }`
+};
+
+export const MultiInputWithButton = Usage.bind({});
+MultiInputWithButton.args = {
+  ...MultiInputInitialUsage.args,
+  options: {...new Param(), input: {showButton: true}}
+};
+
+export const MultiCBInputInitialUsage = Usage.bind({});
+MultiCBInputInitialUsage.args = {
+  ...Usage.args,
+  type: 'input:multi-cb',
+  ws: `{
+  'data' [ "admiring" "adoring" "agitated" "amazing" "angry" "awesome" "backstabbing" "berserk" "big" "boring" "clever" "cocky" "compassionate" "condescending" "cranky" "desperate" "determined" "distracted" "dreamy" "drunk" "ecstatic" "elated" "elegant" "evil" "fervent" "focused" "furious" "gigantic" "gloomy" "goofy" "grave" "happy" "high" "hopeful" "hungry" "insane" "jolly" "jovial" "kickass" "lonely" "loving" "mad" "modest" "naughty" "nauseous" "nostalgic" "pedantic" "pensive" "prickly" "reverent" "romantic" "sad" "serene" "sharp" "sick" "silly" "sleepy" "small" "stoic" "stupefied" "suspicious" "tender" "thirsty" "tiny" "trusting"  ]
+  'globalParams' { 'input' { 'value' [ 'cranky' 'angry' ] } }
+  'events' [
+    { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
+  ] }`
+};
+
+export const MultiCBInputWithButton = Usage.bind({});
+MultiCBInputWithButton.args = {
+  ...MultiCBInputInitialUsage.args,
+  title: "Checkboxes selection",
+  options: {...new Param(), input: {showButton: true}}
+};
+
 export const AutocompleteInputInitialUsage = Usage.bind({});
 AutocompleteInputInitialUsage.args = {
   ...Usage.args,

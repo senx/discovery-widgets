@@ -21,6 +21,8 @@
 :host {
   display: block;
   position: relative;
+  height: 100%;
+  width: 100%;
 
   input[type=text].discovery-input,
   input[type=password].discovery-input,
@@ -67,6 +69,31 @@
     }
   }
 
+  .multi-cb-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+
+    .multi-cb-list-wrapper {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      margin-right: -10px;
+      min-height: 0;
+    }
+
+    .multi-cb-buttons-wrapper {
+      padding-top: 5px;
+    }
+
+    .multi-cb-buttons-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
   button.discovery-btn {
     margin: .25rem .125rem;
     display: inline-block;
@@ -83,5 +110,11 @@
     background-color: var(--warp-view-button-bg-color, $w10-blue);
     min-width: var(--warp-view-button-width, auto);
     border-radius: var(--warp-view-button-border-radius, 0.25rem);
+
+    &.secondary {
+      border: 1px solid var(--warp-view-button-secondary-border-color, $w10-grey);
+      background-color: var(--warp-view-button-secondary-bg-color, $w10-grey);
+      color: var(--warp-view-button-secondary-label-color, $w10-white);
+    }
   }
 }

@@ -328,6 +328,8 @@ export class DiscoveryTileResultComponent {
       case 'input:slider':
       case 'input:date':
       case 'input:date-range':
+      case 'input:multi':
+      case 'input:multi-cb':
         return <discovery-input
           result={this.innerResult}
           type={this.innerType}
