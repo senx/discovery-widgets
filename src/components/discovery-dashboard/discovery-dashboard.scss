@@ -64,18 +64,50 @@
   }
 
   .discovery-flex-main {
+    height: 100%;
+    text-align: center;
+    color: var(--warp-view-font-color, $w10-charcoal);
+    background: var(--warp-view-dashboard-background, $w10-transparent);
+    background-size: cover;
+    padding: 10px;
+    width: calc(100% - 20px);
+
     .discovery-flex-wrapper {
-      display: flex;
+      display: inline-flex;
       flex-direction: row;
       flex-wrap: wrap;
       min-width: 200px;
       min-height: 500px;
+      justify-content: start;
+      width: 100%;
     }
 
     .discovery-dashboard-tile {
       flex-grow: 1;
-      margin: var(--warp-view-dashboard-gap, 10px);
+      width: 100%;
+      overflow: visible;
+      padding: var(--warp-view-dashboard-gap, 10px);
+      & > div {
+        width: 100%;
+        height: 100%;
+        border: var(--warp-view-tile-border, .1rem solid rgba(0, 0, 0, .075)) !important;
+        box-shadow: var(--warp-view-tile-shadow, 0 0.125rem 0.25rem rgb(0 0 0 / 8%)) !important;
+      }
     }
+
+    @media (max-width: 800px) {
+      .discovery-dashboard-tile {
+        max-width: calc(50% - 25px) !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .discovery-dashboard-tile {
+        max-width: 100% !important;
+      }
+    }
+
+
   }
 
   .discovery-scada-main {

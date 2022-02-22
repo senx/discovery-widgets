@@ -923,41 +923,49 @@ differentSizesAndPositionAndCustomCellHeight.args = {
       {
         'type' 'display'
         'x' 0 'y' 0 'w' 1 'h' 1
+        'title' '1'
         'data' '1x1'
       }
       {
         'type' 'display'
         'x' 1 'y' 0 'w' 2 'h' 2
+        'title' '2'
         'data' '2x2'
       }
       {
         'type' 'display'
         'x' 3 'y' 0 'w' 1 'h' 2
+        'title' '3'
         'data' '1x2'
       }
       {
         'type' 'display'
         'x' 4 'y' 1 'w' 2 'h' 1
+        'title' '4'
         'data' '2x1'
       }
       {
         'type' 'display'
         'x' 6 'y' 0 'w' 6 'h' 4
+        'title' '5'
         'data' '6x4'
       }
       {
         'type' 'display'
         'x' 0 'y' 1 'w' 1 'h' 1
+        'title' '6'
         'data' '1x1'
       }
       {
         'type' 'display'
         'x' 1 'y' 2 'w' 2 'h' 2
+        'title' '7'
         'data' '2x2'
       }
       {
         'type' 'display'
         'x' 3 'y' 2 'w' 1 'h' 2
+        'title' '8'
         'data' '1x2'
       }
     ]
@@ -1328,4 +1336,26 @@ SpecialChars.args = {
     }
   ]
 }`
+}
+
+// @ts-ignore
+const FlexTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div style="width: 100%;min-height: 500px">
+<discovery-dashboard url="${url}"
+type="flex"
+dashboard-title="${title ? title : ''}"
+@draw="${event => console.error('foo', 'bar', event)}"
+cols="${cols}" cell-height="${cellHeight}"
+debug options='${JSON.stringify(options)}'
+>${ws}</discovery-dashboard>
+</div>`;
+
+export const Responsive = FlexTemplate.bind({});
+Responsive.args = {
+  ...differentSizesAndPositionAndCustomCellHeight.args,
+  type: 'flex'
+}
+export const ResponsiveWhithCharts = FlexTemplate.bind({});
+ResponsiveWhithCharts.args = {
+  ...Usage.args,
+  type: 'flex'
 }

@@ -165,6 +165,7 @@ export class DiscoveryTileResultComponent {
 
   componentDidLoad() {
     this.parseResult();
+    elementResizeEvent.unbind(this.tileElem);
     elementResizeEvent(this.tileElem, () => this.resize());
   }
 

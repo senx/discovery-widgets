@@ -309,38 +309,34 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               {this.renderedTiles.map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
                      style={{
-                       backgroundColor: 'dodgerblue',
-                       // gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
-                       //        gridRow: (t.y + 1) + ' / ' + (t.y + t.h + 1),
                        height: ((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5) + 'px',
                        minHeight: '100%',
-                       width: 'calc(100% / ' + this.cols + ' * ' + t.w + ')'
+                       maxWidth: 'calc(100% / ' + this.cols + ' * ' + t.w + ')'
                      }}
-                >
-                  <div>
-                    {t.macro
-                      ? <discovery-tile url={t.endpoint || this.url}
-                                        type={t.type as ChartType}
-                                        chart-title={t.title}
-                                        debug={this.debug}
-                                        unit={t.unit}
-                                        id={'chart-' + i}
-                                        ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
-                                        vars={JSON.stringify(this.result.vars)}
-                                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
-                      >{t.macro + ' EVAL'}</discovery-tile>
-                      : <discovery-tile-result
-                        url={t.endpoint || this.url}
-                        result={DiscoveryDashboardComponent.sanitize(t.data)}
-                        type={t.type as ChartType}
-                        ref={(el) => this.addTile(el as HTMLDiscoveryTileResultElement, t, i)}
-                        unit={t.unit}
-                        id={'chart-' + i}
-                        options={DiscoveryDashboardComponent.merge(this.options, t.options)}
-                        debug={this.debug}
-                        chart-title={t.title}
-                      />
-                    }</div>
+                ><div>
+                  {t.macro
+                    ? <discovery-tile url={t.endpoint || this.url}
+                                      type={t.type as ChartType}
+                                      chart-title={t.title}
+                                      debug={this.debug}
+                                      unit={t.unit}
+                                      id={'chart-' + i}
+                                      ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
+                                      vars={JSON.stringify(this.result.vars)}
+                                      options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                    >{t.macro + ' EVAL'}</discovery-tile>
+                    : <discovery-tile-result
+                      url={t.endpoint || this.url}
+                      result={DiscoveryDashboardComponent.sanitize(t.data)}
+                      type={t.type as ChartType}
+                      ref={(el) => this.addTile(el as HTMLDiscoveryTileResultElement, t, i)}
+                      unit={t.unit}
+                      id={'chart-' + i}
+                      options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                      debug={this.debug}
+                      chart-title={t.title}
+                    />
+                  }</div>
                 </div>)
               }</div>
           </div> : '';
