@@ -85,16 +85,17 @@ Usage.args = {
          ]
        }
         {
-         'type' 'line'
+         'type' 'tabular'
          'title' 'Title'
          'w' 3 'h' 1 'x' 5 'y' 0
          'endpoint' 'https://sandbox.senx.io/api/v0/exec'
          'macro' <%
-           NEWGTS 'macro' RENAME
-           0.0 'v' STORE
-           1 500
-           <% 1 s * NOW SWAP - NaN NaN NaN $v RAND 0.5 - + DUP 'v' STORE ADDVALUE %>
-           FOR
+           NEWGTS 'serie' RENAME 'g' STORE
+  1 16 <%
+    'ts' STORE
+    NOW $ts STU * 50.0 / - 'ts' STORE
+    $g $ts NaN NaN NaN $ts 50 * STU / 60.0 / SIN ADDVALUE DROP %> FOR
+  $g
          %>
        }
         {

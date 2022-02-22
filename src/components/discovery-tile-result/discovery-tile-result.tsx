@@ -171,7 +171,7 @@ export class DiscoveryTileResultComponent {
 
   // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
-    elementResizeEvent.unbind(this.el);
+    elementResizeEvent.unbind(this.tileElem);
   }
 
   handleZoom(event: CustomEvent<{ start: number, end: number }>) {

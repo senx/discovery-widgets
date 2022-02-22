@@ -31,8 +31,8 @@ export class DiscoveryTabular {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
-  @Prop() width: number;
-  @Prop() height: number;
+  @Prop({mutable: true}) width: number;
+  @Prop({mutable: true}) height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string;
 

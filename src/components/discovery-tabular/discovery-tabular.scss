@@ -18,9 +18,14 @@
 
   .tabular-wrapper {
     width: 100%;
-    height: calc(100% - 20px);
-    padding: 10px;
+    height: 100%;
+    position: relative;
     overflow: auto;
-    position: absolute;
+
+    discovery-pageable {
+      position: absolute;
+      width: 100%;
+      top: 0;
+    }
   }
 }
