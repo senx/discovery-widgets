@@ -269,7 +269,10 @@ export class DiscoveryBarComponent {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
         }
       },
-      legend: {bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll'},
+      legend: {
+        bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
+        textStyle: {color: Utils.getLabelColor(this.el)}
+      },
       xAxis: {
         show: !this.innerOptions.hideXAxis,
         type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'value' : 'category',
@@ -288,7 +291,7 @@ export class DiscoveryBarComponent {
           }
         },
         min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? GTSLib.toISOString(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone) : undefined,
-        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? GTSLib.toISOString(this.innerOptions.bounds.maxDate , this.divider, this.innerOptions.timeZone) : undefined,
+        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? GTSLib.toISOString(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone) : undefined,
       },
       yAxis: {
         name: this.unit || this.innerOptions.unit,

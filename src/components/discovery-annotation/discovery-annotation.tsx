@@ -259,7 +259,10 @@ export class DiscoveryAnnotation {
           }
         }
       },
-      legend: {bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll'},
+      legend: {
+        bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
+        textStyle: {color: Utils.getLabelColor(this.el)}
+      },
       dataZoom: [
         this.innerOptions.showRangeSelector ? {
           type: 'slider',
