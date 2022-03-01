@@ -358,7 +358,7 @@ export class DiscoveryInputComponent {
     console.log(e.target.value, e.detail)
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       this.values = this.values.map(v => {
-        return {...v, h: !new RegExp('.*' + (e.target.value || e.detail) + '.*').test(v.v)}
+        return {...v, h: !new RegExp('.*' + (e.target.value || e.detail || '') + '.*', 'gi').test(v.v)}
       });
     }
   }
