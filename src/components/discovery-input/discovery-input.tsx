@@ -58,8 +58,9 @@ export class DiscoveryInputComponent {
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label: string = 'Ok';
-
   @State() selectedValue: string | string[] | any;
+  @State() values = [];
+
   private defOptions: Param = new Param();
   private innerOptions: Param = new Param();
   private LOG: Logger;
@@ -67,7 +68,6 @@ export class DiscoveryInputComponent {
   private disabled: boolean = false;
   private min = 0;
   private max = 100;
-  private values = [];
   private root: HTMLDivElement;
   private flatpickrInstance: any;
   private autoCompleteJS: any;
@@ -304,7 +304,7 @@ export class DiscoveryInputComponent {
         }
         if (typeof this.values[0] === 'string' || typeof this.values[0] === 'number') {
           this.values = this.values.map(s => {
-            return {k: s, v: s};
+            return {k: s, v: s, h: false};
           });
         }
         this.value = (this.innerOptions.input || {value: ''}).value || '';
@@ -353,6 +353,16 @@ export class DiscoveryInputComponent {
     }
   }
 
+  private handleFilter(e) {
+    e.stopPropagation();
+    console.log(e.target.value, e.detail)
+    if (this.type === 'input:multi-cb' && this.checkBoxes) {
+      this.values = this.values.map(v => {
+        return {...v, h: !new RegExp('.*' + (e.target.value || e.detail) + '.*').test(v.v)}
+      });
+    }
+  }
+
   private getInput() {
     switch (this.subType) {
       case "text":
@@ -393,16 +403,20 @@ export class DiscoveryInputComponent {
         </select>
       case "multi-cb":
         return <div class="multi-cb-wrapper">
-          <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el as HTMLDivElement}>
-            {this.values.map(v => (
-              <div class="multi-cb-item-wrapper">
+          <div class="multi-cb-layout">
+            {this.innerOptions.input?.showFilter
+              ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)}/>
+              : ''
+            }
+            <div  class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el as HTMLDivElement}>
+              {this.values.map(v => (<div class={{"multi-cb-item-wrapper": true, hidden: v.h}}>
                 <input type="checkbox" value={v.k}
                        checked={(this.value as string[] || []).includes(v.k)}
                        onInput={e => this.handleSelect(e)}
                        name={v.v}/>
                 <label htmlFor={v.v}>{v.v}</label>
-              </div>
-            ))}
+              </div>))}
+            </div>
           </div>
           <div class="multi-cb-buttons-wrapper">
             <div>

@@ -166,7 +166,7 @@ export const MultiCBInputWithButton = Usage.bind({});
 MultiCBInputWithButton.args = {
   ...MultiCBInputInitialUsage.args,
   title: "Checkboxes selection",
-  options: {...new Param(), input: {showButton: true}}
+  options: {...new Param(), input: {showButton: true, showFilter: true}}
 };
 
 export const AutocompleteInputInitialUsage = Usage.bind({});

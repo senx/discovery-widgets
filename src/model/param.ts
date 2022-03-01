@@ -91,7 +91,8 @@ export class Param {
     stepCount?: number,
     horizontal?: boolean,
     progress?: boolean,
-    showTicks?: boolean
+    showTicks?: boolean,
+    showFilter?: boolean
   }
   map?: MapParams;
   calendar?: {

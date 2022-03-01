@@ -24,6 +24,10 @@
   height: 100%;
   width: 100%;
 
+  .hidden {
+    display: none;
+  }
+
   input[type=text].discovery-input,
   input[type=password].discovery-input,
   input[type=date].discovery-input,
@@ -39,6 +43,12 @@
     background-color: var(--warp-view-input-bg-color, $w10-white);
     vertical-align: middle;
     width: 100%;
+    height: 34px !important;
+    padding: 1px 5px;
+  }
+
+  select.discovery-input {
+    height: 38px !important;
   }
 
   .flatpickr-wrapper {
@@ -76,11 +86,18 @@
     position: absolute;
     width: 100%;
 
-    .multi-cb-list-wrapper {
+    .multi-cb-layout {
       flex: 1 1 auto;
-      overflow-y: auto;
-      margin-right: -10px;
       min-height: 0;
+      padding-right: 17px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .multi-cb-list-wrapper {
+      overflow-y: auto;
+      height: 100%;
+      margin-right: -15px;
     }
 
     .multi-cb-buttons-wrapper {
