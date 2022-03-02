@@ -155,7 +155,10 @@ export class DiscoveryCalendar {
         titles.push({
           text: GTSLib.serializeGtsMetadata(gts),
           left: 'center',
-          textStyle: {height: 20, fontSize: 12},
+          textStyle: {
+            height: 20, fontSize: 12,
+            color: Utils.getLabelColor(this.el)
+          },
           top: this.CAL_SIZE * cal + seriesIndex * 20,
         });
         // Find min/max
@@ -182,10 +185,12 @@ export class DiscoveryCalendar {
             cellSize: ['auto', 15],
             dayLabel: {
               firstDay: this.innerOptions.calendar?.firstDay || 0,
-              nameMap:  this.innerOptions.calendar?.dayLabel
+              nameMap: this.innerOptions.calendar?.dayLabel,
+              color: Utils.getLabelColor(this.el)
             },
             monthLabel: {
-              nameMap:  this.innerOptions.calendar?.monthLabel
+              nameMap: this.innerOptions.calendar?.monthLabel,
+              color: Utils.getLabelColor(this.el)
             }
           });
           series.push({
@@ -199,7 +204,7 @@ export class DiscoveryCalendar {
         seriesIndex++;
       }
     }
-    this.height = this.CAL_SIZE * cal + titles.length * 20 + 40 ;
+    this.height = this.CAL_SIZE * cal + titles.length * 20 + 40;
     if (!!this.myChart) {
       this.myChart.resize({
         height: this.height
@@ -217,7 +222,14 @@ export class DiscoveryCalendar {
         axisPointer: {
           type: 'shadow'
         },
-        backgroundColor: 'rgba(255, 255, 255, 0.8)'
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        formatter: (params) => {
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${params.value[0]}</div>
+            ${params.marker}
+            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params.seriesName}</span>
+            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">
+            ${params.value[1]}</span>`;
+        }
       },
       toolbox: {
         show: this.innerOptions.showControls,

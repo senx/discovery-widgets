@@ -16,7 +16,7 @@
 
 import tile, {Usage} from './discovery.tile.stories';
 import {Param} from "../model/param";
-import {HeatMaps} from "../utils/color-lib";
+import {Colors, HeatMaps} from "../utils/color-lib";
 
 export default {
   ...tile,
@@ -92,4 +92,30 @@ RealData.args = {
       $labels RELABEL // put labels
       2 ->LIST // put both GTS in a list
       %> LMAP`
+};
+
+export const WithCustomStyle = ({url, ws, language, options, unit, title, type}) => `
+<div style="height: 600px;width: 100%;min-height: 600px;background-color: #404040;">
+<style>
+:root {
+    --warp-view-chart-grid-color: #35b779;
+    --warp-view-chart-label-color: #35b779;
+   --warp-view-font-color: white;
+    --warp-view-bg-color: #1C1E25;
+    }
+</style>
+<div class="card" style="height: 100%;width: 100%;min-height: 100%;background-color: #404040">
+      <div class="card-body">
+          <discovery-tile url="${url}" type="${type}" language="${language}"
+          unit="${unit || ''}"
+          chart-title="${title || ''}"
+          @draw="${event => console.error('foo', 'bar', event)}"
+          debug options='${JSON.stringify(options)}'
+          >${ws}</discovery-tile>
+      </div>
+  </div>
+</div>`;
+WithCustomStyle.args = {
+  ...InitialUsage.args,
+  options: {...Usage.args.options, scheme: Colors.ATLANTIS},
 };

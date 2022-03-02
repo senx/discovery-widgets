@@ -237,9 +237,7 @@ export class DiscoveryBarComponent {
       },
       tooltip: {
         trigger: 'axis',
-        axisPointer: {
-          type: 'shadow'
-        },
+        axisPointer: {type: 'shadow'},
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
