@@ -183,7 +183,12 @@ export class DiscoveryCalendar {
             top: this.CAL_SIZE * cal + (seriesIndex + 1) * 20 + 20,
             range: currentRange,
             cellSize: ['auto', 15],
-            itemStyle: { color: 'transparent', borderWidth: 0 },
+            itemStyle: {
+              color: 'transparent',
+              borderWidth: 1,
+              borderColor: ColorLib.transparentize(Utils.getGridColor(this.el), 0.5)
+            },
+            splitLine: {lineStyle: {width: 2, color: Utils.getGridColor(this.el)}},
             dayLabel: {
               firstDay: this.innerOptions.calendar?.firstDay || 0,
               nameMap: this.innerOptions.calendar?.dayLabel,
