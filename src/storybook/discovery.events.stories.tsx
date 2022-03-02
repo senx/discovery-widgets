@@ -322,14 +322,15 @@ UsageWithActionButtons.args = {
           %> } %>
        }
        {
-         'type' 'button'
+         'type' 'input:autocomplete'
          'title' 'Popup emitter'
          'options' {
+         'input' { 'showButton' true }
           'button' { 'label' 'Macro' }
          }
          'w' 2 'h' 1 'x' 2 'y' 1
-         'macro' <% { 'data' <%
-            { 'data' ''
+         'macro' <%
+         { 'data' [ "admiring" "adoring" "agitated" "amazing" "angry" "awesome" "backstabbing" "berserk" "big" "boring" "clever" "cocky" "compassionate" "condescending" "cranky" "desperate" "determined" "distracted" "dreamy" "drunk" "ecstatic" "elated" "elegant" "evil" "fervent" "focused" "furious" "gigantic" "gloomy" "goofy" "grave" "happy" "high" "hopeful" "hungry" "insane" "jolly" "jovial" "kickass" "lonely" "loving" "mad" "modest" "naughty" "nauseous" "nostalgic" "pedantic" "pensive" "prickly" "reverent" "romantic" "sad" "serene" "sharp" "sick" "silly" "sleepy" "small" "stoic" "stupefied" "suspicious" "tender" "thirsty" "tiny" "trusting"  ]
              'events' [
                 { 'tags' [ 'popup' ] 'type' 'popup'
                   'value' {
@@ -345,8 +346,8 @@ UsageWithActionButtons.args = {
                    }
                 }
                ]
-             }
-          %> } %>
+               } %>
+
        }
 
        {

@@ -450,7 +450,7 @@ export class DiscoveryTileResultComponent {
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel)?.events || [])
         .filter(e => !!e.value)
-        .filter(e => e.type !== 'zoom' && e.type !== 'margin')
+        .filter(e => e.type !== 'zoom' && e.type !== 'margin' && e.type !== 'popup')
         .forEach(e => {
           if (this.LOG) {
             this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
