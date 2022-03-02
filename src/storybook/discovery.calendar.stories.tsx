@@ -117,5 +117,5 @@ export const WithCustomStyle = ({url, ws, language, options, unit, title, type})
 </div>`;
 WithCustomStyle.args = {
   ...InitialUsage.args,
-  options: {...Usage.args.options, scheme: Colors.ATLANTIS},
+  options: {...Usage.args.options, scheme: Colors.MATRIX},
 };

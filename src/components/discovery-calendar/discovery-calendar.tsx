@@ -183,6 +183,7 @@ export class DiscoveryCalendar {
             top: this.CAL_SIZE * cal + (seriesIndex + 1) * 20 + 20,
             range: currentRange,
             cellSize: ['auto', 15],
+            itemStyle: { color: 'transparent', borderWidth: 0 },
             dayLabel: {
               firstDay: this.innerOptions.calendar?.firstDay || 0,
               nameMap: this.innerOptions.calendar?.dayLabel,
@@ -191,7 +192,8 @@ export class DiscoveryCalendar {
             monthLabel: {
               nameMap: this.innerOptions.calendar?.monthLabel,
               color: Utils.getLabelColor(this.el)
-            }
+            },
+            yearLabel: {color: Utils.getLabelColor(this.el)}
           });
           series.push({
             type: 'heatmap',
