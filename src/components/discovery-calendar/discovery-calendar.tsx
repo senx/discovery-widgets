@@ -164,7 +164,7 @@ export class DiscoveryCalendar {
         // Find min/max
         (gts.v || []).forEach(v => {
           const value = v[v.length - 1];
-          const d = GTSLib.toISOString(v[0], this.divider, this.innerOptions.timeZone).split('T')[0];
+          const d = GTSLib.toISOString(v[0], this.divider, this.innerOptions.timeZone, undefined);
           const y = d.split('-')[0];
           dataStruct[y] = dataStruct[y] || {}
           // Aggregation
@@ -231,7 +231,12 @@ export class DiscoveryCalendar {
         },
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         formatter: (params) => {
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${params.value[0]}</div>
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
+            GTSLib.toISOString(
+              GTSLib.toTimestamp(params.value[0], this.divider, this.innerOptions.timeZone),
+              this.divider, this.innerOptions.timeZone,
+              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined
+            ).replace('T', ' ').replace('Z', '')}</div>
             ${params.marker}
             <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">

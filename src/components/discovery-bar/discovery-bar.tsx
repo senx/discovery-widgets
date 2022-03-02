@@ -197,7 +197,9 @@ export class DiscoveryBarComponent {
           data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
             let ts: number | string = d[0];
             if (this.innerOptions.timeMode === 'date' && !this.innerOptions.fullDateDisplay) {
-              ts = GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone).replace('T', '\n').replace('Z', '');
+              ts = GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone,
+                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
+                .replace('T', '\n').replace('Z', '');
             }
             if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
               return [d[d.length - 1], ts];
@@ -281,15 +283,22 @@ export class DiscoveryBarComponent {
         },
         axisLabel: {
           color: Utils.getLabelColor(this.el),
-          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone) : undefined
+          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) : undefined
         },
         axisTick: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
           }
         },
-        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate ? GTSLib.toISOString(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone) : undefined,
-        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ? GTSLib.toISOString(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone) : undefined,
+        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
+          ? GTSLib.toISOString(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
+          : undefined,
+        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate
+          ? GTSLib.toISOString(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
+          : undefined,
       },
       yAxis: {
         name: this.unit || this.innerOptions.unit,
@@ -444,7 +453,9 @@ export class DiscoveryBarComponent {
   async setFocus(regexp: string, ts: number) {
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
-      ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone).replace('T', '\n').replace('Z', '')
+      ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone,
+        this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
+        .replace('T', '\n').replace('Z', '')
       : ts;
     let seriesIndex = 0;
     let dataIndex = 0;

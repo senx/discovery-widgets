@@ -549,7 +549,8 @@ export class DiscoveryMapComponent {
     if (!!positionData) {
       let date;
       if (ts && !this.innerOptions.timeMode || this.innerOptions.timeMode !== 'timestamp') {
-        date = (GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone) || '')
+        date = (GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone,
+          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
           .replace('Z', this.innerOptions.timeZone === 'UTC' ? 'Z' : '');
       }
       let content = '';

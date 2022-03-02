@@ -142,10 +142,12 @@ export class DiscoveryInputComponent {
           dateFormat: 'Y/m/d H:i:S'
         } as any;
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
-          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone);
+          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         if (!!this.innerOptions.input && !!this.innerOptions.input.max) {
-          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, this.innerOptions.timeZone);
+          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
         this.flatpickrInstance.config.onChange.push((d, s) => {
@@ -332,7 +334,8 @@ export class DiscoveryInputComponent {
 
   private formatDateTime(timestamp: string): string {
     const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    return (GTSLib.toISOString(parseInt(timestamp, 10), divider, this.innerOptions.timeZone) || '').replace('Z', '');
+    return (GTSLib.toISOString(parseInt(timestamp, 10), divider, this.innerOptions.timeZone,
+      this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '').replace('Z', '');
   }
 
   private selectAll(e) {
@@ -355,7 +358,6 @@ export class DiscoveryInputComponent {
 
   private handleFilter(e) {
     e.stopPropagation();
-    console.log(e.target.value, e.detail)
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       this.values = this.values.map(v => {
         return {...v, h: !new RegExp('.*' + (e.target.value || e.detail || '') + '.*', 'gi').test(v.v)}

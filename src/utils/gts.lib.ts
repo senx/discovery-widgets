@@ -17,8 +17,10 @@
 import {DataModel} from '../model/dataModel';
 import {GTS} from '../model/GTS';
 import {Logger} from './logger';
-import moment from 'moment-timezone';
 import {JsonLib} from "./jsonLib";
+// @ts-ignore
+import moment from 'moment/min/moment-with-locales';
+import {tz} from 'moment-timezone'
 
 // @dynamic
 export class GTSLib {
@@ -239,7 +241,7 @@ export class GTSLib {
     if (!GTSLib.isGts(gts)) {
       return false;
     }
-    if(gts.v.length === 0) return true;
+    if (gts.v.length === 0) return true;
     // We look at the first non-null value, if it's a String or Boolean it's an annotation GTS,
     // if it's a number it's a GTS to plot
     return (gts.v || []).some(v => {
@@ -354,17 +356,23 @@ export class GTSLib {
     return display;
   };
 
-  static toISOString(timestamp: number, divider: number, timeZone: string) {
+  static toISOString(timestamp: number, divider: number, timeZone: string, timeFormat: string) {
+    const locale = window.navigator['userLanguage'] || window.navigator.language;
+    moment.updateLocale(locale.split('-')[0], {});
     if (timeZone !== 'UTC') {
-      return moment.tz(timestamp / divider, timeZone).format();
+      return tz(timestamp / divider, timeZone).format(timeFormat);
     } else {
-      return moment(timestamp / divider).toISOString();
+      const m = !!timeFormat
+        ? moment(timestamp / divider).format(timeFormat)
+        : moment(timestamp / divider).toISOString();
+      console.log(m)
+      return m;
     }
   }
 
   static toTimestamp(date: string, divider: number, timeZone: string) {
     if (timeZone !== 'UTC') {
-      return moment.tz(date, timeZone).utc().valueOf() * divider;
+      return tz(date, timeZone).utc().valueOf() * divider;
     } else {
       return moment.utc(date).valueOf() * divider;
     }

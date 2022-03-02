@@ -159,7 +159,10 @@ export class DiscoveryTabular {
   }
 
   formatDate(date: number): string {
-    return (this.options as Param).timeMode === 'date' ? GTSLib.toISOString(date, this.divider, (this.options as Param).timeZone) : date.toString();
+    return (this.options as Param).timeMode === 'date'
+      ? GTSLib.toISOString(date, this.divider, (this.options as Param).timeZone,
+        (this.options as Param).fullDateDisplay ? (this.options as Param).timeFormat : undefined)
+      : date.toString();
   }
 
   render() {

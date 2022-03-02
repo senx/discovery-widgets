@@ -23,6 +23,7 @@ export class Param {
   fillColor?: string;
   fontColor?: string;
   timeZone = 'UTC';
+  timeFormat?: string;
   unit?: string;
   type?: ChartType;
   showRangeSelector?: boolean = false;

@@ -31,6 +31,13 @@ InitialUsage.args = {
   1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
   $g %> FOR`
 };
+
+
+export const WithFullDateFormatAndCustomFormat = Usage.bind({});
+WithFullDateFormatAndCustomFormat.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), timeFormat: 'ddd Qo MMM YY HH:mm:ss', fullDateDisplay: true}
+};
 export const withNaN = Usage.bind({});
 withNaN.args = {
   ...InitialUsage.args,

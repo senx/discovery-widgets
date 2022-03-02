@@ -296,9 +296,7 @@ export class DiscoveryGauge {
             : (radius * (floor - 1) - radius / 2 + (floor > 2 ? 15 : 5))) + '%'
         ]
       });
-      console.log(floor)
     });
-    console.log(series)
     return {
       grid: {
         left: 10, top: 10, bottom: 10, right: 10,

@@ -114,7 +114,9 @@ export class DiscoverySlider {
     const format = {
       to: v => {
         return this.innerOptions.timeMode === 'date'
-          ? GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone)?.replace('T', '<br />').replace('Z', '')
+          ? GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
+            ?.replace('T', '<br />').replace('Z', '')
           : v;
       },
       from: Number
@@ -127,7 +129,7 @@ export class DiscoverySlider {
     return {
       format,
       start,
-      connect: this.innerOptions.input?.progress || this.progress? 'lower' : false,
+      connect: this.innerOptions.input?.progress || this.progress ? 'lower' : false,
       orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
       tooltips: true,
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,

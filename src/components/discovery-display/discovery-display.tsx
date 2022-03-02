@@ -103,6 +103,7 @@ export class DiscoveryDisplayComponent {
     this.flexFont();
   }
 
+  // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return await domtoimage.toPng(this.wrapper);
@@ -168,10 +169,12 @@ export class DiscoveryDisplayComponent {
     }
     switch (this.innerOptions.timeMode) {
       case 'date':
-        display = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone);
+        display = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
+          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         break;
       case 'duration':
-        const start = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone);
+        const start = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
+          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         display = this.displayDuration(dayjs(start));
         break;
       case 'custom':

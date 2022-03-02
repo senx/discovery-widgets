@@ -191,7 +191,10 @@ export class DiscoveryAnnotation {
       tooltip: {
         trigger: 'axis',
         formatter: (params) => {
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${params[0].axisValueLabel}</div>
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
+            (GTSLib.toISOString(params[0].value[0], 1, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+            .replace('T', ' ').replace('Z', '')}</div>
                ${params.map(s => {
             const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
             return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
@@ -231,7 +234,11 @@ export class DiscoveryAnnotation {
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLabel: {
           color: Utils.getLabelColor(this.el),
-          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone).replace('T', '\n') : undefined
+          formatter: this.innerOptions.fullDateDisplay
+            ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone,
+              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
+              .replace('T', '\n').replace('Z', '')
+            : undefined
         },
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),

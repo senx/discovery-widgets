@@ -40,7 +40,6 @@ export class DiscoveryTileResultComponent {
   @Prop({mutable: true}) unit: string = '';
   @Prop() url: string;
   @Prop() chartTitle: string;
-
   @Element() el: HTMLElement;
 
   @State() execTime = 0;
@@ -142,8 +141,8 @@ export class DiscoveryTileResultComponent {
   }
 
   componentWillLoad() {
-    this.innerType = this.type;
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
+    this.innerType = this.type;
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,

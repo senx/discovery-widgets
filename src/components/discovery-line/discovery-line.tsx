@@ -26,6 +26,7 @@ import {ChartType, ECharts} from "../../model/types";
 import {DataModel} from "../../model/dataModel";
 import {CartesianAxisOption} from "echarts/lib/coord/cartesian/AxisModel";
 import {GridOption} from "echarts/lib/coord/cartesian/GridModel";
+import 'moment/min/locales.js';
 
 @Component({
   tag: 'discovery-line',
@@ -156,6 +157,15 @@ export class DiscoveryLineComponent {
       throttle: 70,
       tooltip: {
         trigger: 'axis',
+        formatter: (params) => {
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
+            (GTSLib.toISOString(params[0].value[0], 1, this.innerOptions.timeZone,
+              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+              .replace('T', ' ').replace('Z', '')}</div>
+               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
+          ).join('<br>')}`;
+        },
         axisPointer: {
           type: 'line',
           lineStyle: {
@@ -477,7 +487,9 @@ export class DiscoveryLineComponent {
       axisLabel: {
         color: color || Utils.getLabelColor(this.el),
         formatter: this.innerOptions.fullDateDisplay ? value =>
-          GTSLib.toISOString(value, this.divider, this.innerOptions.timeZone).replace('T', '\n').replace('Z', '') : undefined
+            GTSLib.toISOString(value, 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+              .replace('T', '\n').replace('Z', '')
+          : undefined
       },
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
