@@ -362,11 +362,9 @@ export class GTSLib {
     if (timeZone !== 'UTC') {
       return tz(timestamp / divider, timeZone).format(timeFormat);
     } else {
-      const m = !!timeFormat
+      return !!timeFormat
         ? moment(timestamp / divider).format(timeFormat)
         : moment(timestamp / divider).toISOString();
-      console.log(m)
-      return m;
     }
   }
 
