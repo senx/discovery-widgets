@@ -44,14 +44,20 @@ export class DiscoveryCalendar {
   updateType(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
       this.chartOpts = this.convert(GTSLib.getData(this.result));
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      setTimeout(() => {
+        this.myChart.setOption(this.chartOpts || {});
+        this.myChart.resize({height: this.height});
+      });
     }
   }
 
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => {
+      this.myChart.setOption(this.chartOpts || {});
+      this.myChart.resize({height: this.height});
+    });
   }
 
   @Watch('options')
@@ -65,7 +71,10 @@ export class DiscoveryCalendar {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+        setTimeout(() => {
+          this.myChart.setOption(this.chartOpts || {});
+          this.myChart.resize({height: this.height});
+        });
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -110,7 +119,7 @@ export class DiscoveryCalendar {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel())
+    this.chartOpts = this.convert(this.result as DataModel || new DataModel());
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -212,11 +221,6 @@ export class DiscoveryCalendar {
       }
     }
     this.height = this.CAL_SIZE * cal + titles.length * 20 + 40;
-    if (!!this.myChart) {
-      this.myChart.resize({
-        height: this.height
-      })
-    }
     this.LOG.debug(['convert', 'series'], {series, calendar, visualMap, titles});
     return {
       title: titles,
@@ -263,7 +267,6 @@ export class DiscoveryCalendar {
 
   componentDidLoad() {
     setTimeout(() => {
-      this.height = Utils.getContentBounds(this.el.parentElement).h;
       this.parsing = false;
       this.rendering = true;
       let initial = false;
