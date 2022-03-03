@@ -63,7 +63,10 @@ PieChartWithAutoRefresh.args = {
   options: {...new Param(), autoRefresh: 1}
 }
 
-export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
+export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => `
+<div style="height: 600px;width: 100%;min-height: 100px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+      <div class="card-body">
 <style>
 :root {
     --warp-view-chart-grid-color: #35b779;
@@ -75,6 +78,8 @@ export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => 
     <discovery-tile url="${url}" type="${type}" lang="${lang}"
         unit="${unit || ''}" chart-title="${title || ''}" debug
     options='${JSON.stringify(options)}'>${ws}</discovery-tile>
+    </div>
+    </div>
 </div>`;
 WithCustomStyle.args = {
   ...InitialUsage.args,
@@ -83,8 +88,24 @@ WithCustomStyle.args = {
     NEWGTS 'serie' $j TOSTRING + RENAME NOW NaN NaN NaN RAND ADDVALUE
 %> FOR`
 };
+export const SmallArea = ({url, ws, lang, options, unit, title, type}) => `
+<div style="height: 300px;width: 200px;min-height: 100px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+      <div class="card-body">
+    <discovery-tile url="${url}" type="${type}" lang="${lang}"
+        unit="${unit || ''}" chart-title="${title || ''}" debug
+    options='${JSON.stringify(options)}'>${ws}</discovery-tile>
+    </div>
+    </div>
+</div>`;
+SmallArea.args = {
+  ...InitialUsage.args,
+  ws: `0 2 <% 'j' STORE
+    NEWGTS 'serie' $j TOSTRING + RENAME NOW NaN NaN NaN RAND ADDVALUE
+%> FOR`
+};
 
-export const  CustomStyleAndAutoRefresh= WithCustomStyle.bind({});
+export const CustomStyleAndAutoRefresh = WithCustomStyle.bind({});
 CustomStyleAndAutoRefresh.args = {
   ...InitialUsage.args,
   options: {...Usage.args.options, scheme: Colors.CHARTANA, autoRefresh: 10},

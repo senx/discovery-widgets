@@ -139,9 +139,11 @@ export class DiscoveryPieComponent {
       animation: true,
       large: true,
       clip: false,
-      radius: this.type === 'pie' ? '90%' : this.type === 'rose' ? ['30%', '90%'] : ['40%', '90%'],
+      radius: this.type === 'pie' ? '70%' : this.type === 'rose' ? ['30%', '90%'] : ['40%', '90%'],
       roseType: this.type === 'rose' ? 'area' : undefined,
       label: {
+        position: 'outside',
+        overflow: 'none',
         color: Utils.getLabelColor(this.el)
       },
       emphasis: {
@@ -242,7 +244,7 @@ export class DiscoveryPieComponent {
     this.LOG.debug(['convert', 'series'], series);
     return {
       grid: {
-        left: 10, top: 10, bottom: 10, right: 10,
+        left: 0, top: 0, bottom: 0, right: 0,
         containLabel: true
       },
       tooltip: {
