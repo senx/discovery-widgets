@@ -63,6 +63,7 @@ export class DiscoveryTileResultComponent {
   private title: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
+  private initial: boolean = true
 
   @Watch('type')
   updateType(newValue: string) {
@@ -128,6 +129,7 @@ export class DiscoveryTileResultComponent {
   onDrawHandler() {
     if (this.tile) {
       (this.tile as any).resize();
+      this.initial = false;
     }
   }
 
@@ -449,7 +451,7 @@ export class DiscoveryTileResultComponent {
       this.handleCSSColors();
       ((this.innerResult as unknown as DataModel)?.events || [])
         .filter(e => !!e.value)
-        .filter(e => e.type !== 'zoom' && e.type !== 'margin' && e.type !== 'popup')
+        .filter(e => e.type !== 'zoom' && e.type !== 'margin' && !this.initial)
         .forEach(e => {
           if (this.LOG) {
             this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});

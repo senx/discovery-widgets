@@ -322,15 +322,14 @@ UsageWithActionButtons.args = {
           %> } %>
        }
        {
-         'type' 'input:autocomplete'
+         'type' 'button'
          'title' 'Popup emitter'
          'options' {
-         'input' { 'showButton' true }
           'button' { 'label' 'Macro' }
          }
          'w' 2 'h' 1 'x' 2 'y' 1
-         'macro' <%
-         { 'data' [ "admiring" "adoring" "agitated" "amazing" "angry" "awesome" "backstabbing" "berserk" "big" "boring" "clever" "cocky" "compassionate" "condescending" "cranky" "desperate" "determined" "distracted" "dreamy" "drunk" "ecstatic" "elated" "elegant" "evil" "fervent" "focused" "furious" "gigantic" "gloomy" "goofy" "grave" "happy" "high" "hopeful" "hungry" "insane" "jolly" "jovial" "kickass" "lonely" "loving" "mad" "modest" "naughty" "nauseous" "nostalgic" "pedantic" "pensive" "prickly" "reverent" "romantic" "sad" "serene" "sharp" "sick" "silly" "sleepy" "small" "stoic" "stupefied" "suspicious" "tender" "thirsty" "tiny" "trusting"  ]
+         'macro' <% { 'data' <%
+            { 'data' ''
              'events' [
                 { 'tags' [ 'popup' ] 'type' 'popup'
                   'value' {
@@ -346,8 +345,8 @@ UsageWithActionButtons.args = {
                    }
                 }
                ]
-               } %>
-
+             }
+          %> } %>
        }
 
        {
@@ -432,6 +431,59 @@ UsageWithActionButtons.args = {
   }`
 }
 
+export const UsageWithVariablesAndPopup = Template.bind({});
+UsageWithVariablesAndPopup.args = {
+  ...Usage.args,
+  ws: `{
+    'title' 'My Dashboard With events'
+    'options' { 'eventHandler' 'type=.*,tag=popup' }
+    'vars' {
+      'myVar' 'awesome'
+    }
+    'tiles' [
+      {
+         'type' 'input:autocomplete'
+         'w' 2 'h' 1 'x' 0 'y' 0
+         'title' 'Popup emitter'
+         'options' {
+            'input' { 'showButton' true }
+            'button' { 'label' 'Go' }
+         }
+         'macro' <%
+            {
+              'data' [ "admiring" "adoring" "agitated" "amazing" "angry" "awesome" "backstabbing" "berserk" "big" "boring" "clever" "cocky" "compassionate" "condescending" "cranky" "desperate" "determined" "distracted" "dreamy" "drunk" "ecstatic" "elated" "elegant" "evil" "fervent" "focused" "furious" "gigantic" "gloomy" "goofy" "grave" "happy" "high" "hopeful" "hungry" "insane" "jolly" "jovial" "kickass" "lonely" "loving" "mad" "modest" "naughty" "nauseous" "nostalgic" "pedantic" "pensive" "prickly" "reverent" "romantic" "sad" "serene" "sharp" "sick" "silly" "sleepy" "small" "stoic" "stupefied" "suspicious" "tender" "thirsty" "tiny" "trusting"  ]
+              'globalParams' { 'input' { 'value' $myVar } }
+              'events' [ { 'tags' [ 'myVar' ] 'type' 'variable' 'selector' 'myVar' } ]
+         } %>
+       }
+       {
+          'type' 'display'
+          'x' 2 'y' 0 'w' 2 'h' 1
+         'options' { 'eventHandler' 'type=(variable),tag=myVar' }
+         'macro' <%
+            {
+              'data' $myVar
+              'globalParams' { 'input' { 'value' $myVar } }
+              'events' [ {
+                'tags' [ 'popup' ] 'type' 'popup'
+                'value' {
+                  'title' $myVar
+                  'vars' { 'myVar' $myVar }
+                  'tiles' [  {
+                      'title' $myVar
+                      'type' 'display'
+                      'w' 3 'h' 1 'x' 0 'y' 0
+                      'macro' <% $myVar %>
+                    } ]
+                }
+              } ]
+         } %>
+       }
+    ]
+   }`
+};
+
+
 // @ts-ignore
 const ScadaTemplate = ({url, ws, options, title}) => `<div class="card" style="width: 100%;min-height: 500px">
 <div class="card-body">
@@ -475,7 +527,7 @@ ScadaVersion.args = {
          'type' 'svg'
          'title' 'Event style and xpath receiver'
          'w' 500 'h' 570 'x' 310 'y' 0
-         'macro' <% @xav/piotr %>
+         'macro' <% @xav/svg %>
          'options' { 'eventHandler' 'type=(style|xpath),tag=svg' }
        }
        {

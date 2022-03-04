@@ -39,11 +39,11 @@ InitialUsage.args = {
   type: 'svg',
   ws: `@xav/svg`
 }
-export const PiotrEdition = Usage.bind({});
+/*export const PiotrEdition = Usage.bind({});
 PiotrEdition.args = {
   ...InitialUsage.args,
   ws: `@xav/piotr`
-}
+}*/
 export const DynamicSVG = Usage.bind({});
 DynamicSVG.args = {
   ...InitialUsage.args,
