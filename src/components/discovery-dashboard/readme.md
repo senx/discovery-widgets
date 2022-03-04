@@ -28,6 +28,29 @@
 | `statusHeaders` |             | `CustomEvent<string[]>` |
 
 
+## Methods
+
+### `getDashboardStructure() => Promise<any>`
+
+
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+### `getPDF() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
 ## Dependencies
 
 ### Used by

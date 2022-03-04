@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {Utils} from "../../utils/utils";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
@@ -25,6 +25,8 @@ import {DataModel} from "../../model/dataModel";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
 import {Tile} from "../../model/tile";
 import {JsonLib} from "../../utils/jsonLib";
+import {v4 as uuidv4} from 'uuid';
+import {PdfLib} from "../../utils/pdfLib";
 
 @Component({
   tag: 'discovery-dashboard',
@@ -116,6 +118,31 @@ export class DiscoveryDashboardComponent {
     if (this.timer) {
       window.clearInterval(this.timer);
     }
+  }
+
+  @Method()
+  async getPDF(): Promise<void> {
+    const win = this.el.getBoundingClientRect();
+    const struct = await this.getDashboardStructure();
+    await PdfLib.generatePDF(win.width, win.height, struct);
+  }
+
+  @Method()
+  async getDashboardStructure(): Promise<any> {
+    const result = {...this.result};
+    const tiles = [...this.tiles];
+    const res = await Promise.all(tiles.map((t => t.elem?.export('png'))));
+    for(let i =0; i < tiles.length; i++) {
+      tiles[i].png = res[i];
+      tiles[i].uid = uuidv4();
+      delete tiles[i].macro;
+      delete tiles[i].data;
+      delete tiles[i].elem;
+    }
+    result.tiles = [...tiles];
+    result.cellHeight = result.cellHeight || this.cellHeight || 220;
+    result.cols = result.cols || this.cols || 12;
+    return { ...new Dashboard(), ... result };
   }
 
   exec() {
@@ -370,6 +397,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
   private addTile(el: HTMLDiscoveryTileElement | HTMLDiscoveryTileResultElement, t: Tile, i: number) {
     if (!!el) {
+      t.elem = el;
       this.tiles.push(t);
       el.addEventListener('draw', () => {
         this.done[i] = (this.done[i] || 0) + 1;

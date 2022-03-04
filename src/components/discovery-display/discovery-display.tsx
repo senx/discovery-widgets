@@ -55,6 +55,7 @@ export class DiscoveryDisplayComponent {
   @State() innerOptions: Param;
 
   private wrapper: HTMLDivElement;
+  private pngWrapper: HTMLDivElement;
   private defOptions: Param = new Param();
   private divider: number = 1000;
   private LOG: Logger;
@@ -106,7 +107,13 @@ export class DiscoveryDisplayComponent {
   // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return await domtoimage.toPng(this.wrapper);
+    let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
+    bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
+    const dm: Param = (((this.result as unknown as DataModel) || {
+      globalParams: {bgColor}
+    }).globalParams || {bgColor}) as Param;
+    bgColor = dm.bgColor || bgColor;
+    return await domtoimage.toPng(this.pngWrapper, {height: this.height, width: this.width, bgcolor: bgColor});
   }
 
   componentWillLoad() {
@@ -207,17 +214,16 @@ export class DiscoveryDisplayComponent {
   }
 
   render() {
-    return [
-      <style>{this.generateStyle(this.innerStyle)}</style>,
-      <div style={{color: this.innerOptions.fontColor}}
-           class="display-container">
+    return <div ref={(el) => this.pngWrapper = el as HTMLDivElement} class="png-wrapper">
+      <style>{this.generateStyle(this.innerStyle)}</style>
+      <div style={{color: this.innerOptions.fontColor}} class="display-container">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
           <span innerHTML={this.message}/><small>{this.unit ? this.unit : ''}</small>
         </div>
       </div>
-    ]
+    </div>
   }
 
   private displayDuration(start: dayjs.Dayjs) {

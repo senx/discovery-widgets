@@ -30,4 +30,7 @@ export class Tile {
   endpoint?: string;
   unit?: string;
   options: Param = new Param();
+  elem?: HTMLDiscoveryTileElement | HTMLDiscoveryTileResultElement;
+  png?: string;
+  uid?: string;
 }

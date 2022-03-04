@@ -74,6 +74,8 @@ export namespace Components {
         "cols": number;
         "dashboardTitle": string;
         "debug": boolean;
+        "getDashboardStructure": () => Promise<any>;
+        "getPDF": () => Promise<void>;
         "options": Param | string;
         "type": 'scada' | 'dashboard' | 'flex';
         "url": string;
@@ -236,6 +238,7 @@ export namespace Components {
     }
     interface DiscoveryTabular {
         "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;

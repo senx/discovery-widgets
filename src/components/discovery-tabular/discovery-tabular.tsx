@@ -21,6 +21,7 @@ import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
+import domtoimage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-tabular',
@@ -46,6 +47,7 @@ export class DiscoveryTabular {
 
   private LOG: Logger;
   private divider: number = 1000;
+  private pngWrapper: HTMLDivElement;
 
   @Watch('result')
   updateRes() {
@@ -57,6 +59,21 @@ export class DiscoveryTabular {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h;
+  }
+
+
+  // noinspection JSUnusedLocalSymbols
+  @Method()
+  async export(type: 'png' | 'svg' = 'png') {
+    return await domtoimage.toPng(this.pngWrapper, {
+      height: this.height, width: this.width,
+      style: {
+        left: '0',
+        right: '0',
+        bottom: '0',
+        top: '0'
+      }
+    });
   }
 
 
@@ -167,7 +184,7 @@ export class DiscoveryTabular {
 
   render() {
     this.draw.emit();
-    return <div class="tabular-wrapper">
+    return <div class="tabular-wrapper"  ref={(el) => this.pngWrapper = el as HTMLDivElement}>
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       {this.tabularData.map(d => <discovery-pageable data={d} options={this.options as Param} debug={this.debug}/>)}

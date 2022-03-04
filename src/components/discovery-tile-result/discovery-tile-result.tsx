@@ -418,12 +418,16 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    /* tslint:disable:no-string-literal */
+    // tslint:disable:no-string-literal
     if (this.tile && this.tile['export']) {
       return (this.tile as any).export(type);
     } else {
       return undefined;
     }
+    /*
+    const s = Utils.getContentBounds(this.tileElem )
+    return await domtoimage.toPng(this.tileElem, {height: s.h, width: s.w});
+*/
   }
 
   render() {

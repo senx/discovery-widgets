@@ -24,6 +24,6 @@ export class Dashboard {
   tiles: Tile[] | string = [];
   vars: { [key: string]: any; } = {};
   options?: Param;
-  cols: 12;
-  cellHeight: 220;
+  cols = 12;
+  cellHeight = 220;
 }
