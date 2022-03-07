@@ -457,7 +457,7 @@ UsageWithVariablesAndPopup.args = {
          } %>
        }
        {
-          'type' 'display'
+          'type' 'hidden'
           'x' 2 'y' 0 'w' 2 'h' 1
          'options' { 'eventHandler' 'type=(variable),tag=myVar' }
          'macro' <%

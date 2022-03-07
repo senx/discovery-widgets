@@ -14,13 +14,12 @@
  *   limitations under the License.
  */
 
-import {Component, Element, Event, EventEmitter, h, Listen, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
-import {DiscoveryEvent} from "../../model/discoveryEvent";
 import {Utils} from "../../utils/utils";
 
 @Component({
@@ -51,7 +50,7 @@ export class DiscoveryHidden {
   private wrapper: HTMLDivElement;
   private divider: number = 1000;
   private LOG: Logger;
-  private initial = false;
+  @State() private initial = false;
 
   @Watch('result')
   updateRes() {
@@ -70,14 +69,6 @@ export class DiscoveryHidden {
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
-    }
-  }
-
-  @Listen('discoveryEvent', {target: 'window'})
-  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
-    if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
   }
 
@@ -102,15 +93,19 @@ export class DiscoveryHidden {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
       this.initial = true;
       this.parsing = false;
+      setTimeout(() => this.draw.emit(), 100);
     });
   }
 
+  @Method()
+  async resize() {
+    // empty
+  }
+
   render() {
-    return [
-      <div style={{display: 'hidden'}}>
-        <div ref={(el) => this.wrapper = el as HTMLDivElement}/>
-      </div>
-    ]
+    return <div style={{display: 'hidden'}}>
+      <div ref={(el) => this.wrapper = el as HTMLDivElement}/>
+    </div>
   }
 
 
