@@ -202,7 +202,6 @@ export class DiscoveryDisplayComponent {
         }
         this.fitties = fitty(this.wrapper, {maxSize: height * 0.80, minSize: 14});
         this.fitties.element.addEventListener('fit', () => {
-          // log the detail property to the console
           if (this.initial) {
             setTimeout(() => this.draw.emit(), 100);
             this.initial = false;

@@ -108,6 +108,7 @@ export namespace Components {
         "debug": boolean;
         "height": number;
         "options": Param | string;
+        "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "unit": string;
