@@ -176,10 +176,12 @@ export class DiscoveryTabular {
 
   render() {
     this.draw.emit();
-    return <div class="tabular-wrapper"  ref={(el) => this.pngWrapper = el as HTMLDivElement}>
-      {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
-      {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      {this.tabularData.map(d => <discovery-pageable data={d} options={this.options as Param} debug={this.debug}/>)}
+    return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el as HTMLDivElement}>
+      <div class="tabular-wrapper-inner">
+        {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
+        {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
+        {this.tabularData.map(d => <discovery-pageable data={d} options={this.options as Param} debug={this.debug}/>)}
+      </div>
     </div>
   }
 }
