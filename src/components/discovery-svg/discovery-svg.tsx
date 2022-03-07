@@ -23,6 +23,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
 import domtoimage from 'dom-to-image';
+import html2canvas from "html2canvas";
 
 @Component({
   tag: 'discovery-svg',
@@ -214,7 +215,7 @@ export class DiscoverySvgComponent {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return type === 'svg' ? this.toDisplay : domtoimage.toPng(this.el);
+    return type === 'svg' ? this.toDisplay : (await html2canvas(this.el)).toDataURL();
   }
 
   private generateStyle(innerStyle: { [k: string]: string }): string {

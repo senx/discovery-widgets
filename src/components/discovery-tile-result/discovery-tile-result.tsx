@@ -424,10 +424,6 @@ export class DiscoveryTileResultComponent {
     } else {
       return undefined;
     }
-    /*
-    const s = Utils.getContentBounds(this.tileElem )
-    return await domtoimage.toPng(this.tileElem, {height: s.h, width: s.w});
-*/
   }
 
   render() {

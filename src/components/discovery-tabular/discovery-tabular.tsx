@@ -21,7 +21,7 @@ import {Param} from "../../model/param";
 import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
-import domtoimage from 'dom-to-image';
+import html2canvas from 'html2canvas';
 
 @Component({
   tag: 'discovery-tabular',
@@ -65,15 +65,7 @@ export class DiscoveryTabular {
   // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return await domtoimage.toPng(this.pngWrapper, {
-      height: this.height, width: this.width,
-      style: {
-        left: '0',
-        right: '0',
-        bottom: '0',
-        top: '0'
-      }
-    });
+    return (await html2canvas(this.pngWrapper)).toDataURL();
   }
 
 

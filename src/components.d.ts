@@ -225,7 +225,7 @@ export namespace Components {
     interface DiscoverySvg {
         "chartTitle": string;
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<string | string[]>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -238,7 +238,7 @@ export namespace Components {
     }
     interface DiscoveryTabular {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
