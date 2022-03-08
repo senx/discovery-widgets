@@ -432,7 +432,7 @@ export class DiscoveryTileResultComponent {
       <div class="discovery-tile"
            ref={el => this.tileElem = el}
            style={{
-             backgroundColor: this.bgColor,
+             background: this.bgColor,
              color: this.fontColor,
              height: '100%', width: '100%'
            }}>
@@ -474,9 +474,9 @@ export class DiscoveryTileResultComponent {
   }
 
   private handleCSSColors() {
-    let fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#404040');
+    let fontColor = Utils.getCSSColor(this.tileElem, '--warp-view-font-color', '#404040');
     fontColor = ((this.innerOptions as Param) || {fontColor}).fontColor || fontColor;
-    let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
+    let bgColor = Utils.getCSSColor(this.tileElem, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.innerResult as unknown as DataModel) || {
       globalParams: {bgColor, fontColor}

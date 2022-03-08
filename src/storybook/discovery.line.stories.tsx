@@ -254,7 +254,7 @@ multiXAxis.args = {
   1 10 <% 'ts' STORE $g $ts RAND + 1 d * NOW + $i w - NaN NaN NaN RAND $i 2 * * ADDVALUE DROP %> FOR
   $g
 %> FOR STACKTOLIST 'data' STORE
-{ 'data' $data 'params' [ { 'xAxis' 0 } { 'xAxis' 1 } { 'xAxis' 1 } { 'xAxis' 2 } ] }
+{ 'data' $data 'params' [ { 'xAxis' 0  } { 'xAxis' 1 } { 'xAxis' 1 } { 'xAxis' 2 } ] }
 `
 };
 

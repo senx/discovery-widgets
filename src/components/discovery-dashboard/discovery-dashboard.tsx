@@ -132,7 +132,7 @@ export class DiscoveryDashboardComponent {
     const result = {...this.result};
     const tiles = [...this.tiles];
     const res = await Promise.all(tiles.map((t => t.elem?.export('png'))));
-    for(let i =0; i < tiles.length; i++) {
+    for (let i = 0; i < tiles.length; i++) {
       tiles[i].png = res[i];
       tiles[i].uid = uuidv4();
       delete tiles[i].macro;
@@ -142,7 +142,7 @@ export class DiscoveryDashboardComponent {
     result.tiles = [...tiles];
     result.cellHeight = result.cellHeight || this.cellHeight || 220;
     result.cols = result.cols || this.cols || 12;
-    return { ...new Dashboard(), ... result };
+    return {...new Dashboard(), ...result};
   }
 
   exec() {
@@ -232,9 +232,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     return {...new Param(), ...options as Param, ...options2}
   }
 
-  static sanitize(data: string | DataModel) {
+  static sanitize(data: string | DataModel | any): string | DataModel {
     if (typeof data === 'string') return '["' + data + '"]';
-    else return data
+    else return GTSLib.isArray(data) ? data : [data];
   }
 
   private getRendering() {
@@ -340,30 +340,31 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                        minHeight: '100%',
                        maxWidth: 'calc(100% / ' + this.cols + ' * ' + t.w + ')'
                      }}
-                ><div>
-                  {t.macro
-                    ? <discovery-tile url={t.endpoint || this.url}
-                                      type={t.type as ChartType}
-                                      chart-title={t.title}
-                                      debug={this.debug}
-                                      unit={t.unit}
-                                      id={'chart-' + i}
-                                      ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
-                                      vars={JSON.stringify(this.result.vars)}
-                                      options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
-                    >{t.macro + ' EVAL'}</discovery-tile>
-                    : <discovery-tile-result
-                      url={t.endpoint || this.url}
-                      result={DiscoveryDashboardComponent.sanitize(t.data)}
-                      type={t.type as ChartType}
-                      ref={(el) => this.addTile(el as HTMLDiscoveryTileResultElement, t, i)}
-                      unit={t.unit}
-                      id={'chart-' + i}
-                      options={DiscoveryDashboardComponent.merge(this.options, t.options)}
-                      debug={this.debug}
-                      chart-title={t.title}
-                    />
-                  }</div>
+                >
+                  <div>
+                    {t.macro
+                      ? <discovery-tile url={t.endpoint || this.url}
+                                        type={t.type as ChartType}
+                                        chart-title={t.title}
+                                        debug={this.debug}
+                                        unit={t.unit}
+                                        id={'chart-' + i}
+                                        ref={(el) => this.addTile(el as HTMLDiscoveryTileElement, t, i)}
+                                        vars={JSON.stringify(this.result.vars)}
+                                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                      >{t.macro + ' EVAL'}</discovery-tile>
+                      : <discovery-tile-result
+                        url={t.endpoint || this.url}
+                        result={DiscoveryDashboardComponent.sanitize(t.data)}
+                        type={t.type as ChartType}
+                        ref={(el) => this.addTile(el as HTMLDiscoveryTileResultElement, t, i)}
+                        unit={t.unit}
+                        id={'chart-' + i}
+                        options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                        debug={this.debug}
+                        chart-title={t.title}
+                      />
+                    }</div>
                 </div>)
               }</div>
           </div> : '';

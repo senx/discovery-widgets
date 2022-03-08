@@ -198,6 +198,47 @@ Usage.args = {
 }
 
 
+export const CustomStylePerTile = Template.bind({});
+CustomStylePerTile.args = {
+  ... Usage.args,
+  ws: `
+{
+  'title' 'test'
+  'tiles' [
+    {
+      'type' 'display'
+      'x' 0 'y' 0 'w' 1 'h' 1
+      'options' {
+        'customStyles' {
+          '.discovery-tile '
+          <'
+           --warp-view-bg-color: #FAFBFF linear-gradient(40deg, #3BBC7D, #1D434C);
+           --warp-view-font-color: white;
+          '>
+        }
+      }
+      'data' 'A'
+    }
+    {
+      'type' 'display'
+      'x' 1 'y' 0 'w' 1 'h' 1
+      'options' {
+        'customStyles' {
+          '.discovery-tile'
+          <'
+           background: radial-gradient(circle, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%) !important;
+            --warp-view-font-color: red;
+          '>
+        }
+      }
+      'data' 'B'
+    }
+  ]
+}
+  `
+}
+
+
 const TemplatePdf = ({url, ws, options, title, cols, cellHeight}) => `
 <div class="card" style="width: 100%;min-height: 500px">
   <div class="card-body">

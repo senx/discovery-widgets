@@ -15,6 +15,7 @@
  */
 
 import tile, {Usage} from './discovery.tile.stories';
+import {Param} from "../model/param";
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -28,6 +29,13 @@ InitialUsage.args = {
   type: 'button',
   ws: `{ 'data' <% 2 2 + %> 'globalParams' { 'button' { 'label' 'Execute' } } }`
 };
+
+export const WithCustomLabelInOptions = InitialUsage.bind({});
+WithCustomLabelInOptions.args ={
+  ...InitialUsage.args,
+  ws: `{ 'data' <% 2 2 + %> }`,
+  options: {... new Param(), button: { label: 'Foo'}}
+}
 
 
 export const JustAMacro = Usage.bind({});
