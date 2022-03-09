@@ -124,6 +124,7 @@ export class DiscoveryDashboardComponent {
   async getPDF(): Promise<void> {
     const win = this.el.getBoundingClientRect();
     const struct = await this.getDashboardStructure();
+    console.log(struct)
     await PdfLib.generatePDF(win.width, win.height, struct);
   }
 

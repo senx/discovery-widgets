@@ -32,12 +32,19 @@ export class PdfLib {
     doc.text(dashboard.description, Math.round(width / 2), 70, {align: 'center'});
     const cellHeight = dashboard.cellHeight || 220;
     for (const t of (dashboard.tiles as Tile[])) {
+      const bounds = {
+        width: t.w * width / (dashboard.cols || 12) - 20,
+        height: t.h * cellHeight - 20 - (!!t.title ? 30 : 0)
+      };
+      const tx = t.x * width / (dashboard.cols || 12) + bounds.width / 2 + 10;
+      doc.setFontSize(24);
+      doc.text(t.title || '', tx, t.y * cellHeight + 90 + 24, {align: 'center'});
+      doc.rect(t.x * width / (dashboard.cols || 12) + 10, t.y * cellHeight + 90, bounds.width, bounds.height + (!!t.title ? 30 : 0), 'S')
       if (!!t.png) {
-        const bounds = {width: t.w * width / (dashboard.cols || 12) - 20, height: t.h * cellHeight - 20};
         const resized = PdfLib.fitRectIntoBounds(await PdfLib.getImageDimensions(t.png), bounds);
         doc.addImage(t.png,
-          t.x * width / (dashboard.cols || 12) + (bounds.width - resized.width) / 2,
-          t.y * cellHeight + 90 + (bounds.height - resized.height) / 2,
+          t.x * width / (dashboard.cols || 12) + (bounds.width - resized.width) / 2 + 10,
+          t.y * cellHeight + 90 + (bounds.height - resized.height) / 2 + (!!t.title ? 30 : 0),
           resized.width, resized.height
         );
       }
