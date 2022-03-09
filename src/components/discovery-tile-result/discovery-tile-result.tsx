@@ -127,8 +127,10 @@ export class DiscoveryTileResultComponent {
 
   @Listen('draw', {capture: false})
   onDrawHandler() {
-    if (this.tile) {
-      (this.tile as any).resize();
+    if (!!this.tile) {
+      if (!!this.tile['resize']) {
+        (this.tile as any).resize();
+      }
       this.initial = false;
     }
   }
@@ -371,7 +373,7 @@ export class DiscoveryTileResultComponent {
   @Method()
   async resize() {
     setTimeout(() => {
-      if (this.tile) {
+      if (!!this.tile && !!this.tile['resize']) {
         (this.tile as any).resize();
       }
     });
