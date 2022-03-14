@@ -200,7 +200,7 @@ Usage.args = {
 
 export const CustomStylePerTile = Template.bind({});
 CustomStylePerTile.args = {
-  ... Usage.args,
+  ...Usage.args,
   ws: `
 {
   'title' 'test'
@@ -253,7 +253,8 @@ const TemplatePdf = ({url, ws, options, title, cols, cellHeight}) => `
   </div>
    <div class="card-footer">
     <button id="struct" class="btn btn-primary">Get Struct</button>
-    <button id="pdf" class="btn btn-primary">Get Pdf</button>
+    <button id="pdf" class="btn btn-primary">PDF in new TAB</button>
+    <button id="pdfDL" class="btn btn-primary">PDF Download</button>
   </div>
 </div>
 <!--suppress JSUnresolvedFunction -->
@@ -266,12 +267,16 @@ const TemplatePdf = ({url, ws, options, title, cols, cellHeight}) => `
       });
     });
     document.getElementById('pdf').addEventListener('click', () => {
-      dash.getPDF().then(r => {
-       console.log(r);
-     //  const fileURL = URL.createObjectURL(r);
-     // /  window.open(fileURL);
+      dash.getPDF(false, 'blob').then(data => {
+       console.log(data);
+        const file = new Blob([data.data], {type: 'application/pdf'});
+
+       const fileURL = URL.createObjectURL(file);
+
+       window.open(fileURL, data.filename);
       });
     });
+    document.getElementById('pdfDL').addEventListener('click', () => dash.getPDF().then(data => console.log(data)));
 </script>
 `;
 

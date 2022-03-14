@@ -40,13 +40,13 @@ Type: `Promise<any>`
 
 
 
-### `getPDF() => Promise<void>`
+### `getPDF(save?: boolean, output?: string) => Promise<any>`
 
 
 
 #### Returns
 
-Type: `Promise<void>`
+Type: `Promise<any>`
 
 
 

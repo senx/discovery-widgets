@@ -18,8 +18,13 @@ import {DiscoveryEvent} from "../model/discoveryEvent";
 import {GTSLib} from "./gts.lib";
 import {Param} from "../model/param";
 import {DataModel} from "../model/dataModel";
+import {cloneDeep} from "lodash"
 
 export class Utils {
+
+  static clone = (inObject) => {
+    return cloneDeep(inObject);
+  }
 
   static throttle(func, wait, leading, trailing, context) {
     let ctx;

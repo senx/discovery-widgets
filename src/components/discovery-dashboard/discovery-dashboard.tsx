@@ -68,6 +68,7 @@ export class DiscoveryDashboardComponent {
   private tiles: Tile[];
   private renderedTiles: Tile[];
   private done: any = {};
+  private dash: HTMLDivElement;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -121,17 +122,21 @@ export class DiscoveryDashboardComponent {
   }
 
   @Method()
-  async getPDF(): Promise<void> {
-    const win = this.el.getBoundingClientRect();
-    const struct = await this.getDashboardStructure();
-    console.log(struct)
-    await PdfLib.generatePDF(win.width, win.height, struct);
+  async getPDF(save = true, output: string = 'blob'): Promise<any> {
+    try {
+      const win = Utils.getContentBounds(this.dash);
+      const struct = await this.getDashboardStructure();
+      this.LOG.debug(['getPDF'], struct);
+      return await PdfLib.generatePDF(win.w, win.h, struct, save, output);
+    } catch (e) {
+      this.LOG.error(e);
+    }
   }
 
   @Method()
   async getDashboardStructure(): Promise<any> {
-    const result = {...this.result};
-    const tiles = [...this.tiles];
+    const result = Utils.clone(this.result);
+    const tiles = Utils.clone(this.tiles);
     const res = await Promise.all(tiles.map((t => t.elem?.export('png'))));
     for (let i = 0; i < tiles.length; i++) {
       tiles[i].png = res[i];
@@ -139,8 +144,9 @@ export class DiscoveryDashboardComponent {
       delete tiles[i].macro;
       delete tiles[i].data;
       delete tiles[i].elem;
+      delete tiles[i].endpoint;
     }
-    result.tiles = [...tiles];
+    result.tiles = tiles;
     result.cellHeight = result.cellHeight || this.cellHeight || 220;
     result.cols = result.cols || this.cols || 12;
     return {...new Dashboard(), ...result};
@@ -384,7 +390,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         url={this.url}
         debug={this.debug}/>
       {this.loaded
-        ? [<style>{this.generateStyle(this.innerStyle)}</style>, this.getRendering(), this.audioFile ?
+        ? [<style>{this.generateStyle(this.innerStyle)}</style>, <div ref={el => this.dash = el}>{this.getRendering()}</div> , this.audioFile ?
           <audio src={this.audioFile} autoPlay id="song"/> : '']
         : <discovery-spinner>Requesting data...</discovery-spinner>
       }
