@@ -817,3 +817,65 @@ $data NOW $first - TIMESHIFT 'data' STORE
   }`,
   options: new Param()
 }
+
+
+export const Test = Template.bind({});
+Test.args = {
+  ...Usage.args,
+  ws: `{
+      'title' 'My Dashboard With events'
+      'vars' {
+        'myVar' 1
+      }
+      'tiles' [
+      {
+\t\t\t  'type' 'input:list'
+          'title' 'enter a number'
+          'options' {
+            'button' { 'label' 'Send' }
+          }
+          'w' 2 'h' 1 'x' 0 'y' 0
+          'macro' <% { 'data' [ 1 2 4 5 6 7 ] 'events' [ { 'tags' [ 'random' ] 'type' 'variable' 'selector' 'myVar' } ] } %>
+\t\t\t}
+
+        {
+          'type' 'bar'
+          'title' 'Tile A'
+          'w' 10 'h' 1 'x' 2 'y' 0
+
+          'options' { 'eventHandler' 'type=variable,tag=.*' } // Events handler
+          'macro' <%
+          {
+          'columns'  [
+
+          0 $myVar TOLONG
+          <%
+            TOSTRING
+          %> FOR
+
+
+          ]
+          'rows' [
+
+            [
+              'label X'
+
+              0 $myVar TOLONG
+              <%
+
+              %> FOR
+
+            ]
+
+          ]
+
+          } 'values' STORE
+          { 'data' $values 'globalParams' { 'bar' { 'horizontal' true 'stacked' true } } }
+
+
+          %>
+        }
+
+      ]
+  }`
+}

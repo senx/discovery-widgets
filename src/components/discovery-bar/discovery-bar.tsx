@@ -241,11 +241,20 @@ export class DiscoveryBarComponent {
         trigger: 'axis',
         axisPointer: {type: 'shadow'},
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        formatter: (params) => {
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
+             (GTSLib.toISOString(params[0]?.value[0], 1, this.innerOptions.timeZone,
+              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+              .replace('T', ' ').replace('Z', '')}</div>
+               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
+          ).join('<br>')}`;
+        },
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
           if (this.hasFocus) {
             const date = this.innerOptions.timeMode === 'date'
-              ? GTSLib.toTimestamp(params[0]?.data[0].replace('\n', 'T'), this.divider, this.innerOptions.timeZone)
+              ? (!!params[0]? GTSLib.toTimestamp(params[0]?.data[0].replace('\n', 'T'), this.divider, this.innerOptions.timeZone) : '')
               : params[0]?.data[0];
             let value = 0;
             const regexp = '(' + (params as any[]).map(s => {

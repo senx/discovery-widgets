@@ -34,6 +34,13 @@ InitialUsage.args = {
   $g
 %> FOR`
 };
+
+export const WithFullDateFormatAndCustomFormat = Usage.bind({});
+WithFullDateFormatAndCustomFormat.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), timeMode: 'date', timeFormat: 'ddd Qo MMM YY HH:mm:ss', fullDateDisplay: true}
+};
+
 export const InitialUsageWithMixedData = Usage.bind({});
 InitialUsageWithMixedData.args = {
   ...InitialUsage.args,
