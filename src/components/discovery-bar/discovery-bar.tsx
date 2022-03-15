@@ -253,8 +253,11 @@ export class DiscoveryBarComponent {
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
           if (this.hasFocus) {
-            const date = this.innerOptions.timeMode === 'date'
-              ? (!!params[0]? GTSLib.toTimestamp(params[0]?.data[0].replace('\n', 'T'), this.divider, this.innerOptions.timeZone) : '')
+            const date = this.innerOptions.timeMode === 'date' && !this.innerOptions.fullDateDisplay
+              ? (
+                !!params[0] && !!params[0].data  && !!params[0].data[0]
+                ? GTSLib.toTimestamp(params[0].data[0].replace('\n', 'T'), this.divider, this.innerOptions.timeZone)
+                : '')
               : params[0]?.data[0];
             let value = 0;
             const regexp = '(' + (params as any[]).map(s => {

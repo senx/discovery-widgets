@@ -1426,6 +1426,31 @@ SpecialChars.args = {
   ]
 }`
 }
+export const Test = Usage.bind({});
+Test.args = {
+  ...Usage.args,
+  cols: 12,
+  ws: `{
+  'title' 'Dashboard tableau'
+  'description' "Températures de chauffage de la maison"
+  'tiles' [
+    {
+      'title' 'Tableau'
+      'x' 0 'y' 0 'w' 12 'h' 3
+      'type' 'tabular'
+      'data' {
+        'title' 'Test'
+        'columns'  [ 'Name' ]
+        'rows' [
+          [ 'label X' ]
+          [ 'label Y' ]
+          [ 'label Z' ]
+        ]
+      }
+    }
+  ]
+}`
+}
 
 // @ts-ignore
 const FlexTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div style="width: 100%;min-height: 500px">
