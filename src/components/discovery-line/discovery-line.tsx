@@ -159,9 +159,11 @@ export class DiscoveryLineComponent {
         trigger: 'axis',
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            (GTSLib.toISOString(params[0].value[0], 1, this.innerOptions.timeZone,
-              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-              .replace('T', ' ').replace('Z', '')}</div>
+            this.innerOptions.timeMode === 'timestamp'
+              ? params[0].value[0]
+              : (GTSLib.toISOString(params[0].value[0], 1, this.innerOptions.timeZone,
+                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                .replace('T', ' ').replace('Z', '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
           ).join('<br>')}`;
@@ -214,6 +216,7 @@ export class DiscoveryLineComponent {
         },
         {type: 'inside'}
       ],
+      visualMap: new Array(gtsCount),
       series: []
     };
 
@@ -223,6 +226,17 @@ export class DiscoveryLineComponent {
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
+        if (!!data.params && !!data.params[i] && (data.params[i].pieces || []).length > 0) {
+          (opts.visualMap as any[])[i] = {
+            show: false,
+            pieces: (data.params[i].pieces || []).map(t => {
+              return {
+                color: t.color || '#D81B60', lte: t.lte, gte: t.gte
+              }
+            })
+          };
+        }
+
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
           name: GTSLib.serializeGtsMetadata(gts),
@@ -250,7 +264,7 @@ export class DiscoveryLineComponent {
             }
           } : undefined,
           showAllSymbol: false,
-          lineStyle: {color},
+          lineStyle: !opts.visualMap[i] ? {color} : undefined,
           itemStyle: {color}
         } as SeriesOption;
         if (!!data.params) {
@@ -419,24 +433,75 @@ export class DiscoveryLineComponent {
       (opts.grid as GridOption).top = Math.max(30, 30 * i);
     }
     this.LOG.debug(['convert', 'opts'], {opts});
-    const markArea = (this.innerOptions.thresholds || [])
+    const markArea = [...(this.innerOptions.thresholds || [])
       .filter(t => !!t.fill)
       .map(t => {
         return [{
-          itemStyle: {color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0)},
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+            borderType: t.type || 'dashed',
+            name: t.name || t.value || 0,
+          },
+          //    label:{formatter: '{b}'},
           yAxis: t.value || 0
         }, {yAxis: 0}];
-      });
+      }),
+      ...(this.innerOptions.markers || [])
+        .filter(t => !!t.fill)
+        .map(t => {
+          return [{
+            itemStyle: {
+              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+              borderType: t.type || 'dashed'
+            },
+            label: {
+              color: t.color || '#D81B60', position: 'insideTop', distance: 5
+              //  , formatter: '{b}'
+            },
+            name: t.name || t.value || 0,
+            xAxis: this.innerOptions.timeMode === 'date'
+              ? (GTSLib.toISOString(t.value || 0, this.divider, this.innerOptions.timeZone,
+                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                .replace('T', ' ').replace('Z', '')
+              : (t.value || 0)
+          },
+            {
+              itemStyle: {
+                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+                borderType: t.type || 'dashed'
+              },
+              xAxis: this.innerOptions.timeMode === 'date'
+                ? (GTSLib.toISOString(t.start || 0, this.divider, this.innerOptions.timeZone,
+                  this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                  .replace('T', ' ').replace('Z', '')
+                : (t.start || 0)
+            }];
+        })
+    ];
 
-    const markLine = (this.innerOptions.thresholds || [])
-      .map(t => {
+    const markLine = [
+      ...(this.innerOptions.thresholds || []).map(t => {
         return {
-          name: t.value || 0,
-          label: {color: t.color || '#D81B60', position: 'insideEndTop'},
-          lineStyle: {color: t.color || '#D81B60', type: 'dashed'},
+          name: t.name || t.value || 0,
+          label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}'},
+          lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
           yAxis: t.value || 0
         }
-      });
+      }),
+      ...(this.innerOptions.markers || [])
+        .filter(t => !t.fill)
+        .map(t => {
+          return {
+            name: t.name || t.value || 0,
+            label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}'},
+            lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
+            xAxis: this.innerOptions.timeMode === 'date'
+              ? (GTSLib.toISOString(t.value || 0, this.divider, this.innerOptions.timeZone,
+                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                .replace('T', ' ').replace('Z', '')
+              : (t.value || 0)
+          }
+        })];
     (opts.series as SeriesOption[]).push({
       name: '',
       type: 'line',

@@ -49,7 +49,9 @@ export class Param {
   responsive?: boolean;
   autoRefresh?: number;
   showControls = false;
-  thresholds?: { color?: string; fill?:boolean, value?:number}[];
+  thresholds?: { color?: string; fill?: boolean, value?: number; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
+  markers?: { color?: string; value?: number; start?: number; fill?: boolean; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
+  pieces?: { color?: string; lte?: number; gte?: number }[];
   showErrors?: boolean;
   showStatus?: boolean;
   expandAnnotation = false;
@@ -80,7 +82,7 @@ export class Param {
   button?: {
     label: string
   };
-  gauge?:{
+  gauge?: {
     horizontal: boolean
   };
   input?: {
