@@ -181,6 +181,12 @@ AutocompleteInputInitialUsage.args = {
   ] }`
 };
 
+export const AutocompleteInputWithButton = Usage.bind({});
+AutocompleteInputWithButton.args = {
+  ...AutocompleteInputInitialUsage.args,
+  options: {...new Param(), input: {showButton: true, showFilter: true}}
+};
+
 export const AutocompleteInputWithCustomStyle = ({url, ws, language, type, options}) => `
 <style>
 :root {

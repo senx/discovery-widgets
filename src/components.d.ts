@@ -274,6 +274,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "options": Param | string;
+        "parseEvents": () => Promise<void>;
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;

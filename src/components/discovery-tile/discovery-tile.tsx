@@ -97,7 +97,6 @@ export class DiscoveryTileComponent {
     if (res.vars) {
       this.innerVars = {...JSON.parse(this.vars), ...this.innerVars, ...res.vars};
       this.exec(true).then(() => {
-        // empty
       });
     }
   }
@@ -202,8 +201,10 @@ export class DiscoveryTileComponent {
             this.showLoader = true;
           }
         });
+
         Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
           .then((res: any) => {
+            const toRefresh = this.result === res.data;
             this.result = res.data as string;
             this.headers = {};
             res.headers.split('\n')
@@ -229,6 +230,10 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             }
             this.LOG.debug(['exec', 'result'], this.result);
             this.execResult.emit(this.result);
+            if(toRefresh && refresh) {
+              this.tileResult.parseEvents().then(() => {
+              });
+            }
             setTimeout(() => {
               this.loaded = true;
               this.showLoader = false;

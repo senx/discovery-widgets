@@ -50,6 +50,16 @@ Type: `Promise<void>`
 
 
 
+### `parseEvents() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resize() => Promise<void>`
 
 

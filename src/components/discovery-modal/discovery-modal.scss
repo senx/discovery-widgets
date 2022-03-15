@@ -17,7 +17,7 @@
 :host {
 
   div.modal {
-    display: none; /* Hidden by default */
+ //   display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     left: 0;
@@ -44,6 +44,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         margin-top: 10px;
+        padding-bottom: 50px;
 
         .discovery-dashboard-tile {
           width: 100%;

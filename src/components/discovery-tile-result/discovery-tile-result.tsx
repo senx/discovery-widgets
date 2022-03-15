@@ -30,7 +30,7 @@ import elementResizeEvent from "element-resize-event";
   shadow: true,
 })
 export class DiscoveryTileResultComponent {
-  @Prop() result: DataModel | string;
+  @Prop({mutable: true}) result: DataModel | string;
   @Prop({mutable: true}) type: ChartType;
   @Prop() start: number;
   @Prop() options: Param | string = new Param();
@@ -73,8 +73,8 @@ export class DiscoveryTileResultComponent {
   }
 
   @Watch('result')
-  updateRes() {
-    this.innerResult = GTSLib.getData(this.result);
+  updateRes(newValue: string) {
+    this.innerResult = GTSLib.getData(newValue);
     this.parseResult();
   }
 
@@ -446,20 +446,25 @@ export class DiscoveryTileResultComponent {
     ];
   }
 
+  @Method()
+  async parseEvents() {
+    ((this.innerResult as unknown as DataModel)?.events || [])
+      .filter(e => !!e.value)
+      .filter(e => e.type !== 'zoom' && e.type !== 'margin' && !this.initial)
+      .forEach(e => {
+        if (this.LOG) {
+          this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
+        }
+        this.discoveryEvent.emit(e)
+      });
+  }
+
   private parseResult() {
     setTimeout(() => {
       this.unit = (this.options as Param).unit || this.unit
       this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
       this.handleCSSColors();
-      ((this.innerResult as unknown as DataModel)?.events || [])
-        .filter(e => !!e.value)
-        .filter(e => e.type !== 'zoom' && e.type !== 'margin' && !this.initial)
-        .forEach(e => {
-          if (this.LOG) {
-            this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
-          }
-          this.discoveryEvent.emit(e)
-        });
+      this.parseEvents().then(()=> {})
     });
     if (this.LOG) {
       this.LOG.debug(['parseResult'], {
