@@ -189,7 +189,7 @@ export class DiscoveryTileComponent {
       this.ws = LangUtils.prepare(
         this.el.innerText,
         this.innerVars || {},
-        (this.options as Param)?.skipedVars || [],
+        (this.options as Param)?.skippedVars || [],
         this.type,
         this.language);
       this.LOG.debug(['exec'], this.ws, this.type);

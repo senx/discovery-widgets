@@ -455,7 +455,9 @@ export class DiscoveryTileResultComponent {
         if (this.LOG) {
           this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
         }
-        this.discoveryEvent.emit(e)
+        if(e.type === 'variable' && !this.innerOptions.mutedVars.includes(e.selector)) {
+          this.discoveryEvent.emit(e);
+        }
       });
   }
 

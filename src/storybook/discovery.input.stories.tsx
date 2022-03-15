@@ -251,7 +251,7 @@ export const DateInputInitialUsage = Usage.bind({});
 DateInputInitialUsage.args = {
   ...Usage.args,
   type: 'input:date',
-  ws: `{ 'data' NOW 'events' [
+  ws: `{ 'data' NOW ->TSELEMENTS [ 0 2 ] SUBLIST TSELEMENTS-> 'events' [
     { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
   ] }`
 };
