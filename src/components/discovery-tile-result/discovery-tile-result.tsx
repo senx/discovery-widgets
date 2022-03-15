@@ -455,9 +455,7 @@ export class DiscoveryTileResultComponent {
         if (this.LOG) {
           this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
         }
-        if(e.type === 'variable' && !this.innerOptions.mutedVars.includes(e.selector)) {
-          this.discoveryEvent.emit(e);
-        }
+        this.discoveryEvent.emit(e);
       });
   }
 
@@ -466,7 +464,8 @@ export class DiscoveryTileResultComponent {
       this.unit = (this.options as Param).unit || this.unit
       this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
       this.handleCSSColors();
-      this.parseEvents().then(()=> {})
+      this.parseEvents().then(() => {
+      })
     });
     if (this.LOG) {
       this.LOG.debug(['parseResult'], {

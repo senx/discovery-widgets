@@ -1430,23 +1430,44 @@ export const Test = Usage.bind({});
 Test.args = {
   ...Usage.args,
   cols: 12,
-  ws: `{
+  ws: `
+  {
   'title' 'Dashboard tableau'
   'description' "Températures de chauffage de la maison"
+  'vars' {
+    'NOW' NOW 365 d -
+    'txt' 'Hello'
+  }
   'tiles' [
+  {
+    'type' 'input:date' 'x' 0 'y' 0 'w' 6 'h' 1
+    'macro' <%
+      { 'data' $NOW ->TSELEMENTS [ 0 2 ] SUBLIST TSELEMENTS-> 'events' [
+    { 'type' 'variable' 'tags' 'NOW' 'selector' 'NOW' }
+  ] }
+  %>
+  }
+  {
+    'type' 'input:text' 'x' 6 'y' 0 'w' 6 'h' 1
+    'macro' <%
+      { 'data' $txt 'events' [
+    { 'type' 'variable' 'tags' 'txt' 'selector' 'txt' }
+  ] }
+  %>
+  }
     {
-      'title' 'Tableau'
-      'x' 0 'y' 0 'w' 12 'h' 3
-      'type' 'tabular'
-      'data' {
-        'title' 'Test'
-        'columns'  [ 'Name' ]
-        'rows' [
-          [ 'label X' ]
-          [ 'label Y' ]
-          [ 'label Z' ]
-        ]
+      'x' 0 'y' 1 'w' 12 'h' 1
+      'type' 'display'
+      'options' {
+        'eventHandler' 'type=variable,tag=(txt|NOW)'
+        'mutedVars' [ 'NOW' ]
+        'map' {
+          'track' 'true'
+        }
       }
+      'macro' <% { 'data' $txt $NOW ISO8601 + 'events' [
+    { 'type' 'variable' 'tags' 'res' 'selector' 'res' 'value' 'a' }
+  ] } %>
     }
   ]
 }`

@@ -829,14 +829,14 @@ Test.args = {
       }
       'tiles' [
       {
-\t\t\t  'type' 'input:list'
+ 'type' 'input:list'
           'title' 'enter a number'
           'options' {
             'button' { 'label' 'Send' }
           }
           'w' 2 'h' 1 'x' 0 'y' 0
           'macro' <% { 'data' [ 1 2 4 5 6 7 ] 'events' [ { 'tags' [ 'random' ] 'type' 'variable' 'selector' 'myVar' } ] } %>
-\t\t\t}
+}
 
         {
           'type' 'bar'
