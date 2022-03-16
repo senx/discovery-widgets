@@ -139,7 +139,6 @@ export class DiscoveryInputComponent {
           positionElement: this.inputField,
           static: true,
           enableSeconds: true,
-          dateFormat: 'Y/m/d H:i:S'
         } as any;
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
           opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone,
@@ -334,8 +333,8 @@ export class DiscoveryInputComponent {
 
   private formatDateTime(timestamp: string): string {
     const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    return (GTSLib.toISOString(parseInt(timestamp, 10), divider, this.innerOptions.timeZone,
-      this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '').replace('Z', '');
+    return GTSLib.toISOString(parseInt(timestamp, 10), divider, this.innerOptions.timeZone,
+      undefined).replace('Z', '');
   }
 
   private selectAll(e) {
@@ -410,7 +409,7 @@ export class DiscoveryInputComponent {
               ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)}/>
               : ''
             }
-            <div  class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el as HTMLDivElement}>
+            <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el as HTMLDivElement}>
               {this.values.map(v => (<div class={{"multi-cb-item-wrapper": true, hidden: v.h}}>
                 <input type="checkbox" value={v.k}
                        checked={(this.value as string[] || []).includes(v.k)}

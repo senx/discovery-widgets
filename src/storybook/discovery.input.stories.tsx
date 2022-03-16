@@ -253,7 +253,11 @@ DateInputInitialUsage.args = {
   type: 'input:date',
   ws: `{ 'data' NOW ->TSELEMENTS [ 0 2 ] SUBLIST TSELEMENTS-> 'events' [
     { 'type' 'variable' 'tags' 'myVar' 'selector' 'myVar' }
-  ] }`
+  ] }`,
+  options: {...new Param(),
+    timeFormat: 'ddd DD MMM YY HH:mm:ss',
+    fullDateDisplay: false
+  }
 };
 
 export const DateInputWithCustomStyle = ({url, ws, language, type, options}) => `
