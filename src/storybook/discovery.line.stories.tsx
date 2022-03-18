@@ -385,7 +385,6 @@ WithThreshold.args = {
   }
 };
 
-
 export const WithMarkers = Usage.bind({});
 WithMarkers.args = {
   ...Usage.args,
@@ -419,4 +418,24 @@ WithMarkers.args = {
       {value: 75, name: 'Danger'}
     ]
   }
+};
+
+export const WithMarkersAndMultiYAxis = Usage.bind({});
+WithMarkersAndMultiYAxis.args = {
+  ...WithMarkers.args,
+  ws: `1 2 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
+  1 100 <% 'ts' STORE $g $ts NaN NaN NaN RAND 100 * ADDVALUE DROP %> FOR
+  $g %> FOR STACKTOLIST 'gts' STORE
+  { 'data' $gts 'params' [
+    { 'yAxis' 0
+      'pieces' [
+        { 'color' '#77BE69' 'lte' 33 }
+        { 'color' '#ff9900' 'gte' 33 'lte' 66 }
+        { 'gte' 66 }
+      ]
+    }
+    { 'yAxis' 1 'datasetColor' '#c6c6c6' }
+  ]
+}
+  `
 };

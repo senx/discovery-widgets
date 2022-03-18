@@ -818,7 +818,6 @@ $data NOW $first - TIMESHIFT 'data' STORE
   options: new Param()
 }
 
-
 export const Test = Template.bind({});
 Test.args = {
   ...Usage.args,
@@ -829,53 +828,56 @@ Test.args = {
       }
       'tiles' [
       {
- 'type' 'input:list'
+          'type' 'input:list'
           'title' 'enter a number'
           'options' {
             'button' { 'label' 'Send' }
           }
           'w' 2 'h' 1 'x' 0 'y' 0
           'macro' <% { 'data' [ 1 2 4 5 6 7 ] 'events' [ { 'tags' [ 'random' ] 'type' 'variable' 'selector' 'myVar' } ] } %>
-}
-
+        }
         {
           'type' 'bar'
           'title' 'Tile A'
           'w' 10 'h' 1 'x' 2 'y' 0
-
           'options' { 'eventHandler' 'type=variable,tag=.*' } // Events handler
           'macro' <%
-          {
-          'columns'  [
-
-          0 $myVar TOLONG
-          <%
-            TOSTRING
-          %> FOR
-
-
-          ]
-          'rows' [
-
-            [
-              'label X'
-
-              0 $myVar TOLONG
-              <%
-
-              %> FOR
-
-            ]
-
-          ]
-
-          } 'values' STORE
-          { 'data' $values 'globalParams' { 'bar' { 'horizontal' true 'stacked' true } } }
-
-
+            {
+              'columns'  [ 0 $myVar TOLONG <% TOSTRING %> FOR ]
+              'rows' [ [ 'label X' 0 $myVar TOLONG <% %> FOR ] ]
+            } 'values' STORE
+            { 'data' $values 'globalParams' { 'bar' { 'horizontal' true 'stacked' true } } }
           %>
         }
-
       ]
   }`
+}
+
+export const Test2 = Template.bind({});
+Test2.args = {
+  ...Usage.args,
+  ws: `{
+  'title' 'My Dashboard With events'
+  'vars' {
+    'myVar' 42
+  }
+  'tiles' [
+    {
+      'type' 'input:text'
+      'title' 'Input emitter'
+      'options' {
+        'button' { 'label' 'Send' }
+      }
+      'w' 2 'h' 1 'x' 0 'y' 0
+      'macro' <% { 'data' $myVar 'events' [ { 'tags' [ 'random' ] 'type' 'variable' 'selector' 'myVar' } ] } %>
+    }
+    {
+      'type' 'display'
+      'title' 'Event var receiver'
+      'w' 2 'h' 1 'x' 2 'y' 0
+      'macro' <% $myVar %>
+      'options' { 'eventHandler' 'type=(variable),tag=random' }
+    }
+  ]
+}`
 }

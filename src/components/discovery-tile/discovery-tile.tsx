@@ -96,7 +96,7 @@ export class DiscoveryTileComponent {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
       this.innerVars = {...JSON.parse(this.vars), ...this.innerVars, ...res.vars};
-      if(!(this.options as Param).mutedVars.includes(event.detail.selector)) {
+      if(!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
         this.exec(true).then(() => {
         });
       }
