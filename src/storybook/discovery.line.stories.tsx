@@ -439,3 +439,26 @@ WithMarkersAndMultiYAxis.args = {
 }
   `
 };
+
+
+export const WithPieces = Usage.bind({});
+WithPieces.args = {
+  ...Usage.args,
+  type: 'line',
+  options: { ...new Param(),    timeMode: 'timestamp'},
+  ws: `0 1 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
+  1 100 <% 'ts' STORE $g $ts $i 100 * +  NaN NaN NaN RAND 100 * ADDVALUE DROP %> FOR
+  $g %> FOR STACKTOLIST 'gts' STORE
+  { 'data' $gts 'params' [
+    {
+      'xpieces' true
+      'pieces' [ { 'color' '#FF00FF' 'gte' 33 'lte' 66 } ]
+    }
+    {
+      'xpieces' false
+      'pieces' [ { 'color' '#dc143c' 'gte' 33 'lte' 66 } ]
+    }
+  ]
+}
+  `
+};

@@ -53,6 +53,7 @@ export class Param {
   thresholds?: { color?: string; fill?: boolean, value?: number; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
   markers?: { color?: string; value?: number; start?: number; fill?: boolean; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
   pieces?: { color?: string; lte?: number; gte?: number }[];
+  xpieces?: boolean;
   showErrors?: boolean;
   showStatus?: boolean;
   expandAnnotation = false;

@@ -229,11 +229,15 @@ export class DiscoveryLineComponent {
         if (!!data.params && !!data.params[i] && (data.params[i].pieces || []).length > 0) {
           (opts.visualMap as any[])[i] = {
             show: false,
-            pieces: (data.params[i].pieces || []).map(t => {
-              return {
-                color: t.color || '#D81B60', lte: t.lte, gte: t.gte
-              }
-            })
+            seriesIndex: i,
+            dimension: !!data.params[i].xpieces ? 0 : 1,
+            pieces: GTSLib.flatDeep((data.params[i].pieces || []).map(t => {
+              return [
+                {color, lte: t.gte},
+                {color: t.color || '#D81B60', lte: t.lte, gte: t.gte},
+                {color, gte: t.lte},
+              ]
+            }))
           };
         }
 
