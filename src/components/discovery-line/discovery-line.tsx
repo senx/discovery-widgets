@@ -212,9 +212,13 @@ export class DiscoveryLineComponent {
           type: 'slider',
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
-          bottom: !!this.innerOptions.showLegend ? 30 : 20
+          bottom: !!this.innerOptions.showLegend ? 30 : 20,
+          filterMode: 'none'
         },
-        {type: 'inside'}
+        {
+          type: 'inside',
+          filterMode: 'none'
+        }
       ],
       visualMap: new Array(gtsCount),
       series: []
