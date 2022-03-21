@@ -129,7 +129,7 @@ export class DiscoveryDashboardComponent {
       this.LOG.debug(['getPDF'], struct);
       return await PdfLib.generatePDF(win.w, win.h, struct, save, output);
     } catch (e) {
-      this.LOG.error(e);
+      this.LOG.error(['getPDF'], e);
     }
   }
 

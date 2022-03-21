@@ -58,16 +58,30 @@ debug options='${JSON.stringify(options)}'
 </div>`;
 
 const KitchenSinkTemplate = ({url, ws, options, title, cellHeight}) => `
+    <button id="pdf" class="btn btn-primary">PDF in new TAB</button>
 <div class="card"  style="min-width: 100%;">
 <div class="card-body">
 <discovery-dashboard url="${url}"
+id="dash"
 dashboard-title="${title ? title : ''}"
 @draw="${event => console.error('foo', 'bar', event)}"
 cols="12" cell-height="${cellHeight}"
 debug options='${JSON.stringify(options)}'
 >${ws}</discovery-dashboard>
 </div>
-</div>`;
+</div>
+</div>
+<!--suppress JSUnresolvedFunction -->
+<script>
+    const dash = document.getElementById('dash');
+    document.getElementById('pdf').addEventListener('click', () => {
+      dash.getPDF(false, 'blob').then(data => {
+        const file = new Blob([data.data], {type: 'application/pdf'});
+       const fileURL = URL.createObjectURL(file);
+       window.open(fileURL, data.filename);
+      });
+    });
+</script>`;
 
 
 export const KitchenSink = KitchenSinkTemplate.bind({});

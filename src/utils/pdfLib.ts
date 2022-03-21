@@ -47,8 +47,12 @@ export class PdfLib {
         t.y * cellHeight + 90 + cellSpacing - 1,
         bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'S')
       if (!!t.png) {
-        const resized = PdfLib.fitRectIntoBounds(await PdfLib.getImageDimensions(t.png), bounds);
-        doc.addImage(t.png,
+        let png = t.png;
+        if(Array.isArray(t.png)) {
+          png = t.png[0];
+        }
+        const resized = PdfLib.fitRectIntoBounds(await PdfLib.getImageDimensions(png), bounds);
+        doc.addImage(png,
           t.x * (width - xMargin * 2) / (dashboard.cols || 12) + (bounds.width - resized.width) / 2 + cellSpacing + xMargin,
           t.y * cellHeight + 90 + cellSpacing + (bounds.height - resized.height) / 2 + (!!t.title ? 30 : 0),
           resized.width, resized.height
