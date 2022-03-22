@@ -204,7 +204,7 @@ export class DiscoveryPieComponent {
       const gts = gtsList[i];
       const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
+      if (GTSLib.isGtsToPlot(gts)) {
         const values = (gts.v || []);
         const val = values[values.length - 1] || [];
         let value = 0;
@@ -216,7 +216,7 @@ export class DiscoveryPieComponent {
           name: GTSLib.serializeGtsMetadata(gts),
           value
         });
-      } else {
+      } else if(!GTSLib.isGts(gts)) {
         if (gts.hasOwnProperty('key')) {
           dataStruct.push({
             ...this.getCommonDataParam(color),

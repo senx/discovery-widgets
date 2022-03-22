@@ -158,8 +158,7 @@ RealUseCase.args = {
       // warp.store.hbase.puts.committed is the number of datapoints committed to
       // HBase since the restart of the Store daemon
       [ $TOKEN '~warp.*committed' { 'cell' 'prod' } $NOW 10 d ] FETCH SORT
-      [ SWAP mapper.rate 1 0 0
-              if(this.) ] MAP
+      [ SWAP mapper.rate 1 0 0 ] MAP
       // Keep only 1000 datapoints per GTS
       1000 LTTB DUP
       // Detect 5 anomalies per GTS using an ESD (Extreme Studentized Deviate) Test
