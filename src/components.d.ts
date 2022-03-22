@@ -47,6 +47,7 @@ export namespace Components {
     }
     interface DiscoveryButton {
         "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -126,6 +127,7 @@ export namespace Components {
     }
     interface DiscoveryInput {
         "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;

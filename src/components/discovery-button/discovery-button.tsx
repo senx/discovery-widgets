@@ -22,6 +22,7 @@ import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
+import domtoimage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-button',
@@ -56,6 +57,7 @@ export class DiscoveryButtonComponent {
 
   private defOptions: Param = new Param();
   private LOG: Logger;
+  private root: HTMLDivElement;
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -69,6 +71,19 @@ export class DiscoveryButtonComponent {
   async resize() {
     // empty
   }
+
+  // noinspection JSUnusedLocalSymbols
+  @Method()
+  async export(type: 'png' | 'svg' = 'png') {
+    let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
+    bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
+    const dm: Param = (((this.result as unknown as DataModel) || {
+      globalParams: {bgColor}
+    }).globalParams || {bgColor}) as Param;
+    bgColor = dm.bgColor || bgColor;
+    return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
+  }
+
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryButtonComponent, this.debug);
@@ -126,7 +141,7 @@ export class DiscoveryButtonComponent {
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
-      <div class="button-wrapper"><button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/></div>
+      <div ref={el => this.root = el} class="button-wrapper"><button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/></div>
     ];
   }
 

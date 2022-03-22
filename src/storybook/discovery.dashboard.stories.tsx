@@ -439,6 +439,12 @@ $g %>
       }
       %>
     }
+    {
+      'type' 'button'
+      'title' 'button'
+      'x' 8 'y' 27 'w' 4 'h' 2
+      'macro' <% 2 2 + %>
+    }
   ]
 }`
 }

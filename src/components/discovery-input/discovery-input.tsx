@@ -24,6 +24,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import flatpickr from "flatpickr";
 import autoComplete from "@tarekraafat/autocomplete.js/dist/autoComplete.js";
+import domtoimage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-input',
@@ -96,6 +97,18 @@ export class DiscoveryInputComponent {
   @Method()
   async resize() {
     // empty
+  }
+
+  // noinspection JSUnusedLocalSymbols
+  @Method()
+  async export(type: 'png' | 'svg' = 'png') {
+    let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
+    bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
+    const dm: Param = (((this.result as unknown as DataModel) || {
+      globalParams: {bgColor}
+    }).globalParams || {bgColor}) as Param;
+    bgColor = dm.bgColor || bgColor;
+    return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
   }
 
   componentWillLoad() {
