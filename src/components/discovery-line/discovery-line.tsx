@@ -579,7 +579,7 @@ export class DiscoveryLineComponent {
         return undefined;
       case "step":
       case "step-area":
-        return 'middle';
+        return 'end';
       case "step-before":
         return 'start';
       case "step-after":
