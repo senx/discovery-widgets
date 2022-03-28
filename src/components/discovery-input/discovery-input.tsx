@@ -73,6 +73,7 @@ export class DiscoveryInputComponent {
   private flatpickrInstance: any;
   private autoCompleteJS: any;
   private checkBoxes: HTMLDivElement;
+  private pngWrapper: HTMLDivElement;
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -108,7 +109,12 @@ export class DiscoveryInputComponent {
       globalParams: {bgColor}
     }).globalParams || {bgColor}) as Param;
     bgColor = dm.bgColor || bgColor;
-    return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
+    return await domtoimage.toPng(this.type === 'input:multi-cb' || this.type == 'input:slider'
+      ? this.pngWrapper : this.root, {
+      height: this.height,
+      width: this.width,
+      bgcolor: bgColor
+    });
   }
 
   componentWillLoad() {
@@ -402,10 +408,12 @@ export class DiscoveryInputComponent {
                       ref={el => this.inputField = el as HTMLInputElement}
         />
       case "slider":
-        return <discovery-slider options={this.innerOptions}
-                                 onValueChanged={e => this.handleSelect(e)}
-                                 ref={el => this.inputField = el as HTMLDiscoverySliderElement}
-        />
+        return <div class="slider-wrapper" ref={el => this.pngWrapper = el}>
+          <discovery-slider options={this.innerOptions}
+                            onValueChanged={e => this.handleSelect(e)}
+                            ref={el => this.inputField = el as HTMLDiscoverySliderElement}
+          />
+        </div>
       case "list":
         return <select class="discovery-input" onInput={e => this.handleSelect(e)}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
@@ -416,7 +424,7 @@ export class DiscoveryInputComponent {
             <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
         </select>
       case "multi-cb":
-        return <div class="multi-cb-wrapper">
+        return <div class="multi-cb-wrapper" ref={el => this.pngWrapper = el}>
           <div class="multi-cb-layout">
             {this.innerOptions.input?.showFilter
               ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)}/>

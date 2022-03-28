@@ -17,56 +17,68 @@
 import {Dashboard} from "../model/dashboard";
 import {Tile} from "../model/tile";
 import {jsPDF} from "jspdf";
+import {Logger} from "./logger";
 
 export class PdfLib {
 
-  static async generatePDF(width: number, height: number, dashboard: Dashboard, save = true, output: string = 'blob'): Promise<any> {
-    const doc = new jsPDF({
-      unit: "pt",
-      format: [width, height],
-      orientation: width > height ? 'landscape' : 'portrait'
-    });
-    const cellSpacing = 5;
-    const xMargin = 10;
-    const cellHeight = (dashboard.cellHeight || 220) + 18;
+  static async generatePDF(width: number, height: number, dashboard: Dashboard, save = true, output: string = 'blob', LOG: Logger): Promise<any> {
+    try {
+      LOG.debug(['generatePDF'], {width, height, dashboard, save, output});
+      const doc = new jsPDF({
+        unit: "pt",
+        format: [width, height],
+        orientation: width > height ? 'landscape' : 'portrait'
+      });
+      const cellSpacing = 5;
+      const xMargin = 10;
+      const cellHeight = (dashboard.cellHeight || 220) + 18;
 
-    doc.setFontSize(32);
-    doc.text(dashboard.title, Math.round(width / 2), 30, {align: 'center', lineHeightFactor: 1});
-    doc.setFontSize(16);
-    doc.text(dashboard.description, Math.round(width / 2), 70, {align: 'center', lineHeightFactor: 1});
-    for (const t of (dashboard.tiles as Tile[])) {
-      const bounds = {
-        width: t.w * (width - xMargin * 2) / (dashboard.cols || 12) - cellSpacing * 2,
-        height: t.h * cellHeight - (!!t.title ? 30 : 0) - cellSpacing * 2
-      };
-      const tx = t.x * (width - xMargin * 2) / (dashboard.cols || 12) + bounds.width / 2 + cellSpacing + xMargin;
-      doc.setFontSize(18);
-      doc.text(t.title || '', tx, t.y * cellHeight + 90 + cellSpacing + 24, {align: 'center', lineHeightFactor: 1});
-      doc.setDrawColor("#a0a0a0");
-      doc.rect(t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,
-        t.y * cellHeight + 90 + cellSpacing - 1,
-        bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'S')
-      if (!!t.png) {
-        let png = t.png;
-        if(Array.isArray(t.png)) {
-          png = t.png[0];
+      doc.setFontSize(32);
+      doc.text(dashboard.title, Math.round(width / 2), 30, {align: 'center', lineHeightFactor: 1});
+      doc.setFontSize(16);
+      doc.text(dashboard.description, Math.round(width / 2), 70, {align: 'center', lineHeightFactor: 1});
+      LOG.debug(['generatePDF'], 'title and desc done');
+      for (const t of (dashboard.tiles as Tile[])) {
+        LOG.debug(['generatePDF'], 'generate tile', t);
+        const bounds = {
+          width: t.w * (width - xMargin * 2) / (dashboard.cols || 12) - cellSpacing * 2,
+          height: t.h * cellHeight - (!!t.title ? 30 : 0) - cellSpacing * 2
+        };
+        const tx = t.x * (width - xMargin * 2) / (dashboard.cols || 12) + bounds.width / 2 + cellSpacing + xMargin;
+        doc.setFontSize(18);
+        doc.text(t.title || '', tx, t.y * cellHeight + 90 + cellSpacing + 24, {align: 'center', lineHeightFactor: 1});
+        doc.setDrawColor("#a0a0a0");
+        doc.rect(t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,
+          t.y * cellHeight + 90 + cellSpacing - 1,
+          bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'S')
+        if (!!t.png && t.png !== 'data:,') {
+          let png = t.png;
+          if (Array.isArray(t.png)) {
+            png = t.png[0];
+          }
+          const resized = PdfLib.fitRectIntoBounds(await PdfLib.getImageDimensions(png), bounds);
+          doc.addImage(png,
+            t.x * (width - xMargin * 2) / (dashboard.cols || 12) + (bounds.width - resized.width) / 2 + cellSpacing + xMargin,
+            t.y * cellHeight + 90 + cellSpacing + (bounds.height - resized.height) / 2 + (!!t.title ? 30 : 0),
+            resized.width, resized.height
+          );
         }
-        const resized = PdfLib.fitRectIntoBounds(await PdfLib.getImageDimensions(png), bounds);
-        doc.addImage(png,
-          t.x * (width - xMargin * 2) / (dashboard.cols || 12) + (bounds.width - resized.width) / 2 + cellSpacing + xMargin,
-          t.y * cellHeight + 90 + cellSpacing + (bounds.height - resized.height) / 2 + (!!t.title ? 30 : 0),
-          resized.width, resized.height
-        );
+        LOG.debug(['generatePDF'], 'generate tile done', t);
       }
-    }
-    if (!!save) {
-      doc.save(dashboard.title + ".pdf");
-      return Promise.resolve();
-    } else {
-      return Promise.resolve({
-        data: doc.output(output as any, {filename: dashboard.title + ".pdf"}),
-        filename: dashboard.title + ".pdf"
-      })
+      if (!!save) {
+        LOG.debug(['generatePDF'], 'save');
+        doc.save(dashboard.title + ".pdf");
+        LOG.debug(['generatePDF'], 'save done');
+        return Promise.resolve();
+      } else {
+        LOG.debug(['generatePDF'], 'out');
+        const data = doc.output(output as any, {filename: dashboard.title + ".pdf"});
+        LOG.debug(['generatePDF'], 'out done');
+        return Promise.resolve({data, filename: dashboard.title + ".pdf"})
+      }
+    } catch (e) {
+      LOG.error(['generatePDF'], e);
+      return Promise.reject(e);
     }
   }
 

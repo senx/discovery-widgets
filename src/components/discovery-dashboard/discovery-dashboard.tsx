@@ -127,7 +127,7 @@ export class DiscoveryDashboardComponent {
       const win = Utils.getContentBounds(this.dash);
       const struct = await this.getDashboardStructure();
       this.LOG.debug(['getPDF'], struct);
-      return await PdfLib.generatePDF(win.w, win.h, struct, save, output);
+      return await PdfLib.generatePDF(win.w, win.h, struct, save, output, this.LOG);
     } catch (e) {
       this.LOG.error(['getPDF'], e);
     }

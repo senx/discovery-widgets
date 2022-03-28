@@ -79,6 +79,11 @@
     }
   }
 
+  .slider-wrapper {
+    height: 100%;
+    width: 100%;
+  }
+
   .multi-cb-wrapper {
     display: flex;
     flex-direction: column;
@@ -94,6 +99,7 @@
       display: flex;
       flex-direction: column;
     }
+
     .multi-cb-list-wrapper {
       overflow-y: auto;
       height: 100%;

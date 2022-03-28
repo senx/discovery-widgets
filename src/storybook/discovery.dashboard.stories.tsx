@@ -76,10 +76,11 @@ debug options='${JSON.stringify(options)}'
     const dash = document.getElementById('dash');
     document.getElementById('pdf').addEventListener('click', () => {
       dash.getPDF(false, 'blob').then(data => {
-        const file = new Blob([data.data], {type: 'application/pdf'});
+        console.log("PDF done");
+       const file = new Blob([data.data], {type: 'application/pdf'});
        const fileURL = URL.createObjectURL(file);
        window.open(fileURL, data.filename);
-      });
+      }).catch(e => console.error(e));
     });
 </script>`;
 
