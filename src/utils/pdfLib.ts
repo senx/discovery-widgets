@@ -34,8 +34,8 @@ export class PdfLib {
       const xMargin = 10;
       const cellHeight = (dashboard.cellHeight || 220) + 18;
       doc.setFillColor(dashboard.bgColor);
-      doc.rect(0,0,width, height, 'F');
-      const fontColor = ColorLib.hexToRgb(dashboard.fontColor);
+      doc.rect(0, 0, width, height, 'F');
+      const fontColor = ColorLib.hexToRgb(dashboard.fontColor) || [0, 0, 0];
       doc.setTextColor(fontColor[0], fontColor[1], fontColor[2]);
       doc.setFontSize(32);
       doc.text(dashboard.title, Math.round(width / 2), 30, {align: 'center', lineHeightFactor: 1});
