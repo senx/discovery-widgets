@@ -640,7 +640,7 @@ export class DiscoveryLineComponent {
   }
 
   @Method()
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(type: 'png' | 'svg' = 'png'): Promise<string> {
     return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
   }
 

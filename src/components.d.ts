@@ -10,8 +10,8 @@ import { ChartType } from "./model/types";
 import { Param } from "./model/param";
 import { XAXisOption } from "echarts/types/dist/shared";
 import { DiscoveryEvent } from "./model/discoveryEvent";
-import { Tile } from "./model/tile";
 import { Dashboard } from "./model/dashboard";
+import { Tile } from "./model/tile";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
@@ -75,7 +75,7 @@ export namespace Components {
         "cols": number;
         "dashboardTitle": string;
         "debug": boolean;
-        "getDashboardStructure": () => Promise<any>;
+        "getDashboardStructure": () => Promise<Dashboard>;
         "getPDF": (save?: boolean, output?: string) => Promise<any>;
         "options": Param | string;
         "type": 'scada' | 'dashboard' | 'flex';
@@ -255,7 +255,7 @@ export namespace Components {
         "chartTitle": string;
         "debug": boolean;
         "exec": (refresh?: boolean) => Promise<void>;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>;
         "hide": (regexp: string) => Promise<void>;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
@@ -272,7 +272,7 @@ export namespace Components {
     interface DiscoveryTileResult {
         "chartTitle": string;
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "options": Param | string;

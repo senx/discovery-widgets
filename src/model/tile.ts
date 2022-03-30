@@ -33,4 +33,5 @@ export class Tile {
   elem?: HTMLDiscoveryTileElement | HTMLDiscoveryTileResultElement;
   png?: string;
   uid?: string;
+  bgColor?: string;
 }

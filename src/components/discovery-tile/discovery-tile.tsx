@@ -178,8 +178,12 @@ export class DiscoveryTileComponent {
   }
 
   @Method()
-  async export(type: 'png' | 'svg' = 'png') {
-    return this.tileResult.export(type);
+  async export(type: 'png' | 'svg' = 'png'): Promise<{ dataUrl: string, bgColor: string }> {
+    if(this.tileResult) {
+      return this.tileResult.export(type);
+    } else {
+      return undefined;
+    }
   }
 
   @Method()

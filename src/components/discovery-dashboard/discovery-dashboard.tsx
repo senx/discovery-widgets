@@ -134,12 +134,13 @@ export class DiscoveryDashboardComponent {
   }
 
   @Method()
-  async getDashboardStructure(): Promise<any> {
+  async getDashboardStructure(): Promise<Dashboard> {
     const result = Utils.clone(this.result);
     const tiles = Utils.clone(this.tiles);
-    const res = await Promise.all(tiles.map((t => t.elem?.export('png'))));
+    const res:  {dataUrl: string, bgColor: string }[] = await Promise.all(tiles.map((t => t.elem?.export('png'))));
     for (let i = 0; i < tiles.length; i++) {
-      tiles[i].png = res[i];
+      tiles[i].png = res[i]?.dataUrl;
+      tiles[i].bgColor = res[i]?.bgColor;
       tiles[i].uid = uuidv4();
       delete tiles[i].macro;
       delete tiles[i].data;
@@ -149,6 +150,9 @@ export class DiscoveryDashboardComponent {
     result.tiles = tiles;
     result.cellHeight = result.cellHeight || this.cellHeight || 220;
     result.cols = result.cols || this.cols || 12;
+    result.bgColor = Utils.getCSSColor(this.el, '--warp-view-dashboard-background', '#fff');
+    result.fontColor = Utils.getCSSColor(this.el, '--gts-stack-font-color', '#000');
+    console.log(result)
     return {...new Dashboard(), ...result};
   }
 

@@ -41,13 +41,13 @@ Type: `Promise<void>`
 
 
 
-### `export(type?: 'png' | 'svg') => Promise<any>`
+### `export(type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<{ dataUrl: string; bgColor: string; }>`
 
 
 

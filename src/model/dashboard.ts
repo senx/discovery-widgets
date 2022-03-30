@@ -26,4 +26,6 @@ export class Dashboard {
   options?: Param;
   cols = 12;
   cellHeight = 220;
+  bgColor: string = '#fff';
+  fontColor: string = '#000';
 }

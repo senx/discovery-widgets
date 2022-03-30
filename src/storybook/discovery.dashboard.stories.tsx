@@ -631,54 +631,6 @@ CustomStylePerTile.args = {
   `
 }
 
-
-const TemplatePdf = ({url, ws, options, title, cols, cellHeight}) => `
-<div class="card" style="width: 100%;min-height: 500px">
-  <div class="card-body">
-    <discovery-dashboard url="${url}"
-    id="dash"
-    dashboard-title="${title ? title : ''}"
-    @draw="${event => console.error('foo', 'bar', event)}"
-    cols="${cols}" cell-height="${cellHeight}"
-    debug options='${JSON.stringify(options)}'
-    >${ws}</discovery-dashboard>
-    <pre><code id="code"></code></pre>
-  </div>
-   <div class="card-footer">
-    <button id="struct" class="btn btn-primary">Get Struct</button>
-    <button id="pdf" class="btn btn-primary">PDF in new TAB</button>
-    <button id="pdfDL" class="btn btn-primary">PDF Download</button>
-  </div>
-</div>
-<!--suppress JSUnresolvedFunction -->
-<script>
-    const dash = document.getElementById('dash');
-    document.getElementById('struct').addEventListener('click', () => {
-      dash.getDashboardStructure().then(r => {
-        console.log(r);
-        document.getElementById('code').innerText = JSON.stringify(r, null, 2);
-      });
-    });
-    document.getElementById('pdf').addEventListener('click', () => {
-      dash.getPDF(false, 'blob').then(data => {
-       console.log(data);
-        const file = new Blob([data.data], {type: 'application/pdf'});
-
-       const fileURL = URL.createObjectURL(file);
-
-       window.open(fileURL, data.filename);
-      });
-    });
-    document.getElementById('pdfDL').addEventListener('click', () => dash.getPDF().then(data => console.log(data)));
-</script>
-`;
-
-export const PdfExport = TemplatePdf.bind({});
-PdfExport.args = {
-  ...Usage.args,
-  cellHeight: 180
-}
-
 export const TileOverFlow = Usage.bind({});
 TileOverFlow.args = {
   ...Usage.args,

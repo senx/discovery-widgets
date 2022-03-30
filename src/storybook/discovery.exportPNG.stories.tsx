@@ -20,7 +20,7 @@ import tile from "./discovery.tile.stories";
 
 export default {
   ...tile,
-  title: 'Events/PNG export',
+  title: 'Exports/PNG',
 };
 
 [

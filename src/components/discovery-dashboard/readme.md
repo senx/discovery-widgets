@@ -30,13 +30,13 @@
 
 ## Methods
 
-### `getDashboardStructure() => Promise<any>`
+### `getDashboardStructure() => Promise<Dashboard>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<Dashboard>`
 
 
 

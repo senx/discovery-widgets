@@ -419,10 +419,11 @@ export class DiscoveryTileResultComponent {
   }
 
   @Method()
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(type: 'png' | 'svg' = 'png'): Promise<{ dataUrl: string, bgColor: string }> {
     // tslint:disable:no-string-literal
     if (this.tile && this.tile['export']) {
-      return (this.tile as any).export(type);
+      const dataUrl = await (this.tile as any).export(type);
+      return {dataUrl, bgColor: Utils.getCSSColor(this.tileElem, '--warp-view-tile-background', '#fff')}
     } else {
       return undefined;
     }
