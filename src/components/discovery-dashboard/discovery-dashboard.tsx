@@ -152,7 +152,6 @@ export class DiscoveryDashboardComponent {
     result.cols = result.cols || this.cols || 12;
     result.bgColor = Utils.getCSSColor(this.el, '--warp-view-dashboard-background', '#fff');
     result.fontColor = Utils.getCSSColor(this.el, '--gts-stack-font-color', '#000');
-    console.log(result)
     return {...new Dashboard(), ...result};
   }
 

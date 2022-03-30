@@ -32,7 +32,6 @@ export class PdfLib {
       });
       const cellSpacing = 5;
       const xMargin = 10;
-      console.log(dashboard)
       const cellHeight = (dashboard.cellHeight || 220) + 18;
       doc.setFillColor(dashboard.bgColor);
       doc.rect(0,0,width, height, 'F');
