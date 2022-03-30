@@ -75,34 +75,42 @@ WithAutoRefresh.args = {
   options: {...new Param(), autoRefresh: 1}
 }
 
-export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => `<div style="width: 100%; min-height: 500px;background-color: #404040">
+export const WithCustomStyle = ({url, ws, lang, options, unit, title, type}) => `
 <style>
 :root {
+--warp-view-dashboard-background:  #333540;
     --wc-split-gutter-color: #404040;
     --warp-view-pagination-bg-color: #343a40 !important;
     --warp-view-pagination-border-color: #6c757d;
     --warp-view-datagrid-odd-bg-color: rgba(255, 255, 255, .05);
-    --warp-view-datagrid-odd-color: #ffffff;
+    --warp-view-datagrid-odd-color: #FFFFFF;
     --warp-view-datagrid-even-bg-color: #212529;
-    --warp-view-datagrid-even-color: #ffffff;
-    color: #ffffff;
-    --warp-view-font-color: #ffffff;
-    --warp-view-chart-label-color: #ffffff;
-    --gts-stack-font-color: #ffffff;
+    --warp-view-datagrid-even-color: #FFFFFF;
+    --warp-view-font-color: #FFFFFF;
+    --warp-view-chart-label-color: #FFFFFF;
+    --gts-stack-font-color: #FFFFFF;
     --warp-view-resize-handle-color: #111111;
     --warp-view-chart-legend-bg: #000;
     --gts-labelvalue-font-color: #ccc;
-    --gts-separator-font-color: #fff;
+    --gts-separator-font-color: #FFFFFF;
     --gts-labelname-font-color: rgb(105, 223, 184);
     --gts-classname-font-color: rgb(126, 189, 245);
-    --warp-view-chart-legend-color: #fff;
-    --wc-tab-header-color: #fff;
+    --warp-view-chart-legend-color: #FFFFFF;
+    --wc-tab-header-color: #FFFFFF;
     --wc-tab-header-selected-color: #404040;
-    }
+    --warp-view-tile-background: #3A3C46;
+    --warp-view-bg-color: #3A3C46;
+    --warp-view-modal-bg-color: #333540;
+  }
 </style>
+<div style="height: 600px;width: 100%;min-height: 100px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+      <div class="card-body">
     <discovery-tile url="${url}" type="${type}" lang="${lang}"
         unit="${unit || ''}" chart-title="${title || ''}" debug
     options='${JSON.stringify(options)}'>${ws}</discovery-tile>
+    </div>
+    </div>
 </div>`;
 WithCustomStyle.args = {
   ...InitialUsage.args,
