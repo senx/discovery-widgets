@@ -442,6 +442,7 @@ const KitchenSinkDarkTemplate = ({url, ws, options, title, cellHeight}) => `
 <style>
 :root {
 --warp-view-dashboard-background:  #333540;
+    --warp-view-bg-color: #3A3C46;
     --wc-split-gutter-color: #404040;
     --warp-view-pagination-bg-color: #343a40 !important;
     --warp-view-pagination-border-color: #6c757d;
