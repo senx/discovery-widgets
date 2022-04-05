@@ -72,7 +72,7 @@ export class DiscoverySlider {
     let options = Utils.mergeDeep<Param>({
       ...new Param(),
       input: {
-        min: 0, max: 100, horizontal: true, showTicks: true
+        min: 0, max: 100, horizontal: true, showTicks: true, step: 1
       }
     }, this.innerOptions || {}) as Param;
     this.innerOptions = {...options};
@@ -131,15 +131,19 @@ export class DiscoverySlider {
       start,
       connect: this.innerOptions.input?.progress || this.progress ? 'lower' : false,
       orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
-      tooltips: true,
+      tooltips: this.innerOptions.timeMode === 'date' ? true : {
+        to: v => parseFloat((v).toFixed(14)),
+        from: v => parseFloat((v).toFixed(14))
+      },
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
       range: minmax,
       pips: this.innerOptions.input?.showTicks ? {
-        mode: 'steps',
-        stepped: false,
+        mode: 'positions',
+        values: [0, 25, 50, 75, 100],
+        stepped: true,
         density: 4,
         format,
       } as any : undefined
-    } as any;
+    } as any
   }
 }

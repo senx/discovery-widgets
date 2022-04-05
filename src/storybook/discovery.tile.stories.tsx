@@ -317,7 +317,6 @@ const TileResultChangeTypeTemplate = ({result, options}) => `
             <discovery-tile-result options="${JSON.stringify(options)}" type="area"
             id="chart1"
             debug
-            options='${JSON.stringify(options)}'
             result='${JSON.stringify(result)}'
             ></discovery-tile-result>
     </div>

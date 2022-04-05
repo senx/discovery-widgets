@@ -76,6 +76,18 @@ WithDates.args = {
   }
 };
 
+export const Test = InitialUsage.bind({});
+Test.args = {
+  options: {
+    ...new Param(),
+    input: {
+      min: 0,
+      max: 48,
+      value: 15,
+    }
+  }
+};
+
 
 const SetValueTemplate = ({options, progress}) => `
 <div class="card" style="width: 100%;">

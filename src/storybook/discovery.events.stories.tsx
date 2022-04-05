@@ -116,21 +116,16 @@ Usage.args = {
             RAND 100 * ROUND 'v' STORE
             <% $v 33 < %> <% '#77BE6955' %>  <% $v 66 < %> <% '#FF983055' %> <% '#F2486555' %> 2 SWITCH 'color' STORE
             <% $v 33 < %> <% '#77BE69' %>  <% $v 66 < %> <% '#FF9830' %> <% '#F24865' %> 2 SWITCH 'color2' STORE
-
             <% $v 33 < %>
             <% 'https://images.unsplash.com/photo-1580725869538-9b164c27c44f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1489&q=80' %>
             <% $v 66 < %> <% 'https://images.unsplash.com/photo-1428592953211-077101b2021b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80' %>
             <% 'https://images.unsplash.com/photo-1500670602153-5e2dd3c75f20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1490&q=80' %>
             2 SWITCH 'bg' STORE
-
-
             <% $v 33 < %>
             <% 'https://soundbible.com/grab.php?id=1818&type=mp3' %>
             <% $v 66 < %> <% 'https://soundbible.com/grab.php?id=2015&type=mp3' %>
             <% 'https://soundbible.com/grab.php?id=1937&type=mp3' %>
             2 SWITCH 'sound' STORE
-
-
             'data' $v
             'events' [
               { 'tags' [ 'random' ] 'type' 'data' 'value' { 'data' $v  'params' [ { 'maxValue' 100 } ]  } }
@@ -876,6 +871,37 @@ Test2.args = {
       'title' 'Event var receiver'
       'w' 2 'h' 1 'x' 2 'y' 0
       'macro' <% $myVar %>
+      'options' { 'eventHandler' 'type=(variable),tag=random' }
+    }
+  ]
+}`
+}
+
+
+export const Test3 = Template.bind({});
+Test3.args = {
+  ...Usage.args,
+  ws: `
+{
+  'title' 'My Dashboard With events'
+  'vars' {
+    'myVar' [ NOW 10 d - NOW ]
+  }
+  'tiles' [
+    {
+      'type' 'input:date-range'
+      'title' 'Input emitter'
+      'options' {
+        'button' { 'label' 'Send' }
+      }
+      'w' 2 'h' 1 'x' 0 'y' 0
+      'macro' <% { 'data' $myVar 'events' [ { 'tags' [ 'random' ] 'type' 'variable' 'selector' 'myVar' } ] } %>
+    }
+    {
+      'type' 'display'
+      'title' 'Event var receiver'
+      'w' 10 'h' 1 'x' 2 'y' 0
+      'macro' <% <% 'Var' STORE $Var 0 GET ISO8601 ' -> ' + $Var 1 GET ISO8601 + %> 'aa' STORE $myVar @aa %>
       'options' { 'eventHandler' 'type=(variable),tag=random' }
     }
   ]
