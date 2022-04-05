@@ -81,7 +81,9 @@
 
   .slider-wrapper {
     height: 100%;
-    width: 100%;
+    width: calc(100% - 50px);
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .multi-cb-wrapper {

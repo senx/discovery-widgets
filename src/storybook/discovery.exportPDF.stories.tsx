@@ -545,3 +545,25 @@ PdfExport.args = {
   ...Usage.args,
   cellHeight: 180
 }
+
+export const TestSliderExport = TemplatePdf.bind({});
+TestSliderExport.args = {
+  ...Usage.args,
+  cellHeight: 180,
+  ws: `{
+   'tiles' [
+     {
+       'type' 'input:slider'
+       'title' 'Slider'
+       'x' 0 'y' 0 'w' 12 'h' 2
+       'options' {
+         'min' 0
+         'max' 100
+         'step' 1
+         'value' 50
+       }
+       'macro' <% %>
+     }
+   ]
+  }`
+}
