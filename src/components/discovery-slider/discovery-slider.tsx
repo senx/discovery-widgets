@@ -14,13 +14,14 @@
  *   limitations under the License.
  */
 
-import {Component, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {Logger} from "../../utils/logger";
 import noUiSlider from 'nouislider';
 import {API} from "nouislider/src/nouislider";
 import {GTSLib} from "../../utils/gts.lib";
 import {Param} from "../../model/param";
 import {Utils} from "../../utils/utils";
+import domtoimage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-slider',
@@ -37,6 +38,8 @@ export class DiscoverySlider {
 
   @Event() valueChanged: EventEmitter<number>;
   @Event() startDrag: EventEmitter<void>;
+  @Element() el: HTMLElement;
+
 
   private sliderDiv: HTMLDivElement;
   private LOG: Logger;
@@ -71,9 +74,7 @@ export class DiscoverySlider {
     }
     let options = Utils.mergeDeep<Param>({
       ...new Param(),
-      input: {
-        min: 0, max: 100, horizontal: true, showTicks: true, step: 1
-      }
+      input: {min: 0, max: 100, horizontal: true, showTicks: true, step: 1}
     }, this.innerOptions || {}) as Param;
     this.innerOptions = {...options};
     this.LOG.debug(['componentWillLoad'], this.innerOptions);
@@ -96,6 +97,15 @@ export class DiscoverySlider {
   async setValue(value: number) {
     this.innerValue = value;
     this.slider.set(value);
+  }
+
+  // noinspection JSUnusedLocalSymbols
+  @Method()
+  async export(type: 'png' | 'svg' = 'png', bgColor: string) {
+    const dims = Utils.getContentBounds(this.sliderDiv);
+    const width = dims.w - 15;
+    const height = dims.h;
+    return await domtoimage.toPng(this.sliderDiv, {height, width, bgcolor: bgColor});
   }
 
   render() {

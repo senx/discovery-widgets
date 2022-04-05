@@ -218,6 +218,7 @@ export namespace Components {
     }
     interface DiscoverySlider {
         "debug": boolean;
+        "export": (type: 'png' | 'svg', bgColor: string) => Promise<any>;
         "options": Param | string;
         "progress": boolean;
         "setValue": (value: number) => Promise<void>;

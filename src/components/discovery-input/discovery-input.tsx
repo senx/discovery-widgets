@@ -103,18 +103,25 @@ export class DiscoveryInputComponent {
   // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
+    const dims = Utils.getContentBounds(this.type === 'input:multi-cb' || this.type == 'input:slider'
+      ? this.pngWrapper : this.root);
+    this.width = dims.w - 15;
+    this.height = dims.h;
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.result as unknown as DataModel) || {
       globalParams: {bgColor}
     }).globalParams || {bgColor}) as Param;
     bgColor = dm.bgColor || bgColor;
-    return await domtoimage.toPng(this.type === 'input:multi-cb' || this.type == 'input:slider'
-      ? this.pngWrapper : this.root, {
-      height: this.height,
-      width: this.width,
-      bgcolor: bgColor
-    });
+    if (this.type == 'input:slider') {
+      return await (this.inputField as HTMLDiscoverySliderElement).export(type, bgColor);
+    } else {
+      return await domtoimage.toPng(this.type === 'input:multi-cb' ? this.pngWrapper : this.root, {
+        height: this.height,
+        width: this.width,
+        bgcolor: bgColor
+      });
+    }
   }
 
   componentWillLoad() {

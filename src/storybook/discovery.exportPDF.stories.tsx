@@ -528,12 +528,10 @@ const TemplatePdf = ({url, ws, options, title, cols, cellHeight}) => `
     });
     document.getElementById('pdf').addEventListener('click', () => {
       dash.getPDF(false, 'blob').then(data => {
-       console.log(data);
+        console.log(data);
         const file = new Blob([data.data], {type: 'application/pdf'});
-
-       const fileURL = URL.createObjectURL(file);
-
-       window.open(fileURL, data.filename);
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL, data.filename);
       });
     });
     document.getElementById('pdfDL').addEventListener('click', () => dash.getPDF().then(data => console.log(data)));
@@ -546,7 +544,7 @@ PdfExport.args = {
   cellHeight: 180
 }
 
-export const TestSliderExport = TemplatePdf.bind({});
+export const TestSliderExport = KitchenSinkDarkTemplate.bind({});
 TestSliderExport.args = {
   ...Usage.args,
   cellHeight: 180,
@@ -557,10 +555,13 @@ TestSliderExport.args = {
        'title' 'Slider'
        'x' 0 'y' 0 'w' 12 'h' 2
        'options' {
+        'input' {
          'min' 0
          'max' 100
          'step' 1
          'value' 50
+         'progress' true
+         }
        }
        'macro' <% %>
      }

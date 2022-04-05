@@ -24,6 +24,16 @@
 
 ## Methods
 
+### `export(type: 'png' | 'svg', bgColor: string) => Promise<any>`
+
+
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
 ### `setValue(value: number) => Promise<void>`
 
 
