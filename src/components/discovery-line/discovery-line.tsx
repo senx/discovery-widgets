@@ -257,7 +257,7 @@ export class DiscoveryLineComponent {
           animation: false,
           large: true,
           showSymbol: this.type === 'scatter' || this.innerOptions.showDots,
-          smooth: type === 'spline' || type === 'spline-area' ? 0.4 : undefined,
+          smooth: type === 'spline' || type === 'spline-area' ? 0.2 : undefined,
           clip: false,
           step: DiscoveryLineComponent.getStepShape(type),
           areaStyle: type === 'area' || type === 'step-area' || type === 'spline-area' ? {
