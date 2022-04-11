@@ -359,20 +359,43 @@ export class GTSLib {
   static toISOString(timestamp: number, divider: number, timeZone: string, timeFormat: string) {
     const locale = window.navigator['userLanguage'] || window.navigator.language;
     moment.updateLocale(locale.split('-')[0], {});
+    timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     if (timeZone !== 'UTC') {
-      return tz(timestamp / divider, timeZone).format(timeFormat);
+      return tz(timestamp / divider, timeZone).format(timeFormat || 'YYYY-MM-DD HH:mm:ss.SSS');
     } else {
-      return !!timeFormat
-        ? moment(timestamp / divider).format(timeFormat)
-        : moment(timestamp / divider).toISOString();
+      return moment.utc(timestamp / divider).format(timeFormat || 'YYYY-MM-DD HH:mm:ss.SSS');
     }
   }
 
   static toTimestamp(date: string, divider: number, timeZone: string) {
+    timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     if (timeZone !== 'UTC') {
       return tz(date, timeZone).utc().valueOf() * divider;
     } else {
       return moment.utc(date).valueOf() * divider;
     }
+  }
+
+  /**
+   * Will hard-shift a timestamp so that, if rendered in current timezone, it will look as it is instead
+   * into the desired timezone.
+   */
+  static utcToZonedTime(utcTime: number, divider: number = 1, timeZone: string = 'UTC') {
+    timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
+    const ourTimezone = tz.guess();
+    const ourOffsetInMillis = tz(moment.utc(utcTime / divider), ourTimezone).utcOffset() * 60000;
+    const givenTimezoneOffsetInMillis = tz(moment.utc(utcTime / divider), timeZone || 'UTC').utcOffset() * 60000;
+    return utcTime / divider + givenTimezoneOffsetInMillis - ourOffsetInMillis;
+  }
+
+  /**
+   * Will revert what utcToZonedTime had done.
+   */
+  static zonedTimeToUtc(zonedTime: number, divider: number, timeZone: string = 'UTC') {
+    timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
+    const ourTimezone = tz.guess();
+    const ourOffsetInMillis = tz(moment.utc(zonedTime / divider), ourTimezone).utcOffset() * 60000;
+    const givenTimezoneOffsetInMillis = tz(moment.utc(zonedTime / divider), timeZone || 'UTC').utcOffset() * 60000;
+    return zonedTime / divider - givenTimezoneOffsetInMillis + ourOffsetInMillis;
   }
 }
