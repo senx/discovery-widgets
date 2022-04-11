@@ -84,10 +84,10 @@ export class DiscoverySlider {
   componentDidLoad() {
     this.innerValue = this.innerValue || this.innerOptions.input?.value as number || this.innerOptions.input?.min || 0;
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
-    this.slider.on('end', e => {
+    this.slider.on('set', (values, handle, unencoded) => {
       const r = this.innerOptions.timeMode === 'date'
-        ? GTSLib.toTimestamp((e[0] as string).replace('<br />', 'T') + 'Z', this.divider, this.innerOptions.timeZone)
-        : Number(e[0]);
+        ? GTSLib.zonedTimeToUtc(unencoded[0] || 0, 1, this.innerOptions.timeZone)
+        : Number(unencoded[0] || 0);
       this.valueChanged.emit(r);
     });
     this.slider.on('start', () => this.startDrag.emit());
@@ -122,13 +122,12 @@ export class DiscoverySlider {
     const range = minmax.max - minmax.min;
     const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
     const format = {
-      to: v => {
-        return this.innerOptions.timeMode === 'date'
-          ? GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
-            ?.replace('T', '<br />').replace('Z', '')
-          : v;
-      },
+      to: v => this.innerOptions.timeMode === 'date'
+        ? (GTSLib.toISOString(GTSLib.zonedTimeToUtc(v, 1, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
+          this.innerOptions.timeFormat) || '')
+          .replace('T', '<br />').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+        : v
+      ,
       from: Number
     };
     if (this.innerOptions.timeMode === 'date') {

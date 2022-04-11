@@ -18,6 +18,7 @@ import readme from '../components/discovery-slider/readme.md';
 
 import {action} from "@storybook/addon-actions";
 import {Param} from "../model/param";
+import moment from "moment";
 
 export default {
   title: 'UI/Slider',
@@ -62,17 +63,50 @@ InitialUsage.args = {
 };
 
 export const WithDates = InitialUsage.bind({});
+
+function getDate() {
+  return moment.utc();
+}
+
 WithDates.args = {
   options: {
     ...new Param(),
     timeMode: 'date',
     input: {
-      min: 1643291469951990,
-      max: 1643896256873055,
-      value: 1643723480406273,
-      step: 86400000000,
+      min: getDate().subtract(2, 'h').valueOf() * 1000,
+      max: getDate().valueOf() * 1000,
+      value: getDate().subtract(1, 'h').valueOf() * 1000,
+      step: 60 * 1000 * 1000,
       progress: true
     }
+  }
+};
+
+export const WithCustomTimeZone = InitialUsage.bind({});
+WithCustomTimeZone.args = {
+  ...WithDates.args,
+  options: {
+    ...WithDates.args.options,
+    timeZone: 'America/Buenos_Aires',
+  }
+};
+
+export const WithAutoTimeZone = InitialUsage.bind({});
+WithAutoTimeZone.args = {
+  ...WithDates.args,
+  options: {
+    ...WithDates.args.options,
+    timeZone: 'AUTO'
+  }
+};
+
+export const WithFullDateFormatAndCustomFormat = InitialUsage.bind({});
+WithFullDateFormatAndCustomFormat.args = {
+  ...WithDates.args,
+  options: {
+    ...WithDates.args.options,
+    timeFormat: 'ddd DD MMM YY HH:mm:ss',
+    fullDateDisplay: true
   }
 };
 

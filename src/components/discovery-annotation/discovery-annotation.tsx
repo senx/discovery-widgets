@@ -195,7 +195,7 @@ export class DiscoveryAnnotation {
             this.innerOptions.timeMode === 'timestamp'
               ? params[0].value[0]
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                this.innerOptions.timeFormat) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
             const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
