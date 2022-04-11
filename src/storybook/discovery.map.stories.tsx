@@ -128,10 +128,28 @@ export const PathUsage = Usage.bind({});
 PathUsage.args = {
   ...InitialUsage.args,
   ws: `NEWGTS 'g' STORE
-1 6 <% 'ts' STORE $g $ts RAND 1000 * RAND 1000 * RAND RAND ADDVALUE DROP %> FOR
+1 6 <% 'ts' STORE $g $ts RAND + STU * NOW + RAND 50 * RAND 50 * RAND RAND ADDVALUE DROP %> FOR
 { 'data' $g 'params' [ { 'marker' 'home' 'render' 'path' 'line' true } ] }`,
   options: {...Usage.options}
 }
+
+export const PathUsageWithCustomTimeZone = Usage.bind({});
+PathUsageWithCustomTimeZone.args = {
+  ...PathUsage.args,
+  options: {...new Param(), timeZone: 'America/Buenos_Aires'}
+};
+
+export const PathUsageWithAutoTimeZone = Usage.bind({});
+PathUsageWithAutoTimeZone.args = {
+  ...PathUsage.args,
+  options: {...new Param(), timeZone: 'AUTO'}
+};
+
+export const PathUsageWithFullDateFormatAndCustomFormat = Usage.bind({});
+PathUsageWithFullDateFormatAndCustomFormat.args = {
+  ...PathUsage.args,
+  options: {...new Param(), timeFormat: 'ddd DD MMM YY HH:mm:ss', fullDateDisplay: true}
+};
 
 export const NoData = Usage.bind({});
 NoData.args = {

@@ -409,6 +409,7 @@ export class DiscoveryMapComponent {
       this.map.setView(
         [
           this.currentLat || this.mapOpts.startLat || 0,
+          this.currentLat || this.mapOpts.startLat || 0,
           this.currentLong || this.mapOpts.startLong || 0
         ],
         this.currentZoom || this.mapOpts.startZoom || 2,
@@ -547,11 +548,11 @@ export class DiscoveryMapComponent {
 
   private addPopup(positionData: any, value: any, ts: any, marker: any) {
     if (!!positionData) {
-      let date;
-      if (ts && !this.innerOptions.timeMode || this.innerOptions.timeMode !== 'timestamp') {
-        date = (GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone,
-          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-          .replace('Z', this.innerOptions.timeZone === 'UTC' ? 'Z' : '');
+      let date = ts;
+      if (ts && (this.innerOptions.timeMode || 'date') === 'date') {
+        date = (GTSLib.toISOString(GTSLib.utcToZonedTime(ts, 1, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
+          this.innerOptions.timeFormat) || '')
+          .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }
       let content = '';
       content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value || 'na'}</p>`;
