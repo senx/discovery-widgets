@@ -195,12 +195,16 @@ export class DiscoveryBarComponent {
           ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
-            let ts: number | string = d[0];
-            if (this.innerOptions.timeMode === 'date' && !this.innerOptions.fullDateDisplay) {
-              ts = GTSLib.toISOString(d[0], this.divider, this.innerOptions.timeZone,
-                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
-                .replace('T', '\n').replace('Z', '');
-            }
+            // let ts: number | string = d[0];
+            const ts = this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
+              : d[0];
+            /*if (this.innerOptions.timeMode === 'date') {
+              ts = GTSLib.toISOString(GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone), this.divider,
+                this.innerOptions.timeZone,
+                this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
+            }*/
             if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
               return [d[d.length - 1], ts];
             } else {
@@ -243,9 +247,11 @@ export class DiscoveryBarComponent {
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-             (GTSLib.toISOString(params[0]?.value[0], 1, this.innerOptions.timeZone,
-              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-              .replace('T', ' ').replace('Z', '')}</div>
+            this.innerOptions.timeMode === 'timestamp'
+              ? params[0].value[0]
+              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
           ).join('<br>')}`;
@@ -253,12 +259,9 @@ export class DiscoveryBarComponent {
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
           if (this.hasFocus) {
-            const date = this.innerOptions.timeMode === 'date' && !this.innerOptions.fullDateDisplay
-              ? (
-                !!params[0] && !!params[0].data  && !!params[0].data[0]
-                ? GTSLib.toTimestamp(params[0].data[0].replace('\n', 'T'), this.divider, this.innerOptions.timeZone)
-                : '')
-              : params[0]?.data[0];
+            const date = this.innerOptions.timeMode === 'date'
+              ? GTSLib.zonedTimeToUtc(params[0]?.data[0] || 0, 1, this.innerOptions.timeZone) * this.divider
+              : params[0]?.data[0] || 0;
             let value = 0;
             const regexp = '(' + (params as any[]).map(s => {
               const gts = this.chartOpts.series[s.seriesIndex]
@@ -295,22 +298,31 @@ export class DiscoveryBarComponent {
         },
         axisLabel: {
           color: Utils.getLabelColor(this.el),
-          formatter: this.innerOptions.fullDateDisplay ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) : undefined
+          formatter: value =>
+            !!(this.innerOptions.bar || {horizontal: false}).horizontal
+              ? value
+              : GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
         },
         axisTick: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
           }
         },
-        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
-          ? GTSLib.toISOString(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
-          : undefined,
-        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate
-          ? GTSLib.toISOString(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
-          : undefined,
+        min:
+          !!(this.innerOptions.bar || {horizontal: false}).horizontal
+            ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined
+            : !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
+              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              : undefined,
+        max:
+          !!(this.innerOptions.bar || {horizontal: false}).horizontal
+            ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined
+            : !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate
+              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              : undefined,
       },
       yAxis: {
         name: this.unit || this.innerOptions.unit,
@@ -328,15 +340,30 @@ export class DiscoveryBarComponent {
           }
         },
         axisLabel: {
-          color: Utils.getLabelColor(this.el)
+          color: Utils.getLabelColor(this.el),
+          formatter: value =>
+            !!(this.innerOptions.bar || {horizontal: false}).horizontal
+              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              : value
         },
         axisTick: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
           }
         },
-        min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
-        max: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
+        min: !!(this.innerOptions.bar || {horizontal: false}).horizontal
+          ? !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
+            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+              .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+            : undefined
+          : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
+        max: !!(this.innerOptions.bar || {horizontal: false}).horizontal
+          ? !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate
+            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+              .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+            : undefined
+          : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
       },
       dataZoom: [
         {

@@ -44,11 +44,10 @@ WithAutoTimeZone.args = {
   options: {...new Param(), timeZone: 'AUTO'}
 };
 
-
 export const WithFullDateFormatAndCustomFormat = Usage.bind({});
 WithFullDateFormatAndCustomFormat.args = {
   ...InitialUsage.args,
-  options: {...new Param(), timeFormat: 'ddd Qo MMM YY HH:mm:ss', fullDateDisplay: true}
+  options: {...new Param(), timeFormat: 'ddd DD MMM YY HH:mm:ss', fullDateDisplay: true}
 };
 
 export const withNaN = Usage.bind({});

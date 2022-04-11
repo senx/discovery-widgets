@@ -155,7 +155,7 @@ export class DiscoveryAnnotation {
           type: 'scatter',
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [this.innerOptions.timeMode === 'date'
-            ? d[0] / this.divider
+            ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
             : d[0]
             , (this.expanded ? i : 0) + 0.5]),
           animation: false,
@@ -192,9 +192,11 @@ export class DiscoveryAnnotation {
         trigger: 'axis',
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            (GTSLib.toISOString(params[0].value[0], 1, this.innerOptions.timeZone,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-            .replace('T', ' ').replace('Z', '')}</div>
+            this.innerOptions.timeMode === 'timestamp'
+              ? params[0].value[0]
+              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
             const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
             return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
@@ -213,8 +215,8 @@ export class DiscoveryAnnotation {
           const obj = {top: 10};
           if (this.hasFocus) {
             const date = this.innerOptions.timeMode === 'date'
-              ? (params[0]?.axisValue || 0) * this.divider
-              : params[0]?.axisValue;
+              ? GTSLib.zonedTimeToUtc(params[0]?.axisValue || 0, 1, this.innerOptions.timeZone) * this.divider
+              : params[0]?.axisValue || 0;
             const regexp = '(' + (params as any[]).map(s => s.seriesName).join('|') + ')';
             this.dataPointOver.emit({date, name: regexp, value: 0, meta: {}});
           }
@@ -234,10 +236,9 @@ export class DiscoveryAnnotation {
         axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLabel: {
           color: Utils.getLabelColor(this.el),
-          formatter: this.innerOptions.fullDateDisplay
-            ? value => GTSLib.toISOString(value, 1, this.innerOptions.timeZone,
-              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
-              .replace('T', '\n').replace('Z', '')
+          formatter: this.innerOptions.fullDateDisplay ? value =>
+              GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
             : undefined
         },
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},

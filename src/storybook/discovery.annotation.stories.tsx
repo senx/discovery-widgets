@@ -35,6 +35,24 @@ InitialUsage.args = {
 %> FOR`
 };
 
+export const WithCustomTimeZone = Usage.bind({});
+WithCustomTimeZone.args = {
+  ...InitialUsage.args,
+  options: {...new Param(), timeZone: 'America/Buenos_Aires'}
+};
+
+export const WithAutoTimeZone = Usage.bind({});
+WithAutoTimeZone.args = {
+  ...InitialUsage.args,
+  options: {...new Param(), timeZone: 'AUTO'}
+};
+
+export const WithFullDateFormatAndCustomFormat = Usage.bind({});
+WithFullDateFormatAndCustomFormat.args = {
+  ...InitialUsage.args,
+  options: {...new Param(), timeFormat: 'ddd DD MMM YY HH:mm:ss', fullDateDisplay: true}
+};
+
 export const InitialUsageWithLegend = Usage.bind({});
 InitialUsageWithLegend.args = {
   ...InitialUsage.args,
