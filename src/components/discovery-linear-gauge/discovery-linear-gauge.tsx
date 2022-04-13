@@ -350,7 +350,7 @@ export class DiscoveryLinearGauge {
       width: undefined,
       height: this.height
     });
-    this.myChart.on('finished', () => {
+    this.myChart.on('rendered', () => {
       this.rendering = false;
       if (initial) {
         setTimeout(() => this.draw.emit());
@@ -384,6 +384,6 @@ export class DiscoveryLinearGauge {
   // noinspection JSUnusedLocalSymbols
   private drawChart(update = false) {
     this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
   }
 }

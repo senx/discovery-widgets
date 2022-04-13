@@ -325,7 +325,7 @@ export class DiscoveryGauge {
         width: undefined,
         height: this.height
       });
-      this.myChart.on('finished', () => {
+      this.myChart.on('rendered', () => {
         this.rendering = false;
         if (initial) {
           setTimeout(() => this.draw.emit());
@@ -366,7 +366,7 @@ export class DiscoveryGauge {
         series.push(s);
       })
       this.chartOpts.series = series;
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
     });
   }
 

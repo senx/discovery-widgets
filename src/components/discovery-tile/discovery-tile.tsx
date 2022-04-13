@@ -96,7 +96,7 @@ export class DiscoveryTileComponent {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
       this.innerVars = {...JSON.parse(this.vars), ...this.innerVars, ...res.vars};
-      if(!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
+      if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
         this.exec(true).then(() => {
         });
       }
@@ -179,7 +179,7 @@ export class DiscoveryTileComponent {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png'): Promise<{ dataUrl: string, bgColor: string }> {
-    if(this.tileResult) {
+    if (this.tileResult) {
       return this.tileResult.export(type);
     } else {
       return undefined;
@@ -188,10 +188,10 @@ export class DiscoveryTileComponent {
 
   @Method()
   async exec(refresh = false) {
-    if (!refresh) {
-      setTimeout(() => this.loaded = false);
-    }
     if (this.el.innerText && this.el.innerText !== '') {
+      if (!refresh) {
+        setTimeout(() => this.loaded = false);
+      }
       this.ws = LangUtils.prepare(
         this.el.innerText,
         this.innerVars || {},
@@ -236,7 +236,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             }
             this.LOG.debug(['exec', 'result'], this.result);
             this.execResult.emit(this.result);
-            if(toRefresh && refresh) {
+            if (toRefresh && refresh) {
               this.tileResult.parseEvents().then(() => {
               });
             }
@@ -311,7 +311,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             />
           </div>
         : <div class="discovery-tile-spinner">
-          <discovery-spinner>Requesting data...</discovery-spinner>
+          {this.showLoader ? <discovery-spinner>Requesting data...</discovery-spinner> : ''}
         </div>
       }
       {this.showLoader ? <div class="discovery-tile-spinner">

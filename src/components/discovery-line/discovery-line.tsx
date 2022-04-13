@@ -118,7 +118,7 @@ export class DiscoveryLineComponent {
   }
 
   setOpts() {
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
   }
 
   convert(data: DataModel) {
@@ -223,7 +223,6 @@ export class DiscoveryLineComponent {
       visualMap: new Array(gtsCount),
       series: []
     };
-
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts)) {
@@ -532,7 +531,7 @@ export class DiscoveryLineComponent {
         if ('top' in opts.grid) {
           opts.grid.top = 30;
         }
-        setTimeout(() => this.myChart.setOption(opts as EChartsOption));
+        setTimeout(() => this.myChart.setOption(opts as EChartsOption, true, true));
       }
     }
     return {
@@ -598,7 +597,7 @@ export class DiscoveryLineComponent {
       this.rendering = true;
       this.myChart = init(this.graph, {locale: this.innerOptions.timeZone || 'UTC'});
       let initial = false;
-      this.myChart.on('finished', () => {
+      this.myChart.on('rendered', () => {
         this.rendering = false;
         if (initial) {
           setTimeout(() => this.draw.emit());
@@ -624,7 +623,7 @@ export class DiscoveryLineComponent {
       });
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      this.myChart.setOption(this.chartOpts || {});
+      this.myChart.setOption(this.chartOpts || {}, true, true);
       initial = true;
     });
   }

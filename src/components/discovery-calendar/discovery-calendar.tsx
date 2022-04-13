@@ -45,7 +45,7 @@ export class DiscoveryCalendar {
     if (newValue !== oldValue) {
       this.chartOpts = this.convert(GTSLib.getData(this.result));
       setTimeout(() => {
-        this.myChart.setOption(this.chartOpts || {});
+        this.myChart.setOption(this.chartOpts || {}, true, true);
         this.myChart.resize({height: this.height});
       });
     }
@@ -55,7 +55,7 @@ export class DiscoveryCalendar {
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts || {});
+      this.myChart.setOption(this.chartOpts || {}, true, true);
       this.myChart.resize({height: this.height});
     });
   }
@@ -72,7 +72,7 @@ export class DiscoveryCalendar {
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
-          this.myChart.setOption(this.chartOpts || {});
+          this.myChart.setOption(this.chartOpts || {}, true, true);
           this.myChart.resize({height: this.height});
         });
       }
@@ -274,7 +274,7 @@ export class DiscoveryCalendar {
         width: this.width,
         height: this.height ? this.height - 10 : undefined
       });
-      this.myChart.on('finished', () => {
+      this.myChart.on('rendered', () => {
         this.rendering = false;
         if (initial) {
           setTimeout(() => this.draw.emit());
@@ -284,7 +284,7 @@ export class DiscoveryCalendar {
       this.myChart.on('mouseover', (event: any) => {
         this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
-      this.myChart.setOption(this.chartOpts || {});
+      this.myChart.setOption(this.chartOpts || {}, true, true);
       initial = true;
     });
   }

@@ -35,7 +35,7 @@ export class DiscoverySpinner {
       <Host>
         <div class="loader"/>
         <span class="message">{this.message}</span>
-        <span class="hidden"><slot/></span>
+        <span class="hidden"><slot /></span>
       </Host>
     );
   }

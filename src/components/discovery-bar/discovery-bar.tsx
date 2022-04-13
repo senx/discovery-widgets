@@ -64,7 +64,7 @@ export class DiscoveryBarComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
   }
 
   @Watch('options')
@@ -78,7 +78,7 @@ export class DiscoveryBarComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -195,16 +195,9 @@ export class DiscoveryBarComponent {
           ...this.getCommonSeriesParam(color),
           name: GTSLib.serializeGtsMetadata(gts),
           data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
-            // let ts: number | string = d[0];
             const ts = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
               : d[0];
-            /*if (this.innerOptions.timeMode === 'date') {
-              ts = GTSLib.toISOString(GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone), this.divider,
-                this.innerOptions.timeZone,
-                this.innerOptions.timeFormat)
-                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
-            }*/
             if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
               return [d[d.length - 1], ts];
             } else {
@@ -378,7 +371,6 @@ export class DiscoveryBarComponent {
       series
     } as EChartsOption;
     const markArea = (this.innerOptions.thresholds || [])
-      // .filter(t => !!t.fill)
       .map(t => {
         const m = [{itemStyle: {color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0)}}, {}] as any[];
         if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
@@ -422,6 +414,7 @@ export class DiscoveryBarComponent {
         data: markLine
       }
     });
+    this.parsing = false;
     return opts;
   }
 
@@ -432,7 +425,7 @@ export class DiscoveryBarComponent {
       this.rendering = true;
       let initial = false;
       this.myChart = echarts.init(this.graph);
-      this.myChart.on('finished', () => {
+      this.myChart.on('rendered', () => {
         this.rendering = false;
         if (initial) {
           setTimeout(() => this.draw.emit());
@@ -458,7 +451,7 @@ export class DiscoveryBarComponent {
       });
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      this.myChart.setOption(this.chartOpts || {});
+      this.myChart.setOption(this.chartOpts || {}, true, true);
       initial = true;
     });
   }
@@ -519,7 +512,7 @@ export class DiscoveryBarComponent {
     };
     (this.chartOpts.tooltip as any).show = true;
     this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
   }
 
   @Method()
@@ -535,7 +528,7 @@ export class DiscoveryBarComponent {
       status: 'hide'
     };
     this.myChart.dispatchAction({type: 'hideTip'});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
   }
 
 

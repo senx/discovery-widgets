@@ -96,6 +96,12 @@ Usage.args = {
   $g %> FOR`,
   options: new Param()
 }
+export const UsageWithNoData = Template.bind({});
+UsageWithNoData.args = {
+  ...Usage.args,
+  type: 'line',
+  ws: ``
+}
 export const UsageWithTitle = Template.bind({});
 UsageWithTitle.args = {
   ...Usage.args,
@@ -247,6 +253,12 @@ TileResult.args = {
     "la": 0,
     "v": [[1634139566040869, 0.04070378699014665], [1634139567040871, 0.6431964144579836], [1634139568040872, 0.0998190270856355], [1634139569040874, 0.9466145094577127], [1634139570040875, 0.3036104996230803]]
   }]
+}
+export const TileResultWithNoData = TileResultTemplate.bind({});
+TileResultWithNoData.args = {
+  ...TileResult.args,
+  type: 'bar',
+  result: []
 }
 
 

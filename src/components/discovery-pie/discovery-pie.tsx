@@ -60,14 +60,14 @@ export class DiscoveryPieComponent {
   updateType(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
       this.chartOpts = this.convert(GTSLib.getData(this.result));
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
     }
   }
 
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
   }
 
   @Watch('options')
@@ -81,7 +81,7 @@ export class DiscoveryPieComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -216,7 +216,7 @@ export class DiscoveryPieComponent {
           name: GTSLib.serializeGtsMetadata(gts),
           value
         });
-      } else if(!GTSLib.isGts(gts)) {
+      } else if (!GTSLib.isGts(gts)) {
         if (gts.hasOwnProperty('key')) {
           dataStruct.push({
             ...this.getCommonDataParam(color),
@@ -284,7 +284,7 @@ export class DiscoveryPieComponent {
         width: this.width,
         height: this.height ? this.height - 10 : undefined
       });
-      this.myChart.on('finished', () => {
+      this.myChart.on('rendered', () => {
         this.rendering = false;
         if (initial) {
           setTimeout(() => this.draw.emit());
@@ -294,7 +294,7 @@ export class DiscoveryPieComponent {
       this.myChart.on('mouseover', (event: any) => {
         this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
-      this.myChart.setOption(this.chartOpts || {});
+      this.myChart.setOption(this.chartOpts || {}, true, true);
       initial = true;
     });
   }
