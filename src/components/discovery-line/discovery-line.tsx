@@ -673,8 +673,8 @@ export class DiscoveryLineComponent {
     if (!this.myChart) return;
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
-      ? ts / this.divider
-      : ts;
+      ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
+      : ts || 0;
     let seriesIndex = 0;
     let dataIndex = 0;
     if (!!regexp) {
@@ -764,6 +764,6 @@ export class DiscoveryLineComponent {
       {this.parsing && !!this.innerOptions?.showLoader ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el as HTMLDivElement} onMouseOver={() => this.hideMarkers()}/>
-    </div>
+    </div>;
   }
 }

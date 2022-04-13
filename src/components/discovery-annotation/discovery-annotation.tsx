@@ -335,8 +335,8 @@ export class DiscoveryAnnotation {
     if (typeof ts === 'string') ts = parseInt(ts, 10);
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
-      ? ts / this.divider
-      : ts;
+      ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
+      : ts || 0;
     let seriesIndex = 0;
     let dataIndex = 0;
     if (!!regexp) {

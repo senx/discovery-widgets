@@ -63,6 +63,7 @@ const ZoomSyncUsageTemplate = ({url, ws, options, title, type, unit}) => `
   </div>
 </div>
 <script>
+window.addEventListener("DOMContentLoaded", () => {
   const chart1 = document.querySelector('#chart1');
   const chart2 = document.querySelector('#chart2');
   chart1.addEventListener('dataZoom', event => {
@@ -75,6 +76,7 @@ const ZoomSyncUsageTemplate = ({url, ws, options, title, type, unit}) => `
     // noinspection JSUnresolvedFunction
     chart1.setZoom(event.detail)
   });
+});
 </script>`;
 export const ZoomSyncUsage = ZoomSyncUsageTemplate.bind({});
 ZoomSyncUsage.args = {
@@ -174,6 +176,7 @@ const FocusSyncUsageTemplate = ({url, ws, options, title, type1, type2, unit}) =
   </div>
 </div>
 <script>
+window.addEventListener("DOMContentLoaded", () => {
   const chart1 = document.querySelector('#chart1');
   const chart2 = document.querySelector('#chart2');
   chart1.addEventListener('mouseout', () => {
@@ -187,13 +190,14 @@ const FocusSyncUsageTemplate = ({url, ws, options, title, type1, type2, unit}) =
   chart1.addEventListener('dataPointOver', event => {
     // noinspection JSUnresolvedFunction
     chart2.setFocus(event.detail.name, event.detail.date, event.detail.value);
-    console.log(event)
+  //  console.log(event)
   });
   chart2.addEventListener('dataPointOver', event => {
     // noinspection JSUnresolvedFunction
     chart1.setFocus(event.detail.name, event.detail.date, event.detail.value);
-    console.log(event)
+  //  console.log(event)
   });
+    });
 </script>`;
 export const FocusSyncUsage = FocusSyncUsageTemplate.bind({});
 FocusSyncUsage.args = {
@@ -205,7 +209,6 @@ FocusSyncUsage.args = {
 $g`,
   options: {...new Param()}
 }
-
 
 
 const FocusSyncUsageWithAnnotationTemplate = ({url, ws, options, title, unit}) => `
@@ -239,6 +242,7 @@ const FocusSyncUsageWithAnnotationTemplate = ({url, ws, options, title, unit}) =
   </div>
 </div>
 <script>
+window.addEventListener("DOMContentLoaded", () => {
   const chart1 = document.querySelector('#chart1');
   const chart2 = document.querySelector('#chart2');
 
@@ -261,6 +265,7 @@ const FocusSyncUsageWithAnnotationTemplate = ({url, ws, options, title, unit}) =
     // noinspection JSUnresolvedFunction
     chart1.setFocus('.*', event.detail.date, event.detail.value);
   });
+});
 </script>`;
 export const FocusSyncUsageWithAnnotation = FocusSyncUsageWithAnnotationTemplate.bind({});
 FocusSyncUsageWithAnnotation.args = {
@@ -332,6 +337,7 @@ const FocusSyncUsageWithMapTemplate = ({url, ws, options, title, unit}) => `
   </div>
 </div>
 <script>
+window.addEventListener("DOMContentLoaded", () => {
   const chart1 = document.querySelector('#chart1');
   const chart2 = document.querySelector('#chart2');
   chart1.addEventListener('mouseout', () => {
@@ -350,6 +356,7 @@ const FocusSyncUsageWithMapTemplate = ({url, ws, options, title, unit}) => `
     // noinspection JSUnresolvedFunction
     chart1.setFocus(event.detail.name, event.detail.date, event.detail.value);
   });
+});
 </script>`;
 export const FocusSyncUsageWithMap = FocusSyncUsageWithMapTemplate.bind({});
 FocusSyncUsageWithMap.args = {
@@ -359,7 +366,6 @@ FocusSyncUsageWithMap.args = {
 $g`,
   options: {...new Param()}
 }
-
 
 
 // @ts-ignore

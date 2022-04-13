@@ -492,10 +492,8 @@ export class DiscoveryBarComponent {
   async setFocus(regexp: string, ts: number) {
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
-      ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone,
-        this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
-        .replace('T', '\n').replace('Z', '')
-      : ts;
+      ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
+      : ts || 0;
     let seriesIndex = 0;
     let dataIndex = 0;
     if (!!regexp) {
