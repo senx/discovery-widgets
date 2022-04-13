@@ -680,7 +680,6 @@ export class DiscoveryMarauder {
         const SW = info.layer._map.latLngToContainerPoint(oldcanvas.bounds._southWest);
         histctx.drawImage(oldcanvas, 0, 0, oldcanvas.width, oldcanvas.height, SW.x, NE.y, (NE.x - SW.x + 1), (SW.y - NE.y + 1));
       }
-      this.tick = this.currentTick;
       this.stopTick = this.ticks + (this.extraTicks * this.step);
       this.drawContext = {info, ctx, histctx, canvas};
       this.drawIt();
@@ -719,7 +718,9 @@ export class DiscoveryMarauder {
 
   private handleSelect(e) {
     const tick = Math.round((e.detail - this.startDate) / this.bucketspan / this.divider);
-    this.setSliderPosition(tick, true)
+    if (this.tick  !== tick + 1) {
+      this.setSliderPosition(tick, true);
+    }
   }
 
   private setSliderPosition(pos: number, setTick = false) {
