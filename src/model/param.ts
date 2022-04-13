@@ -84,6 +84,9 @@ export class Param {
   button?: {
     label: string
   };
+  tabular?: {
+    fixedWidth: boolean
+  };
   gauge?: {
     horizontal: boolean
   };

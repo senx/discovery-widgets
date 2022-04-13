@@ -21,10 +21,16 @@
   table {
     width: 100%;
     color: var(--warp-view-font-color, $w10-charcoal);
+    table-layout: auto;
 
     td, th {
       padding: var(--warp-view-datagrid-cell-padding, 5px);
       text-align: left;
+      white-space: nowrap;
+    }
+
+    th:last-child {
+      width: 100% !important;
     }
 
     .odd {

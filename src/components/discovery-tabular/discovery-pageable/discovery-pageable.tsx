@@ -95,7 +95,7 @@ export class DiscoveryPageable {
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
       <table>
         <thead>{this.data.headers.map(header => <th
-          style={{width: (100 / this.data.headers.length) + '%'}}>{header}</th>)}</thead>
+          style={{width: this.options.tabular?.fixedWidth? (100 / this.data.headers.length) + '%' : 'auto'}}>{header}</th>)}</thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
           <tr class={i % 2 === 0 ? 'odd' : 'even'}>

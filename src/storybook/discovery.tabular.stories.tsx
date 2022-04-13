@@ -37,6 +37,12 @@ InitialUsage.args = {
 %> FOR`
 };
 
+export const InitialUsageWithFixedWidth = Usage.bind({});
+InitialUsageWithFixedWidth.args = {
+  ...InitialUsage.args,
+  options: {... new Param(), tabular: {fixedWidth: true}}
+};
+
 export const SmallAmountOfData = Usage.bind({});
 SmallAmountOfData.args = {
   ...InitialUsage.args,
