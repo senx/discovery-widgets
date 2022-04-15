@@ -19,6 +19,7 @@ export {Components, JSX} from './components';
 export {Param} from './model/param'
 export {GTS} from './model/GTS'
 export {Tile} from './model/tile'
+export {Logger} from './utils/logger';
 export {ChartType, MapParams, TimeMode, TimeUnit} from './model/types'
 export {ChartBounds} from "./model/chartBounds";
 export {Dashboard} from "./model/dashboard";
