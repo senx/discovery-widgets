@@ -136,6 +136,7 @@ Type: `Promise<void>`
 - [discovery-input](../discovery-input)
 - [discovery-hidden](../discovery-hidden)
 - [discovery-calendar](../discovery-calendar)
+- [discovery-marauder](../discovery-marauder)
 
 ### Graph
 ```mermaid
@@ -155,6 +156,7 @@ graph TD;
   discovery-tile-result --> discovery-input
   discovery-tile-result --> discovery-hidden
   discovery-tile-result --> discovery-calendar
+  discovery-tile-result --> discovery-marauder
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
@@ -168,6 +170,7 @@ graph TD;
   discovery-svg --> discovery-spinner
   discovery-input --> discovery-slider
   discovery-calendar --> discovery-spinner
+  discovery-marauder --> discovery-slider
   discovery-dashboard --> discovery-tile-result
   discovery-modal --> discovery-tile-result
   discovery-tile --> discovery-tile-result
