@@ -196,9 +196,9 @@ export class DiscoveryMapComponent {
     params = data.params;
     this.mapOpts = this.innerOptions.map || {};
     this.pointslayer = [];
-    dataList.forEach(g => {
+    dataList.forEach((g,i) => {
       if (GTSLib.isGts(g)) {
-        const gtsName = GTSLib.serializeGtsMetadata(g);
+        const gtsName = ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(g);
         if (!this.hidden[gtsName]) {
           this.hidden[gtsName] = false;
         }

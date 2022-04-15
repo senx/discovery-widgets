@@ -213,7 +213,7 @@ export class DiscoveryPieComponent {
         }
         dataStruct.push({
           ...this.getCommonDataParam(color),
-          name: GTSLib.serializeGtsMetadata(gts),
+          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           value
         });
       } else if (!GTSLib.isGts(gts)) {

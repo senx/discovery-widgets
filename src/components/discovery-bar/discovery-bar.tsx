@@ -193,7 +193,7 @@ export class DiscoveryBarComponent {
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         series.push({
           ...this.getCommonSeriesParam(color),
-          name: GTSLib.serializeGtsMetadata(gts),
+          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
             const ts = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)

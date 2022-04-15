@@ -162,7 +162,7 @@ export class DiscoveryCalendar {
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         // add title
         titles.push({
-          text: GTSLib.serializeGtsMetadata(gts),
+          text: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           left: 'center',
           textStyle: {
             height: 20, fontSize: 12,

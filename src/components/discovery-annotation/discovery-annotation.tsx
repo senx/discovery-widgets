@@ -153,7 +153,7 @@ export class DiscoveryAnnotation {
         if (this.expanded) linesCount++;
         series.push({
           type: 'scatter',
-          name: GTSLib.serializeGtsMetadata(gts),
+          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => [this.innerOptions.timeMode === 'date'
             ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
             : d[0]

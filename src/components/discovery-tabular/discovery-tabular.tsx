@@ -140,7 +140,7 @@ export class DiscoveryTabular {
       };
       if (GTSLib.isGts(d)) {
         this.LOG.debug(['parseData', 'isGts'], d);
-        dataSet.name = GTSLib.serializeGtsMetadata(d);
+        dataSet.name = ((dataModel.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(d);
         dataSet.values = d.v.map(v => [this.formatDate(v[0])].concat(v.slice(1, v.length)));
       } else {
         this.LOG.debug(['parseData', 'is not a Gts'], d);

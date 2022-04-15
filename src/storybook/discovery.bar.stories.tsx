@@ -53,6 +53,16 @@ WithFullDateFormatAndCustomFormat.args = {
   options: {...new Param(), timeFormat: 'ddd DD MMM YY HH:mm:ss', fullDateDisplay: true}
 };
 
+export const WithCustomNames = Usage.bind({});
+WithCustomNames.args = {
+  ...InitialUsage.args,
+  ws: `1 4 <% 'i' STORE NEWGTS 'data-' $i TOSTRING + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR STACKTOLIST 'data' STORE
+  { 'data' $data 'params' [ { 'key' 'My temp sensor' } { 'key' 'My humidity sensor' } NULL { 'key' 'My other sensor' } ] }
+  `
+};
+
 export const InitialUsageWithMixedData = Usage.bind({});
 InitialUsageWithMixedData.args = {
   ...InitialUsage.args,

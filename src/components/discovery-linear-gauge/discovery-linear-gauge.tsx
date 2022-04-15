@@ -201,7 +201,7 @@ export class DiscoveryLinearGauge {
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
-        dataStruct.push({key: GTSLib.serializeGtsMetadata(gts), value, max, min});
+        dataStruct.push({key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts), value, max, min});
       } else {
         // custom data format
         let max: number = Number.MIN_VALUE;

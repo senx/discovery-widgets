@@ -245,7 +245,7 @@ export class DiscoveryLineComponent {
         }
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
-          name: GTSLib.serializeGtsMetadata(gts),
+          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => {
             return [
               this.innerOptions.timeMode === 'date'
