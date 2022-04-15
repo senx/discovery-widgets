@@ -18,9 +18,7 @@ export const config: Config = {
   outputTargets: [
     {
       type: 'dist-custom-elements-bundle',
-      copy: [
-        {src: 'scss'}
-      ]
+
     },
     {
       type: 'dist',
