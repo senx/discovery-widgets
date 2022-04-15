@@ -96,6 +96,34 @@ Usage.args = {
   $g %> FOR`,
   options: new Param()
 }
+
+// @ts-ignore
+const PluginTemplate = ({url, ws, language, type, options, unit, title}) => `
+<script nomodule src="http://localhost:3018/discovery-plugin-test.js"></script>
+<script type="module" src="http://localhost:3018/discovery-plugin-test.esm.js"></script>
+
+<div style="height: 600px;width: 100%;min-height: 100px; resize: both; padding: 10px; overflow: hidden;">
+  <div class="card" style="height: 100%;width: 100%;min-height: 100%;">
+      <div class="card-body">
+          <discovery-tile url="${url}" type="${type}" language="${language}"
+          unit="${unit || ''}"
+          chart-title="${title || ''}"
+          @draw="${event => console.error('foo', 'bar', event)}"
+          debug options='${JSON.stringify(options)}'
+          >${ws}</discovery-tile>
+      </div>
+  </div>
+</div>
+`;
+export const PluginUsage = PluginTemplate.bind({});
+PluginUsage.args = {
+  ...Usage.args,
+  type: 'test',
+  ws: `1 4 <% TOSTRING 'i' STORE NEWGTS 'data-' $i + RENAME 'g' STORE
+  1 10 <% 'ts' STORE $g $ts RAND + STU * NOW + NaN NaN NaN RAND ADDVALUE DROP %> FOR
+  $g %> FOR`,
+  options: {...new Param(), plugins: {'test': 'discovery-test'}}
+}
 export const UsageWithNoData = Template.bind({});
 UsageWithNoData.args = {
   ...Usage.args,
