@@ -366,8 +366,8 @@ export class DiscoveryTileResultComponent {
           debug={this.debug}
         />;
       default:
-        if((this.innerOptions.plugins || {}).hasOwnProperty(this.innerType)) {
-          const Tag =this.innerOptions.plugins[this.innerType];
+        if ((this.innerOptions.plugins || {}).hasOwnProperty(this.innerType)) {
+          const Tag = this.innerOptions.plugins[this.innerType];
           return <Tag
             result={this.innerResult}
             type={this.innerType}

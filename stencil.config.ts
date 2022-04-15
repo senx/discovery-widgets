@@ -18,10 +18,16 @@ export const config: Config = {
   outputTargets: [
     {
       type: 'dist-custom-elements-bundle',
+      copy: [
+        {src: 'scss'}
+      ]
     },
     {
       type: 'dist',
       esmLoaderPath: '../loader',
+      copy: [
+        {src: 'scss'}
+      ]
     },
     {
       type: 'docs-readme',
