@@ -26,39 +26,17 @@ export class Utils {
     return cloneDeep(inObject);
   }
 
-  static throttle(func, wait, leading, trailing, context) {
-    let ctx;
-    let args;
-    let result;
-    let timeout = null;
-    let previous = 0;
-    const later = () => {
-      previous = new Date().getMilliseconds();
-      timeout = null;
-      result = func.apply(ctx, args);
-    };
-    return () => {
-      const now = new Date().getMilliseconds();
-      if (!previous && !leading) previous = now;
-      const remaining = wait - (now - previous);
-      ctx = context || this;
-      args = arguments;
-      // Si la période d'attente est écoulée
-      if (remaining <= 0) {
-        // Réinitialiser les compteurs
-        clearTimeout(timeout);
-        timeout = null;
-        // Enregistrer le moment du dernier appel
-        previous = now;
-        // Appeler la fonction
-        result = func.apply(ctx, args);
-      } else if (!timeout && trailing) {
-        // Sinon on s’endort pendant le temps restant
-        timeout = setTimeout(later, remaining);
+  static throttle(func, delay) {
+    let isRunning;
+    return (...args) => {
+      let context = this;        // store the context of the object that owns this function
+      if (!isRunning) {
+        isRunning = true;
+        func.apply(context, args) // execute the function with the context of the object that owns it
+        setTimeout(() => isRunning = false, delay);
       }
-      return result;
-    };
-  };
+    }
+  }
 
   static httpPost(theUrl, payload, headers: { [key: string]: string; }) {
     return new Promise((resolve, reject) => {

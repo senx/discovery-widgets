@@ -100,7 +100,8 @@ export class Param {
     horizontal?: boolean,
     progress?: boolean,
     showTicks?: boolean,
-    showFilter?: boolean
+    showFilter?: boolean,
+    immediate?: boolean,
   }
   map?: MapParams;
   calendar?: {

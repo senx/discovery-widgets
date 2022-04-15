@@ -58,6 +58,9 @@ export class DiscoverySlider {
         this.innerOptions = {...this.options as Param};
       }
       this.slider.updateOptions(this.getSliderOptions(), false);
+      this.slider.off('change');
+      this.slider.off('slide');
+      this.setChangeListener();
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
@@ -84,13 +87,7 @@ export class DiscoverySlider {
   componentDidLoad() {
     this.innerValue = this.innerValue || this.innerOptions.input?.value as number || this.innerOptions.input?.min || 0;
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
-    this.slider.on('set', (values, handle, unencoded) => {
-      const r = this.innerOptions.timeMode === 'date'
-        ? GTSLib.zonedTimeToUtc(unencoded[0] || 0, 1, this.innerOptions.timeZone)
-        : Number(unencoded[0] || 0);
-      this.valueChanged.emit(r);
-    });
-    this.slider.on('start', () => this.startDrag.emit());
+    this.setChangeListener();
   }
 
   @Method()
@@ -154,5 +151,18 @@ export class DiscoverySlider {
         format,
       } as any : undefined
     } as any
+  }
+
+  private setChangeListener() {
+    const throttledHandler = v => {
+      const r = this.innerOptions.timeMode === 'date'
+        ? GTSLib.zonedTimeToUtc(v, 1, this.innerOptions.timeZone)
+        : Number(v);
+      this.valueChanged.emit(r);
+    };
+    const handler = Utils.throttle(throttledHandler, 200);
+    this.slider.on(this.innerOptions.input?.immediate ? 'slide' : 'change', (values, handle, unencoded) => {
+      handler(unencoded[0] || 0);
+    });
   }
 }

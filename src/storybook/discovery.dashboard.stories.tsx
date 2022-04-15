@@ -1818,6 +1818,47 @@ Test.args = {
 }`
 }
 
+export const Test2 = Usage.bind({});
+Test2.args = {
+  ...Usage.args,
+  cols: 12,
+  ws: `
+  {
+      'title' 'Test Page'
+      'vars' {
+          'myVarSlider' 63
+      }
+      'tiles' [
+          {
+              'type' 'input:slider' 'x' 0 'y' 0 'w' 3 'h' 1
+              'title' 'Input Slider each step'
+               'options' { 'input' { 'min' 0 'max' 10000 'immediate' true } }
+              'macro' <%
+                  { 'events' [ { 'tags' 'slide' 'type' 'variable' 'selector' 'myVarSlider' } ] 'data' $myVarSlider }
+              %>
+          }
+          {
+              'type' 'input:slider' 'x' 0 'y' 1 'w' 3 'h' 1
+              'title' 'Input Slider drag end'
+               'options' { 'input' { 'min' 0 'max' 10000  } }
+              'macro' <%
+                  { 'events' [ { 'tags' 'slide' 'type' 'variable' 'selector' 'myVarSlider' } ] 'data' $myVarSlider }
+              %>
+          }
+          {
+              'type' 'display' 'x' 3 'y' 0 'w' 2 'h' 1
+              'title' 'Event slider receiver'
+              'options' { 'eventHandler' 'type=variable,tag=slide' }
+              'macro' <%
+                  {
+                      'data' $myVarSlider
+                  }
+              %>
+          }
+      ]
+  }`
+}
+
 // @ts-ignore
 const FlexTemplate = ({url, ws, options, title, cols, cellHeight}) => `<div style="width: 100%;min-height: 500px">
 <discovery-dashboard url="${url}"
