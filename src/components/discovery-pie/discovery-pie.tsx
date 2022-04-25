@@ -60,14 +60,14 @@ export class DiscoveryPieComponent {
   updateType(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
       this.chartOpts = this.convert(GTSLib.getData(this.result));
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
     }
   }
 
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
   }
 
   @Watch('options')
@@ -81,7 +81,7 @@ export class DiscoveryPieComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -294,7 +294,7 @@ export class DiscoveryPieComponent {
       this.myChart.on('mouseover', (event: any) => {
         this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
-      this.myChart.setOption(this.chartOpts || {}, true, true);
+      this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
     });
   }

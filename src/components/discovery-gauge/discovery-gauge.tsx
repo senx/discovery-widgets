@@ -366,7 +366,7 @@ export class DiscoveryGauge {
         series.push(s);
       })
       this.chartOpts.series = series;
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
     });
   }
 

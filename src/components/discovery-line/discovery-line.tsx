@@ -118,7 +118,7 @@ export class DiscoveryLineComponent {
   }
 
   setOpts() {
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
   }
 
   convert(data: DataModel) {
@@ -531,7 +531,7 @@ export class DiscoveryLineComponent {
         if ('top' in opts.grid) {
           opts.grid.top = 30;
         }
-        setTimeout(() => this.myChart.setOption(opts as EChartsOption, true, true));
+        setTimeout(() => this.myChart.setOption(opts as EChartsOption, true, false));
       }
     }
     return {
@@ -623,7 +623,7 @@ export class DiscoveryLineComponent {
       });
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      this.myChart.setOption(this.chartOpts || {}, true, true);
+      this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
     });
   }

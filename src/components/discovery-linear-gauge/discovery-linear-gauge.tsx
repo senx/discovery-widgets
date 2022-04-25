@@ -384,6 +384,6 @@ export class DiscoveryLinearGauge {
   // noinspection JSUnusedLocalSymbols
   private drawChart(update = false) {
     this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
   }
 }

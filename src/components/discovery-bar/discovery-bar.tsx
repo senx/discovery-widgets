@@ -64,7 +64,7 @@ export class DiscoveryBarComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
   }
 
   @Watch('options')
@@ -78,7 +78,7 @@ export class DiscoveryBarComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -455,7 +455,7 @@ export class DiscoveryBarComponent {
       });
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      this.myChart.setOption(this.chartOpts || {}, true, true);
+      this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
     });
   }
@@ -516,7 +516,7 @@ export class DiscoveryBarComponent {
     };
     (this.chartOpts.tooltip as any).show = true;
     this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
   }
 
   @Method()
@@ -532,7 +532,7 @@ export class DiscoveryBarComponent {
       status: 'hide'
     };
     this.myChart.dispatchAction({type: 'hideTip'});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, true));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
   }
 
 

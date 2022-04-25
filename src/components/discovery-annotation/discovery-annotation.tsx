@@ -67,7 +67,7 @@ export class DiscoveryAnnotation {
     setTimeout(() => {
       if (!!this.myChart) {
         this.myChart.resize({width: this.width, height: this.height});
-        this.myChart.setOption(this.chartOpts || {}, true, false);
+        this.myChart.setOption(this.chartOpts || {});
       }
     });
   }
@@ -83,7 +83,7 @@ export class DiscoveryAnnotation {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue}, this.chartOpts);
@@ -313,7 +313,7 @@ export class DiscoveryAnnotation {
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
       initial = true;
-      this.myChart.setOption(this.chartOpts || {}, true, false);
+      this.myChart.setOption(this.chartOpts || {});
     });
   }
 
@@ -379,7 +379,7 @@ export class DiscoveryAnnotation {
     } else {
       this.myChart.dispatchAction({type: 'hideTip'});
     }
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   @Method()
@@ -396,13 +396,13 @@ export class DiscoveryAnnotation {
       status: 'hide'
     };
     this.myChart.dispatchAction({type: 'hideTip'});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   private hideMarkers() {
     if (!this.myChart) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   render() {
@@ -435,7 +435,7 @@ export class DiscoveryAnnotation {
         width: this.width,
         height: this.height,
       });
-      this.myChart.setOption(this.chartOpts || {}, true, false)
+      this.myChart.setOption(this.chartOpts || {})
     });
   }
 }
