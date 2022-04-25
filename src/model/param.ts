@@ -16,7 +16,6 @@
 import {ChartType, MapParams, TimeMode, TimeUnit} from "./types";
 
 export class Param {
-  plugins: {[key: string]: string};
   skippedVars?: string[];
   mutedVars?: string[];
   scheme = 'WARP10';

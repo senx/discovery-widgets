@@ -142,7 +142,7 @@ export class DiscoveryTileComponent {
     }
   }
 
-  componentWillLoad() {
+  async componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
     this.LOG.debug(['componentWillLoad'], {
       url: this.url,
@@ -198,6 +198,14 @@ export class DiscoveryTileComponent {
         (this.options as Param)?.skippedVars || [],
         this.type,
         this.language);
+      if (!!window) {
+        const win = window as any;
+        let registry = win.DiscoveryPluginRegistry;
+        registry = registry || {};
+        if ((registry || {}).hasOwnProperty(this.type) && registry[this.type].hasOwnProperty('scriptWrapper')) {
+          this.ws = registry[this.type].scriptWrapper(this.ws);
+        }
+      }
       this.LOG.debug(['exec'], this.ws, this.type);
       if (this.url.toLowerCase().startsWith('http')) {
         setTimeout(() => {

@@ -144,7 +144,7 @@ export class DiscoveryTileResultComponent {
       })
   }
 
-  componentWillLoad() {
+  async componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.innerType = this.type;
     this.LOG.debug(['componentWillLoad'], {
@@ -159,7 +159,7 @@ export class DiscoveryTileResultComponent {
     }
     this.innerResult = GTSLib.getData(this.result);
     this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG.debug(['componentWillLoad 2'], {
       type: this.innerType,
       options: this.innerOptions,
       result: this.innerResult
@@ -357,17 +357,17 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
-      case 'marauder':
-        return <discovery-marauder
-          result={this.innerResult}
-          type={this.innerType}
-          options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
-          debug={this.debug}
-        />;
       default:
-        if ((this.innerOptions.plugins || {}).hasOwnProperty(this.innerType)) {
-          const Tag = this.innerOptions.plugins[this.innerType];
+        if (!window) {
+          return;
+        }
+        const win = window as any;
+        let registry =  win.DiscoveryPluginRegistry;
+        registry = registry || {};
+        // @ts-ignore
+        if ((registry || {}).hasOwnProperty(this.innerType)) {
+          // @ts-ignore
+          const Tag = registry[this.innerType].tag;
           return <Tag
             result={this.innerResult}
             type={this.innerType}

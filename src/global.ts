@@ -14,4 +14,14 @@
  *   limitations under the License.
  */
 
-declare module '*.md';
+export default () => {
+  if (!window) {
+    return;
+  }
+
+  const win = window as any;
+  console.log('Loading DiscoveryPluginRegistry');
+  win.DiscoveryPluginRegistry = {
+    ...(win.DiscoveryPluginRegistry || {})
+  };
+}
