@@ -22,7 +22,6 @@ import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
-import domtoimage from 'dom-to-image';
 import html2canvas from "html2canvas";
 
 @Component({

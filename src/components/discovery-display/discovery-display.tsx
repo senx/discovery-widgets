@@ -186,7 +186,7 @@ export class DiscoveryDisplayComponent {
         break;
       case 'custom':
       case 'timestamp':
-        display = decodeURIComponent(escape(display));
+        display = decodeURIComponent(decodeURIComponent(display));
     }
     return display;
   }
