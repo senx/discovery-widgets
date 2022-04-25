@@ -240,7 +240,7 @@ export class DiscoveryBarComponent {
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            this.innerOptions.timeMode === 'timestamp'
+            this.innerOptions.timeMode !== 'date'
               ? params[0].value[0]
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
@@ -294,8 +294,10 @@ export class DiscoveryBarComponent {
           formatter: value =>
             !!(this.innerOptions.bar || {horizontal: false}).horizontal
               ? value
-              : GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              : this.innerOptions.timeMode === 'date'
+                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                : value
         },
         axisTick: {
           lineStyle: {
@@ -336,8 +338,10 @@ export class DiscoveryBarComponent {
           color: Utils.getLabelColor(this.el),
           formatter: value =>
             !!(this.innerOptions.bar || {horizontal: false}).horizontal
-              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              ? this.innerOptions.timeMode === 'date'
+                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                : value
               : value
         },
         axisTick: {
