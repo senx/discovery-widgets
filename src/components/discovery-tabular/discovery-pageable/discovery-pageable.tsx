@@ -95,7 +95,7 @@ export class DiscoveryPageable {
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
       <table>
         <thead>{this.data.headers.map(header => <th
-          style={{width: this.options.tabular?.fixedWidth? (100 / this.data.headers.length) + '%' : 'auto'}}>{header}</th>)}</thead>
+          style={{width: this.options.tabular?.fixedWidth ? (100 / this.data.headers.length) + '%' : 'auto'}}>{header}</th>)}</thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
           <tr class={i % 2 === 0 ? 'odd' : 'even'}>
@@ -108,12 +108,13 @@ export class DiscoveryPageable {
         <div class="pagination">
           {this.page !== 0 ? <div class="prev hoverable" onClick={() => this.prev()}>&lt;</div> : ''}
           {this.page - this.windowed > 0 ? <div class="index disabled">...</div> : ''}
-          {this.pages.map(c => <span>
+          {this.pages.length > 1
+            ? this.pages.map(c => <span>
         {c >= this.page - this.windowed && c <= this.page + this.windowed
           ? <span class={{index: true, hoverable: this.page !== c, active: this.page === c}}
                   onClick={() => this.goto(c)}>{c}</span>
           : ''}
-      </span>)}
+      </span>) : ''}
           {this.page + this.windowed < this.pages.length ? <div class="index disabled">...</div> : ''}
           {this.page + this.elemsCount < (this.data.values || []).length - 1 ?
             <div class="next hoverable" onClick={() => this.next()}>&gt;</div> : ''}
