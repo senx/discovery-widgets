@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType} from "../../model/types";
 import {Param} from "../../model/param";
@@ -23,6 +23,7 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
 import domtoimage from 'dom-to-image';
+import {LangUtils} from "../../utils/lang-utils";
 
 @Component({
   tag: 'discovery-button',
@@ -37,6 +38,8 @@ export class DiscoveryButtonComponent {
   @Prop() height: number;
   @Prop() debug: boolean = false;
   @Prop() url: string;
+  @Prop() language: 'warpscript' | 'flows' = 'warpscript';
+  @Prop() vars: string = '{}';
 
   @Element() el: HTMLElement;
 
@@ -58,12 +61,30 @@ export class DiscoveryButtonComponent {
   private defOptions: Param = new Param();
   private LOG: Logger;
   private root: HTMLDivElement;
+  private innerVars: any = {};
 
+
+  @Watch('vars')
+  varsUpdate(newValue: string, oldValue: string) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    }
+    if (this.LOG) {
+      this.LOG.debug(['varsUpdate'], {
+        vars: this.vars,
+        newValue, oldValue
+      });
+    }
+  }
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+
     if(res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+    }
+    if(res.vars) {
+      this.innerVars = {...this.innerVars, ...res.vars};
     }
   }
 
@@ -108,6 +129,7 @@ export class DiscoveryButtonComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, this.result.globalParams) as Param;
     this.options = {...options};
+    this.innerVars = JSON.parse(this.vars);
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
@@ -115,7 +137,13 @@ export class DiscoveryButtonComponent {
   }
 
   private handleClick = () => {
-    Utils.httpPost(this.url, (this.result as DataModel).data + ' EVAL', (this.options as Param).httpHeaders)
+    const ws = LangUtils.prepare(
+      `${(this.result as DataModel).data} EVAL`,
+      this.innerVars || {},
+      (this.options as Param)?.skippedVars || [],
+      this.type,
+      this.language);
+    Utils.httpPost(this.url, ws, (this.options as Param).httpHeaders)
       .then((res: any) => {
         this.LOG.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);

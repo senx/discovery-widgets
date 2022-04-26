@@ -49,11 +49,13 @@ export namespace Components {
         "debug": boolean;
         "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "type": ChartType;
         "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryCalendar {
@@ -266,6 +268,7 @@ export namespace Components {
         "export": (type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "parseEvents": () => Promise<void>;
         "resize": () => Promise<void>;
@@ -278,6 +281,7 @@ export namespace Components {
         "unFocus": () => Promise<void>;
         "unit": string;
         "url": string;
+        "vars": string;
         "width": number;
     }
 }
@@ -468,6 +472,7 @@ declare namespace LocalJSX {
     interface DiscoveryButton {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDiscoveryEvent"?: (event: CustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "onExecResult"?: (event: CustomEvent<any[]>) => void;
@@ -476,6 +481,7 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryCalendar {
@@ -665,6 +671,7 @@ declare namespace LocalJSX {
         "chartTitle"?: string;
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDiscoveryEvent"?: (event: CustomEvent<DiscoveryEvent>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -672,6 +679,7 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "unit"?: string;
         "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface IntrinsicElements {

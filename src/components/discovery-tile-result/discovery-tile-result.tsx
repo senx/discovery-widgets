@@ -40,7 +40,9 @@ export class DiscoveryTileResultComponent {
   @Prop({mutable: true}) unit: string = '';
   @Prop() url: string;
   @Prop() chartTitle: string;
+  @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Element() el: HTMLElement;
+  @Prop() vars: string = '{}';
 
   @State() execTime = 0;
   @State() bgColor: string;
@@ -64,6 +66,7 @@ export class DiscoveryTileResultComponent {
   private innerStyles: any;
   private tile: any;
   private initial: boolean = true
+  private innerVars = {};
 
   @Watch('type')
   updateType(newValue: string) {
@@ -90,6 +93,19 @@ export class DiscoveryTileResultComponent {
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
+    }
+  }
+
+  @Watch('vars')
+  varsUpdate(newValue: string, oldValue: string) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    }
+    if (this.LOG) {
+      this.LOG.debug(['varsUpdate'], {
+        vars: this.vars,
+        newValue, oldValue
+      });
     }
   }
 
@@ -158,6 +174,7 @@ export class DiscoveryTileResultComponent {
       this.innerOptions = this.options as Param;
     }
     this.innerResult = GTSLib.getData(this.result);
+    this.innerVars = JSON.parse(this.vars || '{}');
     this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
     this.LOG.debug(['componentWillLoad 2'], {
       type: this.innerType,
@@ -271,6 +288,8 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
           debug={this.debug}
         />;
       case 'gauge':

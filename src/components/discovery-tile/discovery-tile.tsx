@@ -95,7 +95,7 @@ export class DiscoveryTileComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
     if (res.vars) {
-      this.innerVars = {...JSON.parse(this.vars), ...this.innerVars, ...res.vars};
+      this.innerVars = {...(this.innerVars || {}), ...this.innerVars, ...res.vars};
       if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
         this.exec(true).then(() => {
         });
@@ -314,7 +314,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               debug={this.debug}
               height={this.height}
               width={this.width}
+              language={this.language}
               chart-title={this.chartTitle}
+              vars={JSON.stringify(this.innerVars)}
               ref={(el) => this.tileResult = el as HTMLDiscoveryTileResultElement}
             />
           </div>
