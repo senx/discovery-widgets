@@ -43,7 +43,7 @@ export class PluginManager {
 
   register(plugin: PluginDef) {
     this.registry[plugin.type] = plugin;
-    this.LOG.info([plugin.name], 'Registered: ' + plugin.toString());
+    this.LOG.info(['Registration', plugin.name], plugin.toString());
   }
 
   get(type: string): PluginDef {

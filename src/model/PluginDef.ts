@@ -20,6 +20,7 @@ export class PluginDef {
   author: string;
   description: string;
   version: string;
+  scriptWrapper: any;
 
   constructor(def: any) {
     this.type = def.type;
@@ -28,6 +29,7 @@ export class PluginDef {
     this.author = def.author;
     this.description = def.description;
     this.version = def.version;
+    this.scriptWrapper = def.scriptWrapper;
   }
 
   toString(): string {
