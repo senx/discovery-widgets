@@ -27,6 +27,7 @@ export class Param {
   timeFormat?: string;
   unit?: string;
   type?: ChartType;
+  subType?: ChartType;
   showRangeSelector?: boolean = false;
   timeMode?: TimeMode;
   showDots = false;

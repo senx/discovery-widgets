@@ -13,15 +13,24 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+export class PluginDef {
+  type: string;
+  name: string;
+  tag: string;
+  author: string;
+  description: string;
+  version: string;
 
-export default () => {
-  if (!window) {
-    return;
+  constructor(def: any) {
+    this.type = def.type;
+    this.name = def.name;
+    this.tag = def.tag;
+    this.author = def.author;
+    this.description = def.description;
+    this.version = def.version;
   }
 
-  const win = window as any;
-  console.log('Loading DiscoveryPluginRegistry');
-  win.DiscoveryPluginRegistry = {
-    ...(win.DiscoveryPluginRegistry || {})
-  };
+  toString(): string {
+    return this.name + ":" + this.version + " by " + this.author;
+  }
 }

@@ -30,7 +30,5 @@ export {ColorLib, Colors, HeatMaps} from "./utils/color-lib";
 export {MapLib, MapTypes} from "./utils/map-lib";
 export {Utils} from "./utils/utils";
 export {GTSLib} from "./utils/gts.lib";
-
-// noinspection TypeScriptUnresolvedVariable
-// @ts-ignore
-window.DiscoveryPluginRegistry = window.DiscoveryPluginRegistry || {};
+export {PluginDef} from "./model/PluginDef";
+export {PluginManager} from "./utils/PluginManager";

@@ -23,6 +23,7 @@ import {Utils} from "../../utils/utils";
 import {GTSLib} from "../../utils/gts.lib";
 import {DiscoveryEvent} from "../../model/discoveryEvent";
 import elementResizeEvent from "element-resize-event";
+import {PluginManager} from "../../utils/PluginManager";
 
 @Component({
   tag: 'discovery-tile-result',
@@ -377,20 +378,16 @@ export class DiscoveryTileResultComponent {
           debug={this.debug}
         />;
       default:
-        if (!window) {
-          return;
-        }
-        const win = window as any;
-        let registry =  win.DiscoveryPluginRegistry;
-        registry = registry || {};
-        // @ts-ignore
-        if ((registry || {}).hasOwnProperty(this.innerType)) {
-          // @ts-ignore
-          const Tag = registry[this.innerType].tag;
+        this.LOG.debug(['getView'], PluginManager.getInstance().registry);
+        if (PluginManager.getInstance().has(this.innerType)) {
+          this.LOG.debug(['getView', 'type'], this.innerType);
+          const Tag = PluginManager.getInstance().get(this.innerType).tag;
           return <Tag
             result={this.innerResult}
             type={this.innerType}
             options={this.innerOptions}
+            height={this.height}
+            width={this.width}
             ref={el => this.tile = el || this.tile}
             debug={this.debug}
           />;
