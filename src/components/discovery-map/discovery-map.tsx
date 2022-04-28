@@ -590,7 +590,7 @@ export class DiscoveryMapComponent {
     const date = this.innerOptions.timeMode === 'date'
       ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
       : ts || 0;
-    Object.keys(this.markersRef)
+    Object.keys(this.markersRef ||{})
       .filter(s => new RegExp(regexp).test(s))
       .forEach(k => {
         if (!!this.markersRef[k][date]) {
