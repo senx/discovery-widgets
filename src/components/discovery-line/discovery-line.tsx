@@ -49,6 +49,7 @@ export class DiscoveryLineComponent {
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() leftMarginComputed: EventEmitter<number>;
   @Event() dataPointOver: EventEmitter;
+  @Event() timeBounds: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -118,7 +119,7 @@ export class DiscoveryLineComponent {
   }
 
   setOpts() {
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
   }
 
   convert(data: DataModel) {
@@ -223,6 +224,9 @@ export class DiscoveryLineComponent {
       visualMap: new Array(gtsCount),
       series: []
     };
+    let min = Number.MAX_SAFE_INTEGER;
+    let max = Number.MIN_SAFE_INTEGER;
+    let hasTimeBounds = false;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts)) {
@@ -243,6 +247,9 @@ export class DiscoveryLineComponent {
             }))
           };
         }
+        min = Math.min(min, ...gts.v.map(v => v[0]));
+        max = Math.max(max, ...gts.v.map(v => v[0]));
+        hasTimeBounds = true;
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
           name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
@@ -327,17 +334,22 @@ export class DiscoveryLineComponent {
         this.innerOptions.timeMode = 'custom';
         const c = ColorLib.getColor(i, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        const max = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
-        const min = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
+        const smax = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
+        const smin = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
         const s = {
           type: 'scatter',
           name: gts.label,
-          data: gts.values[0] && gts.values[0].length === 3 ? (gts.values || []).map(v => {
-            return {
-              value: [GTSLib.utcToZonedTime(v[0], 1, this.innerOptions.timeZone), v[1]],
-              symbolSize: 50 * v[2] / (max - min)
-            }
-          }) : gts.values,
+          data: gts.values[0] && gts.values[0].length === 3
+            ? (gts.values || []).map(v => {
+              min = Math.min(min, ...gts.values.map(v => v[0]));
+              max = Math.max(max, ...gts.values.map(v => v[0]));
+              hasTimeBounds = true;
+              return {
+                value: [GTSLib.utcToZonedTime(v[0], 1, this.innerOptions.timeZone), v[1]],
+                symbolSize: 50 * v[2] / (smax - smin)
+              }
+            })
+            : gts.values,
           animation: false,
           large: true,
           showSymbol: true,
@@ -407,6 +419,9 @@ export class DiscoveryLineComponent {
         }
         (opts.series as any[]).push(s);
       }
+    }
+    if (hasTimeBounds) {
+      this.timeBounds.emit({min, max});
     }
     // multi Y
     if (!multiY) {

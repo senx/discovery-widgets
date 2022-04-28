@@ -47,6 +47,7 @@ export class DiscoveryBarComponent {
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() leftMarginComputed: EventEmitter<number>;
   @Event() dataPointOver: EventEmitter;
+  @Event() timeBounds: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -186,11 +187,17 @@ export class DiscoveryBarComponent {
     }
     this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
+    let min = Number.MAX_SAFE_INTEGER;
+    let max = Number.MIN_SAFE_INTEGER;
+    let hasTimeBounds = false;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+        min = Math.min(min, ...gts.v.map(v => v[0]));
+        max = Math.max(max, ...gts.v.map(v => v[0]));
+        hasTimeBounds = true;
         series.push({
           ...this.getCommonSeriesParam(color),
           name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
@@ -224,6 +231,9 @@ export class DiscoveryBarComponent {
           } as SeriesOption);
         });
       }
+    }
+    if (hasTimeBounds) {
+      this.timeBounds.emit({min, max});
     }
     this.LOG.debug(['convert', 'series'], series);
     const opts = {

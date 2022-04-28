@@ -25,6 +25,7 @@
 | `dataPointOver` |             | `CustomEvent<any>`                                                       |
 | `dataZoom`      |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
 | `draw`          |             | `CustomEvent<void>`                                                      |
+| `timeBounds`    |             | `CustomEvent<any>`                                                       |
 
 
 ## Methods

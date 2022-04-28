@@ -450,6 +450,7 @@ declare namespace LocalJSX {
         "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
+        "onTimeBounds"?: (event: CustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
@@ -463,6 +464,7 @@ declare namespace LocalJSX {
         "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: CustomEvent<number>) => void;
+        "onTimeBounds"?: (event: CustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
@@ -569,6 +571,7 @@ declare namespace LocalJSX {
         "onDataZoom"?: (event: CustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: CustomEvent<number>) => void;
+        "onTimeBounds"?: (event: CustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;

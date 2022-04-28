@@ -44,6 +44,7 @@ export class DiscoveryAnnotation {
   @Event() draw: EventEmitter<void>;
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() dataPointOver: EventEmitter;
+  @Event() timeBounds: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
@@ -143,6 +144,9 @@ export class DiscoveryAnnotation {
     this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let linesCount = 1;
+    let min = Number.MAX_SAFE_INTEGER;
+    let max = Number.MIN_SAFE_INTEGER;
+    let hasTimeBounds = false;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
@@ -151,6 +155,9 @@ export class DiscoveryAnnotation {
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         this.displayExpander = i > 1;
         if (this.expanded) linesCount++;
+        min = Math.min(min, ...gts.v.map(v => v[0]));
+        max = Math.max(max, ...gts.v.map(v => v[0]));
+        hasTimeBounds = true;
         series.push({
           type: 'scatter',
           name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
@@ -169,6 +176,10 @@ export class DiscoveryAnnotation {
         } as SeriesOption);
       }
     }
+    if (hasTimeBounds) {
+      this.timeBounds.emit({min, max});
+    }
+
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
     this.LOG.debug(['convert'], {
       expanded: this.expanded,
