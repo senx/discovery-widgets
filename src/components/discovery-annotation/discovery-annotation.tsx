@@ -243,8 +243,9 @@ export class DiscoveryAnnotation {
       },
       xAxis: {
         type: this.innerOptions.timeMode === 'date' ? 'time' : 'category',
+        splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
-        axisLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
+        axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLabel: {
           color: Utils.getLabelColor(this.el),
           formatter: this.innerOptions.fullDateDisplay ? value =>
