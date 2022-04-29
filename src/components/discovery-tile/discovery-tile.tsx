@@ -39,9 +39,9 @@ export class DiscoveryTileComponent {
   @Prop({mutable: true}) autoRefresh: number = -1;
   @Prop() vars: string = '{}';
 
-  @Event() statusHeaders: EventEmitter<string[]>;
-  @Event() statusError: EventEmitter;
-  @Event() execResult: EventEmitter<string>;
+  @Event({bubbles: true}) statusHeaders: EventEmitter<string[]>;
+  @Event({bubbles: true}) statusError: EventEmitter;
+  @Event({bubbles: true}) execResult: EventEmitter<string>;
 
   @Element() el: HTMLElement;
 
@@ -54,6 +54,7 @@ export class DiscoveryTileComponent {
   @State() showLoader: boolean = false;
   @State() hasError: boolean = false;
   @State() errorMessage: string = '';
+  @State() statusMessage: string = '';
 
   private LOG: Logger;
   private ws: string;
@@ -211,6 +212,7 @@ export class DiscoveryTileComponent {
         setTimeout(() => {
           this.hasError = false;
           this.errorMessage = '';
+          this.statusMessage = undefined;
           if ((this.options as Param).showLoader) {
             this.showLoader = true;
           }
@@ -232,6 +234,9 @@ fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.LOG.debug(['exec', 'headers'], this.headers);
             this.statusHeaders.emit(this.headers);
+            if((this.options as Param).showStatus) {
+              this.statusMessage = this.headers.statusText;
+            }
             this.start = new Date().getTime();
             if (this.autoRefresh !== (this.options as Param).autoRefresh) {
               this.autoRefresh = (this.options as Param).autoRefresh;
@@ -303,7 +308,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       {this.loaded ?
         this.hasError
           ? <div class="discovery-tile-error">{this.errorMessage}</div>
-          : <div style={{width: '100%', height: '100%'}}>
+          : <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}}>
             <discovery-tile-result
               url={this.url}
               start={this.start}
@@ -319,6 +324,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               vars={JSON.stringify(this.innerVars)}
               ref={(el) => this.tileResult = el as HTMLDiscoveryTileResultElement}
             />
+            {this.statusMessage
+            ? <div class="discovery-tile-status">{this.statusMessage}</div>
+              :''}
           </div>
         : <div class="discovery-tile-spinner">
           {this.showLoader ? <discovery-spinner>Requesting data...</discovery-spinner> : ''}

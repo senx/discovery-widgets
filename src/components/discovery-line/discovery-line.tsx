@@ -119,7 +119,22 @@ export class DiscoveryLineComponent {
   }
 
   setOpts() {
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    setTimeout(() => {
+      if ((this.chartOpts.series as SeriesOption[]).length === 0) {
+        this.chartOpts.title = {
+          show: true,
+          textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+          text: "No data",
+          left: "center",
+          top: "center"
+        };
+        this.chartOpts.xAxis = {show: false};
+        this.chartOpts.yAxis = {show: false};
+        this.chartOpts.dataZoom = {show: false};
+        this.chartOpts.tooltip = {show: false};
+      }
+      this.myChart.setOption(this.chartOpts || {});
+    });
   }
 
   convert(data: DataModel) {
@@ -524,18 +539,20 @@ export class DiscoveryLineComponent {
               : (t.value || 0)
           }
         })];
-    (opts.series as SeriesOption[]).push({
-      name: '',
-      type: 'line',
-      symbolSize: 0,
-      data: [],
-      markArea: {data: markArea},
-      markLine: {
-        emphasis: {lineStyle: {width: 1}},
-        symbol: ['none', 'none'],
-        data: markLine
-      }
-    });
+    if(markArea.length > 0 || markLine.length > 0) {
+      (opts.series as SeriesOption[]).push({
+        name: '',
+        type: 'line',
+        symbolSize: 0,
+        data: [],
+        markArea: {data: markArea},
+        markLine: {
+          emphasis: {lineStyle: {width: 1}},
+          symbol: ['none', 'none'],
+          data: markLine
+        }
+      });
+    }
     return opts as EChartsOption;
   }
 
@@ -580,11 +597,15 @@ export class DiscoveryLineComponent {
       },
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
-      min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
-        ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
+      min: !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
+        ? this.innerOptions.timeMode === 'date'
+          ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
+          : this.innerOptions.bounds.minDate
         : undefined,
-      max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ?
-        GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
+      max: !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
+        ? this.innerOptions.timeMode === 'date'
+          ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
+          : this.innerOptions.bounds.maxDate
         : undefined,
     }
   }
@@ -777,7 +798,7 @@ export class DiscoveryLineComponent {
     return <div style={{width: '100%', height: '100%'}} ref={(el) => this.wrap = el as HTMLDivElement}>
       {this.parsing && !!this.innerOptions?.showLoader ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el as HTMLDivElement} onMouseOver={() => this.hideMarkers()}/>
+      <div ref={(el) => this.graph = el as HTMLDivElement} onMouseOver={() => this.hideMarkers()}></div>
     </div>;
   }
 }

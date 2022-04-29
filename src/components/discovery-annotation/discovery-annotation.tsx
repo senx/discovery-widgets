@@ -153,7 +153,6 @@ export class DiscoveryAnnotation {
         this.gtsList.push(gts);
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        this.displayExpander = i > 1;
         if (this.expanded) linesCount++;
         min = Math.min(min, ...gts.v.map(v => v[0]));
         max = Math.max(max, ...gts.v.map(v => v[0]));
@@ -176,6 +175,7 @@ export class DiscoveryAnnotation {
         } as SeriesOption);
       }
     }
+    this.displayExpander = this.gtsList.length > 1;
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
     }
@@ -255,11 +255,11 @@ export class DiscoveryAnnotation {
         },
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
-        min: !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
+        min: !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined && this.innerOptions.timeMode === 'date'
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
           : undefined,
-        max: !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate ?
-          GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
+        max: !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined && this.innerOptions.timeMode === 'date'
+          ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
           : undefined,
       },
       yAxis: {

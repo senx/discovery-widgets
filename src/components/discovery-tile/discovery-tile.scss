@@ -48,4 +48,14 @@
     color: #ffffff;
     text-align: center;
   }
+
+  .discovery-tile-status {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    text-align: center;
+    position: relative;
+    padding: 5px 10px;
+    width: calc(100% - 40px);
+    margin-top: 12px;
+  }
 }

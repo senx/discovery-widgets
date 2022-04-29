@@ -317,16 +317,20 @@ export class DiscoveryBarComponent {
         min:
           !!(this.innerOptions.bar || {horizontal: false}).horizontal
             ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined
-            : !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
-              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+            : !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
+              ? this.innerOptions.timeMode === 'date'
+                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                : this.innerOptions.bounds.minDate
               : undefined,
         max:
           !!(this.innerOptions.bar || {horizontal: false}).horizontal
             ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined
-            : !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate
-              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+            : !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
+              ? this.innerOptions.timeMode === 'date'
+                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                : this.innerOptions.bounds.maxDate
               : undefined,
       },
       yAxis: {
@@ -360,15 +364,19 @@ export class DiscoveryBarComponent {
           }
         },
         min: !!(this.innerOptions.bar || {horizontal: false}).horizontal
-          ? !!this.innerOptions.bounds && !!this.innerOptions.bounds.minDate
-            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-              .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+          ? !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
+            ? this.innerOptions.timeMode === 'date'
+              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              : this.innerOptions.bounds.minDate
             : undefined
           : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
         max: !!(this.innerOptions.bar || {horizontal: false}).horizontal
-          ? !!this.innerOptions.bounds && !!this.innerOptions.bounds.maxDate
-            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-              .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+          ? !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
+            ? this.innerOptions.timeMode === 'date'
+              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              : this.innerOptions.bounds.maxDate
             : undefined
           : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
       },
