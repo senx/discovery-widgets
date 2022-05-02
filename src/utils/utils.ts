@@ -21,7 +21,6 @@ import {DataModel} from "../model/dataModel";
 import {cloneDeep} from "lodash"
 
 export class Utils {
-  static loadedScripts: string[] = [];
   static clone = (inObject) => {
     return cloneDeep(inObject);
   }
@@ -193,37 +192,4 @@ export class Utils {
     el.style.fontSize = Math.max(Math.min(h / (0.50 * 10), settings.maxFontSize), settings.minFontSize) + 'px';
     return el;
   };
-
-  static async loadScript(tag: string, module: string, nomodule: string) {
-    if(!Utils.loadedScripts.includes(tag)) {
-      Utils.loadedScripts.push(tag);
-      const promises = [];
-      promises.push(new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = module;
-        script.type = 'module';
-        script.onload = () => {
-          console.log(`Loaded module ${module}`);
-          resolve(true);
-        }
-        script.onerror = reject;
-        document.head.appendChild(script);
-      }));
-
-      promises.push(new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = nomodule;
-        script.noModule = true;
-        script.onload = () => {
-          console.log(`Loaded nomodule ${nomodule}`);
-          resolve(true);
-        }
-        script.onerror = reject;
-        document.head.appendChild(script);
-      }));
-      return Promise.any(promises);
-    } else {
-      return Promise.resolve();
-    }
-  }
 }
