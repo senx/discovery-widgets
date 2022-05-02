@@ -65,7 +65,7 @@ export class DiscoveryBarComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true));
   }
 
   @Watch('options')
@@ -79,7 +79,7 @@ export class DiscoveryBarComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true));
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});

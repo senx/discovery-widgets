@@ -78,7 +78,7 @@ export class DiscoveryLineComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-      this.setOpts();
+      this.setOpts(true);
     }
   }
 
@@ -93,7 +93,7 @@ export class DiscoveryLineComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        this.setOpts();
+        this.setOpts(true);
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -118,7 +118,7 @@ export class DiscoveryLineComponent {
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
   }
 
-  setOpts() {
+  setOpts(notMerge = false) {
     setTimeout(() => {
       if ((this.chartOpts.series as SeriesOption[]).length === 0) {
         this.chartOpts.title = {
@@ -133,7 +133,7 @@ export class DiscoveryLineComponent {
         this.chartOpts.dataZoom = {show: false};
         this.chartOpts.tooltip = {show: false};
       }
-      this.myChart.setOption(this.chartOpts || {});
+      this.myChart.setOption(this.chartOpts || {}, notMerge);
     });
   }
 
@@ -540,7 +540,7 @@ export class DiscoveryLineComponent {
               : (t.value || 0)
           }
         })];
-    if(markArea.length > 0 || markLine.length > 0) {
+    if (markArea.length > 0 || markLine.length > 0) {
       (opts.series as SeriesOption[]).push({
         name: '',
         type: 'line',
