@@ -68,7 +68,7 @@ export class DiscoveryAnnotation {
     setTimeout(() => {
       if (!!this.myChart) {
         this.myChart.resize({width: this.width, height: this.height});
-        this.myChart.setOption(this.chartOpts || {});
+        this.setOpts();
       }
     });
   }
@@ -84,7 +84,7 @@ export class DiscoveryAnnotation {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+        this.setOpts();
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue}, this.chartOpts);
@@ -134,10 +134,30 @@ export class DiscoveryAnnotation {
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
   }
 
+
+  setOpts() {
+    if ((this.chartOpts.series as any[] || []).length === 0) {
+      this.chartOpts.title = {
+        show: true,
+        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        text: "No data",
+        left: "center",
+        top: "center"
+      };
+      this.chartOpts.xAxis = {show: false};
+      this.chartOpts.yAxis = {show: false};
+      this.chartOpts.tooltip = {show: false};
+    }
+    setTimeout(() => {
+      this.myChart.setOption(this.chartOpts || {}, false, true);
+    });
+  }
+
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.innerOptions = {...options};
+    this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     const series: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     this.gtsList = [];
@@ -255,11 +275,15 @@ export class DiscoveryAnnotation {
         },
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
-        min: !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined && this.innerOptions.timeMode === 'date'
-          ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
+        min: !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
+          ? this.innerOptions.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
+            : this.innerOptions.bounds.minDate
           : undefined,
-        max: !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined && this.innerOptions.timeMode === 'date'
-          ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
+        max: !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
+          ? this.innerOptions.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
+            : this.innerOptions.bounds.maxDate
           : undefined,
       },
       yAxis: {
@@ -301,36 +325,34 @@ export class DiscoveryAnnotation {
   }
 
   componentDidLoad() {
-    setTimeout(() => {
-      this.parsing = false;
-      this.rendering = true;
-      let initial = false;
-      this.myChart = init(this.graph, null, {
-        width: this.width,
-        height: this.height
-      });
-      this.myChart.on('rendered', () => {
-        this.rendering = false;
-        if (initial) {
-          setTimeout(() => this.draw.emit());
-          initial = false;
-        }
-      });
-      this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
-      });
-      this.myChart.on('dataZoom', (event: any) => {
-        const {start, end} = (event.batch || [])[0] || {};
-        if (start && end) {
-          const dataZoom = this.myChart.getOption().dataZoom[1];
-          this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
-        }
-      });
-      this.el.addEventListener('mouseover', () => this.hasFocus = true);
-      this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      initial = true;
-      this.myChart.setOption(this.chartOpts || {});
+    this.parsing = false;
+    this.rendering = true;
+    let initial = false;
+    this.myChart = init(this.graph, null, {
+      width: this.width,
+      height: this.height
     });
+    this.myChart.on('rendered', () => {
+      this.rendering = false;
+      if (initial) {
+        setTimeout(() => this.draw.emit());
+        initial = false;
+      }
+    });
+    this.myChart.on('mouseover', (event: any) => {
+      this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+    });
+    this.myChart.on('dataZoom', (event: any) => {
+      const {start, end} = (event.batch || [])[0] || {};
+      if (start && end) {
+        const dataZoom = this.myChart.getOption().dataZoom[1];
+        this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
+      }
+    });
+    this.el.addEventListener('mouseover', () => this.hasFocus = true);
+    this.el.addEventListener('mouseout', () => this.hasFocus = false);
+    initial = true;
+    this.setOpts();
   }
 
   @Method()
@@ -395,7 +417,7 @@ export class DiscoveryAnnotation {
     } else {
       this.myChart.dispatchAction({type: 'hideTip'});
     }
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    this.setOpts();
   }
 
   @Method()
@@ -412,13 +434,13 @@ export class DiscoveryAnnotation {
       status: 'hide'
     };
     this.myChart.dispatchAction({type: 'hideTip'});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    this.setOpts();
   }
 
   private hideMarkers() {
     if (!this.myChart) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}));
+    this.setOpts();
   }
 
   render() {
@@ -451,7 +473,7 @@ export class DiscoveryAnnotation {
         width: this.width,
         height: this.height,
       });
-      this.myChart.setOption(this.chartOpts || {})
+      this.setOpts();
     });
   }
 }

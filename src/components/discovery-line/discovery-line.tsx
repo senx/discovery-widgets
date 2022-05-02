@@ -141,6 +141,7 @@ export class DiscoveryLineComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.innerOptions = {...options};
+    this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
