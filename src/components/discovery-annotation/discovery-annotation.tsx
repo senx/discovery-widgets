@@ -136,7 +136,7 @@ export class DiscoveryAnnotation {
 
 
   setOpts() {
-    if ((this.chartOpts.series as any[] || []).length === 0) {
+    if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
         textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
@@ -208,7 +208,8 @@ export class DiscoveryAnnotation {
       linesCount,
       opts: this.innerOptions
     });
-    return {
+    console.log(this.innerOptions?.bounds?.minDate !== undefined)
+    const chartopts = {
       animation: false,
       grid: {
         height: this.height - (!!this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
@@ -262,7 +263,7 @@ export class DiscoveryAnnotation {
         }
       },
       xAxis: {
-        type: this.innerOptions.timeMode === 'date' ? 'time' : 'category',
+        type: this.innerOptions.timeMode === 'date' ? 'time' : 'value',
         splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
@@ -322,6 +323,8 @@ export class DiscoveryAnnotation {
       ],
       series
     } as EChartsOption;
+    console.log(chartopts);
+    return chartopts;
   }
 
   componentDidLoad() {
