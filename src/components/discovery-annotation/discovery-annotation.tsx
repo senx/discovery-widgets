@@ -208,8 +208,7 @@ export class DiscoveryAnnotation {
       linesCount,
       opts: this.innerOptions
     });
-    console.log(this.innerOptions?.bounds?.minDate !== undefined)
-    const chartopts = {
+    return {
       animation: false,
       grid: {
         height: this.height - (!!this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
@@ -323,8 +322,6 @@ export class DiscoveryAnnotation {
       ],
       series
     } as EChartsOption;
-    console.log(chartopts);
-    return chartopts;
   }
 
   componentDidLoad() {
