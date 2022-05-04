@@ -140,6 +140,16 @@ export class DiscoveryTileResultComponent {
     if (res.margin) {
       this.innerOptions = {...this.innerOptions, leftMargin: res.margin};
     }
+    if (res.bounds) {
+      this.innerOptions = {
+        ...this.innerOptions,
+        bounds: {
+          ...this.innerOptions.bounds,
+          minDate: res.bounds.min,
+          maxDate: res.bounds.max
+        }
+      };
+    }
   }
 
   @Listen('draw', {capture: false})
