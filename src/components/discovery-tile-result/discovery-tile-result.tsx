@@ -161,6 +161,15 @@ export class DiscoveryTileResultComponent {
       })
   }
 
+  @Listen('timeBounds', {capture: false})
+  onTimeBounds(event: CustomEvent) {
+    ((this.innerResult as unknown as DataModel).events || [])
+      .filter(e => e.type === 'bounds')
+      .forEach(e => {
+        this.discoveryEvent.emit({type: 'bounds', tags: e.tags, value: event.detail})
+      })
+  }
+
   async componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.innerType = this.type;

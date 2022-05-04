@@ -81,10 +81,6 @@ export class Utils {
     return obj as T;
   }
 
-  static fraction2r(rl0, rl1, v) {
-    return v * (rl1 - rl0);
-  }
-
   static getLabelColor(el: HTMLElement) {
     return Utils.getCSSColor(el, '--warp-view-chart-label-color', '#8e8e8e').trim();
   }
@@ -119,7 +115,8 @@ export class Utils {
       audio: undefined,
       zoom: undefined,
       focus: undefined,
-      margin: undefined
+      margin: undefined,
+      bounds: undefined,
     }
     if (eventHandler) {
       let tag = '.*';
@@ -165,6 +162,9 @@ export class Utils {
           case 'margin':
             parsed.margin = evt.value;
             break;
+          case 'bounds':
+            parsed.bounds = evt.value;
+            break;
           default:
           // nothing
         }
@@ -186,10 +186,4 @@ export class Utils {
     }
     return doc;
   }
-
-  static fitText(el: HTMLElement, h: number, options = {}) {
-    const settings = {minFontSize: 0, maxFontSize: 1000, ...options};
-    el.style.fontSize = Math.max(Math.min(h / (0.50 * 10), settings.maxFontSize), settings.minFontSize) + 'px';
-    return el;
-  };
 }
