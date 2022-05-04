@@ -76,6 +76,7 @@ export class Param {
   httpHeaders?: { [key: string]: string; };
   leftMargin = 0;
   showLoader = false;
+  noDataLabel = 'No data';
 // components specific params
   bar?: {
     horizontal?: boolean,

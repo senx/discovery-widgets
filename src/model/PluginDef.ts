@@ -20,7 +20,7 @@ export class PluginDef {
   author: string;
   description: string;
   version: string;
-  scriptWrapper: any;
+  scriptWrapper: (n: string) => string;
 
   constructor(def: any) {
     this.type = def.type;
@@ -32,7 +32,7 @@ export class PluginDef {
     this.scriptWrapper = def.scriptWrapper;
   }
 
-  toString(): string {
-    return this.name + ":" + this.version + " by " + this.author;
+  public toString(): string {
+    return `${this.name}:${this.version} by ${this.author}`;
   }
 }

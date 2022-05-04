@@ -203,7 +203,7 @@ export class DiscoveryTileComponent {
         const win = window as any;
         let registry = win.DiscoveryPluginRegistry;
         registry = registry || {};
-        if ((registry || {}).hasOwnProperty(this.type) && registry[this.type].hasOwnProperty('scriptWrapper')) {
+        if (!!(registry || {})[this.type] && !!registry[this.type].scriptWrapper && typeof registry[this.type].scriptWrapper === 'function') {
           this.ws = registry[this.type].scriptWrapper(this.ws);
         }
       }
@@ -234,7 +234,7 @@ fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.LOG.debug(['exec', 'headers'], this.headers);
             this.statusHeaders.emit(this.headers);
-            if((this.options as Param).showStatus) {
+            if ((this.options as Param).showStatus) {
               this.statusMessage = this.headers.statusText;
             }
             this.start = new Date().getTime();
@@ -325,8 +325,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               ref={(el) => this.tileResult = el as HTMLDiscoveryTileResultElement}
             />
             {this.statusMessage
-            ? <div class="discovery-tile-status">{this.statusMessage}</div>
-              :''}
+              ? <div class="discovery-tile-status">{this.statusMessage}</div>
+              : ''}
           </div>
         : <div class="discovery-tile-spinner">
           {this.showLoader ? <discovery-spinner>Requesting data...</discovery-spinner> : ''}

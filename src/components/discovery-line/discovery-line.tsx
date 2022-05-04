@@ -124,9 +124,9 @@ export class DiscoveryLineComponent {
         this.chartOpts.title = {
           show: true,
           textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
-          text: "No data",
-          left: "center",
-          top: "center"
+          text: this.innerOptions.noDataLabel || '',
+          left: 'center',
+          top: 'center'
         };
         this.chartOpts.xAxis = {show: false};
         this.chartOpts.yAxis = {show: false};
