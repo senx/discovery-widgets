@@ -68,7 +68,7 @@ export class DiscoveryAnnotation {
     setTimeout(() => {
       if (!!this.myChart) {
         this.myChart.resize({width: this.width, height: this.height});
-        this.setOpts();
+        this.setOpts(true);
       }
     });
   }
@@ -84,7 +84,7 @@ export class DiscoveryAnnotation {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        this.setOpts();
+        this.setOpts(true);
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue}, this.chartOpts);
@@ -134,8 +134,7 @@ export class DiscoveryAnnotation {
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
   }
 
-
-  setOpts() {
+  private setOpts(notMerge = false) {
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
@@ -147,9 +146,11 @@ export class DiscoveryAnnotation {
       this.chartOpts.xAxis = {show: false};
       this.chartOpts.yAxis = {show: false};
       this.chartOpts.tooltip = {show: false};
+    } else {
+      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
     }
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts || {}, false, true);
+      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
     });
   }
 

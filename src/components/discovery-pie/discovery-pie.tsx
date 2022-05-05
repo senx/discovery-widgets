@@ -60,14 +60,14 @@ export class DiscoveryPieComponent {
   updateType(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
       this.chartOpts = this.convert(GTSLib.getData(this.result));
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+      this.setOpts(true);
     }
   }
 
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    this.setOpts(true);
   }
 
   @Watch('options')
@@ -81,7 +81,7 @@ export class DiscoveryPieComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+        this.setOpts(true);
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -130,6 +130,26 @@ export class DiscoveryPieComponent {
     this.LOG.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
+    });
+  }
+
+  private setOpts(notMerge = false) {
+    if ((this.chartOpts?.series as any[] || []).length === 0) {
+      this.chartOpts.title = {
+        show: true,
+        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        text: this.innerOptions.noDataLabel || '',
+        left: 'center',
+        top: 'center'
+      };
+      this.chartOpts.xAxis = {show: false};
+      this.chartOpts.yAxis = {show: false};
+      this.chartOpts.tooltip = {show: false};
+    } else {
+      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+    }
+    setTimeout(() => {
+      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
     });
   }
 
@@ -294,7 +314,7 @@ export class DiscoveryPieComponent {
       this.myChart.on('mouseover', (event: any) => {
         this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
-      this.myChart.setOption(this.chartOpts || {}, true, false);
+      this.setOpts();
       initial = true;
     });
   }

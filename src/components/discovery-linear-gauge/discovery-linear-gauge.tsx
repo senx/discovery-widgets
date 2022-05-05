@@ -59,7 +59,7 @@ export class DiscoveryLinearGauge {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
-    this.drawChart(true);
+    this.setOpts(true);
   }
 
   @Watch('options')
@@ -73,7 +73,7 @@ export class DiscoveryLinearGauge {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.drawChart(true));
+        this.setOpts(true);
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -122,6 +122,26 @@ export class DiscoveryLinearGauge {
       type: this.type,
       options: this.innerOptions,
       chartOpts: this.chartOpts
+    });
+  }
+
+  private setOpts(notMerge = false) {
+    if ((this.chartOpts?.series as any[] || []).length === 0) {
+      this.chartOpts.title = {
+        show: true,
+        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        text: this.innerOptions.noDataLabel || '',
+        left: 'center',
+        top: 'center'
+      };
+      this.chartOpts.xAxis = {show: false};
+      this.chartOpts.yAxis = {show: false};
+      this.chartOpts.tooltip = {show: false};
+    } else {
+      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+    }
+    setTimeout(() => {
+      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
     });
   }
 
@@ -360,7 +380,7 @@ export class DiscoveryLinearGauge {
     this.myChart.on('mouseover', (event: any) => {
       this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
     });
-    this.drawChart();
+    this.setOpts();
     initial = true;
   }
 
@@ -379,11 +399,5 @@ export class DiscoveryLinearGauge {
         <discovery-spinner>Rendering data...</discovery-spinner>
       </div> : ''}
     </div>
-  }
-
-  // noinspection JSUnusedLocalSymbols
-  private drawChart(update = false) {
-    this.LOG.debug(['drawChart'], {chartOpts: this.chartOpts});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
   }
 }

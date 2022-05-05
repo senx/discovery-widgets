@@ -132,6 +132,8 @@ export class DiscoveryLineComponent {
         this.chartOpts.yAxis = {show: false};
         this.chartOpts.dataZoom = {show: false};
         this.chartOpts.tooltip = {show: false};
+      } else {
+        this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
       }
       this.myChart.setOption(this.chartOpts || {}, notMerge);
     });

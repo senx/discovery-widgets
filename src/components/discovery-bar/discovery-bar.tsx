@@ -65,7 +65,7 @@ export class DiscoveryBarComponent {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true));
+    this.setOpts(true);
   }
 
   @Watch('options')
@@ -79,7 +79,7 @@ export class DiscoveryBarComponent {
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-        setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true));
+        this.setOpts(true);
       }
       if (this.LOG) {
         this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
@@ -118,6 +118,26 @@ export class DiscoveryBarComponent {
       chartOpts: this.chartOpts
     });
     this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
+  }
+
+  private setOpts(notMerge = false) {
+    if ((this.chartOpts?.series as any[] || []).length === 0) {
+      this.chartOpts.title = {
+        show: true,
+        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        text: this.innerOptions.noDataLabel || '',
+        left: 'center',
+        top: 'center'
+      };
+      this.chartOpts.xAxis = {show: false};
+      this.chartOpts.yAxis = {show: false};
+      this.chartOpts.tooltip = {show: false};
+    } else {
+      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+    }
+    setTimeout(() => {
+      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+    });
   }
 
   private getCommonSeriesParam(color) {
@@ -473,7 +493,7 @@ export class DiscoveryBarComponent {
       });
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      this.myChart.setOption(this.chartOpts || {}, true, false);
+      this.setOpts();
       initial = true;
     });
   }
@@ -534,7 +554,7 @@ export class DiscoveryBarComponent {
     };
     (this.chartOpts.tooltip as any).show = true;
     this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    this.setOpts();
   }
 
   @Method()
@@ -550,7 +570,7 @@ export class DiscoveryBarComponent {
       status: 'hide'
     };
     this.myChart.dispatchAction({type: 'hideTip'});
-    setTimeout(() => this.myChart.setOption(this.chartOpts || {}, true, false));
+    this.setOpts();
   }
 
 
