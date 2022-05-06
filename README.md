@@ -82,9 +82,6 @@ Through a WarpScript:
 
 This is the main Web Component.
 
-- [More Dashboard Samples](src/storybook/discovery.dashboard.stories.tsx)
-- [More Scada Samples](src/storybook/discovery.scada.stories.tsx)
-
 #### Attributes
 
 | Property         | Attribute         | Type                    | Default       | Description                                                                                                                                                      |
@@ -127,15 +124,15 @@ Insert directly your dashboard definition as a WarpScript inside the HTML tag:
 
 This Web component displays a Tile based upon a WarpScript (or FLoWS). The WarpScript is executed when the tile renders.
 
-| Property      | Attribute      | Type                                                                                                                                                                                                                                                                                                                             | Default       | Description                                                                                                         |
-|---------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------|
-| `autoRefresh` | `auto-refresh` | `number`                                                                                                                                                                                                                                                                                                                         | `-1`          | Reloads the tile and execute again the script each x seconds, -1 to disable it                                      |
-| `chartTitle`  | `chart-title`  | `string`                                                                                                                                                                                                                                                                                                                         | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
-| `debug`       | `debug`        | `boolean`                                                                                                                                                                                                                                                                                                                        | `false`       | Enable debug messages                                                                                               | 
-| `options`     | `options`      | `Param / string`                                                                                                                                                                                                                                                                                                                 | `new Param()` | Serialized JSON options (see Params below)                                                                          | 
-| `type`        | `type`         | `line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button, hidden, calendar` |               | Chart type                                                                                                          |   
-| `url`         | `url`          | `string`                                                                                                                                                                                                                                                                                                                         | `undefined`   | exec url of your Warp 10 endpoint or Mobius WebSocket endpoint                                                      |
-| `lang`        | `lang`         | `warpscript, flows`                                                                                                                                                                                                                                                                                                              | `warpscript`  | Language used                                                                                                       |
+| Property      | Attribute      | Type                                                                                                                                                                                                                                                                                                                                      | Default       | Description                                                                                                         |
+|---------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------|
+| `autoRefresh` | `auto-refresh` | `number`                                                                                                                                                                                                                                                                                                                                  | `-1`          | Reloads the tile and execute again the script each x seconds, -1 to disable it                                      |
+| `chartTitle`  | `chart-title`  | `string`                                                                                                                                                                                                                                                                                                                                  | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
+| `debug`       | `debug`        | `boolean`                                                                                                                                                                                                                                                                                                                                 | `false`       | Enable debug messages                                                                                               | 
+| `options`     | `options`      | `Param / string`                                                                                                                                                                                                                                                                                                                          | `new Param()` | Serialized JSON options (see Params below)                                                                          | 
+| `type`        | `type`         | `line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button, hidden, calendar, heatmap` |               | Chart type                                                                                                          |   
+| `url`         | `url`          | `string`                                                                                                                                                                                                                                                                                                                                  | `undefined`   | exec url of your Warp 10 endpoint or Mobius WebSocket endpoint                                                      |
+| `lang`        | `lang`         | `warpscript, flows`                                                                                                                                                                                                                                                                                                                       | `warpscript`  | Language used                                                                                                       |
 
 ````html
 
@@ -151,16 +148,16 @@ This Web component displays a Tile based upon a WarpScript (or FLoWS). The WarpS
 
 This Web component displays a Tile based upon a WarpScript (or FLoWS) execution result (DataModel).
 
-| Property     | Attribute     | Type                                                                                                                                                                                                                                                                                                           | Default       | Description                                                                                                         |
-|--------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------|
-| `chartTitle` | `chart-title` | `string`                                                                                                                                                                                                                                                                                                       | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
-| `debug`      | `debug`       | `boolean`                                                                                                                                                                                                                                                                                                      | `false`       | Enable debug messages                                                                                               | 
-| `options`    | `options`     | `Param / string`                                                                                                                                                                                                                                                                                               | `new Param()` | Serialized JSON options (see Params below)                                                                          | 
-| `type`       | `type`        | `line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button` |               | Chart type                                                                                                          |   
-| `url`        | `url`         | `string`                                                                                                                                                                                                                                                                                                       | `undefined`   | exec url of your Warp 10 endpoint                                                                                   |
-| `height`     | `height`      | `number`                                                                                                                                                                                                                                                                                                       |               | Fixed height of the tile                                                                                            |
-| `width`      | `width`       | `number`                                                                                                                                                                                                                                                                                                       |               | Fixed width of the tile                                                                                             |
-| `result`     | `result`      | `DataModel / string`                                                                                                                                                                                                                                                                                           |               | Execution result                                                                                                    |
+| Property     | Attribute     | Type                                                                                                                                                                                                                                                                                                                              | Default       | Description                                                                                                         |
+|--------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------|
+| `chartTitle` | `chart-title` | `string`                                                                                                                                                                                                                                                                                                                          | `undefined`   | Title of the Tile, not mandatory, could be overridden by the dashboard definition (see Dashboard Definition below). | 
+| `debug`      | `debug`       | `boolean`                                                                                                                                                                                                                                                                                                                         | `false`       | Enable debug messages                                                                                               | 
+| `options`    | `options`     | `Param / string`                                                                                                                                                                                                                                                                                                                  | `new Param()` | Serialized JSON options (see Params below)                                                                          | 
+| `type`       | `type`        | `line, area, scatter, step-area, spline-area, spline, step, step-after, step-before, annotation, bar, display, image, map, gauge, linear-gauge, circle, pie, plot, doughnut, rose, tabular, svg, calendar, heatmap, input:text, input:list, input:secret, input:autocomplete, input:slider, input:date, input:date-range, button` |               | Chart type                                                                                                          |   
+| `url`        | `url`         | `string`                                                                                                                                                                                                                                                                                                                          | `undefined`   | exec url of your Warp 10 endpoint                                                                                   |
+| `height`     | `height`      | `number`                                                                                                                                                                                                                                                                                                                          |               | Fixed height of the tile                                                                                            |
+| `width`      | `width`       | `number`                                                                                                                                                                                                                                                                                                                          |               | Fixed width of the tile                                                                                             |
+| `result`     | `result`      | `DataModel / string`                                                                                                                                                                                                                                                                                                              |               | Execution result                                                                                                    |
 
 ````html
 
@@ -268,9 +265,6 @@ structure:
 
 #### line, area, scatter, spline-area, step-area, spline, step, step-after, step-before
 
-- [More Line Samples](src/storybook/discovery.line.stories.tsx)
-- [More Area Samples](src/storybook/discovery.area.stories.tsx)
-- [More Scatter Samples](src/storybook/discovery.scatters.stories.tsx)
 
 | Name                          | Default |
 |-------------------------------|---------|
@@ -326,7 +320,6 @@ Custom data for line and scatter only:
 
 #### annotation
 
-[More Samples](src/storybook/discovery.annotation.stories.tsx)
 
 | Name                          | Default |
 |-------------------------------|---------|
@@ -346,7 +339,6 @@ Supported option per series are:
 
 #### bar
 
-[More Samples](src/storybook/discovery.bar.stories.tsx)
 
 | Name                          | Default |
 |-------------------------------|---------|
@@ -406,8 +398,6 @@ Supported option per series are:
 
 #### display
 
-[More Samples](src/storybook/discovery.display.stories.tsx)
-
 | Name         | Type                            | Description                                                                                        |
 |--------------|---------------------------------|----------------------------------------------------------------------------------------------------|
 | data         | `number`, `string`, custom data | Data to display                                                                                    |
@@ -450,8 +440,6 @@ Supported option per series are:
 
 #### image
 
-[More Samples](src/storybook/discovery.image.stories.tsx)
-
 | Name         | Type                               | Description                                                                                        |
 |--------------|------------------------------------|----------------------------------------------------------------------------------------------------|
 | data         | `string`,  `string[]`, custom data | Base64 images to display                                                                           |
@@ -460,8 +448,6 @@ Supported option per series are:
 | events       | `Events[]`                         | List of events to emit (see below)                                                                 |
 
 #### map
-
-[More Samples](src/storybook/discovery.map.stories.tsx)
 
 | Name         | Type                        | Description                                                                                        |
 |--------------|-----------------------------|----------------------------------------------------------------------------------------------------|
@@ -515,8 +501,6 @@ Render weighted dots:
 
 #### gauge, circle
 
-[More Samples](src/storybook/discovery.gauge.stories.tsx)
-
 | Name                          | Default |
 |-------------------------------|---------|
 | --warp-view-chart-label-color | #8e8e8e |
@@ -536,8 +520,6 @@ Render weighted dots:
 | maxValue | `number` | Max value for gauge |
 
 #### linear-gauge
-
-[More Samples](src/storybook/discovery.gauge.stories.tsx)
 
 | Name                          | Default |
 |-------------------------------|---------|
@@ -565,10 +547,6 @@ Render weighted dots:
 
 #### pie, doughnut, rose
 
-- [More Pie Samples](src/storybook/discovery.pie.stories.tsx)
-- [More Doughnut Samples](src/storybook/discovery.doughnut.stories.tsx)
-- [More Rose Samples](src/storybook/discovery.rose.stories.tsx)
-
 | Name                          | Default |
 |-------------------------------|---------|
 | --warp-view-chart-label-color | #8e8e8e |
@@ -586,8 +564,6 @@ Render weighted dots:
 `{ 'key':string 'value':number }[]`
 
 #### tabular
-
-[More Samples](src/storybook/discovery.tabular.stories.tsx)
 
 | Name                                       | Default |
 |--------------------------------------------|---------|
@@ -640,8 +616,6 @@ Sample:
 
 #### svg
 
-[More Samples](src/storybook/discovery.svg.stories.tsx)
-
 | Name         | Type       | Description                                                                                        |
 |--------------|------------|----------------------------------------------------------------------------------------------------|
 | data         | `string[]` | SVG to display                                                                                     |
@@ -650,8 +624,6 @@ Sample:
 | events       | `Events[]` | List of events to emit (see below)                                                                 |
 
 #### input:text, input:secret
-
-[More Samples](src/storybook/discovery.input.stories.tsx)
 
 When used by the event mechanism, emits the value of the input.
 
@@ -678,8 +650,6 @@ When used by the event mechanism, emits the value of the input.
 | events       | `Events[]`         | List of events to emit (see below)                                                                 |
 
 #### input:list, input:autocomplete
-
-[More Samples](src/storybook/discovery.input.stories.tsx)
 
 When used by the event mechanism, emits the selected value of the input.
 
@@ -708,8 +678,6 @@ When used by the event mechanism, emits the selected value of the input.
 - `Options.input.value`: Initial value
 
 #### input:slider
-
-[More Samples](src/storybook/discovery.input.stories.tsx)
 
 When used by the event mechanism, emits the value of the slider.
 
@@ -740,8 +708,6 @@ When used by the event mechanism, emits the value of the slider.
 
 #### input:date
 
-[More Samples](src/storybook/discovery.input.stories.tsx)
-
 When used by the event mechanism, emits the timestamp in time unit of the input.
 
 | Name                             | Default        |
@@ -767,8 +733,6 @@ When used by the event mechanism, emits the timestamp in time unit of the input.
 | events       | `Events[]` | List of events to emit (see below)                                                                 |
 
 #### input:date-range
-
-[More Samples](src/storybook/discovery.input.stories.tsx)
 
 When used by the event mechanism, emits the timestamps (start and end) in time unit of the input.
 
@@ -796,8 +760,6 @@ When used by the event mechanism, emits the timestamps (start and end) in time u
 
 #### button
 
-[More Samples](src/storybook/discovery.button.stories.tsx)
-
 | Name                             | Default        |
 |----------------------------------|----------------|
 | --warp-view-button-font-size     | 1rem           |
@@ -822,8 +784,6 @@ Tiles emit events, they also trap events. A Dashboard also traps particular even
 Events are defined in the exec result of a tile, events are emitted when parsing done.
 
 Tiles register handlers on particular tags and event's type. You can use regular expression.
-
-[More Samples](src/storybook/discovery.events.stories.tsx)
 
 Sample:
 

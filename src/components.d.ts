@@ -108,6 +108,19 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryHeatmap {
+        "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "height": number;
+        "hide": (regexp: string) => Promise<void>;
+        "options": Param | string;
+        "resize": () => Promise<void>;
+        "result": DataModel | string;
+        "show": (regexp: string) => Promise<void>;
+        "type": ChartType;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoveryHidden {
         "debug": boolean;
         "height": number;
@@ -330,6 +343,12 @@ declare global {
         prototype: HTMLDiscoveryGaugeElement;
         new (): HTMLDiscoveryGaugeElement;
     };
+    interface HTMLDiscoveryHeatmapElement extends Components.DiscoveryHeatmap, HTMLStencilElement {
+    }
+    var HTMLDiscoveryHeatmapElement: {
+        prototype: HTMLDiscoveryHeatmapElement;
+        new (): HTMLDiscoveryHeatmapElement;
+    };
     interface HTMLDiscoveryHiddenElement extends Components.DiscoveryHidden, HTMLStencilElement {
     }
     var HTMLDiscoveryHiddenElement: {
@@ -428,6 +447,7 @@ declare global {
         "discovery-dashboard": HTMLDiscoveryDashboardElement;
         "discovery-display": HTMLDiscoveryDisplayElement;
         "discovery-gauge": HTMLDiscoveryGaugeElement;
+        "discovery-heatmap": HTMLDiscoveryHeatmapElement;
         "discovery-hidden": HTMLDiscoveryHiddenElement;
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-input": HTMLDiscoveryInputElement;
@@ -523,6 +543,17 @@ declare namespace LocalJSX {
         "width"?: number;
     }
     interface DiscoveryGauge {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
+        "onDraw"?: (event: CustomEvent<void>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryHeatmap {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: CustomEvent<any>) => void;
@@ -698,6 +729,7 @@ declare namespace LocalJSX {
         "discovery-dashboard": DiscoveryDashboard;
         "discovery-display": DiscoveryDisplay;
         "discovery-gauge": DiscoveryGauge;
+        "discovery-heatmap": DiscoveryHeatmap;
         "discovery-hidden": DiscoveryHidden;
         "discovery-image": DiscoveryImage;
         "discovery-input": DiscoveryInput;
@@ -726,6 +758,7 @@ declare module "@stencil/core" {
             "discovery-dashboard": LocalJSX.DiscoveryDashboard & JSXBase.HTMLAttributes<HTMLDiscoveryDashboardElement>;
             "discovery-display": LocalJSX.DiscoveryDisplay & JSXBase.HTMLAttributes<HTMLDiscoveryDisplayElement>;
             "discovery-gauge": LocalJSX.DiscoveryGauge & JSXBase.HTMLAttributes<HTMLDiscoveryGaugeElement>;
+            "discovery-heatmap": LocalJSX.DiscoveryHeatmap & JSXBase.HTMLAttributes<HTMLDiscoveryHeatmapElement>;
             "discovery-hidden": LocalJSX.DiscoveryHidden & JSXBase.HTMLAttributes<HTMLDiscoveryHiddenElement>;
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-input": LocalJSX.DiscoveryInput & JSXBase.HTMLAttributes<HTMLDiscoveryInputElement>;

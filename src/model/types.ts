@@ -33,7 +33,7 @@ export type ChartType =
   | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider' | 'input:date' | 'input:date-range' | 'input:multi' | 'input:multi-cb'
   | 'button'
   | 'hidden'
-  | 'calendar'
+  | 'calendar' | 'heatmap'
   ;
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';

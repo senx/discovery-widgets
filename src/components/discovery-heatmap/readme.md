@@ -1,4 +1,4 @@
-# discovery-map
+# discovery-heatmap
 
 
 
@@ -14,6 +14,7 @@
 | `options` | `options` |             | `Param \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `undefined`   |
 | `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "step-area" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "linear-gauge" \| "circle" \| "compass" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "input:text" \| "input:list" \| "input:secret" \| "input:autocomplete" \| "input:slider" \| "input:date" \| "input:date-range" \| "input:multi" \| "input:multi-cb" \| "button" \| "hidden" \| "calendar" \| "heatmap"` | `undefined`   |
+| `unit`    | `unit`    |             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `undefined`   |
 | `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `undefined`   |
 
 
@@ -27,13 +28,13 @@
 
 ## Methods
 
-### `export(type?: 'png' | 'svg') => Promise<any>`
+### `export(type?: 'png' | 'svg') => Promise<string>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<string>`
 
 
 
@@ -57,27 +58,7 @@ Type: `Promise<void>`
 
 
 
-### `setFocus(regexp: string, ts: number) => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
 ### `show(regexp: string) => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
-### `unFocus() => Promise<void>`
 
 
 
@@ -94,11 +75,16 @@ Type: `Promise<void>`
 
  - [discovery-tile-result](../discovery-tile-result)
 
+### Depends on
+
+- [discovery-spinner](../discovery-spinner)
+
 ### Graph
 ```mermaid
 graph TD;
-  discovery-tile-result --> discovery-map
-  style discovery-map fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-heatmap --> discovery-spinner
+  discovery-tile-result --> discovery-heatmap
+  style discovery-heatmap fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

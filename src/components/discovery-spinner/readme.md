@@ -22,6 +22,7 @@
  - [discovery-dashboard](../discovery-dashboard)
  - [discovery-display](../discovery-display)
  - [discovery-gauge](../discovery-gauge)
+ - [discovery-heatmap](../discovery-heatmap)
  - [discovery-image](../discovery-image)
  - [discovery-line](../discovery-line)
  - [discovery-linear-gauge](../discovery-linear-gauge)
@@ -39,6 +40,7 @@ graph TD;
   discovery-dashboard --> discovery-spinner
   discovery-display --> discovery-spinner
   discovery-gauge --> discovery-spinner
+  discovery-heatmap --> discovery-spinner
   discovery-image --> discovery-spinner
   discovery-line --> discovery-spinner
   discovery-linear-gauge --> discovery-spinner
