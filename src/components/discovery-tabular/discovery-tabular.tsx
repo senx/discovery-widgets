@@ -168,10 +168,12 @@ export class DiscoveryTabular {
   }
 
   formatDate(date: number): string {
-    return (this.options as Param).timeMode === 'date'
-      ? GTSLib.toISOString(date, this.divider, (this.options as Param).timeZone,
-        (this.options as Param).fullDateDisplay ? (this.options as Param).timeFormat : undefined)
-      : date.toString();
+    const opts = this.options as Param;
+    return opts.timeMode === 'timestamp'
+      ? date.toString()
+      : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(date, this.divider, opts.timeZone), 1, opts.timeZone,
+        opts.timeFormat) || '')
+        .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
   }
 
   render() {
