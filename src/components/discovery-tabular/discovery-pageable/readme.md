@@ -7,13 +7,21 @@
 
 ## Properties
 
-| Property     | Attribute     | Description | Type                                                  | Default       |
-| ------------ | ------------- | ----------- | ----------------------------------------------------- | ------------- |
-| `data`       | --            |             | `{ name: string; values: any[]; headers: string[]; }` | `undefined`   |
-| `debug`      | `debug`       |             | `boolean`                                             | `false`       |
-| `elemsCount` | `elems-count` |             | `number`                                              | `15`          |
-| `options`    | --            |             | `Param`                                               | `new Param()` |
-| `windowed`   | `windowed`    |             | `number`                                              | `5`           |
+| Property     | Attribute     | Description | Type      | Default       |
+| ------------ | ------------- | ----------- | --------- | ------------- |
+| `data`       | --            |             | `Dataset` | `undefined`   |
+| `debug`      | `debug`       |             | `boolean` | `false`       |
+| `divider`    | `divider`     |             | `number`  | `undefined`   |
+| `elemsCount` | `elems-count` |             | `number`  | `15`          |
+| `options`    | --            |             | `Param`   | `new Param()` |
+| `windowed`   | `windowed`    |             | `number`  | `5`           |
+
+
+## Events
+
+| Event           | Description | Type               |
+| --------------- | ----------- | ------------------ |
+| `dataPointOver` |             | `CustomEvent<any>` |
 
 
 ## Dependencies

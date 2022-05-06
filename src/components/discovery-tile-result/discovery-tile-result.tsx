@@ -352,6 +352,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;

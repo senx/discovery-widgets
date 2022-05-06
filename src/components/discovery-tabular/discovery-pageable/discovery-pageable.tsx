@@ -14,11 +14,12 @@
  *   limitations under the License.
  */
 
-import {Component, h, Prop, Watch} from "@stencil/core";
+import {Component, Event, EventEmitter, h, Prop, Watch} from "@stencil/core";
 import {Logger} from "../../../utils/logger";
 import {Param} from "../../../model/param";
 import {GTSLib} from "../../../utils/gts.lib";
 import {Utils} from "../../../utils/utils";
+import {Dataset} from "../discovery-tabular";
 
 @Component({
   tag: 'discovery-pageable',
@@ -27,10 +28,13 @@ import {Utils} from "../../../utils/utils";
 })
 export class DiscoveryPageable {
   @Prop() debug: boolean = false;
-  @Prop() data: { name: string, values: any[], headers: string[] };
+  @Prop() divider: number;
+  @Prop() data: Dataset;
   @Prop({mutable: true}) options: Param = new Param();
   @Prop({mutable: true}) elemsCount = 15;
   @Prop({mutable: true}) windowed = 5;
+
+  @Event() dataPointOver: EventEmitter;
 
   private LOG: Logger;
   private page = 0;
@@ -90,6 +94,27 @@ export class DiscoveryPageable {
     return GTSLib.formatLabel(name);
   }
 
+  private setSelected(value: any) {
+    this.dataPointOver.emit({
+        date: this.data.isGTS ? value[0] : undefined,
+        name: this.data.name,
+        value: value,
+        meta: {
+          header: this.data.headers
+        }
+      }
+    );
+  }
+
+  private formatDate(date: number): string {
+    const opts = this.options as Param;
+    return (opts.timeMode === 'timestamp' || !this.data.isGTS)
+      ? date.toString()
+      : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(date, this.divider, opts.timeZone), 1, opts.timeZone,
+        opts.timeFormat) || '')
+        .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
+  }
+
   render() {
     return <div>
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
@@ -98,8 +123,8 @@ export class DiscoveryPageable {
           style={{width: this.options.tabular?.fixedWidth ? (100 / this.data.headers.length) + '%' : 'auto'}}>{header}</th>)}</thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
-          <tr class={i % 2 === 0 ? 'odd' : 'even'}>
-            {value.map(v => <td><span innerHTML={v}/></td>)}
+          <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}>
+            {value.map((v, j) => <td><span innerHTML={j === 0 ? this.formatDate(v) : v}/></td>)}
           </tr>
         )}
         </tbody>

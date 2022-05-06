@@ -23,6 +23,13 @@ import {GTSLib} from "../../utils/gts.lib";
 import {Utils} from "../../utils/utils";
 import html2canvas from 'html2canvas';
 
+export interface Dataset {
+  name: string;
+  values: any[];
+  headers: string[];
+  isGTS: boolean;
+}
+
 @Component({
   tag: 'discovery-tabular',
   styleUrl: 'discovery-tabular.scss',
@@ -40,10 +47,11 @@ export class DiscoveryTabular {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
+  @Event() dataPointOver: EventEmitter;
 
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
-  @State() tabularData: { name: string, values: any[], headers: string[] }[] = [];
+  @State() tabularData: Dataset[] = [];
 
   private LOG: Logger;
   private divider: number = 1000;
@@ -60,7 +68,6 @@ export class DiscoveryTabular {
     this.width = dims.w;
     this.height = dims.h;
   }
-
 
   // noinspection JSUnusedLocalSymbols
   @Method()
@@ -95,11 +102,16 @@ export class DiscoveryTabular {
         : def;
   }
 
-  private convert(data: DataModel) {
+  private handleDataPointOver(event: CustomEvent) {
+    event.stopImmediatePropagation();
+    this.dataPointOver.emit(event.detail);
+  }
+
+  private convert(data: DataModel): Dataset[] {
     let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.options = {...options};
-    let dataGrid: { name: string, values: any[], headers: string[] }[];
+    let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {
       const dataList = GTSLib.flatDeep(data.data as any[]);
       this.LOG.debug(['convert', 'isArray'], dataList, options);
@@ -115,13 +127,14 @@ export class DiscoveryTabular {
     return dataGrid;
   }
 
-  private parseCustomData(dataModel: DataModel, data: any[]): { name: string, values: any[], headers: string[] }[] {
-    const flatData: { name: string, values: any[], headers: string[] }[] = [];
+  private parseCustomData(dataModel: DataModel, data: any[]): Dataset[] {
+    const flatData: Dataset[] = [];
     data.forEach(d => {
-      const dataSet: { name: string, values: any[], headers: string[] } = {
+      const dataSet: Dataset = {
         name: d.title || '',
         values: d.rows,
         headers: d.columns,
+        isGTS: false,
       };
       flatData.push(dataSet);
     });
@@ -129,19 +142,21 @@ export class DiscoveryTabular {
     return flatData;
   }
 
-  private parseData(dataModel: DataModel, data: any[]): { name: string, values: any[], headers: string[] }[] {
-    const flatData: { name: string, values: any[], headers: string[] }[] = [];
+  private parseData(dataModel: DataModel, data: any[]): Dataset[] {
+    const flatData: Dataset[] = [];
     this.LOG.debug(['parseData'], data);
     data.forEach((d, i) => {
-      const dataSet: { name: string, values: any[], headers: string[] } = {
+      const dataSet: Dataset = {
         name: '',
         values: [],
-        headers: []
+        headers: [],
+        isGTS: false,
       };
       if (GTSLib.isGts(d)) {
         this.LOG.debug(['parseData', 'isGts'], d);
         dataSet.name = ((dataModel.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(d);
-        dataSet.values = d.v.map(v => [this.formatDate(v[0])].concat(v.slice(1, v.length)));
+        dataSet.values = d.v; // .map(v => [this.formatDate(v[0])].concat(v.slice(1, v.length)));
+        dataSet.isGTS = true;
       } else {
         this.LOG.debug(['parseData', 'is not a Gts'], d);
         dataSet.values = GTSLib.isArray(d) ? d : [d];
@@ -167,22 +182,19 @@ export class DiscoveryTabular {
     return flatData;
   }
 
-  formatDate(date: number): string {
-    const opts = this.options as Param;
-    return opts.timeMode === 'timestamp'
-      ? date.toString()
-      : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(date, this.divider, opts.timeZone), 1, opts.timeZone,
-        opts.timeFormat) || '')
-        .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
-  }
-
   render() {
     this.draw.emit();
     return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el as HTMLDivElement}>
       <div class="tabular-wrapper-inner">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-        {this.tabularData.map(d => <discovery-pageable data={d} options={this.options as Param} debug={this.debug}/>)}
+        {this.tabularData.map(d =>
+          <discovery-pageable data={d}
+                              onDataPointOver={event => this.handleDataPointOver(event)}
+                              divider={this.divider}
+                              options={this.options as Param}
+                              debug={this.debug}
+          />)}
       </div>
     </div>
   }

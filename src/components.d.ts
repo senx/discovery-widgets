@@ -12,6 +12,7 @@ import { XAXisOption } from "echarts/types/dist/shared";
 import { DiscoveryEvent } from "./model/discoveryEvent";
 import { Dashboard } from "./model/dashboard";
 import { Tile } from "./model/tile";
+import { Dataset } from "./components/discovery-tabular/discovery-tabular";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
@@ -189,8 +190,9 @@ export namespace Components {
         "url": string;
     }
     interface DiscoveryPageable {
-        "data": { name: string, values: any[], headers: string[] };
+        "data": Dataset;
         "debug": boolean;
+        "divider": number;
         "elemsCount": number;
         "options": Param;
         "windowed": number;
@@ -606,9 +608,11 @@ declare namespace LocalJSX {
         "url"?: string;
     }
     interface DiscoveryPageable {
-        "data"?: { name: string, values: any[], headers: string[] };
+        "data"?: Dataset;
         "debug"?: boolean;
+        "divider"?: number;
         "elemsCount"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "options"?: Param;
         "windowed"?: number;
     }
@@ -649,6 +653,7 @@ declare namespace LocalJSX {
     interface DiscoveryTabular {
         "debug"?: boolean;
         "height"?: number;
+        "onDataPointOver"?: (event: CustomEvent<any>) => void;
         "onDraw"?: (event: CustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
