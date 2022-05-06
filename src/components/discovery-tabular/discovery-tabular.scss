@@ -25,7 +25,7 @@
 
     .tabular-wrapper-inner {
       position: absolute;
-      width: 100%;
+      width: calc(100% - 20px);
       left: 0;
       right: 0;
       bottom: 0;
