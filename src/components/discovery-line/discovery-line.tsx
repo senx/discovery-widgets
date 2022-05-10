@@ -573,7 +573,7 @@ export class DiscoveryLineComponent {
     return {
       type: this.innerOptions.timeMode === 'date' ? 'time' : 'value',
       show: !this.innerOptions.hideXAxis,
-      splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
+      splitNumber: this.innerOptions.timeMode === 'date' ? undefined : Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 200) - 1, 1),
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {
