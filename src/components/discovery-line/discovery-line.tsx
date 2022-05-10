@@ -494,27 +494,16 @@ export class DiscoveryLineComponent {
               color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
               borderType: t.type || 'dashed'
             },
-            label: {
-              color: t.color || '#D81B60', position: 'insideTop', distance: 5
-              //  , formatter: '{b}'
-            },
+            label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
             name: t.name || t.value || 0,
-            xAxis: this.innerOptions.timeMode === 'date'
-              ? (GTSLib.toISOString(GTSLib.utcToZonedTime(t.value || 0, this.divider, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
-                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-              : (t.value || 0)
+            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
           },
             {
               itemStyle: {
                 color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
                 borderType: t.type || 'dashed'
               },
-              xAxis: this.innerOptions.timeMode === 'date'
-                ? (GTSLib.toISOString(GTSLib.utcToZonedTime(t.start || 0, this.divider, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
-                  this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-                  .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-                : (t.start || 0)
+              xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
             }];
         })
     ];
@@ -533,13 +522,9 @@ export class DiscoveryLineComponent {
         .map(t => {
           return {
             name: t.name || t.value || 0,
-            label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}'},
+            label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name},
             lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
-            xAxis: this.innerOptions.timeMode === 'date'
-              ? (GTSLib.toISOString(GTSLib.utcToZonedTime(t.value || 0, this.divider, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
-                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-              : (t.value || 0)
+            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
           }
         })];
     if (markArea.length > 0 || markLine.length > 0) {
