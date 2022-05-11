@@ -254,7 +254,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
           {this.result.description ? <p>{this.result.description}</p> : ''}
           <div class="discovery-scada-wrapper" style={{height: this.scadaHeight + 'px'}}>
-            {this.renderedTiles.map((t, i) =>
+            {(this.renderedTiles || []).map((t, i) =>
               <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
                    style={{
                      left: t.x + 'px',
@@ -301,7 +301,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               gridAutoRows: 'minmax(' + (this.result?.cellHeight || this.cellHeight) + 'px, auto)',
               gridTemplateColumns: 'repeat(' + this.cols + ', 1fr)'
             }}>
-              {this.renderedTiles.map((t, i) =>
+              {(this.renderedTiles || []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
                      style={{
                        gridColumn: (t.x + 1) + ' / ' + (t.x + t.w + 1),
@@ -343,7 +343,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
             {this.result.description ? <p>{this.result.description}</p> : ''}
             <div class="discovery-flex-wrapper">
-              {this.renderedTiles.map((t, i) =>
+              {(this.renderedTiles || []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
                      style={{
                        height: ((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5) + 'px',
@@ -428,7 +428,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               return this.done[s] === 1;
           }
         });
-        if (this.renderedTiles.length === Object.keys(this.done).length && res.every(r => !!r)) {
+        if ((this.renderedTiles || []).length === Object.keys(this.done).length && res.every(r => !!r)) {
           this.rendered.emit();
         }
       });
