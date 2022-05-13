@@ -165,6 +165,7 @@ export class DiscoveryInputComponent {
           positionElement: this.inputField,
           static: true,
           enableSeconds: true,
+          time_24hr: true,
         } as any;
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
           opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone,
