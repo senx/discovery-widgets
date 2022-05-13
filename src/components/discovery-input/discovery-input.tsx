@@ -146,7 +146,7 @@ export class DiscoveryInputComponent {
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       innerOptions: this.innerOptions,
       innerResult: this.innerResult,
@@ -202,7 +202,7 @@ export class DiscoveryInputComponent {
                 const selection = event.detail.selection.value.v;
                 this.autoCompleteJS.input.value = selection;
                 this.selectedValue = selection;
-                this.LOG.debug(['selection'], {v: this.selectedValue, b: !this.innerOptions.input?.showButton});
+                this.LOG?.debug(['selection'], {v: this.selectedValue, b: !this.innerOptions.input?.showButton});
                 if (!this.innerOptions.input?.showButton) {
                   this.handleClick();
                 }
@@ -216,7 +216,7 @@ export class DiscoveryInputComponent {
     }
 
     this.parseResult();
-    this.LOG.debug(['componentDidLoad'], {
+    this.LOG?.debug(['componentDidLoad'], {
       type: this.type,
       innerOptions: this.innerOptions,
       innerResult: this.innerResult,
@@ -241,7 +241,7 @@ export class DiscoveryInputComponent {
           e.value = {};
         }
         e.value[e.selector] = this.selectedValue;
-        this.LOG.debug(['handleClick', 'emit'], {discoveryEvent: e, subtype: this.subType}, this.selectedValue);
+        this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e, subtype: this.subType}, this.selectedValue);
         this.discoveryEvent.emit(e);
       }
     });

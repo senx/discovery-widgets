@@ -69,7 +69,7 @@ export class DiscoveryTileComponent {
       this.options = JSON.parse(this.options);
     }
     if (this.LOG) {
-      this.LOG.debug(['optionsUpdate'], {
+      this.LOG?.debug(['optionsUpdate'], {
         options: this.options,
         newValue, oldValue
       });
@@ -85,7 +85,7 @@ export class DiscoveryTileComponent {
       });
     }
     if (this.LOG) {
-      this.LOG.debug(['varsUpdate'], {
+      this.LOG?.debug(['varsUpdate'], {
         vars: this.vars,
         newValue, oldValue
       });
@@ -109,7 +109,7 @@ export class DiscoveryTileComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
-    this.LOG.debug(['componentDidLoad'], 'Tile - resize', this.tileResult);
+    this.LOG?.debug(['componentDidLoad'], 'Tile - resize', this.tileResult);
     if (this.tileResult) {
       return this.tileResult.resize();
     }
@@ -145,7 +145,7 @@ export class DiscoveryTileComponent {
 
   async componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       url: this.url,
       type: this.type,
       options: this.options,
@@ -169,7 +169,7 @@ export class DiscoveryTileComponent {
 
   // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
-    this.LOG.debug(['disconnectedCallback'], 'disconnected');
+    this.LOG?.debug(['disconnectedCallback'], 'disconnected');
     if (this.timer) {
       window.clearInterval(this.timer);
     }
@@ -207,7 +207,7 @@ export class DiscoveryTileComponent {
           this.ws = registry[this.type].scriptWrapper(this.ws);
         }
       }
-      this.LOG.debug(['exec'], this.ws, this.type);
+      this.LOG?.debug(['exec'], this.ws, this.type);
       if (this.url.toLowerCase().startsWith('http')) {
         setTimeout(() => {
           this.hasError = false;
@@ -232,7 +232,7 @@ export class DiscoveryTileComponent {
             this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
 fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
-            this.LOG.debug(['exec', 'headers'], this.headers);
+            this.LOG?.debug(['exec', 'headers'], this.headers);
             this.statusHeaders.emit(this.headers);
             if ((this.options as Param).showStatus) {
               this.statusMessage = this.headers.statusText;
@@ -247,7 +247,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                 this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
               }
             }
-            this.LOG.debug(['exec', 'result'], this.result);
+            this.LOG?.debug(['exec', 'result'], this.result);
             this.execResult.emit(this.result);
             if (toRefresh && refresh) {
               this.tileResult.parseEvents().then(() => {
@@ -265,7 +265,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             this.hasError = (this.options as Param).showErrors;
             this.errorMessage = e;
           });
-          this.LOG.error(['exec'], e);
+          this.LOG?.error(['exec'], e);
         });
       } else if (this.url.toLowerCase().startsWith('ws')) {
         // Web Socket
@@ -288,7 +288,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               this.result = res;
               this.hasError = false;
               this.errorMessage = '';
-              this.LOG.debug(['exec', 'result'], this.result);
+              this.LOG?.debug(['exec', 'result'], this.result);
               this.execResult.emit(this.result);
             }
           }

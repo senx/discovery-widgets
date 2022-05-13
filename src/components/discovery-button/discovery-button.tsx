@@ -70,7 +70,7 @@ export class DiscoveryButtonComponent {
       this.innerVars = JSON.parse(this.vars);
     }
     if (this.LOG) {
-      this.LOG.debug(['varsUpdate'], {
+      this.LOG?.debug(['varsUpdate'], {
         vars: this.vars,
         newValue, oldValue
       });
@@ -113,7 +113,7 @@ export class DiscoveryButtonComponent {
       this.options = JSON.parse(this.options);
     }
     this.result = GTSLib.getData(this.result);
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
     });
@@ -145,12 +145,12 @@ export class DiscoveryButtonComponent {
       this.language);
     Utils.httpPost(this.url, ws, (this.options as Param).httpHeaders)
       .then((res: any) => {
-        this.LOG.debug(['handleClick', 'res.data'], res.data);
+        this.LOG?.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);
-        this.LOG.debug(['handleClick', 'getData'], result);
+        this.LOG?.debug(['handleClick', 'getData'], result);
         if (!!result) {
           (result.events || []).forEach(e => {
-            this.LOG.debug(['handleClick', 'emit'], {discoveryEvent: e});
+            this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e});
             this.discoveryEvent.emit(e);
           });
         }
@@ -158,7 +158,7 @@ export class DiscoveryButtonComponent {
       })
       .catch(e => {
         this.statusError.emit(e);
-        this.LOG.error(['exec'], e);
+        this.LOG?.error(['exec'], e);
       });
   }
 

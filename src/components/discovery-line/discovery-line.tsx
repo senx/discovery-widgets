@@ -84,7 +84,7 @@ export class DiscoveryLineComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -96,7 +96,7 @@ export class DiscoveryLineComponent {
         this.setOpts(true);
       }
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -110,7 +110,7 @@ export class DiscoveryLineComponent {
       this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
     });
@@ -147,19 +147,19 @@ export class DiscoveryLineComponent {
     let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
-      this.LOG.debug(['convert', 'isArray']);
+      this.LOG?.debug(['convert', 'isArray']);
       if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
-        this.LOG.debug(['convert', 'isArray 2']);
+        this.LOG?.debug(['convert', 'isArray 2']);
         gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
       } else {
-        this.LOG.debug(['convert', 'isArray 3']);
+        this.LOG?.debug(['convert', 'isArray 3']);
         gtsList = data.data as any[];
       }
     } else {
-      this.LOG.debug(['convert', 'not array']);
+      this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let multiY = false;
     let multiX = false;
@@ -473,7 +473,7 @@ export class DiscoveryLineComponent {
       });
       (opts.grid as GridOption).top = Math.max(30, 30 * i);
     }
-    this.LOG.debug(['convert', 'opts'], {opts});
+    this.LOG?.debug(['convert', 'opts'], {opts});
     const markArea = [...(this.innerOptions.thresholds || [])
       .filter(t => !!t.fill)
       .map(t => {

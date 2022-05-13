@@ -66,11 +66,11 @@ export class DiscoverySvgComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       setTimeout(() => this.parseResult());
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -97,7 +97,7 @@ export class DiscoverySvgComponent {
 
   convert(data: DataModel) {
     const toDisplay = [];
-    this.LOG.debug(['convert'], data)
+    this.LOG?.debug(['convert'], data)
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.innerOptions = {...options};
@@ -106,13 +106,13 @@ export class DiscoverySvgComponent {
     }
     if (GTSLib.isArray(data.data)) {
       (data.data as any[] || []).forEach(img => {
-        this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
+        this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(img))
         if (DiscoverySvgComponent.isSVG(img)) {
           toDisplay.push(this.sanitize(img));
         }
       })
     } else if (data.data && DiscoverySvgComponent.isSVG(data.data)) {
-      this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(data.data))
+      this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(data.data))
       toDisplay.push(this.sanitize(data.data as string));
     }
 
@@ -128,7 +128,7 @@ export class DiscoverySvgComponent {
       if (res.xpath) {
         const toDisplay = [];
         (this.toDisplay || []).forEach(img => {
-          this.LOG.debug(['convert'], DiscoverySvgComponent.isSVG(img))
+          this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(img))
           if (DiscoverySvgComponent.isSVG(img)) {
             toDisplay.push(this.sanitize(img, res.xpath.selector, res.xpath.value));
           }
@@ -162,7 +162,7 @@ export class DiscoverySvgComponent {
     }
     this.innerResult = GTSLib.getData(this.result);
     this.toDisplay = this.convert(this.innerResult || new DataModel())
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
       toDisplay: this.toDisplay,
@@ -207,7 +207,7 @@ export class DiscoverySvgComponent {
       }
       return new XMLSerializer().serializeToString(svgDoc);
     } catch (e) {
-      this.LOG.error(['exec'], e);
+      this.LOG?.error(['exec'], e);
       return svg;
     }
   }

@@ -65,7 +65,7 @@ export class DiscoveryImageComponent {
       }
       this.result = GTSLib.getData(this.result);
       this.toDisplay = this.convert(this.result as DataModel || new DataModel())
-      this.LOG.debug(['componentWillLoad'], {
+      this.LOG?.debug(['componentWillLoad'], {
         type: this.type,
         options: this.options,
         toDisplay: this.toDisplay,
@@ -96,6 +96,7 @@ export class DiscoveryImageComponent {
     return toDisplay;
   }
 
+  // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return this.toDisplay;

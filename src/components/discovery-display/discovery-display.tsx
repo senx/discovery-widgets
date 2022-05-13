@@ -73,7 +73,7 @@ export class DiscoveryDisplayComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -83,7 +83,7 @@ export class DiscoveryDisplayComponent {
       this.message = this.convert(this.result as DataModel || new DataModel());
       this.flexFont();
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -127,7 +127,7 @@ export class DiscoveryDisplayComponent {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.message = this.convert(this.result as DataModel || new DataModel())
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
     });
@@ -159,7 +159,7 @@ export class DiscoveryDisplayComponent {
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
-    this.LOG.debug(['convert'], 'dataModel', dataModel);
+    this.LOG?.debug(['convert'], 'dataModel', dataModel);
 
     let display: any;
     if (dataModel.data) {
@@ -196,7 +196,7 @@ export class DiscoveryDisplayComponent {
       const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
       if (height !== this.innerHeight) {
         this.innerHeight = height;
-        this.LOG.debug(['flexFont'], height);
+        this.LOG?.debug(['flexFont'], height);
         if (this.fitties) {
           this.fitties.unsubscribe();
         }

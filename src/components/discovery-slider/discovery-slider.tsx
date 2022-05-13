@@ -50,7 +50,7 @@ export class DiscoverySlider {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -62,14 +62,14 @@ export class DiscoverySlider {
       this.slider.off('slide');
       this.setChangeListener();
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoverySlider, this.debug);
-    this.LOG.debug(['componentWillLoad'], this.options);
+    this.LOG?.debug(['componentWillLoad'], this.options);
     if (typeof this.options === 'string') {
       this.innerOptions = JSON.parse(this.options);
     } else {
@@ -80,7 +80,7 @@ export class DiscoverySlider {
       input: {min: 0, max: 100, horizontal: true, showTicks: true, step: 1}
     }, this.innerOptions || {}) as Param;
     this.innerOptions = {...options};
-    this.LOG.debug(['componentWillLoad'], this.innerOptions);
+    this.LOG?.debug(['componentWillLoad'], this.innerOptions);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
   }
 

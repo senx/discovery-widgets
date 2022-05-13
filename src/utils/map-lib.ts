@@ -142,7 +142,7 @@ export class MapLib {
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
-      this.LOG.debug(['toLeafletMapPaths'], gts, data.params ? data.params[i] : '');
+      this.LOG?.debug(['toLeafletMapPaths'], gts, data.params ? data.params[i] : '');
       let params = (data.params || [])[i];
       if (!params) {
         params = {};
@@ -272,7 +272,7 @@ export class MapLib {
         globalParams = {};
       }
       if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0  && !globalParams.map?.heatmap) {
-        this.LOG.debug(['toLeafletMapPositionArray'], gts, data.params ? data.params[i] : '');
+        this.LOG?.debug(['toLeafletMapPositionArray'], gts, data.params ? data.params[i] : '');
         const posArray = gts;
         const gtsParam = data.params ? data.params[i] || {} : {};
         MapLib.extractCommonParameters(posArray, gtsParam, i, scheme);
@@ -294,7 +294,7 @@ export class MapLib {
         } else {
           posArray.color = ColorLib.getColor(i, scheme);
         }
-        this.LOG.debug(['toLeafletMapPositionArray', 'posArray'], posArray);
+        this.LOG?.debug(['toLeafletMapPositionArray', 'posArray'], posArray);
         positions.push(posArray);
       }
     }

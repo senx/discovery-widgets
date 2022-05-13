@@ -47,7 +47,7 @@ export class DiscoveryModalComponent {
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-    this.LOG.debug(['optionsUpdate'], {
+    this.LOG?.debug(['optionsUpdate'], {
       options: this.options,
       newValue, oldValue
     });
@@ -59,7 +59,7 @@ export class DiscoveryModalComponent {
     if (!!this.data && typeof this.data === 'string') {
       this.data = new JsonLib().parse(this.data as string);
     }
-    this.LOG.debug(['dataUpdate'], {
+    this.LOG?.debug(['dataUpdate'], {
       data: this.data,
       newValue, oldValue
     });
@@ -85,7 +85,7 @@ export class DiscoveryModalComponent {
         this.tile = undefined;
         this.dashboard = this.data as Dashboard;
       }
-      this.LOG.debug(['parseData'], {tile: this.tile, dashboard: this.dashboard});
+      this.LOG?.debug(['parseData'], {tile: this.tile, dashboard: this.dashboard});
     }
   }
 

@@ -70,7 +70,7 @@ export class DiscoveryBarComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -82,7 +82,7 @@ export class DiscoveryBarComponent {
         this.setOpts(true);
       }
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -112,12 +112,12 @@ export class DiscoveryBarComponent {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
       chartOpts: this.chartOpts
     });
-    this.LOG.debug(['componentWillLoad'], this.el.parentElement.parentElement);
+    this.LOG?.debug(['componentWillLoad'], this.el.parentElement.parentElement);
   }
 
   private setOpts(notMerge = false) {
@@ -193,19 +193,19 @@ export class DiscoveryBarComponent {
     let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
-      this.LOG.debug(['convert', 'isArray']);
+      this.LOG?.debug(['convert', 'isArray']);
       if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
-        this.LOG.debug(['convert', 'isArray 2']);
+        this.LOG?.debug(['convert', 'isArray 2']);
         gtsList = GTSLib.flattenGtsIdArray(data.data as any[], 0).res;
       } else {
-        this.LOG.debug(['convert', 'isArray 3']);
+        this.LOG?.debug(['convert', 'isArray 3']);
         gtsList = data.data as any[];
       }
     } else {
-      this.LOG.debug(['convert', 'not array']);
+      this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
@@ -234,7 +234,7 @@ export class DiscoveryBarComponent {
         } as SeriesOption);
       } else if (!gts.v) {
         this.innerOptions.timeMode = 'custom';
-        this.LOG.debug(['convert', 'gts'], gts);
+        this.LOG?.debug(['convert', 'gts'], gts);
         (gts.columns || []).forEach((label, index) => {
           const c = ColorLib.getColor(gts.id || index, this.innerOptions.scheme);
           const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
@@ -255,7 +255,7 @@ export class DiscoveryBarComponent {
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
     }
-    this.LOG.debug(['convert', 'series'], series);
+    this.LOG?.debug(['convert', 'series'], series);
     const opts = {
       animation: !!this.innerOptions?.bar?.animate,
       grid: {

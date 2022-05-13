@@ -84,7 +84,7 @@ export class DiscoveryTileResultComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -92,7 +92,7 @@ export class DiscoveryTileResultComponent {
         this.innerOptions = {...this.options as Param};
       }
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -103,7 +103,7 @@ export class DiscoveryTileResultComponent {
       this.innerVars = JSON.parse(this.vars);
     }
     if (this.LOG) {
-      this.LOG.debug(['varsUpdate'], {
+      this.LOG?.debug(['varsUpdate'], {
         vars: this.vars,
         newValue, oldValue
       });
@@ -115,7 +115,7 @@ export class DiscoveryTileResultComponent {
     if (!this.innerOptions?.eventHandler) {
       return;
     }
-    this.LOG.debug(['discoveryEventHandler'], {
+    this.LOG?.debug(['discoveryEventHandler'], {
       type: event.detail.type,
       event: event.detail
     });
@@ -183,7 +183,7 @@ export class DiscoveryTileResultComponent {
   async componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.innerType = this.type;
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
       result: this.result
@@ -196,7 +196,7 @@ export class DiscoveryTileResultComponent {
     this.innerResult = GTSLib.getData(this.result);
     this.innerVars = JSON.parse(this.vars || '{}');
     this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
-    this.LOG.debug(['componentWillLoad 2'], {
+    this.LOG?.debug(['componentWillLoad 2'], {
       type: this.innerType,
       options: this.innerOptions,
       result: this.innerResult
@@ -406,9 +406,9 @@ export class DiscoveryTileResultComponent {
           debug={this.debug}
         />;
       default:
-        this.LOG.debug(['getView'], PluginManager.getInstance().registry);
+        this.LOG?.debug(['getView'], PluginManager.getInstance().registry);
         if (PluginManager.getInstance().has(this.innerType)) {
-          this.LOG.debug(['getView', 'type'], this.innerType);
+          this.LOG?.debug(['getView', 'type'], this.innerType);
           const Tag = PluginManager.getInstance().get(this.innerType).tag;
           return <Tag
             result={this.innerResult}
@@ -508,7 +508,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type !== 'zoom' && e.type !== 'margin' && !this.initial)
       .forEach(e => {
         if (this.LOG) {
-          this.LOG.debug(['parseResult', 'emit'], {discoveryEvent: e});
+          this.LOG?.debug(['parseResult', 'emit'], {discoveryEvent: e});
         }
         this.discoveryEvent.emit(e);
       });
@@ -523,7 +523,7 @@ export class DiscoveryTileResultComponent {
       })
     });
     if (this.LOG) {
-      this.LOG.debug(['parseResult'], {
+      this.LOG?.debug(['parseResult'], {
         type: this.innerType,
         options: this.options,
         result: this.innerResult

@@ -67,7 +67,7 @@ export class DiscoveryPageable {
   }
 
   private drawGridData() {
-    this.LOG.debug(['drawGridData', '_options'], this.options);
+    this.LOG?.debug(['drawGridData', '_options'], this.options);
     if (!this.data) {
       return;
     }
@@ -83,7 +83,7 @@ export class DiscoveryPageable {
       Math.max(0, this.elemsCount * this.page),
       Math.min(this.elemsCount * (this.page + 1), (this.data.values || []).length)
     );
-    this.LOG.debug(['drawGridData', 'data'], this.data, {
+    this.LOG?.debug(['drawGridData', 'data'], this.data, {
       windowed: this.windowed,
       elemsCount: this.elemsCount,
       displayedValues: this.displayedValues,

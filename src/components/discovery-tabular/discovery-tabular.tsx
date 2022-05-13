@@ -85,7 +85,7 @@ export class DiscoveryTabular {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
     this.tabularData = this.convert(this.result as DataModel || new DataModel())
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
     });
@@ -114,7 +114,7 @@ export class DiscoveryTabular {
     let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {
       const dataList = GTSLib.flatDeep(data.data as any[]);
-      this.LOG.debug(['convert', 'isArray'], dataList, options);
+      this.LOG?.debug(['convert', 'isArray'], dataList, options);
       if (data.data.length > 0 && GTSLib.isGts(dataList[0])) {
         dataGrid = this.parseData(data, dataList);
       } else {
@@ -138,13 +138,13 @@ export class DiscoveryTabular {
       };
       flatData.push(dataSet);
     });
-    this.LOG.debug(['parseCustomData', 'flatData'], flatData, dataModel);
+    this.LOG?.debug(['parseCustomData', 'flatData'], flatData, dataModel);
     return flatData;
   }
 
   private parseData(dataModel: DataModel, data: any[]): Dataset[] {
     const flatData: Dataset[] = [];
-    this.LOG.debug(['parseData'], data);
+    this.LOG?.debug(['parseData'], data);
     data.forEach((d, i) => {
       const dataSet: Dataset = {
         name: '',
@@ -153,12 +153,12 @@ export class DiscoveryTabular {
         isGTS: false,
       };
       if (GTSLib.isGts(d)) {
-        this.LOG.debug(['parseData', 'isGts'], d);
+        this.LOG?.debug(['parseData', 'isGts'], d);
         dataSet.name = ((dataModel.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(d);
         dataSet.values = d.v; // .map(v => [this.formatDate(v[0])].concat(v.slice(1, v.length)));
         dataSet.isGTS = true;
       } else {
-        this.LOG.debug(['parseData', 'is not a Gts'], d);
+        this.LOG?.debug(['parseData', 'is not a Gts'], d);
         dataSet.values = GTSLib.isArray(d) ? d : [d];
       }
       dataSet.headers = [DiscoveryTabular.getHeaderParam(dataModel, i, 0, 'headers', 'Date')];
@@ -178,7 +178,7 @@ export class DiscoveryTabular {
         flatData.push(dataSet);
       }
     });
-    this.LOG.debug(['parseData', 'flatData'], flatData, this.options);
+    this.LOG?.debug(['parseData', 'flatData'], flatData, this.options);
     return flatData;
   }
 

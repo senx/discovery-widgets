@@ -64,7 +64,7 @@ export class DiscoveryAnnotation {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
-    this.LOG.debug(['updateRes'], {chartOpts: this.chartOpts});
+    this.LOG?.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
       if (!!this.myChart) {
         this.myChart.resize({width: this.width, height: this.height});
@@ -75,7 +75,7 @@ export class DiscoveryAnnotation {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -87,7 +87,7 @@ export class DiscoveryAnnotation {
         this.setOpts(true);
       }
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue}, this.chartOpts);
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue}, this.chartOpts);
       }
     }
   }
@@ -130,7 +130,7 @@ export class DiscoveryAnnotation {
     this.expanded = !!this.innerOptions.expandAnnotation;
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.LOG.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
+    this.LOG?.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
     this.chartOpts = this.convert(this.result as DataModel || new DataModel())
   }
 
@@ -162,7 +162,7 @@ export class DiscoveryAnnotation {
     const series: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     this.gtsList = [];
-    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let linesCount = 1;
     let min = Number.MAX_SAFE_INTEGER;
@@ -202,7 +202,7 @@ export class DiscoveryAnnotation {
     }
 
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
-    this.LOG.debug(['convert'], {
+    this.LOG?.debug(['convert'], {
       expanded: this.expanded,
       series,
       height: this.height,

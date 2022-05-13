@@ -61,7 +61,7 @@ export class DiscoveryHeatmap {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -76,7 +76,7 @@ export class DiscoveryHeatmap {
         });
       }
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -119,7 +119,7 @@ export class DiscoveryHeatmap {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
       chartOpts: this.chartOpts
@@ -136,19 +136,19 @@ export class DiscoveryHeatmap {
     let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
-      this.LOG.debug(['convert', 'isArray']);
+      this.LOG?.debug(['convert', 'isArray']);
       if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
-        this.LOG.debug(['convert', 'isArray 2']);
+        this.LOG?.debug(['convert', 'isArray 2']);
         gtsList = GTSLib.flattenGtsIdArray(data.data as any[], 0).res;
       } else {
-        this.LOG.debug(['convert', 'isArray 3']);
+        this.LOG?.debug(['convert', 'isArray 3']);
         gtsList = data.data as any[];
       }
     } else {
-      this.LOG.debug(['convert', 'not array']);
+      this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const isGtsToPlot = gtsList.some(g => GTSLib.isGtsToPlot(g));
     const isGtsToAnnotate = gtsList.some(g => GTSLib.isGtsToAnnotate(g));
     const isCustomData = gtsList.some(g => !!g.rows && !!g.columns);
@@ -166,7 +166,7 @@ export class DiscoveryHeatmap {
       min = res.min;
       max = res.max;
     }
-    this.LOG.debug(['convert', 'series'], {series});
+    this.LOG?.debug(['convert', 'series'], {series});
     return {
       grid: {
         left: 10, top: 10, bottom: 10, right: 10,

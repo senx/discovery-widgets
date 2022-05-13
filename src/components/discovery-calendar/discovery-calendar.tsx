@@ -62,7 +62,7 @@ export class DiscoveryCalendar {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -77,7 +77,7 @@ export class DiscoveryCalendar {
         });
       }
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -120,7 +120,7 @@ export class DiscoveryCalendar {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
       chartOpts: this.chartOpts
@@ -138,19 +138,19 @@ export class DiscoveryCalendar {
     let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
-      this.LOG.debug(['convert', 'isArray']);
+      this.LOG?.debug(['convert', 'isArray']);
       if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
-        this.LOG.debug(['convert', 'isArray 2']);
+        this.LOG?.debug(['convert', 'isArray 2']);
         gtsList = GTSLib.flattenGtsIdArray(data.data as any[], 0).res;
       } else {
-        this.LOG.debug(['convert', 'isArray 3']);
+        this.LOG?.debug(['convert', 'isArray 3']);
         gtsList = data.data as any[];
       }
     } else {
-      this.LOG.debug(['convert', 'not array']);
+      this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let cal = 0;
     let seriesIndex = 0;
@@ -221,7 +221,7 @@ export class DiscoveryCalendar {
       }
     }
     this.height = this.CAL_SIZE * cal + titles.length * 20 + 40;
-    this.LOG.debug(['convert', 'series'], {series, calendar, visualMap, titles});
+    this.LOG?.debug(['convert', 'series'], {series, calendar, visualMap, titles});
     return {
       title: titles,
       grid: {

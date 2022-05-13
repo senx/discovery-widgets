@@ -98,7 +98,7 @@ export class DiscoveryMapComponent {
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
-    this.LOG.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
@@ -107,7 +107,7 @@ export class DiscoveryMapComponent {
       }
       setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true, true));
       if (this.LOG) {
-        this.LOG.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
     }
   }
@@ -158,7 +158,7 @@ export class DiscoveryMapComponent {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.LOG.debug(['componentWillLoad'], {
+    this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
       toDisplay: this.toDisplay,
@@ -179,7 +179,7 @@ export class DiscoveryMapComponent {
     let zoomPromise: Promise<void>;
     // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    this.LOG.debug(['drawMap', 'this.options 2 '], {...data.globalParams});
+    this.LOG?.debug(['drawMap', 'this.options 2 '], {...data.globalParams});
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
     optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
     this.innerOptions = {...options};
@@ -188,9 +188,9 @@ export class DiscoveryMapComponent {
     }
     let dataList: any[];
     let params: any[];
-    this.LOG.debug(['drawMap', 'data'], data);
-    this.LOG.debug(['drawMap', 'this.height'], this.height);
-    this.LOG.debug(['drawMap', 'this.options'], {...this.innerOptions});
+    this.LOG?.debug(['drawMap', 'data'], data);
+    this.LOG?.debug(['drawMap', 'this.height'], this.height);
+    this.LOG?.debug(['drawMap', 'this.options'], {...this.innerOptions});
     data.data = GTSLib.flatDeep(data.data as any[]);
     dataList = data.data as any[];
     params = data.params;
@@ -221,15 +221,15 @@ export class DiscoveryMapComponent {
       if (map.subdomains) {
         mapOpts.subdomains = map.subdomains;
       }
-      this.LOG.debug(['displayMap'], {isRefresh, optionUpdate});
+      this.LOG?.debug(['displayMap'], {isRefresh, optionUpdate});
       if (!isRefresh || optionUpdate) {
-        this.LOG.debug(['displayMap'], 'map', map);
+        this.LOG?.debug(['displayMap'], 'map', map);
         this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
         tilesPromise = new Promise(resolve => setTimeout(() => this.tilesLayer.on("load", () => resolve())));
       }
     }
     if (!!this.map) {
-      this.LOG.debug(['displayMap'], 'map exists');
+      this.LOG?.debug(['displayMap'], 'map exists');
       this.pathDataLayer.clearLayers();
       this.positionDataLayer.clearLayers();
       this.geoJsonLayer.clearLayers();
@@ -260,7 +260,7 @@ export class DiscoveryMapComponent {
           this.tilesLayer.addTo(this.tileLayerGroup);
         }
       }
-      this.map.on('load', () => this.LOG.debug(['displayMap', 'load'], this.map.getCenter().lng, this.currentLong, this.map.getZoom()));
+      this.map.on('load', () => this.LOG?.debug(['displayMap', 'load'], this.map.getCenter().lng, this.currentLong, this.map.getZoom()));
       this.map.on('zoomend', () => {
         if (!this.firstDraw) {
           this.currentZoom = this.map.getZoom();
@@ -280,14 +280,14 @@ export class DiscoveryMapComponent {
         this.updateGtsPath(path);
       }
     }
-    this.LOG.debug(['displayMap'], 'pathData', this.pathData);
+    this.LOG?.debug(['displayMap'], 'pathData', this.pathData);
     const positionsSize = (this.positionData || []).length;
     for (let i = 0; i < positionsSize; i++) {
       this.updatePositionArray(this.positionData[i]);
     }
-    this.LOG.debug(['displayMap'], 'positionData', this.positionData);
+    this.LOG?.debug(['displayMap'], 'positionData', this.positionData);
     (this.mapOpts.tiles || []).forEach(t => {
-      this.LOG.debug(['displayMap'], t);
+      this.LOG?.debug(['displayMap'], t);
       const tile: { url?: string, subdomains: string, maxNativeZoom: number, maxZoom: number } = {
         subdomains: 'abcd',
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
@@ -369,7 +369,7 @@ export class DiscoveryMapComponent {
       setTimeout(() => {
         if (!!this.bounds && this.bounds.isValid()) {
           if ((this.currentLat || this.mapOpts.startLat) && (this.currentLong || this.mapOpts.startLong)) {
-            this.LOG.debug(['displayMap', 'setView'], 'fitBounds', 'already have bounds');
+            this.LOG?.debug(['displayMap', 'setView'], 'fitBounds', 'already have bounds');
             if (this.mapOpts.track) {
               this.map.setView({
                   lat: this.mapOpts.startLat || this.bounds.getCenter().lat || 0,
@@ -385,13 +385,13 @@ export class DiscoveryMapComponent {
                 {animate: false});
             }
           } else {
-            this.LOG.debug(['displayMap', 'setView'], 'fitBounds', 'this.bounds', this.bounds);
+            this.LOG?.debug(['displayMap', 'setView'], 'fitBounds', 'this.bounds', this.bounds);
             this.map.fitBounds(this.bounds, {padding: [1, 1], animate: false, duration: 0});
           }
           this.currentLat = this.map.getCenter().lat;
           this.currentLong = this.map.getCenter().lng;
         } else {
-          this.LOG.debug(['displayMap', 'setView'], 'invalid bounds', {lat: this.currentLat, lng: this.currentLong});
+          this.LOG?.debug(['displayMap', 'setView'], 'invalid bounds', {lat: this.currentLat, lng: this.currentLong});
           this.map.setView({
               lat: this.currentLat || this.mapOpts.startLat || 0,
               lng: this.currentLong || this.mapOpts.startLong || 0
@@ -405,7 +405,7 @@ export class DiscoveryMapComponent {
         }
       }, 10);
     } else {
-      this.LOG.debug(['displayMap', 'lost'], 'lost', this.currentZoom, this.mapOpts.startZoom);
+      this.LOG?.debug(['displayMap', 'lost'], 'lost', this.currentZoom, this.mapOpts.startZoom);
       this.map.setView(
         [
           this.currentLat || this.mapOpts.startLat || 0,
@@ -631,7 +631,7 @@ export class DiscoveryMapComponent {
     let result;
     let inStep;
     let size;
-    this.LOG.debug(['updatePositionArray'], positionData);
+    this.LOG?.debug(['updatePositionArray'], positionData);
 
     switch (positionData.render) {
       case 'marker':
@@ -643,10 +643,10 @@ export class DiscoveryMapComponent {
           this.addPopup(positionData, p[2], undefined, marker);
           group.addLayer(marker);
         }
-        this.LOG.debug(['updatePositionArray', 'build marker'], icon);
+        this.LOG?.debug(['updatePositionArray', 'build marker'], icon);
         break;
       case 'coloredWeightedDots':
-        this.LOG.debug(['updatePositionArray', 'coloredWeightedDots'], positionData);
+        this.LOG?.debug(['updatePositionArray', 'coloredWeightedDots'], positionData);
         result = [];
         inStep = [];
         for (let j = 0; j < positionData.numColorSteps; j++) {
@@ -658,7 +658,7 @@ export class DiscoveryMapComponent {
           const p = positionData.positions[i];
           const radius = (parseInt(p[2], 10) - (positionData.minValue || 0)) * 50 / (positionData.maxValue || 50);
 
-          this.LOG.debug(['updatePositionArray', 'coloredWeightedDots', 'radius'], positionData.baseRadius * p[4]);
+          this.LOG?.debug(['updatePositionArray', 'coloredWeightedDots', 'radius'], positionData.baseRadius * p[4]);
           const marker = Leaflet.circleMarker(
             {lat: p[0], lng: p[1]},
             {

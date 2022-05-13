@@ -43,12 +43,12 @@ export class PluginManager {
 
   register(plugin: PluginDef) {
     this.registry[plugin.type] = plugin;
-    this.LOG.info(['Registration', plugin.name], `${plugin.toString()}`);
-    this.LOG.debug(['Registration of', plugin.name], this.registry);
+    this.LOG?.info(['Registration', plugin.name], `${plugin.toString()}`);
+    this.LOG?.debug(['Registration of', plugin.name], this.registry);
   }
 
   get(type: string): PluginDef {
-    this.LOG.debug(['getPlugin'], this.registry, type);
+    this.LOG?.debug(['getPlugin'], this.registry, type);
     return this.registry[type];
   }
 

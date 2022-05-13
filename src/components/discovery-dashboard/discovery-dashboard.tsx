@@ -75,7 +75,7 @@ export class DiscoveryDashboardComponent {
     if (!!this.options && typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-    this.LOG.debug(['optionsUpdate'], {
+    this.LOG?.debug(['optionsUpdate'], {
       options: this.options,
       newValue, oldValue
     });
@@ -100,7 +100,7 @@ export class DiscoveryDashboardComponent {
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
-    this.LOG.debug(['componentWillLoad'], {url: this.url, options: this.options});
+    this.LOG?.debug(['componentWillLoad'], {url: this.url, options: this.options});
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       this.options = JSON.parse(this.options);
     }
@@ -115,7 +115,7 @@ export class DiscoveryDashboardComponent {
 
   // noinspection JSUnusedGlobalSymbols
   disconnectedCallback() {
-    this.LOG.debug(['disconnectedCallback'], 'disconnected');
+    this.LOG?.debug(['disconnectedCallback'], 'disconnected');
     if (this.timer) {
       window.clearInterval(this.timer);
     }
@@ -126,10 +126,10 @@ export class DiscoveryDashboardComponent {
     try {
       const win = Utils.getContentBounds(this.dash);
       const struct = await this.getDashboardStructure();
-      this.LOG.debug(['getPDF'], struct);
+      this.LOG?.debug(['getPDF'], struct);
       return await PdfLib.generatePDF(win.w, win.h, struct, save, output, this.LOG);
     } catch (e) {
-      this.LOG.error(['getPDF'], e);
+      this.LOG?.error(['getPDF'], e);
     }
   }
 
@@ -190,13 +190,13 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           this._type = tmpResult.type || this.type || 'dashboard';
 
           if (typeof tmpResult.tiles === 'string') {
-            this.LOG.debug(['exec', 'macroTiles'], tmpResult.tiles);
+            this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
             Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', (this.options as Param).httpHeaders).then((t: any) => {
-              this.LOG.debug(['exec', 'macroTiles', 'res'], t);
+              this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
               this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
               this.processResult(tmpResult);
             }).catch(e => {
-              this.LOG.error(['exec'], e);
+              this.LOG?.error(['exec'], e);
               tmpResult.tiles = [];
               this.processResult(tmpResult);
             });
@@ -206,7 +206,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           }
         }).catch(e => {
         this.statusError.emit(e);
-        this.LOG.error(['exec'], e);
+        this.LOG?.error(['exec'], e);
       });
     }
   }
@@ -227,7 +227,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       }
     }
     tmpResult.tiles = tmpResult.tiles || [];
-    this.LOG.debug(['processResult', 'tmpResult'], tmpResult);
+    this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
     this.result = {...tmpResult};
     this.tiles = [];
     for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {
