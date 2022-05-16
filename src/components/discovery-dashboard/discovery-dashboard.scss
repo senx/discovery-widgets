@@ -117,7 +117,7 @@
     height: auto;
     text-align: center;
     color: var(--warp-view-font-color, $w10-charcoal);
-    background: var(--warp-view-scada-background, $w10-transparent);
+    background: var(--warp-view-dashboard-background, $w10-transparent);
     background-size: cover;
 
     .discovery-scada-wrapper {

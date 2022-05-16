@@ -37,7 +37,10 @@ export enum Colors {
   T_MAX_400_FILM = 'T_MAX_400_FILM',
   MATRIX = 'MATRIX',
   CHARTANA = 'CHARTANA',
+  VINTAGE = 'VINTAGE',
+  CHALK = 'CHALK',
 }
+
 // noinspection JSUnusedGlobalSymbols
 export enum HeatMaps {
   COHESIVE = 'COHESIVE',
@@ -58,6 +61,8 @@ export enum HeatMaps {
   ECTOPLASM = 'ECTOPLASM',
   T_MAX_400_FILM = 'T_MAX_400_FILM',
   MATRIX = 'MATRIX',
+  CHALK = 'CHALK',
+  VINTAGE = 'CHALK',
   DEFAULT = 'DEFAULT',
 }
 
@@ -98,6 +103,9 @@ export class ColorLib {
     MATRIX: ['#025f27', '#025f27', '#0d7635', '#228c49', '#37a266', '#4eb485', '#68c2a3', '#88d1bc'],
     CHARTANA: ['#77BE69', '#FADE2B', '#F24865', '#5694F2',
       '#FF9830', '#B876D9'],
+    CHALK: ["#fc97af", "#87f7cf", "#f7f494", "#72ccff", "#f7c5a0", "#d4a4eb", "#d2f5a6", "#76f2f2"],
+    VINTAGE: ["#d87c7c", "#919e8b", "#d7ab82", "#6e7074", "#61a0a8", "#efa18d", "#787464", "#cc7e63", "#724e58", "#4b565b"
+    ]
   };
 
   static heatMaps = {
