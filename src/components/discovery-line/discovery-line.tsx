@@ -561,7 +561,7 @@ export class DiscoveryLineComponent {
       nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      axisLabel: {color: color || Utils.getLabelColor(this.el)},
+      axisLabel: {color: color || Utils.getLabelColor(this.el), show: !this.innerOptions.hideYAxis,},
       axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
       min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
@@ -577,6 +577,7 @@ export class DiscoveryLineComponent {
       splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {
+        show: !this.innerOptions.hideXAxis,
         color: color || Utils.getLabelColor(this.el),
         formatter: this.innerOptions.fullDateDisplay ? value =>
             GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
