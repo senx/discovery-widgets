@@ -302,6 +302,7 @@ export class DiscoveryTileResultComponent {
           debug={this.debug}
         />;
       case 'button':
+      case 'button:radio':
         return <discovery-button
           result={this.innerResult}
           url={this.url}

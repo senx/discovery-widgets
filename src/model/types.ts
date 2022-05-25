@@ -31,7 +31,7 @@ export type ChartType =
   | 'tabular'
   | 'svg'
   | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider' | 'input:date' | 'input:date-range' | 'input:multi' | 'input:multi-cb'
-  | 'button'
+  | 'button' | 'button:radio'
   | 'hidden'
   | 'calendar' | 'heatmap'
   ;

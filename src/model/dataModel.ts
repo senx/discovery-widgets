@@ -18,7 +18,7 @@ import {Param} from './param';
 import {DiscoveryEvent} from "./discoveryEvent";
 
 export class DataModel {
-  data: any[] | string;
+  data: any[] | any | string;
   params?: Param[];
   globalParams?: Param;
   events?: DiscoveryEvent[];

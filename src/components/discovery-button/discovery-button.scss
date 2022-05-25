@@ -42,4 +42,33 @@
       border-radius: var(--warp-view-button-border-radius, 0.25rem);
     }
   }
+
+  .discovery-btn-group {
+    button.discovery-btn {
+      margin: .25rem 0;
+      color: var(--warp-view-button-inactive-label-color, $w10-blue);
+      background-color: var(--warp-view-button-inactive-bg-color, $w10-white);
+
+      &.active {
+        color: var(--warp-view-button-label-color, $w10-white);
+        background-color: var(--warp-view-button-bg-color, $w10-blue);
+
+
+      }
+      &:hover {
+        color: var(--warp-view-button-label-color, $w10-white);
+        background-color: var(--warp-view-button-bg-color, $w10-blue);
+      }
+      &:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      &:not(:first-child) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+
+  }
 }

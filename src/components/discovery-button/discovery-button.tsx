@@ -57,11 +57,13 @@ export class DiscoveryButtonComponent {
   @State() rendering: boolean = false;
   @State() label: string = 'Ok';
   @State() innerStyle: { [k: string]: string; };
+  @State() active: string;
 
   private defOptions: Param = new Param();
   private LOG: Logger;
   private root: HTMLDivElement;
   private innerVars: any = {};
+  private innerResult: DataModel;
 
 
   @Watch('vars')
@@ -76,14 +78,14 @@ export class DiscoveryButtonComponent {
       });
     }
   }
+
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
-
-    if(res.style) {
+    if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
-    if(res.vars) {
+    if (res.vars) {
       this.innerVars = {...this.innerVars, ...res.vars};
     }
   }
@@ -98,7 +100,7 @@ export class DiscoveryButtonComponent {
   async export(type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
-    const dm: Param = (((this.result as unknown as DataModel) || {
+    const dm: Param = ((this.innerResult || {
       globalParams: {bgColor}
     }).globalParams || {bgColor}) as Param;
     bgColor = dm.bgColor || bgColor;
@@ -112,14 +114,14 @@ export class DiscoveryButtonComponent {
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-    this.result = GTSLib.getData(this.result);
+    this.innerResult = GTSLib.getData(this.result);
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
     });
 
     const btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
-    const dm = ((this.result as unknown as DataModel) || {
+    const dm = (this.innerResult || {
       globalParams: {
         button: {label: btnLabel}
       }
@@ -127,18 +129,23 @@ export class DiscoveryButtonComponent {
 
     this.label = dm.button.label;
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.result.globalParams) as Param;
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
     this.options = {...options};
     this.innerVars = JSON.parse(this.vars);
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
+    if(!!this.innerResult?.data || []) {
+      console.log(this.innerResult.data);
+      this.active = (this.innerResult.data || []).find(v => v.active).value;
+      console.log(this.active)
+    }
     this.draw.emit();
   }
 
-  private handleClick = () => {
+  private handleClick() {
     const ws = LangUtils.prepare(
-      `${(this.result as DataModel).data} EVAL`,
+      `${this.innerResult.data} EVAL`,
       this.innerVars || {},
       (this.options as Param)?.skippedVars || [],
       this.type,
@@ -162,14 +169,37 @@ export class DiscoveryButtonComponent {
       });
   }
 
+  private toggle(value: string) {
+    this.active = value;
+    (this.innerResult.events || []).forEach(e => {
+      e.value = value;
+      this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e});
+      this.discoveryEvent.emit(e);
+    });
+  }
+
   private generateStyle(innerStyle: { [k: string]: string }): string {
-    return Object.keys(innerStyle || {}).map(k=> k + ' { ' + innerStyle[k] + ' }').join('\n');
+    return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
   render() {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
-      <div ref={el => this.root = el} class="button-wrapper"><button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/></div>
+      <div ref={el => this.root = el} class="button-wrapper">
+        {this.type === 'button'
+          ? <button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/>
+          : <div class="discovery-btn-group">
+            {(this.innerResult?.data || []).map(v =>
+              <button type="button" class={{
+                'discovery-btn': true,
+                'active': v.value === this.active
+              }}
+                      innerHTML={v.label}
+                      onClick={() => this.toggle(v.value)}
+              />
+            )}
+          </div>}
+      </div>
     ];
   }
 
