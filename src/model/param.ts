@@ -90,7 +90,8 @@ export class Param {
     fixedWidth: boolean
   };
   gauge?: {
-    horizontal: boolean
+    horizontal: boolean,
+    showTicks: false,
   };
   input?: {
     showButton?: boolean,
