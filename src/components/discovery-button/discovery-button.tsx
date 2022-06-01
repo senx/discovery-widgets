@@ -170,8 +170,11 @@ export class DiscoveryButtonComponent {
   private toggle(value: string) {
     this.active = value;
     (this.innerResult.events || []).forEach(e => {
-      e.value = value;
       this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e});
+      if (!e.value) {
+        e.value = {};
+      }
+      e.value[e.selector] = value;
       this.discoveryEvent.emit(e);
     });
   }
