@@ -135,7 +135,7 @@ export class DiscoveryButtonComponent {
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
-    if(!!this.innerResult?.data || []) {
+    if (!!this.innerResult?.data || []) {
       this.active = (this.innerResult.data || []).find(v => v.active)?.value;
     }
     this.draw.emit();
@@ -185,17 +185,20 @@ export class DiscoveryButtonComponent {
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div ref={el => this.root = el} class="button-wrapper">
         {this.type === 'button'
-          ? <button type="button" class="discovery-btn" innerHTML={this.label} onClick={this.handleClick}/>
+          ? <button type="button" class="discovery-btn"
+                    innerHTML={this.label}
+                    onClick={() => this.handleClick()}/>
           : <div class="discovery-btn-group">
-            {(this.innerResult?.data || []).map(v =>
-              <button type="button" class={{
-                'discovery-btn': true,
-                'active': v.value === this.active
-              }}
-                      innerHTML={v.label}
-                      onClick={() => this.toggle(v.value)}
-              />
-            )}
+            {GTSLib.isArray(this.innerResult?.data)
+              ? (this.innerResult?.data || []).map(v =>
+                <button type="button" class={{
+                  'discovery-btn': true,
+                  'active': v.value === this.active
+                }}
+                        innerHTML={v.label}
+                        onClick={() => this.toggle(v.value)}
+                />
+              ) : ''}
           </div>}
       </div>
     ];
