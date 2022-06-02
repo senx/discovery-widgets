@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from "../../model/dataModel";
 import {ChartType, ECharts} from "../../model/types";
 import {Param} from "../../model/param";
@@ -23,7 +23,8 @@ import {Logger} from "../../utils/logger";
 import {GTSLib} from "../../utils/gts.lib";
 import {ColorLib} from "../../utils/color-lib";
 import {Utils} from "../../utils/utils";
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
+import {DiscoveryEvent} from "../../model/discoveryEvent";
 
 @Component({
   tag: 'discovery-linear-gauge',
@@ -38,6 +39,7 @@ export class DiscoveryLinearGauge {
   @Prop() height: number;
   @Prop() debug: boolean = false;
   @Prop() unit: string;
+  @Prop() vars: string = '{}';
 
   @Element() el: HTMLElement;
 
@@ -47,8 +49,10 @@ export class DiscoveryLinearGauge {
   @State() parsing: boolean = false;
   @State() rendering: boolean = false;
   @State() innerOptions: Param;
+  @State() innerStyle: { [k: string]: string; };
+  private innerVars: any = {};
 
-  private pngWrapper: HTMLDivElement;
+  private root: HTMLDivElement;
   private tooltip: HTMLDivElement;
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
@@ -56,13 +60,13 @@ export class DiscoveryLinearGauge {
   private divider: number = 1000;
   private myChart: ECharts;
   private dataStruct: any[];
-  private isHorizontal: boolean = true;
+  private isVertical: boolean = true;
 
   @Watch('result')
   updateRes() {
     this.convert(GTSLib.getData(this.result) || new DataModel());
     this.innerOptions.gauge = {horizontal: true, ...this.innerOptions.gauge};
-    this.isHorizontal = this.innerOptions.gauge?.horizontal;
+    this.isVertical = !this.innerOptions.gauge?.horizontal;
   }
 
   @Watch('options')
@@ -75,10 +79,34 @@ export class DiscoveryLinearGauge {
         this.innerOptions = {...this.options as Param};
       }
       this.innerOptions.gauge = {horizontal: true, ...this.innerOptions.gauge};
-      this.isHorizontal = this.innerOptions.gauge?.horizontal;
+      this.isVertical = !this.innerOptions.gauge?.horizontal;
       if (this.LOG) {
         this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
+    }
+  }
+
+  @Watch('vars')
+  varsUpdate(newValue: string, oldValue: string) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    }
+    if (this.LOG) {
+      this.LOG?.debug(['varsUpdate'], {
+        vars: this.vars,
+        newValue, oldValue
+      });
+    }
+  }
+
+  @Listen('discoveryEvent', {target: 'window'})
+  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    if (res.style) {
+      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+    }
+    if (res.vars) {
+      this.innerVars = {...this.innerVars, ...res.vars};
     }
   }
 
@@ -112,6 +140,7 @@ export class DiscoveryLinearGauge {
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLinearGauge, this.debug);
+    this.innerVars = JSON.parse(this.vars);
     if (typeof this.options === 'string') {
       this.innerOptions = JSON.parse(this.options);
     } else {
@@ -130,7 +159,10 @@ export class DiscoveryLinearGauge {
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
     this.innerOptions = {...options};
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.isHorizontal = !!this.innerOptions.gauge && !!this.innerOptions.gauge.horizontal;
+    this.isVertical = !this.innerOptions.gauge?.horizontal;
+    if (this.innerOptions.customStyles) {
+      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
+    }
     // noinspection JSUnusedAssignment
     let gtsList = [];
     if (GTSLib.isArray(data.data)) {
@@ -178,11 +210,7 @@ export class DiscoveryLinearGauge {
         }
         dataStruct.push({
           key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          value,
-          max,
-          min,
-          color,
-          ts
+          value, max, min, color, ts
         });
       } else {
         // custom data format
@@ -208,6 +236,9 @@ export class DiscoveryLinearGauge {
     this.LOG?.debug(['convert', 'dataStruct'], dataStruct);
     dataStruct.forEach(d => {
       d.max = Math.max(overallMax, d.max);
+      if (d.max === Number.MIN_VALUE) {
+        d.max = 100;
+      }
       d.progress = d.value / d.max * 100.0;
     });
     this.dataStruct = dataStruct;
@@ -223,7 +254,14 @@ export class DiscoveryLinearGauge {
   // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return (await html2canvas(this.pngWrapper)).toDataURL();
+    let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
+    bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
+    const res = this.result as DataModel;
+    const dm: Param = ((res || {
+      globalParams: {...new Param(), bgColor}
+    }).globalParams || {...new Param(), bgColor}) as Param;
+    bgColor = dm.bgColor || bgColor;
+    return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
   }
 
   setMousePosition(e: MouseEvent) {
@@ -252,44 +290,52 @@ export class DiscoveryLinearGauge {
     this.tooltip.style.display = 'none';
   }
 
+  private generateStyle(innerStyle: { [k: string]: string }): string {
+    return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
+  }
+
   render() {
-    return <div onMouseMove={e => this.setMousePosition(e)} class={
-      {'vertical-wrapper': !this.innerOptions.gauge?.horizontal}
-    }>
-      <div class="wv-tooltip" style={{display: 'none'}}
-           ref={el => this.tooltip = el}
-      ></div>
-      {this.dataStruct.map(d =>
-        <div class={
-          {'discovery-progress-group': true, 'discovery-progress-group-vertical': !this.innerOptions.gauge?.horizontal}
-        }>{this.innerOptions.showLegend && !this.innerOptions.gauge?.horizontal ?
-          <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
-          <h3
-            class="discovery-legend">{d.value || '0'}{this.innerOptions.unit || ''} {!this.innerOptions.gauge?.horizontal ?
-            <br/> : ''}
-            <span
-              class="small">of {d.max}{this.innerOptions.unit || ''}</span></h3>
-          <div class="discovery-progress" onMouseOver={() => this.showTooltip(d)}
-               onMouseLeave={() => this.hideTooltip()}>
-            <div class="ticks">
-              {Array((this.innerOptions.gauge?.showTicks ? 10 : 0)).fill(0).map(() => <i class="tick"></i>)}
-            </div>
-            <div class="discovery-progress-bar" style={{
-              width: this.innerOptions.gauge?.horizontal ? `${d.progress}%` : 'var(--warp-view-progress-size, 1rem)',
-              height: !this.innerOptions.gauge?.horizontal ? `${d.progress}%` : 'var(--warp-view-progress-size, 1rem)',
-              backgroundColor: d.color
-            }}></div>
-          </div>
-          {this.innerOptions.showLegend && this.innerOptions.gauge?.horizontal ?
+    return [<style>{this.generateStyle(this.innerStyle)}</style>,
+      <div ref={el => this.root = el} onMouseMove={e => this.setMousePosition(e)} class={
+        {'vertical-wrapper': !this.innerOptions.gauge?.horizontal}
+      }>
+        <div class="wv-tooltip" style={{display: 'none'}}
+             ref={el => this.tooltip = el}
+        ></div>
+        {this.dataStruct.map(d =>
+          <div class={
+            {
+              'discovery-progress-group': true,
+              'discovery-progress-group-vertical': this.isVertical
+            }
+          }>{this.innerOptions.showLegend && !this.innerOptions.gauge?.horizontal ?
             <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
-        </div>
-      )}
-      {this.parsing ? <div class="discovery-chart-spinner">
-        <discovery-spinner>Parsing data...</discovery-spinner>
-      </div> : ''}
-      {this.rendering ? <div class="discovery-chart-spinner">
-        <discovery-spinner>Rendering data...</discovery-spinner>
-      </div> : ''}
-    </div>
+            <h3
+              class="discovery-legend">{d.value || '0'}{this.innerOptions.unit || ''} {!this.innerOptions.gauge?.horizontal ?
+              <br/> : ''}
+              <span
+                class="small">of {d.max}{this.innerOptions.unit || ''}</span></h3>
+            <div class="discovery-progress" onMouseOver={() => this.showTooltip(d)}
+                 onMouseLeave={() => this.hideTooltip()}>
+              <div class="ticks">
+                {Array((this.innerOptions.gauge?.showTicks ? 10 : 0)).fill(0).map(() => <i class="tick"></i>)}
+              </div>
+              <div class="discovery-progress-bar" style={{
+                width: this.innerOptions.gauge?.horizontal ? `${d.progress}%` : 'var(--warp-view-progress-size, 1rem)',
+                height: !this.innerOptions.gauge?.horizontal ? `${d.progress}%` : 'var(--warp-view-progress-size, 1rem)',
+                backgroundColor: d.color
+              }}></div>
+            </div>
+            {this.innerOptions.showLegend && this.innerOptions.gauge?.horizontal ?
+              <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
+          </div>
+        )}
+        {this.parsing ? <div class="discovery-chart-spinner">
+          <discovery-spinner>Parsing data...</discovery-spinner>
+        </div> : ''}
+        {this.rendering ? <div class="discovery-chart-spinner">
+          <discovery-spinner>Rendering data...</discovery-spinner>
+        </div> : ''}
+      </div>];
   }
 }

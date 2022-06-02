@@ -170,7 +170,7 @@ export namespace Components {
     }
     interface DiscoveryLinearGauge {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: 'png' | 'svg') => Promise<any>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "options": Param | string;
@@ -179,6 +179,7 @@ export namespace Components {
         "show": (regexp: string) => Promise<void>;
         "type": ChartType;
         "unit": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryMap {
@@ -620,6 +621,7 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryMap {

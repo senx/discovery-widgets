@@ -15,6 +15,7 @@
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `undefined`   |
 | `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "step-area" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "display" \| "image" \| "map" \| "gauge" \| "linear-gauge" \| "circle" \| "compass" \| "pie" \| "plot" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "input:text" \| "input:list" \| "input:secret" \| "input:autocomplete" \| "input:slider" \| "input:date" \| "input:date-range" \| "input:multi" \| "input:multi-cb" \| "button" \| "button:radio" \| "hidden" \| "calendar" \| "heatmap"` | `undefined`   |
 | `unit`    | `unit`    |             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
+| `vars`    | `vars`    |             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `'{}'`        |
 | `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`   |
 
 
@@ -28,13 +29,13 @@
 
 ## Methods
 
-### `export(type?: 'png' | 'svg') => Promise<string>`
+### `export(type?: 'png' | 'svg') => Promise<any>`
 
 
 
 #### Returns
 
-Type: `Promise<string>`
+Type: `Promise<any>`
 
 
 
