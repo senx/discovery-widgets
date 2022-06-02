@@ -219,7 +219,7 @@ export class DiscoveryDisplayComponent {
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
-          <span innerHTML={this.message}/><small>{this.unit ? this.unit : ''}</small>
+          <span innerHTML={this.message}/><small>{this.innerOptions.unit || this.unit || ''}</small>
         </div>
       </div>
     </div>
