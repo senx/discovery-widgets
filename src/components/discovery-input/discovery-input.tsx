@@ -85,6 +85,7 @@ export class DiscoveryInputComponent {
 
   @Watch('result')
   updateRes() {
+    this.LOG.debug(['updateRes'], this.innerResult);
     this.innerResult = GTSLib.getData(this.result);
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
@@ -272,6 +273,7 @@ export class DiscoveryInputComponent {
     const data = this.innerResult.data || '';
     this.min = (this.innerOptions.input || {min: 0}).min || 0;
     this.max = (this.innerOptions.input || {max: 100}).max || 100;
+    this.LOG.debug(['parseResult', 'innerOptions'], this.innerOptions);
     switch (this.subType) {
       case "text":
       case "secret":
@@ -335,8 +337,9 @@ export class DiscoveryInputComponent {
             return {k: s, v: s, h: false};
           });
         }
-        this.value = (this.innerOptions.input || {value: ''}).value || '';
+        setTimeout(() => this.value = (this.innerOptions.input || {value: ''}).value || '');
         this.selectedValue = this.value;
+        (this.inputField as HTMLSelectElement).selectedIndex = -1;
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {
             src: this.values,
@@ -423,11 +426,13 @@ export class DiscoveryInputComponent {
           />
         </div>
       case "list":
-        return <select class="discovery-input" onInput={e => this.handleSelect(e)}>
+        return <select class="discovery-input" onInput={e => this.handleSelect(e)}
+                       ref={el => this.inputField = el as HTMLSelectElement}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
         </select>
       case "multi":
-        return <select class="discovery-input" onInput={e => this.handleSelect(e)} multiple>
+        return <select class="discovery-input" onInput={e => this.handleSelect(e)} multiple
+                       ref={el => this.inputField = el as HTMLSelectElement}>
           {this.values.map(v => (
             <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
         </select>
