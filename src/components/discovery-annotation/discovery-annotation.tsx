@@ -14,16 +14,17 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, ECharts} from "../../model/types";
-import {Param} from "../../model/param";
-import {EChartsOption, init} from "echarts";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
-import {ColorLib} from "../../utils/color-lib";
-import {SeriesOption} from "echarts/lib/util/types";
-import {DataModel} from "../../model/dataModel";
+import {ChartType, ECharts} from '../../model/types';
+import {Param} from '../../model/param';
+import {EChartsOption, init} from 'echarts';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
+import {ColorLib} from '../../utils/color-lib';
+import {SeriesOption} from 'echarts/lib/util/types';
+import {DataModel} from '../../model/dataModel';
 
 @Component({
   tag: 'discovery-annotation',
@@ -36,7 +37,7 @@ export class DiscoveryAnnotation {
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @State() @Prop() height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() unit: string;
 
   @Element() el: HTMLElement;
@@ -46,19 +47,19 @@ export class DiscoveryAnnotation {
   @Event() dataPointOver: EventEmitter;
   @Event() timeBounds: EventEmitter;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() chartOpts: EChartsOption;
-  @State() expanded: boolean = false;
+  @State() expanded = false;
   @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
-  private displayExpander: boolean = false;
+  private displayExpander = false;
   private myChart: ECharts;
-  private divider: number = 1000;
-  private hasFocus: boolean = false;
+  private divider = 1000;
+  private hasFocus = false;
   private gtsList = [];
 
   @Watch('result')
@@ -93,9 +94,10 @@ export class DiscoveryAnnotation {
   }
 
   @Method()
-  async resize() {
+  async resize(): Promise<void> {
     if (this.myChart) {
       this.myChart.resize();
+      return Promise.resolve();
     }
   }
 
@@ -107,6 +109,7 @@ export class DiscoveryAnnotation {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   @Method()
@@ -117,6 +120,7 @@ export class DiscoveryAnnotation {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -131,7 +135,7 @@ export class DiscoveryAnnotation {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG?.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel())
+    this.chartOpts = this.convert(this.result || new DataModel())
   }
 
   private setOpts(notMerge = false) {
@@ -155,8 +159,8 @@ export class DiscoveryAnnotation {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     const series: any[] = [];
@@ -361,11 +365,12 @@ export class DiscoveryAnnotation {
     if (this.myChart) {
       this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom});
     }
+    return Promise.resolve();
   }
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
   }
 
   @Method()
@@ -419,6 +424,7 @@ export class DiscoveryAnnotation {
       this.myChart.dispatchAction({type: 'hideTip'});
     }
     this.setOpts();
+    return Promise.resolve();
   }
 
   @Method()
@@ -436,6 +442,7 @@ export class DiscoveryAnnotation {
     };
     this.myChart.dispatchAction({type: 'hideTip'});
     this.setOpts();
+    return Promise.resolve();
   }
 
   private hideMarkers() {
@@ -445,15 +452,15 @@ export class DiscoveryAnnotation {
   }
 
   render() {
-    return <Host style={{width: this.width + 'px', height: (this.height + (this.expanded ? 50 : 0)) + 'px'}}>
+    return <Host style={{width: `${this.width}px`, height: `${(this.height + (this.expanded ? 50 : 0))}px`}}>
       {this.displayExpander
         ?
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
       <div class="chart-area"
            style={{
-             width: this.width + 'px',
-             height: (this.height + (!!this.innerOptions.showLegend ? 50 : 0) + (!!this.innerOptions.fullDateDisplay ? 50 : 0)) + 'px'
+             width: `${this.width}px`,
+             height: `${(this.height + (!!this.innerOptions.showLegend ? 50 : 0) + (!!this.innerOptions.fullDateDisplay ? 50 : 0))}px`
            }}>
         {this.parsing ? <div class="discovery-chart-spinner">
           <discovery-spinner>Parsing data...</discovery-spinner>
@@ -461,7 +468,7 @@ export class DiscoveryAnnotation {
         {this.rendering ? <div class="discovery-chart-spinner">
           <discovery-spinner>Rendering data...</discovery-spinner>
         </div> : ''}
-        <div ref={(el) => this.graph = el as HTMLDivElement} onMouseOver={() => this.hideMarkers()}/>
+        <div ref={(el) => this.graph = el} onMouseOver={() => this.hideMarkers()}/>
       </div>
     </Host>
   }

@@ -14,19 +14,19 @@
  *   limitations under the License.
  */
 
-import {Dashboard} from "../model/dashboard";
-import {Tile} from "../model/tile";
-import {jsPDF} from "jspdf";
-import {Logger} from "./logger";
-import {ColorLib} from "./color-lib";
+import {Dashboard} from '../model/dashboard';
+import {Tile} from '../model/tile';
+import {jsPDF} from 'jspdf';
+import {Logger} from './logger';
+import {ColorLib} from './color-lib';
 
 export class PdfLib {
 
-  static async generatePDF(width: number, height: number, dashboard: Dashboard, save = true, output: string = 'blob', LOG: Logger): Promise<any> {
+  static async generatePDF(width: number, height: number, dashboard: Dashboard, save = true, output = 'blob', LOG: Logger): Promise<any> {
     try {
       LOG.debug(['generatePDF'], {width, height, dashboard, save, output});
       const doc = new jsPDF({
-        unit: "pt",
+        unit: 'pt',
         format: [width, height],
         orientation: width > height ? 'landscape' : 'portrait'
       });
@@ -55,7 +55,7 @@ export class PdfLib {
         const tx = t.x * (width - xMargin * 2) / (dashboard.cols || 12) + bounds.width / 2 + cellSpacing + xMargin;
         doc.setFontSize(18);
         doc.text(t.title || '', tx, t.y * cellHeight + 90 + cellSpacing + 24, {align: 'center', lineHeightFactor: 1});
-        doc.setDrawColor("#a0a0a0");
+        doc.setDrawColor('#a0a0a0');
         doc.rect(t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,
           t.y * cellHeight + 90 + cellSpacing - 1,
           bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'S')
@@ -75,14 +75,14 @@ export class PdfLib {
       }
       if (!!save) {
         LOG.debug(['generatePDF'], 'save');
-        doc.save(dashboard.title + ".pdf");
+        doc.save(dashboard.title + '.pdf');
         LOG.debug(['generatePDF'], 'save done');
         return Promise.resolve();
       } else {
         LOG.debug(['generatePDF'], 'out');
-        const data = doc.output(output as any, {filename: dashboard.title + ".pdf"});
+        const data = doc.output(output as any, {filename: dashboard.title + '.pdf'});
         LOG.debug(['generatePDF'], 'out done');
-        return Promise.resolve({data, filename: dashboard.title + ".pdf"})
+        return Promise.resolve({data, filename: dashboard.title + '.pdf'})
       }
     } catch (e) {
       LOG.error(['generatePDF'], e);

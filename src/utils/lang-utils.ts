@@ -14,14 +14,14 @@
  *   limitations under the License.
  */
 
-import {ChartType} from "../model/types";
+import {ChartType} from '../model/types';
 
 export class LangUtils {
   static prepare(ws: string, vars: any = {}, skipedVars: string[], type: ChartType, lang: ('warpscript' | 'flows') = 'warpscript') {
     switch (lang) {
-      case "flows":
+      case 'flows':
         return LangUtils.generateFlows(ws, vars, skipedVars, type)
-      case "warpscript":
+      case 'warpscript':
         return LangUtils.generateWarpscript(ws, vars, skipedVars, type)
     }
   }
@@ -66,11 +66,11 @@ ${JSON.stringify(value)}
     }
   }
 
-  // noinspection JSUnusedLocalSymbols
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private static generateFlows(ws: string, vars: any, skipedVars: string[], type: ChartType) {
     const varsStr = Object.keys(vars || {})
       .filter(k => !(skipedVars || []).includes(k))
-      .map(k => LangUtils.generateFlowsVars(k, vars[k])).join("\n") + "\n";
+      .map(k => LangUtils.generateFlowsVars(k, vars[k])).join('\n') + '\n';
     return `<'
 ${varsStr}
 ${ws}
@@ -79,10 +79,11 @@ FLOWS`;
   }
 
   // noinspection JSUnusedLocalSymbols
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private static generateWarpscript(ws: string, vars: any, skipedVars: string[], type: ChartType) {
     const varsStr = Object.keys(vars || {})
       .filter(k => !(skipedVars || []).includes(k))
-      .map(k => LangUtils.generateWarpscriptVars(k, vars[k])).join("\n") + "\n";
+      .map(k => LangUtils.generateWarpscriptVars(k, vars[k])).join('\n') + '\n';
     return `
 ${varsStr}
 ${ws}

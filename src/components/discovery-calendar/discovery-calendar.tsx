@@ -14,16 +14,17 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType, ECharts} from "../../model/types";
-import {Param} from "../../model/param";
-import * as echarts from "echarts";
-import {EChartsOption, SeriesOption} from "echarts";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
-import {ColorLib} from "../../utils/color-lib";
+import {DataModel} from '../../model/dataModel';
+import {ChartType, ECharts} from '../../model/types';
+import {Param} from '../../model/param';
+import * as echarts from 'echarts';
+import {EChartsOption, SeriesOption} from 'echarts';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
+import {ColorLib} from '../../utils/color-lib';
 
 @Component({
   tag: 'discovery-calendar',
@@ -36,7 +37,7 @@ export class DiscoveryCalendar {
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() unit: string;
 
   @Element() el: HTMLElement;
@@ -44,15 +45,15 @@ export class DiscoveryCalendar {
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
-  private divider: number = 1000;
+  private divider = 1000;
   private myChart: ECharts;
   private CAL_SIZE = 150;
 
@@ -103,6 +104,7 @@ export class DiscoveryCalendar {
     if (this.myChart) {
       this.myChart.resize();
     }
+    return Promise.resolve();
   }
 
   @Method()
@@ -113,6 +115,7 @@ export class DiscoveryCalendar {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   @Method()
@@ -123,6 +126,7 @@ export class DiscoveryCalendar {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -135,7 +139,7 @@ export class DiscoveryCalendar {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+    this.chartOpts = this.convert(this.result || new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -144,8 +148,8 @@ export class DiscoveryCalendar {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     const series: any[] = [];
     const calendar: any[] = [];
@@ -174,7 +178,7 @@ export class DiscoveryCalendar {
       const gts = gtsList[i];
       let min = Number.MAX_SAFE_INTEGER;
       let max = Number.MIN_SAFE_INTEGER;
-      let dataStruct = {};
+      const dataStruct = {};
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         // add title
         titles.push({
@@ -193,6 +197,7 @@ export class DiscoveryCalendar {
           const y = d.split('-')[0];
           dataStruct[y] = dataStruct[y] || {}
           // Aggregation
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           dataStruct[y][d] = dataStruct[y][d] + value || value;
           min = Math.min(min, dataStruct[y][d]);
           max = Math.max(max, dataStruct[y][d]);
@@ -278,7 +283,7 @@ export class DiscoveryCalendar {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
   }
 
   componentDidLoad() {
@@ -309,7 +314,7 @@ export class DiscoveryCalendar {
     return <div class="calendar-wrapper">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el as HTMLDivElement}/>
+      <div ref={(el) => this.graph = el}/>
     </div>
   }
 }

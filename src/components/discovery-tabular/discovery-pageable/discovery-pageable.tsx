@@ -14,12 +14,13 @@
  *   limitations under the License.
  */
 
-import {Component, Event, EventEmitter, h, Prop, Watch} from "@stencil/core";
-import {Logger} from "../../../utils/logger";
-import {Param} from "../../../model/param";
-import {GTSLib} from "../../../utils/gts.lib";
-import {Utils} from "../../../utils/utils";
-import {Dataset} from "../discovery-tabular";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {Component, Event, EventEmitter, h, Prop, Watch} from '@stencil/core';
+import {Logger} from '../../../utils/logger';
+import {Param} from '../../../model/param';
+import {GTSLib} from '../../../utils/gts.lib';
+import {Utils} from '../../../utils/utils';
+import {Dataset} from '../discovery-tabular';
 
 @Component({
   tag: 'discovery-pageable',
@@ -27,7 +28,7 @@ import {Dataset} from "../discovery-tabular";
   shadow: true,
 })
 export class DiscoveryPageable {
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() divider: number;
   @Prop() data: Dataset;
   @Prop({mutable: true}) options: Param = new Param();
@@ -71,7 +72,7 @@ export class DiscoveryPageable {
     if (!this.data) {
       return;
     }
-    const options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) as Param;
+    const options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) ;
     this.options = {...options};
     this.pages = [];
     for (let i = 0; i < (this.data.values || []).length / this.elemsCount; i++) {
@@ -107,7 +108,7 @@ export class DiscoveryPageable {
   }
 
   private formatDate(date: number): string {
-    const opts = this.options as Param;
+    const opts = this.options ;
     return (opts.timeMode === 'timestamp' || !this.data.isGTS)
       ? date.toString()
       : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(date, this.divider, opts.timeZone), 1, opts.timeZone,
@@ -120,7 +121,7 @@ export class DiscoveryPageable {
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
       <table>
         <thead>{this.data.headers.map(header => <th
-          style={{width: this.options.tabular?.fixedWidth ? (100 / this.data.headers.length) + '%' : 'auto'}}>{header}</th>)}</thead>
+          style={{width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'}}>{header}</th>)}</thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
           <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}>

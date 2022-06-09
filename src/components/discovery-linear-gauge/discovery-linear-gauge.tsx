@@ -14,17 +14,18 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType, ECharts} from "../../model/types";
-import {Param} from "../../model/param";
-import {EChartsOption} from "echarts";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {ColorLib} from "../../utils/color-lib";
-import {Utils} from "../../utils/utils";
+import {DataModel} from '../../model/dataModel';
+import {ChartType, ECharts} from '../../model/types';
+import {Param} from '../../model/param';
+import {EChartsOption} from 'echarts';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {ColorLib} from '../../utils/color-lib';
+import {Utils} from '../../utils/utils';
 import domtoimage from 'dom-to-image';
-import {DiscoveryEvent} from "../../model/discoveryEvent";
+import {DiscoveryEvent} from '../../model/discoveryEvent';
 
 @Component({
   tag: 'discovery-linear-gauge',
@@ -37,17 +38,17 @@ export class DiscoveryLinearGauge {
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() unit: string;
-  @Prop() vars: string = '{}';
+  @Prop() vars = '{}';
 
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() innerOptions: Param;
   @State() innerStyle: { [k: string]: string; };
   private innerVars: any = {};
@@ -57,10 +58,10 @@ export class DiscoveryLinearGauge {
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
-  private divider: number = 1000;
+  private divider = 1000;
   private myChart: ECharts;
   private dataStruct: any[];
-  private isVertical: boolean = true;
+  private isVertical = true;
 
   @Watch('result')
   updateRes() {
@@ -115,6 +116,7 @@ export class DiscoveryLinearGauge {
     if (this.myChart) {
       this.myChart.resize();
     }
+    return Promise.resolve();
   }
 
   @Method()
@@ -125,6 +127,7 @@ export class DiscoveryLinearGauge {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   @Method()
@@ -135,6 +138,7 @@ export class DiscoveryLinearGauge {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -155,8 +159,8 @@ export class DiscoveryLinearGauge {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) ;
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) ;
     this.innerOptions = {...options};
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.isVertical = !this.innerOptions.gauge?.horizontal;
@@ -204,7 +208,7 @@ export class DiscoveryLinearGauge {
             overallMax = value;
           }
         }
-        let min: number = 0;
+        let min = 0;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
@@ -222,7 +226,7 @@ export class DiscoveryLinearGauge {
             overallMax = gts.value || Number.MIN_VALUE;
           }
         }
-        let min: number = 0;
+        let min = 0;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
@@ -253,21 +257,22 @@ export class DiscoveryLinearGauge {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
     const res = this.result as DataModel;
     const dm: Param = ((res || {
       globalParams: {...new Param(), bgColor}
-    }).globalParams || {...new Param(), bgColor}) as Param;
+    }).globalParams || {...new Param(), bgColor});
     bgColor = dm.bgColor || bgColor;
     return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
   }
 
   setMousePosition(e: MouseEvent) {
     const r = this.el.getBoundingClientRect();
-    this.tooltip.style.top = e.clientY - r.y + 'px';
-    this.tooltip.style.left = e.clientX - r.x + 'px';
+    this.tooltip.style.top =  `${e.clientY - r.y}px`;
+    this.tooltip.style.left = `${e.clientX - r.x}px`;
   }
 
   showTooltip(data: any) {

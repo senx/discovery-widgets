@@ -14,20 +14,16 @@
  *   limitations under the License.
  */
 
-/* tslint:disable:no-console */
+/* eslint-disable no-console */
 
 export class Logger {
 
   className: string;
   isDebug = false;
 
-  constructor(className: any, isDebug: boolean = false) {
+  constructor(className: any, isDebug = false) {
     this.className = className.name;
     this.isDebug = isDebug;
-  }
-
-  setDebug(debug: boolean) {
-    this.isDebug = debug;
   }
 
   log(level: LEVEL, methods: any[], args: any[]) {

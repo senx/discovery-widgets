@@ -17,7 +17,8 @@
 import {DataModel} from '../model/dataModel';
 import {GTS} from '../model/GTS';
 import {Logger} from './logger';
-import {JsonLib} from "./jsonLib";
+import {JsonLib} from './jsonLib';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import moment from 'moment/min/moment-with-locales';
 import {tz} from 'moment-timezone'
@@ -28,18 +29,6 @@ export class GTSLib {
 
   static cleanArray(actual: any[]) {
     return actual.filter((i) => !!i);
-  }
-
-  static unique(arr) {
-    const u = {};
-    const a = [];
-    for (let i = 0, l = arr.length; i < l; ++i) {
-      if (!u.hasOwnProperty(arr[i])) {
-        a.push(arr[i]);
-        u[arr[i]] = 1;
-      }
-    }
-    return a;
   }
 
   static isArray(value) {
@@ -158,7 +147,7 @@ export class GTSLib {
         gts = item.gts;
       }
       if ((prefixId !== undefined) && (prefixId !== '')) {
-        id = prefixId + '-' + i;
+        id = `${prefixId}-${i}`;
       } else {
         id = i;
       }
@@ -221,15 +210,15 @@ export class GTSLib {
     const serializedAttributes = [];
     if (gts.l) {
       Object.keys(gts.l).forEach((key) => {
-        serializedLabels.push(this.sanitizeNames(key + '=' + gts.l[key]));
+        serializedLabels.push(this.sanitizeNames(`${key}=${gts.l[key]}`));
       });
     }
     if (gts.a) {
       Object.keys(gts.a).forEach((key) => {
-        serializedAttributes.push(this.sanitizeNames(key + '=' + gts.a[key]));
+        serializedAttributes.push(this.sanitizeNames(`${key}=${gts.a[key]}`));
       });
     }
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     return `${this.sanitizeNames(gts.c)}{${serializedLabels.join(',')}${serializedAttributes.length > 0 ? ',' : ''}${serializedAttributes.join(',')}}`;
   }
 
@@ -284,7 +273,7 @@ export class GTSLib {
   static getData(data: any): DataModel {
     if (typeof data === 'string') {
       if (data.startsWith('[') || data.startsWith('{')) {
-        return GTSLib.getData(new JsonLib().parse(data as string));
+        return GTSLib.getData(new JsonLib().parse(data ));
       } else {
         return {data: new JsonLib().parse(`[${data}]`)};
       }
@@ -319,7 +308,7 @@ export class GTSLib {
     const serializedGTS = data.split('{');
     let display = `<span class="gtsInfo"><span class='gts-classname'>${serializedGTS[0]}</span>`;
     if (serializedGTS.length > 1) {
-      display += `<span class='gts-separator'>{</span>`;
+      display += '<span class=\'gts-separator\'>{</span>';
       const labels = serializedGTS[1].substr(0, serializedGTS[1].length - 1).split(',');
       if (labels.length > 0) {
         labels.forEach((l, i) => {
@@ -328,15 +317,15 @@ export class GTSLib {
             display += `<span><span class='gts-labelname'>${label[0]}</span>
 <span class='gts-separator'>=</span><span class='gts-labelvalue'>${label[1]}</span>`;
             if (i !== labels.length - 1) {
-              display += `<span>, </span>`;
+              display += '<span>, </span>';
             }
           }
         });
       }
-      display += `<span class='gts-separator'>}</span>`;
+      display += '<span class=\'gts-separator\'>}</span>';
     }
     if (serializedGTS.length > 2) {
-      display += `<span class='gts-separator'>{</span>`;
+      display += '<span class=\'gts-separator\'>{</span>';
       const labels = serializedGTS[2].substr(0, serializedGTS[2].length - 1).split(',');
       if (labels.length > 0) {
         labels.forEach((l, i) => {
@@ -345,19 +334,19 @@ export class GTSLib {
             display += `<span><span class='gts-attrname'>${label[0]}</span>
 <span class='gts-separator'>=</span><span class='gts-attrvalue'>${label[1]}</span>`;
             if (i !== labels.length - 1) {
-              display += `<span>, </span>`;
+              display += '<span>, </span>';
             }
           }
         });
       }
-      display += `<span class='gts-separator'>}</span>`;
+      display += '<span class=\'gts-separator\'>}</span>';
     }
     display += '</span>';
     return display;
   };
 
   static toISOString(timestamp: number, divider: number, timeZone: string, timeFormat: string) {
-    const locale = window.navigator['userLanguage'] || window.navigator.language;
+    const locale = (window.navigator as any).userLanguage || window.navigator.language;
     moment.updateLocale(locale.split('-')[0], {});
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     if (timeZone !== 'UTC') {
@@ -380,7 +369,7 @@ export class GTSLib {
    * Will hard-shift a timestamp so that, if rendered in current timezone, it will look as it is instead
    * into the desired timezone.
    */
-  static utcToZonedTime(utcTime: number, divider: number = 1, timeZone: string = 'UTC') {
+  static utcToZonedTime(utcTime: number, divider = 1, timeZone = 'UTC') {
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     const ourTimezone = tz.guess();
     const ourOffsetInMillis = tz(moment.utc(utcTime / divider), ourTimezone).utcOffset() * 60000;
@@ -391,7 +380,7 @@ export class GTSLib {
   /**
    * Will revert what utcToZonedTime had done.
    */
-  static zonedTimeToUtc(zonedTime: number, divider: number, timeZone: string = 'UTC') {
+  static zonedTimeToUtc(zonedTime: number, divider: number, timeZone = 'UTC') {
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     const ourTimezone = tz.guess();
     const ourOffsetInMillis = tz(moment.utc(zonedTime / divider), ourTimezone).utcOffset() * 60000;

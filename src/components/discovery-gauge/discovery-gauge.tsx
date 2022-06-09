@@ -14,17 +14,18 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType, ECharts} from "../../model/types";
-import {Param} from "../../model/param";
-import * as echarts from "echarts";
-import {EChartsOption} from "echarts";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {ColorLib} from "../../utils/color-lib";
-import {Utils} from "../../utils/utils";
-import {SeriesOption} from "echarts/lib/util/types";
+import {DataModel} from '../../model/dataModel';
+import {ChartType, ECharts} from '../../model/types';
+import {Param} from '../../model/param';
+import * as echarts from 'echarts';
+import {EChartsOption} from 'echarts';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {ColorLib} from '../../utils/color-lib';
+import {Utils} from '../../utils/utils';
+import {SeriesOption} from 'echarts/lib/util/types';
 
 @Component({
   tag: 'discovery-gauge',
@@ -37,7 +38,7 @@ export class DiscoveryGauge {
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() unit: string;
 
   @Element() el: HTMLElement;
@@ -45,15 +46,15 @@ export class DiscoveryGauge {
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
-  private divider: number = 1000;
+  private divider = 1000;
   private myChart: ECharts;
 
   @Watch('result')
@@ -86,6 +87,7 @@ export class DiscoveryGauge {
     if (this.myChart) {
       this.myChart.resize();
     }
+    return Promise.resolve();
   }
 
   @Method()
@@ -96,6 +98,7 @@ export class DiscoveryGauge {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   @Method()
@@ -106,6 +109,7 @@ export class DiscoveryGauge {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -125,7 +129,8 @@ export class DiscoveryGauge {
     });
   }
 
-  private setOpts(notMerge = false) {const series = [];
+  private setOpts(notMerge = false) {
+    const series = [];
     (this.chartOpts?.series as SeriesOption[]).forEach(s => {
       s.detail.fontSize = this.autoFontSize((this.chartOpts.series as SeriesOption[]).length);
       series.push(s);
@@ -183,8 +188,8 @@ export class DiscoveryGauge {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     const series: any[] = [];
     // noinspection JSUnusedAssignment
@@ -224,11 +229,16 @@ export class DiscoveryGauge {
             overallMax = value;
           }
         }
-        let min: number = 0;
+        let min = 0;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
-        dataStruct.push({key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts), value, max, min});
+        dataStruct.push({
+          key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+          value,
+          max,
+          min
+        });
       } else {
         // custom data format
         let max: number = this.innerOptions.maxValue || Number.MIN_VALUE;
@@ -239,7 +249,7 @@ export class DiscoveryGauge {
             overallMax = gts || Number.MIN_VALUE;
           }
         }
-        let min: number = 0;
+        let min = 0;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
@@ -291,7 +301,7 @@ export class DiscoveryGauge {
         axisLabel: this.type === 'compass' ? {
           color: Utils.getLabelColor(this.el),
           distance: 0,
-          formatter: value => value === d.max ? '' : value + ''
+          formatter: value => value === d.max ? '' : `${value}`
         } : {show: false},
         progress: this.type === 'compass'
           ? {show: false}
@@ -307,7 +317,7 @@ export class DiscoveryGauge {
           length: '140%',
           itemStyle: {color}
         } : {show: false},
-        radius: radius + '%',
+        radius: `${radius}%`,
         detail: {
           formatter: '{value}' + (this.unit || this.innerOptions.unit || ''),
           fontSize: 12,
@@ -316,9 +326,9 @@ export class DiscoveryGauge {
         },
         center: [
           (gtsCount === 1 ? '50' : i % 2 === 0 ? '25' : '75') + '%',
-          (gtsCount === 1
+          `${(gtsCount === 1
             ? (this.type === 'gauge' ? '65' : '50')
-            : (radius * (floor - 1) - radius / 2 + (floor > 2 ? 15 : 5))) + '%'
+            : (radius * (floor - 1) - radius / 2 + (floor > 2 ? 15 : 5)))}%`
         ]
       });
     });
@@ -367,12 +377,12 @@ export class DiscoveryGauge {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
   }
 
   render() {
     return <div style={{width: '100%', height: '100%'}}>
-      <div ref={(el) => this.graph = el as HTMLDivElement}/>
+      <div ref={(el) => this.graph = el}/>
       {this.parsing ? <div class="discovery-chart-spinner">
         <discovery-spinner>Parsing data...</discovery-spinner>
       </div> : ''}

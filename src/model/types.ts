@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import * as echarts from "echarts";
+import * as echarts from 'echarts';
 
 export type ChartType =
   'line' | 'area' | 'scatter' | 'step-area' | 'spline-area' | 'spline' | 'step' | 'step-after' | 'step-before'

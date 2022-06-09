@@ -18,6 +18,7 @@ import {GTSLib} from './gts.lib';
 import {ColorLib} from './color-lib';
 import {Logger} from './logger';
 import {Param} from '../model/param';
+// noinspection JSUnusedGlobalSymbols
 export enum MapTypes {
   NONE = 'NONE',
   DEFAULT = 'DEFAULT',
@@ -67,11 +68,11 @@ export class MapLib {
     },
     STADIA: {
       link: 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-      attribution: `&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors`
+      attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
     },
     STADIA_DARK: {
       link: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-      attribution: `&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors`
+      attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
     },
     TONER: {
       link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
@@ -243,7 +244,7 @@ export class MapLib {
     const step = (posArray.maxValue - posArray.minValue) / posArray.numSteps;
     const steps = [];
     for (let i = 0; i < posArray.numSteps - 1; i++) {
-      steps[i] = posArray.minValue + (i + 1) * step;
+      steps[i] = posArray.minValue as number + (i + 1) * step;
     }
     steps[posArray.numSteps - 1] = posArray.maxValue;
 
@@ -252,6 +253,7 @@ export class MapLib {
       const pos = posArray[i];
       const value = pos[2];
       pos[4] = posArray.numSteps - 1;
+      // eslint-disable-next-line @typescript-eslint/no-for-in-array
       for (const k in steps) {
         if (value <= steps[k]) {
           pos[4] = k;
@@ -379,7 +381,7 @@ export class MapLib {
     const step = (posArray.maxColorValue - posArray.minColorValue) / posArray.numColorSteps;
     const steps = [];
     for (let j = 0; j < posArray.numColorSteps; j++) {
-      steps[j] = posArray.minColorValue + (j + 1) * step;
+      steps[j] = posArray.minColorValue as number + (j + 1) * step;
     }
 
     posArray.steps = steps;

@@ -14,17 +14,18 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
+import {DataModel} from '../../model/dataModel';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
 import fitty, {FittyInstance} from 'fitty';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
-import {Utils} from "../../utils/utils";
-import {DiscoveryEvent} from "../../model/discoveryEvent";
+import {Utils} from '../../utils/utils';
+import {DiscoveryEvent} from '../../model/discoveryEvent';
 import domtoimage from 'dom-to-image';
 
 dayjs.extend(relativeTime)
@@ -41,15 +42,15 @@ export class DiscoveryDisplayComponent {
   @Prop() options: Param | string = new Param();
   @State() @Prop({mutable: true}) width: number;
   @State() @Prop({mutable: true}) height: number;
-  @Prop() debug: boolean = false;
-  @Prop() unit: string = '';
+  @Prop() debug = false;
+  @Prop() unit = '';
 
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() message: string;
   @State() innerStyle: { [k: string]: string; };
   @State() innerOptions: Param;
@@ -57,7 +58,7 @@ export class DiscoveryDisplayComponent {
   private wrapper: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
   private defOptions: Param = new Param();
-  private divider: number = 1000;
+  private divider = 1000;
   private LOG: Logger;
   private timer: any;
   private fitties: FittyInstance;
@@ -67,7 +68,7 @@ export class DiscoveryDisplayComponent {
   @Watch('result')
   updateRes() {
     this.result = GTSLib.getData(this.result);
-    this.message = this.convert(this.result as DataModel || new DataModel());
+    this.message = this.convert(this.result  || new DataModel());
     this.flexFont();
   }
 
@@ -102,13 +103,15 @@ export class DiscoveryDisplayComponent {
     this.width = dims.w;
     this.height = dims.h;
     this.flexFont();
+    return Promise.resolve();
   }
 
   // noinspection JSUnusedLocalSymbols
   @Method()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions ) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.result as unknown as DataModel) || {
       globalParams: {bgColor}
     }).globalParams || {bgColor}) as Param;
@@ -126,7 +129,7 @@ export class DiscoveryDisplayComponent {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.message = this.convert(this.result as DataModel || new DataModel())
+    this.message = this.convert(this.result  || new DataModel())
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -153,8 +156,8 @@ export class DiscoveryDisplayComponent {
   }
 
   private convert(dataModel: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) ;
+    options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams) ;
     this.innerOptions = {...options};
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
@@ -213,12 +216,12 @@ export class DiscoveryDisplayComponent {
   }
 
   render() {
-    return <div ref={(el) => this.pngWrapper = el as HTMLDivElement} class="png-wrapper">
+    return <div ref={(el) => this.pngWrapper = el } class="png-wrapper">
       <style>{this.generateStyle(this.innerStyle)}</style>
       <div style={{color: this.innerOptions.fontColor}} class="display-container">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-        <div ref={(el) => this.wrapper = el as HTMLDivElement} class="value">
+        <div ref={(el) => this.wrapper = el } class="value">
           <span innerHTML={this.message}/><small>{this.innerOptions.unit || this.unit || ''}</small>
         </div>
       </div>

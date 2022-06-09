@@ -14,18 +14,19 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {EChartsOption, init} from 'echarts';
 import {GTSLib} from '../../utils/gts.lib';
-import {SeriesOption} from "echarts/lib/util/types";
-import {ColorLib} from "../../utils/color-lib";
-import {Utils} from "../../utils/utils";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {ChartType, ECharts} from "../../model/types";
-import {DataModel} from "../../model/dataModel";
-import {CartesianAxisOption} from "echarts/lib/coord/cartesian/AxisModel";
-import {GridOption} from "echarts/lib/coord/cartesian/GridModel";
+import {SeriesOption} from 'echarts/lib/util/types';
+import {ColorLib} from '../../utils/color-lib';
+import {Utils} from '../../utils/utils';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {ChartType, ECharts} from '../../model/types';
+import {DataModel} from '../../model/dataModel';
+import {CartesianAxisOption} from 'echarts/lib/coord/cartesian/AxisModel';
+import {GridOption} from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
 
 @Component({
@@ -40,8 +41,8 @@ export class DiscoveryLineComponent {
   @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
   @State() @Prop() width: number;
   @State() @Prop() height: number;
-  @Prop() debug: boolean = false;
-  @Prop() unit: string = '';
+  @Prop() debug = false;
+  @Prop() unit = '';
 
   @Element() el: HTMLElement;
 
@@ -51,8 +52,8 @@ export class DiscoveryLineComponent {
   @Event() dataPointOver: EventEmitter;
   @Event() timeBounds: EventEmitter;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
@@ -60,10 +61,10 @@ export class DiscoveryLineComponent {
   private chartOpts: EChartsOption;
   private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
-  private divider: number = 1000;
+  private divider = 1000;
   private myChart: ECharts;
   private leftMargin: number;
-  private hasFocus: boolean = false;
+  private hasFocus = false;
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -77,7 +78,7 @@ export class DiscoveryLineComponent {
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
-      this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+      this.chartOpts = this.convert(this.result || new DataModel());
       this.setOpts(true);
     }
   }
@@ -115,7 +116,7 @@ export class DiscoveryLineComponent {
       options: this.innerOptions,
     });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+    this.chartOpts = this.convert(this.result || new DataModel());
   }
 
   setOpts(notMerge = false) {
@@ -140,8 +141,8 @@ export class DiscoveryLineComponent {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     let gtsList;
@@ -541,7 +542,7 @@ export class DiscoveryLineComponent {
         }
       });
     }
-    return opts as EChartsOption;
+    return opts;
   }
 
   private getYAxis(color?: string, unit?: string): CartesianAxisOption {
@@ -601,16 +602,16 @@ export class DiscoveryLineComponent {
 
   static getStepShape(type: ChartType) {
     switch (type) {
-      case "line":
-      case "area":
-      case "spline":
+      case 'line':
+      case 'area':
+      case 'spline':
         return undefined;
-      case "step":
-      case "step-area":
+      case 'step':
+      case 'step-area':
         return 'end';
-      case "step-before":
+      case 'step-before':
         return 'start';
-      case "step-after":
+      case 'step-after':
         return 'end';
     }
   }
@@ -658,6 +659,7 @@ export class DiscoveryLineComponent {
     if (this.myChart) {
       this.myChart.resize();
     }
+    return Promise.resolve();
   }
 
   @Method()
@@ -665,11 +667,12 @@ export class DiscoveryLineComponent {
     if (!!this.myChart) {
       this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom});
     }
+    return Promise.resolve();
   }
 
   @Method()
   async export(type: 'png' | 'svg' = 'png'): Promise<string> {
-    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
   }
 
   @Method()
@@ -680,6 +683,7 @@ export class DiscoveryLineComponent {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   @Method()
@@ -690,12 +694,12 @@ export class DiscoveryLineComponent {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
     if (!this.myChart) return;
-    let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
       ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
       : ts || 0;
@@ -721,7 +725,6 @@ export class DiscoveryLineComponent {
                 xAxis: date
               }]
             };
-            ttp = [date, data[0][1]];
           }
         });
     }
@@ -748,6 +751,7 @@ export class DiscoveryLineComponent {
     (this.chartOpts.tooltip as any).show = true;
     this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
     this.setOpts();
+    return Promise.resolve();
   }
 
   @Method()
@@ -774,20 +778,21 @@ export class DiscoveryLineComponent {
     }
     this.myChart.dispatchAction({type: 'hideTip'});
     this.setOpts();
+    return Promise.resolve();
   }
 
   private hideMarkers() {
-    if (!!this.myChart &&  (this.chartOpts.series as any[]).some(s => !!s.markPoint)) {
+    if (!!this.myChart && (this.chartOpts.series as any[]).some(s => !!s.markPoint)) {
       (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
       this.setOpts();
     }
   }
 
   render() {
-    return <div style={{width: '100%', height: '100%'}} ref={(el) => this.wrap = el as HTMLDivElement}>
+    return <div style={{width: '100%', height: '100%'}} ref={(el) => this.wrap = el}>
       {this.parsing && !!this.innerOptions?.showLoader ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el as HTMLDivElement} onMouseOver={() => this.hideMarkers()}></div>
+      <div ref={(el) => this.graph = el} onMouseOver={() => this.hideMarkers()}></div>
     </div>;
   }
 }

@@ -14,16 +14,17 @@
  *   limitations under the License.
  */
 
-import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from "@stencil/core";
-import {DataModel} from "../../model/dataModel";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {DiscoveryEvent} from "../../model/discoveryEvent";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
-import flatpickr from "flatpickr";
-import autoComplete from "@tarekraafat/autocomplete.js/dist/autoComplete.js";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
+import {DataModel} from '../../model/dataModel';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {DiscoveryEvent} from '../../model/discoveryEvent';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
+import flatpickr from 'flatpickr';
+import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domtoimage from 'dom-to-image';
 
 @Component({
@@ -37,7 +38,7 @@ export class DiscoveryInputComponent {
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() url: string;
 
   @Element() el: HTMLElement;
@@ -52,13 +53,13 @@ export class DiscoveryInputComponent {
     bubbles: true,
   }) discoveryEvent: EventEmitter<DiscoveryEvent>;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() value: string | number | number[] | string[] = '';
   @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
-  @State() label: string = 'Ok';
+  @State() label = 'Ok';
   @State() selectedValue: string | string[] | any;
   @State() values = [];
 
@@ -66,7 +67,7 @@ export class DiscoveryInputComponent {
   private innerOptions: Param = new Param();
   private LOG: Logger;
   private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement;
-  private disabled: boolean = false;
+  private disabled = false;
   private min = 0;
   private max = 100;
   private root: HTMLDivElement;
@@ -87,8 +88,8 @@ export class DiscoveryInputComponent {
   updateRes() {
     this.LOG.debug(['updateRes'], this.innerResult);
     this.innerResult = GTSLib.getData(this.result);
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) ;
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) ;
     this.innerOptions = {...options};
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
@@ -104,17 +105,17 @@ export class DiscoveryInputComponent {
   // noinspection JSUnusedLocalSymbols
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    const dims = Utils.getContentBounds(this.type === 'input:multi-cb' || this.type == 'input:slider'
+    const dims = Utils.getContentBounds(this.type === 'input:multi-cb' || this.type === 'input:slider'
       ? this.pngWrapper : this.root);
     this.width = dims.w - 15;
     this.height = dims.h;
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions ) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.result as unknown as DataModel) || {
       globalParams: {bgColor}
     }).globalParams || {bgColor}) as Param;
     bgColor = dm.bgColor || bgColor;
-    if (this.type == 'input:slider') {
+    if (this.type === 'input:slider') {
       return await (this.inputField as HTMLDiscoverySliderElement).export(type, bgColor);
     } else {
       return await domtoimage.toPng(this.type === 'input:multi-cb' ? this.pngWrapper : this.root, {
@@ -133,8 +134,8 @@ export class DiscoveryInputComponent {
     }
     this.innerResult = GTSLib.getData(this.result);
     this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) ;
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) ;
     this.innerOptions = {...options};
     const btnLabel = (this.innerOptions.button || {label: 'Ok'}).label;
     const dm = ((this.result as unknown as DataModel) || {
@@ -157,8 +158,8 @@ export class DiscoveryInputComponent {
 
   componentDidLoad() {
     switch (this.subType) {
-      case "date":
-      case "date-range":
+      case 'date':
+      case 'date-range':
         const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
         const opts = {
           enableTime: true,
@@ -193,7 +194,7 @@ export class DiscoveryInputComponent {
       case 'autocomplete':
         // noinspection JSPotentiallyInvalidConstructorUsage
         this.autoCompleteJS = new autoComplete({
-          placeHolder: "Search...",
+          placeHolder: 'Search...',
           selector: () => this.inputField,
           data: {src: this.values, keys: 'v'},
           resultItem: {highlight: {render: true}},
@@ -229,7 +230,7 @@ export class DiscoveryInputComponent {
 
   private handleClick = () => {
     if (this.inputField && this.subType !== 'date' && this.subType !== 'date-range') {
-      if ("value" in this.inputField) {
+      if ('value' in this.inputField) {
         this.selectedValue = this.inputField.value;
       }
     }
@@ -275,8 +276,8 @@ export class DiscoveryInputComponent {
     this.max = (this.innerOptions.input || {max: 100}).max || 100;
     this.LOG.debug(['parseResult', 'innerOptions'], this.innerOptions);
     switch (this.subType) {
-      case "text":
-      case "secret":
+      case 'text':
+      case 'secret':
         if (GTSLib.isArray(data) && !!data[0]) {
           this.value = data[0].toString();
         } else {
@@ -284,7 +285,7 @@ export class DiscoveryInputComponent {
         }
         this.selectedValue = this.value;
         break;
-      case "date":
+      case 'date':
         if (GTSLib.isArray(data) && !!data[0]) {
           this.value = data[0].toString();
         } else {
@@ -292,10 +293,10 @@ export class DiscoveryInputComponent {
         }
         this.selectedValue = this.value;
         if (this.flatpickrInstance) {
-          this.flatpickrInstance.setDate(this.formatDateTime('' + this.value));
+          this.flatpickrInstance.setDate(this.formatDateTime(`${this.value}`));
         }
         break;
-      case "date-range":
+      case 'date-range':
         if (GTSLib.isArray(data) && data.length >= 2) {
           this.value = (data as any[]).sort();
         }
@@ -304,13 +305,13 @@ export class DiscoveryInputComponent {
           this.flatpickrInstance.config.mode = 'range';
           this.flatpickrInstance.setDate(
             [
-              this.formatDateTime('' + this.value[0]),
-              this.formatDateTime('' + this.value[1])
+              this.formatDateTime(`${this.value[0]}`),
+              this.formatDateTime(`${this.value[1]}`)
             ]
           )
         }
         break;
-      case "slider":
+      case 'slider':
         if (GTSLib.isArray(data) && data.length > 0) {
           this.value = data[0];
         } else {
@@ -319,12 +320,13 @@ export class DiscoveryInputComponent {
         this.selectedValue = this.value;
         this.innerOptions.input = this.innerOptions.input || {};
         this.innerOptions.input.value = this.value as number;
-        (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number).then(() => {
+        void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number).then(() => {
+          //
         })
         break;
-      case "list":
-      case "multi":
-      case "multi-cb":
+      case 'list':
+      case 'multi':
+      case 'multi-cb':
       case 'autocomplete':
         this.values = [];
         if (GTSLib.isArray(data) && data.length > 0) {
@@ -345,7 +347,7 @@ export class DiscoveryInputComponent {
             src: this.values,
             keys: 'v',
             filter: (list) => list.filter(item => {
-              if ("value" in this.inputField) {
+              if ('value' in this.inputField) {
                 const inputValue = this.inputField.value.toLowerCase();
                 const itemValue = item.value.v.toLowerCase();
                 if (itemValue.startsWith(inputValue)) {
@@ -389,62 +391,63 @@ export class DiscoveryInputComponent {
     e.stopPropagation();
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       this.values = this.values.map(v => {
-        return {...v, h: !new RegExp('.*' + (e.target.value || e.detail || '') + '.*', 'gi').test(v.v)}
+        return {...v, h: !new RegExp(`.*${(e.target.value || e.detail || '')}.*`, 'gi').test(v.v)}
       });
     }
   }
 
   private getInput() {
     switch (this.subType) {
-      case "text":
+      case 'text':
         return <input type="text" class="discovery-input" value={this.value as string}
                       onInput={e => this.handleSelect(e)}
-                      ref={el => this.inputField = el as HTMLInputElement}
+                      ref={el => this.inputField = el }
         />
-      case "secret":
+      case 'secret':
         return <input type="password" class="discovery-input" value={this.value as string}
                       onInput={e => this.handleSelect(e)}
-                      ref={el => this.inputField = el as HTMLInputElement}
+                      ref={el => this.inputField = el }
         />
-      case "date":
+      case 'date':
         return <input type="text" class="discovery-input"
-                      ref={el => this.inputField = el as HTMLInputElement}
+                      ref={el => this.inputField = el }
         />
-      case "date-range":
+      case 'date-range':
         return <input type="text" class="discovery-input"
-                      ref={el => this.inputField = el as HTMLInputElement}
+                      ref={el => this.inputField = el }
         />
-      case "autocomplete":
+      case 'autocomplete':
         return <input type="text" class="discovery-input" value={this.value as string}
-                      ref={el => this.inputField = el as HTMLInputElement}
+                      ref={el => this.inputField = el }
         />
-      case "slider":
+      case 'slider':
         return <div class="slider-wrapper" ref={el => this.pngWrapper = el}>
           <discovery-slider options={this.innerOptions}
                             onValueChanged={e => this.handleSelect(e)}
-                            ref={el => this.inputField = el as HTMLDiscoverySliderElement}
+                            ref={el => this.inputField = el }
           />
         </div>
-      case "list":
+      case 'list':
         return <select class="discovery-input" onInput={e => this.handleSelect(e)}
-                       ref={el => this.inputField = el as HTMLSelectElement}>
+                       ref={el => this.inputField = el }>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
         </select>
-      case "multi":
+      case 'multi':
         return <select class="discovery-input" onInput={e => this.handleSelect(e)} multiple
-                       ref={el => this.inputField = el as HTMLSelectElement}>
+                       ref={el => this.inputField = el }>
           {this.values.map(v => (
             <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
         </select>
-      case "multi-cb":
+      case 'multi-cb':
         return <div class="multi-cb-wrapper" ref={el => this.pngWrapper = el}>
           <div class="multi-cb-layout">
             {this.innerOptions.input?.showFilter
               ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)}/>
               : ''
             }
-            <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el as HTMLDivElement}>
-              {this.values.map(v => (<div class={{"multi-cb-item-wrapper": true, hidden: v.h}}>
+            <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el }>
+              {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
+              {this.values.map(v => (<div class={{'multi-cb-item-wrapper': true, hidden: v.h}}>
                 <input type="checkbox" value={v.k}
                        checked={(this.value as string[] || []).includes(v.k)}
                        onInput={e => this.handleSelect(e)}

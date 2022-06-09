@@ -31,6 +31,7 @@ export class JsonLib {
   text;
 
   private error(m) {
+    // eslint-disable-next-line no-throw-literal
     throw {
       name: 'SyntaxError',
       message: m,
@@ -45,12 +46,12 @@ export class JsonLib {
 
   private check(c) {
     if (c !== this.ch) {
-      this.error('Expected \'' + c + '\' instead of \'' + this.ch + '\'');
+      this.error(`Expected '${c}' instead of '${this.ch}'`);
     }
     this.ch = this.text.charAt(this.at++);
   }
 
-  private number() {
+  private parseNumber() {
     let str = '';
     if (this.ch === '-') {
       str = '-';
@@ -92,7 +93,7 @@ export class JsonLib {
     return +str;
   }
 
-  private string() {
+  private parseString() {
     let hex;
     let str = '';
     let uffff;
@@ -111,6 +112,7 @@ export class JsonLib {
               if (!isFinite(hex)) {
                 break;
               }
+              // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
               uffff = uffff * 16 + hex;
             }
             str += String.fromCharCode(uffff);
@@ -170,7 +172,7 @@ export class JsonLib {
         this.check('y');
         return Infinity;
     }
-    this.error('Unexpected \'' + this.ch + '\'');
+    this.error(`Unexpected '${this.ch}'`);
   }
 
   private array() {
@@ -207,11 +209,11 @@ export class JsonLib {
         return object;   // empty object
       }
       while (this.ch) {
-        key = this.string();
+        key = this.parseString();
         this.white();
         this.check(':');
         if (Object.hasOwnProperty.call(object, key)) {
-          this.error('Duplicate key "' + key + '"');
+          this.error(`Duplicate key '${key}'`);
         }
         object[key] = this.value();
         this.white();
@@ -234,25 +236,25 @@ export class JsonLib {
       case '[':
         return this.array();
       case '"':
-        return this.string();
+        return this.parseString();
       case '-':
-        return this.number();
+        return this.parseNumber();
       default:
-        return this.ch >= '0' && this.ch <= '9' ? this.number() : this.word();
+        return this.ch >= '0' && this.ch <= '9' ? this.parseNumber() : this.word();
     }
   }
 
   public parse(source: string, reviver?: any) {
-    let result;
     this.text = source;
     this.at = 0;
     this.ch = ' ';
-    result = this.value();
+    const result = this.value();
     this.white();
     if (this.ch) {
       this.error('Syntax error');
     }
     return typeof reviver === 'function'
+      // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
       ? (function walk(holder, key) {
         let k;
         let v;

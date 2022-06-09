@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 /*
  *   Copyright 2022  SenX S.A.S.
  *
@@ -14,8 +16,6 @@
  *   limitations under the License.
  */
 
-// @dynamic
-// noinspection JSUnusedGlobalSymbols
 export enum Colors {
   COHESIVE = 'COHESIVE',
   COHESIVE_2 = 'COHESIVE_2',
@@ -103,9 +103,9 @@ export class ColorLib {
     MATRIX: ['#025f27', '#025f27', '#0d7635', '#228c49', '#37a266', '#4eb485', '#68c2a3', '#88d1bc'],
     CHARTANA: ['#77BE69', '#FADE2B', '#F24865', '#5694F2',
       '#FF9830', '#B876D9'],
-    CHALK: ["#fc97af", "#87f7cf", "#f7f494", "#72ccff",
-      "#f7c5a0", "#d4a4eb", "#d2f5a6", "#76f2f2"],
-    VINTAGE: ["#d87c7c", "#919e8b", "#d7ab82", "#6e7074", "#61a0a8", "#efa18d", "#787464", "#cc7e63", "#724e58", "#4b565b"
+    CHALK: ['#fc97af', '#87f7cf', '#f7f494', '#72ccff',
+      '#f7c5a0', '#d4a4eb', '#d2f5a6', '#76f2f2'],
+    VINTAGE: ['#d87c7c', '#919e8b', '#d7ab82', '#6e7074', '#61a0a8', '#efa18d', '#787464', '#cc7e63', '#724e58', '#4b565b'
     ]
   };
 
@@ -132,7 +132,7 @@ export class ColorLib {
 
 
   static getHeatMap(scheme: string) {
-    return ColorLib.heatMaps[scheme] || ColorLib.heatMaps['DEFAULT'];
+    return ColorLib.heatMaps[scheme] || ColorLib.heatMaps.DEFAULT;
   }
 
   static getColor(i: number, scheme: string) {
@@ -154,8 +154,8 @@ export class ColorLib {
 
   static getBlendedColorGradient(id: number, scheme: string, bg = '#000000') {
     return [
-      [0, ColorLib.blend_colors(bg, ColorLib.getColor(id, scheme), 0)],
-      [1, ColorLib.blend_colors(bg, ColorLib.getColor(id, scheme), 1)]
+      [0, ColorLib.blendColors(bg, ColorLib.getColor(id, scheme), 0)],
+      [1, ColorLib.blendColors(bg, ColorLib.getColor(id, scheme), 1)]
     ];
   }
 
@@ -202,14 +202,14 @@ export class ColorLib {
     c2.s = c2hsv[1];
     c2.v = c2hsv[2];
     const gradient = ColorLib.hsvGradient(c1, c2, steps);
-    for (const i in gradient) {
+    gradient.forEach(i => {
       if (gradient[i]) {
         gradient[i].rgb = ColorLib.hsv2rgb(gradient[i].h, gradient[i].s, gradient[i].v);
         gradient[i].r = Math.floor(gradient[i].rgb[0]);
         gradient[i].g = Math.floor(gradient[i].rgb[1]);
         gradient[i].b = Math.floor(gradient[i].rgb[2]);
       }
-    }
+    });
     return gradient;
   }
 
@@ -223,8 +223,7 @@ export class ColorLib {
     const d = M - m;
     let h;
     let s;
-    let v;
-    v = M;
+    const v = M;
     if (d === 0) {
       h = 0;
       s = 0;
@@ -248,13 +247,17 @@ export class ColorLib {
   private static hsvGradient(c1: any, c2: any, steps: any) {
     const gradient = new Array(steps);
     // determine clockwise and counter-clockwise distance between hues
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     const distCCW = (c1.h >= c2.h) ? c1.h - c2.h : 1 + c1.h - c2.h;
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     const distCW = (c1.h >= c2.h) ? 1 + c2.h - c1.h : c2.h - c1.h;
     // make gradient for this part
     for (let i = 0; i < steps; i++) {
       // interpolate h, s, b
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       let h = (distCW <= distCCW) ? c1.h + (distCW * i / (steps - 1)) : c1.h - (distCCW * i / (steps - 1));
       if (h < 0) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         h = 1 + h;
       }
       if (h > 1) {
@@ -313,15 +316,14 @@ export class ColorLib {
   }
 
   static rgb2hex(r, g, b) {
-    function componentToHex(c) {
+    const componentToHex = (c) => {
       const hex = c.toString(16);
-      return hex.length === 1 ? '0' + hex : hex;
+      return hex.length === 1 ? `0${hex}` : hex;
     }
-
-    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
   }
 
-  static blend_colors(color1, color2, percentage) {
+  static blendColors(color1, color2, percentage) {
     // check input
     color1 = color1 || '#000000';
     color2 = color2 || '#ffff';
@@ -340,17 +342,21 @@ export class ColorLib {
     //      the three character hex is just a representation of the 6 hex where each character is repeated
     //      ie: #060 => #006600 (green)
     if (color1.length === 4) {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       color1 = color1[1] + color1[1] + color1[2] + color1[2] + color1[3] + color1[3];
     } else {
       color1 = color1.substring(1);
     }
     if (color2.length === 4) {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       color2 = color2[1] + color2[1] + color2[2] + color2[2] + color2[3] + color2[3];
     } else {
       color2 = color2.substring(1);
     }
     // 3: we have valid input, convert colors to rgb
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     color1 = [parseInt(color1[0] + color1[1], 16), parseInt(color1[2] + color1[3], 16), parseInt(color1[4] + color1[5], 16)];
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     color2 = [parseInt(color2[0] + color2[1], 16), parseInt(color2[2] + color2[3], 16), parseInt(color2[4] + color2[5], 16)];
     // 4: blend
     const color3 = [

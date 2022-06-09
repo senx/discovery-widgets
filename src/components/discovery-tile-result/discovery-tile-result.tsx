@@ -14,16 +14,17 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {DataModel} from "../../model/dataModel";
-import {Utils} from "../../utils/utils";
-import {GTSLib} from "../../utils/gts.lib";
-import {DiscoveryEvent} from "../../model/discoveryEvent";
-import elementResizeEvent from "element-resize-event";
-import {PluginManager} from "../../utils/PluginManager";
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {DataModel} from '../../model/dataModel';
+import {Utils} from '../../utils/utils';
+import {GTSLib} from '../../utils/gts.lib';
+import {DiscoveryEvent} from '../../model/discoveryEvent';
+import elementResizeEvent from 'element-resize-event';
+import {PluginManager} from '../../utils/PluginManager';
 
 @Component({
   tag: 'discovery-tile-result',
@@ -37,13 +38,13 @@ export class DiscoveryTileResultComponent {
   @Prop() options: Param | string = new Param();
   @Prop({mutable: true}) width: number;
   @Prop({mutable: true}) height: number;
-  @Prop() debug: boolean = false;
-  @Prop({mutable: true}) unit: string = '';
+  @Prop() debug = false;
+  @Prop({mutable: true}) unit = '';
   @Prop() url: string;
   @Prop() chartTitle: string;
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Element() el: HTMLElement;
-  @Prop() vars: string = '{}';
+  @Prop() vars = '{}';
 
   @State() execTime = 0;
   @State() bgColor: string;
@@ -66,7 +67,7 @@ export class DiscoveryTileResultComponent {
   private title: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
-  private initial: boolean = true
+  private initial = true
   private innerVars = {};
 
   @Watch('type')
@@ -128,12 +129,12 @@ export class DiscoveryTileResultComponent {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
     if (res.zoom) {
-      this.setZoom(res.zoom).then(() => {
+      void this.setZoom(res.zoom).then(() => {
         // empty
       });
     }
     if (res.focus) {
-      this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
+      void this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
         // empty
       });
     }
@@ -155,8 +156,8 @@ export class DiscoveryTileResultComponent {
   @Listen('draw', {capture: false})
   onDrawHandler() {
     if (!!this.tile) {
-      if (!!this.tile['resize']) {
-        (this.tile as any).resize();
+      if (!!this.tile.resize) {
+        (this.tile).resize();
       }
       this.initial = false;
     }
@@ -180,7 +181,7 @@ export class DiscoveryTileResultComponent {
       })
   }
 
-  async componentWillLoad() {
+  componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.innerType = this.type;
     this.LOG?.debug(['componentWillLoad'], {
@@ -234,12 +235,12 @@ export class DiscoveryTileResultComponent {
 
   getView() {
     switch (this.innerType) {
-      case "line":
-      case "area":
-      case "scatter":
-      case "spline-area":
-      case "step-area":
-      case "spline":
+      case 'line':
+      case 'area':
+      case 'scatter':
+      case 'spline-area':
+      case 'step-area':
+      case 'spline':
       case 'step':
       case 'step-after':
       case 'step-before':
@@ -428,56 +429,58 @@ export class DiscoveryTileResultComponent {
   @Method()
   async resize() {
     setTimeout(() => {
-      if (!!this.tile && !!this.tile['resize']) {
-        (this.tile as any).resize();
+      if (!!this.tile && !!this.tile.resize) {
+        (this.tile).resize();
       }
     });
+    return Promise.resolve();
   }
 
   @Method()
   async setZoom(dataZoom: { start: number, end: number }) {
     if (this.tile) {
-      (this.tile as any).setZoom(dataZoom);
+      (this.tile).setZoom(dataZoom);
     }
+    return Promise.resolve();
   }
 
   @Method()
   async show(regexp: string) {
-    /* tslint:disable:no-string-literal */
+    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
     if (this.tile && this.tile['show']) {
-      await (this.tile as any).show(regexp);
+      await (this.tile).show(regexp);
     }
   }
 
   @Method()
   async hide(regexp: string) {
-    /* tslint:disable:no-string-literal */
+    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
     if (this.tile && this.tile['hide']) {
-      await (this.tile as any).hide(regexp);
+      await (this.tile).hide(regexp);
     }
   }
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
-    /* tslint:disable:no-string-literal */
+    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
     if (this.tile && this.tile['setFocus']) {
-      await (this.tile as any).setFocus(regexp, ts, value);
+      await (this.tile).setFocus(regexp, ts, value);
     }
   }
 
   @Method()
   async unFocus() {
-    /* tslint:disable:no-string-literal */
+    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
     if (this.tile && this.tile['unFocus']) {
-      await (this.tile as any).unFocus();
+      await (this.tile).unFocus();
     }
   }
 
   @Method()
   async export(type: 'png' | 'svg' = 'png'): Promise<{ dataUrl: string, bgColor: string }> {
-    // tslint:disable:no-string-literal
+    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['export']) {
-      const dataUrl = await (this.tile as any).export(type);
+      const dataUrl = await (this.tile).export(type);
       return {dataUrl, bgColor: Utils.getCSSColor(this.tileElem, '--warp-view-tile-background', '#fff')}
     } else {
       return undefined;
@@ -495,7 +498,7 @@ export class DiscoveryTileResultComponent {
              height: '100%', width: '100%'
            }}>
         {this.chartTitle ? <h2 ref={el => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
-        <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el as HTMLDivElement}>
+        <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
         </div>
       </div>
@@ -513,6 +516,7 @@ export class DiscoveryTileResultComponent {
         }
         this.discoveryEvent.emit(e);
       });
+    return Promise.resolve();
   }
 
   private parseResult() {
@@ -520,7 +524,8 @@ export class DiscoveryTileResultComponent {
       this.unit = (this.options as Param).unit || this.unit
       this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
       this.handleCSSColors();
-      this.parseEvents().then(() => {
+      void this.parseEvents().then(() => {
+        //
       })
     });
     if (this.LOG) {
@@ -534,14 +539,14 @@ export class DiscoveryTileResultComponent {
 
   private generateStyle(styles: { [k: string]: string }): string {
     this.innerStyles = {...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {}};
-    return Object.keys(this.innerStyles || {}).map(k => k + ' { ' + this.innerStyles[k] + ' }').join('\n');
+    return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 
   private handleCSSColors() {
     let fontColor = Utils.getCSSColor(this.tileElem, '--warp-view-font-color', '#404040');
-    fontColor = ((this.innerOptions as Param) || {fontColor}).fontColor || fontColor;
+    fontColor = ((this.innerOptions) || {fontColor}).fontColor || fontColor;
     let bgColor = Utils.getCSSColor(this.tileElem, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions as Param) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.innerResult as unknown as DataModel) || {
       globalParams: {bgColor, fontColor}
     }).globalParams || {bgColor, fontColor}) as Param;

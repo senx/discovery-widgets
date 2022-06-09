@@ -14,11 +14,11 @@
  *   limitations under the License.
  */
 
-import {DiscoveryEvent} from "../model/discoveryEvent";
-import {GTSLib} from "./gts.lib";
-import {Param} from "../model/param";
-import {DataModel} from "../model/dataModel";
-import {cloneDeep} from "lodash"
+import {DiscoveryEvent} from '../model/discoveryEvent';
+import {GTSLib} from './gts.lib';
+import {Param} from '../model/param';
+import {DataModel} from '../model/dataModel';
+import {cloneDeep} from 'lodash'
 
 export class Utils {
   static clone = (inObject) => {
@@ -28,7 +28,8 @@ export class Utils {
   static throttle(func, delay) {
     let isRunning;
     return (...args) => {
-      let context = this;        // store the context of the object that owns this function
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      const context = this;        // store the context of the object that owns this function
       if (!isRunning) {
         isRunning = true;
         func.apply(context, args) // execute the function with the context of the object that owns it
@@ -47,7 +48,7 @@ export class Utils {
           reject(xmlHttp.statusText)
         }
       };
-      xmlHttp.open("POST", theUrl, true); // true for asynchronous
+      xmlHttp.open('POST', theUrl, true); // true for asynchronous
       Object.keys(headers || {})
         .filter(h => h.toLowerCase() !== 'accept' && h.toLowerCase() !== 'content-type')
         .forEach(h => xmlHttp.setRequestHeader(h, headers[h]));
@@ -68,7 +69,7 @@ export class Utils {
   }
 
   static mergeDeep<T>(base: T, ext: any) {
-    const obj = {...base} as T;
+    const obj = {...base} ;
     const extended = {...ext} as T;
     for (const prop in extended || {}) {
       // If property is an object, merge properties
@@ -78,7 +79,7 @@ export class Utils {
         obj[prop] = extended[prop];
       }
     }
-    return obj as T;
+    return obj ;
   }
 
   static getLabelColor(el: HTMLElement) {
@@ -135,10 +136,10 @@ export class Utils {
       }
       if ((evt.tags || []).some(t => tagRex.test(t)) && new RegExp(type).test(evt.type || '')) {
         switch (evt.type) {
-          case "data":
+          case 'data':
             parsed.data = GTSLib.getData(evt.value);
             break;
-          case "style": // map css selector -> content
+          case 'style': // map css selector -> content
             parsed.style = evt.value;
             break;
           case 'xpath':
@@ -177,7 +178,7 @@ export class Utils {
     const parser = new DOMParser();
     // Parse a simple Invalid XML source to get namespace of <parsererror>:
     const docError = parser.parseFromString('INVALID', contentType);
-    const parsererrorNS = docError.getElementsByTagName("parsererror")[0].namespaceURI;
+    const parsererrorNS = docError.getElementsByTagName('parsererror')[0].namespaceURI;
     // Parse xmlString:
     // (XMLDocument object)
     const doc = parser.parseFromString(xmlString, contentType);

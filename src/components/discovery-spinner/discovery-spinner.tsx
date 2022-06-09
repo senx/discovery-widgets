@@ -14,6 +14,7 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, h, Host, Prop} from '@stencil/core';
 
 @Component({

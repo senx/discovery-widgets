@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-import {Tile} from "./tile";
-import {Param} from "./param";
+import {Tile} from './tile';
+import {Param} from './param';
 
 export class Dashboard {
   title: string;
@@ -26,6 +26,6 @@ export class Dashboard {
   options?: Param;
   cols = 12;
   cellHeight = 220;
-  bgColor: string = '#fff';
-  fontColor: string = '#000';
+  bgColor = '#fff';
+  fontColor = '#000';
 }

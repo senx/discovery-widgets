@@ -14,16 +14,17 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType, MapParams} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
+import {DataModel} from '../../model/dataModel';
+import {ChartType, MapParams} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
 import Leaflet, {TileLayerOptions} from 'leaflet';
-import {MapLib} from "../../utils/map-lib";
-import {ColorLib} from "../../utils/color-lib";
+import {MapLib} from '../../utils/map-lib';
+import {ColorLib} from '../../utils/color-lib';
 import {AntPath, antPath} from 'leaflet-ant-path';
 import domtoimage from 'dom-to-image';
 import 'leaflet-edgebuffer';
@@ -40,14 +41,14 @@ export class DiscoveryMapComponent {
   @Prop() options: Param | string = new Param();
   @State() @Prop() width: number;
   @State() @Prop({mutable: true}) height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
 
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
 
-  @State() parsing: boolean = false;
+  @State() parsing = false;
   @State() toDisplay: string[] = [];
   @State() innerOptions: Param;
 
@@ -57,7 +58,7 @@ export class DiscoveryMapComponent {
       animate: false
     }
   }
-  private divider: number = 1000;
+  private divider = 1000;
   private LOG: Logger;
   private mapElement: HTMLDivElement;
   private map: Leaflet.Map;
@@ -79,12 +80,12 @@ export class DiscoveryMapComponent {
   private mainLayer: Leaflet.LayerGroup;
   private heatmapLayer = Leaflet.featureGroup();
   private shadowHeatmapLayer = Leaflet.featureGroup();
-  private firstDraw: boolean = true;
+  private firstDraw = true;
   private mapOpts: MapParams;
   private initial = false;
   private hidden: { [key: string]: boolean } = {};
   private poputTimeout;
-  private markerOver: boolean = false;
+  private markerOver = false;
   private markersRef: any;
 
   @Watch('result')
@@ -120,10 +121,12 @@ export class DiscoveryMapComponent {
     if (this.map) {
       this.map.invalidateSize();
     }
+    return Promise.resolve();
   }
 
   // noinspection JSUnusedLocalSymbols
   @Method()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     return await domtoimage.toPng(this.mapElement, {height: this.height, width: this.width});
   }
@@ -136,6 +139,7 @@ export class DiscoveryMapComponent {
       }
     });
     this.drawMap(this.result as DataModel || new DataModel(), true);
+    return Promise.resolve();
   }
 
   @Method()
@@ -146,6 +150,7 @@ export class DiscoveryMapComponent {
       }
     });
     this.drawMap(this.result as DataModel || new DataModel(), true);
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -178,7 +183,7 @@ export class DiscoveryMapComponent {
     let tilesPromise: Promise<void>;
     let zoomPromise: Promise<void>;
     // noinspection JSUnusedAssignment
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     this.LOG?.debug(['drawMap', 'this.options 2 '], {...data.globalParams});
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
     optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
@@ -186,17 +191,15 @@ export class DiscoveryMapComponent {
     if (!!this.map) {
       this.map.invalidateSize(true);
     }
-    let dataList: any[];
-    let params: any[];
     this.LOG?.debug(['drawMap', 'data'], data);
     this.LOG?.debug(['drawMap', 'this.height'], this.height);
     this.LOG?.debug(['drawMap', 'this.options'], {...this.innerOptions});
     data.data = GTSLib.flatDeep(data.data as any[]);
-    dataList = data.data as any[];
-    params = data.params;
+    const dataList = data.data as any[];
+    const params = data.params;
     this.mapOpts = this.innerOptions.map || {};
     this.pointslayer = [];
-    dataList.forEach((g,i) => {
+    dataList.forEach((g, i) => {
       if (GTSLib.isGts(g)) {
         const gtsName = ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(g);
         if (!this.hidden[gtsName]) {
@@ -225,7 +228,7 @@ export class DiscoveryMapComponent {
       if (!isRefresh || optionUpdate) {
         this.LOG?.debug(['displayMap'], 'map', map);
         this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
-        tilesPromise = new Promise(resolve => setTimeout(() => this.tilesLayer.on("load", () => resolve())));
+        tilesPromise = new Promise(resolve => setTimeout(() => this.tilesLayer.on('load', () => resolve())));
       }
     }
     if (!!this.map) {
@@ -339,7 +342,7 @@ export class DiscoveryMapComponent {
     for (let i = 0; i < size; i++) {
       let p = (params || [])[i];
       if (!p) {
-        p = {};
+        p = {...new Param()};
       }
       if (!!p.map?.heatmap && dataList[i].v[0] && dataList[i].v[0].length >= 3) {
         const g = dataList[i];
@@ -401,7 +404,7 @@ export class DiscoveryMapComponent {
               duration: 0
             }
           );
-          zoomPromise = new Promise(resolve => this.map.once("moveend zoomend", () => resolve()));
+          zoomPromise = new Promise(resolve => this.map.once('moveend zoomend', () => resolve()));
         }
       }, 10);
     } else {
@@ -418,11 +421,11 @@ export class DiscoveryMapComponent {
           duration: 0
         }
       );
-      zoomPromise = new Promise(resolve => setTimeout(() => this.map.once("moveend zoomend", () => resolve())));
+      zoomPromise = new Promise(resolve => setTimeout(() => this.map.once('moveend zoomend', () => resolve())));
     }
     this.firstDraw = false;
     this.patchMapTileGapBug();
-    Promise.all([zoomPromise, tilesPromise])
+    void Promise.all([zoomPromise, tilesPromise])
       .then(() => setTimeout(() => {
         if (this.initial) {
           this.draw.emit();
@@ -435,7 +438,7 @@ export class DiscoveryMapComponent {
     const c = `${color.slice(1)}`;
     const m = marker !== '' ? marker : 'circle';
     return Leaflet.icon({
-      // tslint:disable-next-line:max-line-length
+      // eslint-disable-next-line max-len
       iconUrl: `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=14&size=40&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`,
       iconAnchor: this.iconAnchor,
       popupAnchor: this.popupAnchor
@@ -590,13 +593,14 @@ export class DiscoveryMapComponent {
     const date = this.innerOptions.timeMode === 'date'
       ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
       : ts || 0;
-    Object.keys(this.markersRef ||{})
+    Object.keys(this.markersRef || {})
       .filter(s => new RegExp(regexp).test(s))
       .forEach(k => {
         if (!!this.markersRef[k][date]) {
           this.markersRef[k][date].openPopup();
         }
       });
+    return Promise.resolve();
   }
 
   @Method()
@@ -610,6 +614,7 @@ export class DiscoveryMapComponent {
             }
           });
       });
+    return Promise.resolve();
   }
 
   private updatePositionArray(positionData: any) {
@@ -716,7 +721,7 @@ export class DiscoveryMapComponent {
     // Workaround for 1px lines appearing in some browsers due to fractional transforms
     // and resulting anti-aliasing. adapted from @cmulders' solution:
     // https://github.com/Leaflet/Leaflet/issues/3575#issuecomment-150544739
-    // @ts-ignore
+    // eslint-disable-next-line no-underscore-dangle
     const originalInitTile = Leaflet.GridLayer.prototype._initTile;
     if (originalInitTile.isPatched) {
       return;
@@ -725,17 +730,17 @@ export class DiscoveryMapComponent {
       _initTile(tile) {
         originalInitTile.call(this, tile);
         const tileSize = this.getTileSize();
-        tile.style.width = tileSize.x + 1.5 + 'px';
-        tile.style.height = tileSize.y + 1 + 'px';
+        tile.style.width = `${tileSize.x as number + 1.5}px`;
+        tile.style.height = `${tileSize.y as number + 1}px`;
       }
     });
-    // @ts-ignore
+    // eslint-disable-next-line no-underscore-dangle
     Leaflet.GridLayer.prototype._initTile.isPatched = true;
   }
 
   render() {
-    return <div class="map-container" style={{width: this.width + 'px', height: this.height + 'px'}}>
-      <div ref={(el) => this.mapElement = el as HTMLDivElement}/>
+    return <div class="map-container" style={{width: `${this.width}px`, height: `${this.height}px`}}>
+      <div ref={(el) => this.mapElement = el}/>
     </div>;
   }
 

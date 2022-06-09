@@ -14,13 +14,14 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {Logger} from "../../utils/logger";
+import {Logger} from '../../utils/logger';
 import noUiSlider from 'nouislider';
-import {API} from "nouislider/src/nouislider";
-import {GTSLib} from "../../utils/gts.lib";
-import {Param} from "../../model/param";
-import {Utils} from "../../utils/utils";
+import {API} from 'nouislider/src/nouislider';
+import {GTSLib} from '../../utils/gts.lib';
+import {Param} from '../../model/param';
+import {Utils} from '../../utils/utils';
 import domtoimage from 'dom-to-image';
 
 @Component({
@@ -75,10 +76,10 @@ export class DiscoverySlider {
     } else {
       this.innerOptions = this.options;
     }
-    let options = Utils.mergeDeep<Param>({
+    const options = Utils.mergeDeep<Param>({
       ...new Param(),
       input: {min: 0, max: 100, horizontal: true, showTicks: true, step: 1}
-    }, this.innerOptions || {}) as Param;
+    }, this.innerOptions || {}) ;
     this.innerOptions = {...options};
     this.LOG?.debug(['componentWillLoad'], this.innerOptions);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
@@ -94,10 +95,12 @@ export class DiscoverySlider {
   async setValue(value: number) {
     this.innerValue = value;
     this.slider.set(value);
+    return Promise.resolve();
   }
 
   // noinspection JSUnusedLocalSymbols
   @Method()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png', bgColor: string) {
     const dims = Utils.getContentBounds(this.sliderDiv);
     const width = dims.w - 15;
@@ -108,14 +111,14 @@ export class DiscoverySlider {
   render() {
     return (
       <div>
-        <div id="slider" ref={(el) => this.sliderDiv = el as HTMLDivElement}/>
+        <div id="slider" ref={(el) => this.sliderDiv = el }/>
       </div>
     );
   }
 
   private getSliderOptions() {
-    let minmax = {min: this.innerOptions.input?.min || 0, max: this.innerOptions.input?.max || 100}
-    let start = this.innerValue;
+    const minmax = {min: this.innerOptions.input?.min || 0, max: this.innerOptions.input?.max || 100}
+    const start = this.innerValue;
     const range = minmax.max - minmax.min;
     const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
     const format = {

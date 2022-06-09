@@ -14,13 +14,14 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
+import {DataModel} from '../../model/dataModel';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
 
 @Component({
   tag: 'discovery-image',
@@ -33,13 +34,13 @@ export class DiscoveryImageComponent {
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  @Prop() debug: boolean = false;
-  @Prop() unit: string = '';
+  @Prop() debug = false;
+  @Prop() unit = '';
 
   @Element() el: HTMLElement;
   @Event() draw: EventEmitter<void>;
 
-  @State() parsing: boolean = false;
+  @State() parsing = false;
   @State() toDisplay: string[] = [];
 
   private defOptions: Param = new Param();
@@ -50,7 +51,7 @@ export class DiscoveryImageComponent {
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
-      this.toDisplay = this.convert(this.result as DataModel || new DataModel())
+      this.toDisplay = this.convert(this.result || new DataModel())
       this.draw.emit();
     }
   }
@@ -64,7 +65,7 @@ export class DiscoveryImageComponent {
         this.options = JSON.parse(this.options);
       }
       this.result = GTSLib.getData(this.result);
-      this.toDisplay = this.convert(this.result as DataModel || new DataModel())
+      this.toDisplay = this.convert(this.result || new DataModel())
       this.LOG?.debug(['componentWillLoad'], {
         type: this.type,
         options: this.options,
@@ -81,8 +82,8 @@ export class DiscoveryImageComponent {
 
   convert(data: DataModel) {
     const toDisplay = [];
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.options = {...options};
     if (GTSLib.isArray(data.data)) {
       (data.data as any[] || []).forEach(img => {
@@ -98,8 +99,9 @@ export class DiscoveryImageComponent {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
-    return this.toDisplay;
+    return Promise.resolve(this.toDisplay);
   }
 
   render() {

@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-import {Param} from "./param";
-import {DataModel} from "./dataModel";
+import {Param} from './param';
+import {DataModel} from './dataModel';
 
 export class Tile {
   type: string;

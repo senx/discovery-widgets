@@ -14,16 +14,17 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
-import {DiscoveryEvent} from "../../model/discoveryEvent";
+import {DataModel} from '../../model/dataModel';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
+import {DiscoveryEvent} from '../../model/discoveryEvent';
 import domtoimage from 'dom-to-image';
-import {LangUtils} from "../../utils/lang-utils";
+import {LangUtils} from '../../utils/lang-utils';
 
 @Component({
   tag: 'discovery-button',
@@ -36,10 +37,10 @@ export class DiscoveryButtonComponent {
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() url: string;
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
-  @Prop() vars: string = '{}';
+  @Prop() vars = '{}';
 
   @Element() el: HTMLElement;
 
@@ -53,9 +54,9 @@ export class DiscoveryButtonComponent {
     bubbles: true,
   }) discoveryEvent: EventEmitter<DiscoveryEvent>;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
-  @State() label: string = 'Ok';
+  @State() parsing = false;
+  @State() rendering = false;
+  @State() label = 'Ok';
   @State() innerStyle: { [k: string]: string; };
   @State() active: string;
 
@@ -97,6 +98,7 @@ export class DiscoveryButtonComponent {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
@@ -128,8 +130,8 @@ export class DiscoveryButtonComponent {
     }).globalParams || {button: {label: btnLabel}};
 
     this.label = dm.button.label;
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
     this.options = {...options};
     this.innerVars = JSON.parse(this.vars);
     if (this.options.customStyles) {

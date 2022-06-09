@@ -14,13 +14,14 @@
  *   limitations under the License.
  */
 
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from "@stencil/core";
-import {DataModel} from "../../model/dataModel";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
+import {DataModel} from '../../model/dataModel';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
 import html2canvas from 'html2canvas';
 
 export interface Dataset {
@@ -41,7 +42,7 @@ export class DiscoveryTabular {
   @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
   @Prop({mutable: true}) width: number;
   @Prop({mutable: true}) height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() unit: string;
 
   @Element() el: HTMLElement;
@@ -49,12 +50,12 @@ export class DiscoveryTabular {
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() tabularData: Dataset[] = [];
 
   private LOG: Logger;
-  private divider: number = 1000;
+  private divider = 1000;
   private pngWrapper: HTMLDivElement;
 
   @Watch('result')
@@ -67,10 +68,12 @@ export class DiscoveryTabular {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h;
+    return Promise.resolve();
   }
 
   // noinspection JSUnusedLocalSymbols
   @Method()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     return (await html2canvas(this.pngWrapper)).toDataURL();
   }
@@ -84,7 +87,7 @@ export class DiscoveryTabular {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.tabularData = this.convert(this.result as DataModel || new DataModel())
+    this.tabularData = this.convert(this.result  || new DataModel())
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -108,8 +111,8 @@ export class DiscoveryTabular {
   }
 
   private convert(data: DataModel): Dataset[] {
-    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) ;
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) ;
     this.options = {...options};
     let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {
@@ -121,7 +124,7 @@ export class DiscoveryTabular {
         dataGrid = this.parseCustomData(data, dataList);
       }
     } else {
-      dataGrid = this.parseCustomData(data, [data.data as any]);
+      dataGrid = this.parseCustomData(data, [data.data ]);
     }
     this.parsing = false;
     return dataGrid;
@@ -184,7 +187,7 @@ export class DiscoveryTabular {
 
   render() {
     this.draw.emit();
-    return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el as HTMLDivElement}>
+    return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el }>
       <div class="tabular-wrapper-inner">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}

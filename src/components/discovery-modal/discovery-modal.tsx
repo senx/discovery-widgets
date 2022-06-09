@@ -14,14 +14,15 @@
  *   limitations under the License.
  */
 
-import {Tile} from "../../model/tile";
-import {Component, h, Method, Prop, State, Watch} from "@stencil/core";
-import {Dashboard} from "../../model/dashboard";
-import {ChartType} from "../../model/types";
-import {Utils} from "../../utils/utils";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {JsonLib} from "../../utils/jsonLib";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {Component, h, Method, Prop, State, Watch} from '@stencil/core';
+import {Tile} from '../../model/tile';
+import {Dashboard} from '../../model/dashboard';
+import {ChartType} from '../../model/types';
+import {Utils} from '../../utils/utils';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {JsonLib} from '../../utils/jsonLib';
 
 @Component({
   tag: 'discovery-modal',
@@ -32,7 +33,7 @@ export class DiscoveryModalComponent {
   @Prop({mutable: true}) data: Tile | Dashboard;
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() url: string;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
 
   @State() private tile: Tile;
   @State() private dashboard: Dashboard;
@@ -69,6 +70,7 @@ export class DiscoveryModalComponent {
   @Method()
   public async open() {
     this.showModal = true;
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -94,7 +96,7 @@ export class DiscoveryModalComponent {
   }
 
   render() {
-    return <div ref={(el) => this.modal = el as HTMLDivElement}>
+    return <div ref={(el) => this.modal = el}>
       {this.showModal ? <div class="modal">
         <div class="modal-content">
           <span class="close" onClick={() => this.closeModal()}>&times;</span>

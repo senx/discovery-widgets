@@ -14,14 +14,15 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {Utils} from "../../utils/utils";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {DiscoveryEvent} from "../../model/discoveryEvent";
-import {LangUtils} from "../../utils/lang-utils";
+import {Utils} from '../../utils/utils';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {DiscoveryEvent} from '../../model/discoveryEvent';
+import {LangUtils} from '../../utils/lang-utils';
 
 @Component({
   tag: 'discovery-tile',
@@ -34,10 +35,10 @@ export class DiscoveryTileComponent {
   @Prop() type: ChartType;
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
-  @Prop() debug: boolean = false;
-  @Prop() unit: string = '';
-  @Prop({mutable: true}) autoRefresh: number = -1;
-  @Prop() vars: string = '{}';
+  @Prop() debug = false;
+  @Prop() unit = '';
+  @Prop({mutable: true}) autoRefresh = -1;
+  @Prop() vars = '{}';
 
   @Event({bubbles: true}) statusHeaders: EventEmitter<string[]>;
   @Event({bubbles: true}) statusError: EventEmitter;
@@ -51,10 +52,10 @@ export class DiscoveryTileComponent {
   @State() height: number;
   @State() headers: any;
   @State() start: number;
-  @State() showLoader: boolean = false;
-  @State() hasError: boolean = false;
-  @State() errorMessage: string = '';
-  @State() statusMessage: string = '';
+  @State() showLoader = false;
+  @State() hasError = false;
+  @State() errorMessage = '';
+  @State() statusMessage = '';
 
   private LOG: Logger;
   private ws: string;
@@ -80,7 +81,7 @@ export class DiscoveryTileComponent {
   varsUpdate(newValue: string, oldValue: string) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-      this.exec(true).then(() => {
+      void this.exec(true).then(() => {
         // empty
       });
     }
@@ -98,7 +99,8 @@ export class DiscoveryTileComponent {
     if (res.vars) {
       this.innerVars = {...(this.innerVars || {}), ...this.innerVars, ...res.vars};
       if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
-        this.exec(true).then(() => {
+        void this.exec(true).then(() => {
+          // empty
         });
       }
     }
@@ -143,7 +145,7 @@ export class DiscoveryTileComponent {
     }
   }
 
-  async componentWillLoad() {
+  componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
     this.LOG?.debug(['componentWillLoad'], {
       url: this.url,
@@ -161,10 +163,8 @@ export class DiscoveryTileComponent {
     this.height = dims.h;
   }
 
-  componentDidLoad() {
-    this.exec().then(() => {
-      // empty;
-    });
+  async componentDidLoad() {
+    await this.exec();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -189,113 +189,117 @@ export class DiscoveryTileComponent {
 
   @Method()
   async exec(refresh = false) {
-    if (this.el.innerText && this.el.innerText !== '') {
-      if (!refresh) {
-        setTimeout(() => this.loaded = false);
-      }
-      this.ws = LangUtils.prepare(
-        this.el.innerText,
-        this.innerVars || {},
-        (this.options as Param)?.skippedVars || [],
-        this.type,
-        this.language);
-      if (!!window) {
-        const win = window as any;
-        let registry = win.DiscoveryPluginRegistry;
-        registry = registry || {};
-        if (!!(registry || {})[this.type] && !!registry[this.type].scriptWrapper && typeof registry[this.type].scriptWrapper === 'function') {
-          this.ws = registry[this.type].scriptWrapper(this.ws);
+    return new Promise(resolve => {
+      if (this.el.innerText && this.el.innerText !== '') {
+        if (!refresh) {
+          setTimeout(() => this.loaded = false);
         }
-      }
-      this.LOG?.debug(['exec'], this.ws, this.type);
-      if (this.url.toLowerCase().startsWith('http')) {
-        setTimeout(() => {
-          this.hasError = false;
-          this.errorMessage = '';
-          this.statusMessage = undefined;
-          if ((this.options as Param).showLoader) {
-            this.showLoader = true;
+        this.ws = LangUtils.prepare(
+          this.el.innerText,
+          this.innerVars || {},
+          (this.options as Param)?.skippedVars || [],
+          this.type,
+          this.language);
+        if (!!window) {
+          const win = window as any;
+          let registry = win.DiscoveryPluginRegistry;
+          registry = registry || {};
+          if (!!(registry || {})[this.type] && !!registry[this.type].scriptWrapper && typeof registry[this.type].scriptWrapper === 'function') {
+            this.ws = registry[this.type].scriptWrapper(this.ws);
           }
-        });
+        }
+        this.LOG?.debug(['exec'], this.ws, this.type);
+        if (this.url.toLowerCase().startsWith('http')) {
+          setTimeout(() => {
+            this.hasError = false;
+            this.errorMessage = '';
+            this.statusMessage = undefined;
+            if ((this.options as Param).showLoader) {
+              this.showLoader = true;
+            }
+          });
 
-        Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
-          .then((res: any) => {
-            const toRefresh = this.result === res.data;
-            this.result = res.data as string;
-            this.headers = {};
-            res.headers.split('\n')
-              .filter(header => header !== '' && header.toLowerCase().startsWith('x-warp10'))
-              .forEach(header => {
-                const headerName = header.split(':');
-                this.headers[headerName[0].trim()] = headerName[1].trim();
-              });
-            this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
+          Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
+            .then(async (res: any) => {
+              const toRefresh = this.result === res.data;
+              this.result = res.data as string;
+              this.headers = {};
+              res.headers.split('\n')
+                .filter(header => header !== '' && header.toLowerCase().startsWith('x-warp10'))
+                .forEach(header => {
+                  const headerName = header.split(':');
+                  this.headers[headerName[0].trim()] = headerName[1].trim();
+                });
+              this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(parseInt(this.headers['x-warp10-elapsed'], 10))} serverside,
 fetched ${this.headers['x-warp10-fetched']} datapoints
 and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
-            this.LOG?.debug(['exec', 'headers'], this.headers);
-            this.statusHeaders.emit(this.headers);
-            if ((this.options as Param).showStatus) {
-              this.statusMessage = this.headers.statusText;
-            }
-            this.start = new Date().getTime();
-            if (this.autoRefresh !== (this.options as Param).autoRefresh) {
-              this.autoRefresh = (this.options as Param).autoRefresh;
-              if (this.timer) {
-                window.clearInterval(this.timer);
+              this.LOG?.debug(['exec', 'headers'], this.headers);
+              this.statusHeaders.emit(this.headers);
+              if ((this.options as Param).showStatus) {
+                this.statusMessage = this.headers.statusText;
               }
-              if (this.autoRefresh && this.autoRefresh > 0) {
-                this.timer = window.setInterval(() => this.exec(true), this.autoRefresh * 1000);
+              this.start = new Date().getTime();
+              if (this.autoRefresh !== (this.options as Param).autoRefresh) {
+                this.autoRefresh = (this.options as Param).autoRefresh;
+                if (this.timer) {
+                  window.clearInterval(this.timer);
+                }
+                if (this.autoRefresh && this.autoRefresh > 0) {
+                  this.timer = window.setInterval(() => void this.exec(true), this.autoRefresh * 1000);
+                }
               }
-            }
-            this.LOG?.debug(['exec', 'result'], this.result);
-            this.execResult.emit(this.result);
-            if (toRefresh && refresh) {
-              this.tileResult.parseEvents().then(() => {
-              });
-            }
-            setTimeout(() => {
-              this.loaded = true;
-              this.showLoader = false;
-            });
-          }).catch(e => {
-          this.statusError.emit(e);
-          setTimeout(() => {
-            this.loaded = true;
-            this.showLoader = false;
-            this.hasError = (this.options as Param).showErrors;
-            this.errorMessage = e;
-          });
-          this.LOG?.error(['exec'], e);
-        });
-      } else if (this.url.toLowerCase().startsWith('ws')) {
-        // Web Socket
-        if (!!this.socket) {
-          this.socket.close();
-        }
-        this.socket = new WebSocket(this.url);
-        this.socket.onopen = () => {
-          this.socket.onmessage = event => {
-            const res = event.data as string;
-            setTimeout(() => {
-              this.loaded = true;
-              this.showLoader = false;
-            });
-            if (res.startsWith('["Exception at \'EVERY')) {
-              this.hasError = (this.options as Param).showErrors;
-              this.errorMessage = JSON.parse(res)[0] || 'Error';
-              this.statusError.emit(this.errorMessage);
-            } else {
-              this.result = res;
-              this.hasError = false;
-              this.errorMessage = '';
               this.LOG?.debug(['exec', 'result'], this.result);
               this.execResult.emit(this.result);
-            }
+              if (toRefresh && refresh) {
+                await this.tileResult.parseEvents();
+              }
+              setTimeout(() => {
+                this.loaded = true;
+                this.showLoader = false;
+              });
+              resolve(true);
+            }).catch(e => {
+            this.statusError.emit(e);
+            setTimeout(() => {
+              this.loaded = true;
+              this.showLoader = false;
+              this.hasError = (this.options as Param).showErrors;
+              this.errorMessage = e;
+            });
+            this.LOG?.error(['exec'], e);
+            resolve(true);
+          });
+        } else if (this.url.toLowerCase().startsWith('ws')) {
+          // Web Socket
+          if (!!this.socket) {
+            this.socket.close();
           }
-          this.socket.send('<% ' + this.ws + ' %> ' + ((this.options as Param).autoRefresh || 1000) + ' EVERY');
-        };
+          this.socket = new WebSocket(this.url);
+          this.socket.onopen = () => {
+            this.socket.onmessage = event => {
+              const res = event.data as string;
+              setTimeout(() => {
+                this.loaded = true;
+                this.showLoader = false;
+              });
+              if (res.startsWith('["Exception at \'EVERY')) {
+                this.hasError = (this.options as Param).showErrors;
+                this.errorMessage = JSON.parse(res)[0] || 'Error';
+                this.statusError.emit(this.errorMessage);
+              } else {
+                this.result = res;
+                this.hasError = false;
+                this.errorMessage = '';
+                this.LOG?.debug(['exec', 'result'], this.result);
+                this.execResult.emit(this.result);
+              }
+            }
+            this.socket.send(`<% ${this.ws} %> ${((this.options as Param).autoRefresh || 1000)} EVERY`);
+            resolve(true);
+          };
+        }
       }
-    }
+    });
   }
 
   @Method()
@@ -322,7 +326,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               language={this.language}
               chart-title={this.chartTitle}
               vars={JSON.stringify(this.innerVars)}
-              ref={(el) => this.tileResult = el as HTMLDiscoveryTileResultElement}
+              ref={(el) => this.tileResult = el }
             />
             {this.statusMessage
               ? <div class="discovery-tile-status">{this.statusMessage}</div>

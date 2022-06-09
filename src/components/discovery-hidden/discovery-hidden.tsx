@@ -14,13 +14,14 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
+import {DataModel} from '../../model/dataModel';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
 
 @Component({
   tag: 'discovery-hidden',
@@ -34,21 +35,21 @@ export class DiscoveryHidden {
   @Prop() options: Param | string = new Param();
   @State() @Prop({mutable: true}) width: number;
   @State() @Prop({mutable: true}) height: number;
-  @Prop() debug: boolean = false;
-  @Prop() unit: string = '';
+  @Prop() debug = false;
+  @Prop() unit = '';
 
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() message: string;
   @State() innerStyle: { [k: string]: string; };
   @State() innerOptions: Param;
 
   private wrapper: HTMLDivElement;
-  private divider: number = 1000;
+  private divider = 1000;
   private LOG: Logger;
   @State() private initial = false;
 
@@ -104,7 +105,7 @@ export class DiscoveryHidden {
 
   render() {
     return <div style={{display: 'hidden'}}>
-      <div ref={(el) => this.wrapper = el as HTMLDivElement}/>
+      <div ref={(el) => this.wrapper = el }/>
     </div>
   }
 

@@ -14,16 +14,17 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType, ECharts} from "../../model/types";
-import {Param} from "../../model/param";
-import * as echarts from "echarts";
-import {EChartsOption} from "echarts";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
-import {ColorLib} from "../../utils/color-lib";
+import {DataModel} from '../../model/dataModel';
+import {ChartType, ECharts} from '../../model/types';
+import {Param} from '../../model/param';
+import * as echarts from 'echarts';
+import {EChartsOption} from 'echarts';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
+import {ColorLib} from '../../utils/color-lib';
 
 @Component({
   tag: 'discovery-heatmap',
@@ -36,7 +37,7 @@ export class DiscoveryHeatmap {
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
-  @Prop() debug: boolean = false;
+  @Prop() debug = false;
   @Prop() unit: string;
 
   @Element() el: HTMLElement;
@@ -44,15 +45,15 @@ export class DiscoveryHeatmap {
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
 
-  @State() parsing: boolean = false;
-  @State() rendering: boolean = false;
+  @State() parsing = false;
+  @State() rendering = false;
   @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
-  private divider: number = 1000;
+  private divider = 1000;
   private myChart: ECharts;
 
   @Watch('type')
@@ -102,6 +103,7 @@ export class DiscoveryHeatmap {
     if (this.myChart) {
       this.myChart.resize();
     }
+    return Promise.resolve();
   }
 
   @Method()
@@ -112,6 +114,7 @@ export class DiscoveryHeatmap {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   @Method()
@@ -122,6 +125,7 @@ export class DiscoveryHeatmap {
         return {name: s.name}
       }).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -134,7 +138,7 @@ export class DiscoveryHeatmap {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+    this.chartOpts = this.convert(this.result || new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -143,8 +147,8 @@ export class DiscoveryHeatmap {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     let series: any[] = [];
     let min = 0;
@@ -259,7 +263,7 @@ export class DiscoveryHeatmap {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined;
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
   }
 
   componentDidLoad() {
@@ -295,7 +299,7 @@ export class DiscoveryHeatmap {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         (gts.v || []).forEach(v => {
-          let val = v[v.length - 1];
+          const val = v[v.length - 1];
           if (val < min) {
             min = val;
           }
@@ -320,15 +324,15 @@ export class DiscoveryHeatmap {
 
   private convertGtsToAnnotate(gtsList, params: Param[]) {
     let series: any[] = [];
-    let min = 0;
-    let max = 1;
+    const min = 0;
+    const max = 1;
     const gtsCount = gtsList.length;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
         (gts.v || []).forEach(v => {
           let val = v[v.length - 1];
-          if (typeof val === "boolean") {
+          if (typeof val === 'boolean') {
             val = val ? 1 : 0;
           } else {
             val = 1;
@@ -360,7 +364,7 @@ export class DiscoveryHeatmap {
         gts.rows.forEach(r => {
           const l = r.length;
           for (let j = 1; j < l; j++) {
-            let val = r[j];
+            const val = r[j];
             if (val < min) {
               min = val;
             }
@@ -381,7 +385,7 @@ export class DiscoveryHeatmap {
     return <div class="heatmap-wrapper">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el as HTMLDivElement}/>
+      <div ref={(el) => this.graph = el}/>
     </div>
   }
 }

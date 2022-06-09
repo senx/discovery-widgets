@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 /*
  *   Copyright 2022  SenX S.A.S.
  *
@@ -13,7 +15,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-import {ChartType, MapParams, TimeMode, TimeUnit} from "./types";
+import {ChartType, MapParams, TimeMode, TimeUnit} from './types';
 
 export class Param {
   skippedVars?: string[];

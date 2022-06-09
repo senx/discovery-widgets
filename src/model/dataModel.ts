@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 /*
  *   Copyright 2022  SenX S.A.S.
  *
@@ -15,7 +17,7 @@
  */
 
 import {Param} from './param';
-import {DiscoveryEvent} from "./discoveryEvent";
+import {DiscoveryEvent} from './discoveryEvent';
 
 export class DataModel {
   data: any[] | any | string;

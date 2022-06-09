@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 /*
  *   Copyright 2022  SenX S.A.S.
  *
@@ -14,8 +16,8 @@
  *   limitations under the License.
  */
 
-import {Logger} from "./logger";
-import {PluginDef} from "../model/PluginDef";
+import {Logger} from './logger';
+import {PluginDef} from '../model/PluginDef';
 
 export class PluginManager {
   LOG: Logger;

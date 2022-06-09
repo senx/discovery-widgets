@@ -14,15 +14,16 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from "../../model/dataModel";
-import {ChartType} from "../../model/types";
-import {Param} from "../../model/param";
-import {Logger} from "../../utils/logger";
-import {GTSLib} from "../../utils/gts.lib";
-import {Utils} from "../../utils/utils";
-import {DiscoveryEvent} from "../../model/discoveryEvent";
-import html2canvas from "html2canvas";
+import {DataModel} from '../../model/dataModel';
+import {ChartType} from '../../model/types';
+import {Param} from '../../model/param';
+import {Logger} from '../../utils/logger';
+import {GTSLib} from '../../utils/gts.lib';
+import {Utils} from '../../utils/utils';
+import {DiscoveryEvent} from '../../model/discoveryEvent';
+import html2canvas from 'html2canvas';
 
 @Component({
   tag: 'discovery-svg',
@@ -36,8 +37,8 @@ export class DiscoverySvgComponent {
   @Prop() options: Param | string = new Param();
   @Prop({mutable: true}) width: number;
   @Prop({mutable: true}) height: number;
-  @Prop() debug: boolean = false;
-  @Prop() unit: string = '';
+  @Prop() debug = false;
+  @Prop() unit = '';
   @Prop() url: string;
   @Prop() chartTitle: string;
 
@@ -48,7 +49,7 @@ export class DiscoverySvgComponent {
   @State() execTime = 0;
   @State() bgColor: string;
   @State() fontColor: string;
-  @State() parsing: boolean = false;
+  @State() parsing = false;
   @State() toDisplay: string[] = [];
   @State() innerStyle: { [k: string]: string };
   @State() innerResult: DataModel
@@ -77,7 +78,7 @@ export class DiscoverySvgComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    this.funqueue.push(this.wrapFunction(this.processEvent, this, [event]));
+    this.funqueue.push(this.wrapFunction(this.processEvent.bind(this), this, [event]));
   }
 
   @Method()
@@ -85,6 +86,7 @@ export class DiscoverySvgComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h;
+    return Promise.resolve();
   }
 
   componentWillLoad() {
@@ -98,8 +100,8 @@ export class DiscoverySvgComponent {
   convert(data: DataModel) {
     const toDisplay = [];
     this.LOG?.debug(['convert'], data)
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) as Param;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) as Param;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
@@ -144,11 +146,12 @@ export class DiscoverySvgComponent {
   }
 
   private processQueue() {
-    new Promise(async resolve => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    void new Promise(async resolve => {
       while (this.funqueue.length > 0) {
         await (this.funqueue.shift())();
       }
-      resolve(true)
+      resolve(true);
     }).then(() => setTimeout(() => this.processQueue(), 100));
   }
 
@@ -225,7 +228,7 @@ export class DiscoverySvgComponent {
     return (
       <Host>
         <style>{this.generateStyle(this.innerStyle)}</style>
-        <div class="svg-wrapper" style={{width: this.width + 'px', height: this.height + 'px'}}>
+        <div class="svg-wrapper" style={{width: `${this.width}px`, height: `${this.height}px`}}>
           {this.parsing
             ? <discovery-spinner>Parsing data...</discovery-spinner>
             : this.toDisplay.length > 0
