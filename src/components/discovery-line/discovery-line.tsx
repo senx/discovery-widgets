@@ -348,7 +348,7 @@ export class DiscoveryLineComponent {
 
         }
         (opts.series as any[]).push(s);
-      } else if (this.type === 'scatter' && gts.label && gts.values) {
+      } else if (['scatter', 'line'].includes(this.type) && gts.label && gts.values) {
         // Custom data for scatter
         this.innerOptions.timeMode = 'custom';
         const c = ColorLib.getColor(i, this.innerOptions.scheme);
@@ -356,7 +356,7 @@ export class DiscoveryLineComponent {
         const smax = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
         const smin = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
         const s = {
-          type: 'scatter',
+          type: this.type,
           name: gts.label,
           data: gts.values[0] && gts.values[0].length === 3
             ? (gts.values || []).map(v => {
