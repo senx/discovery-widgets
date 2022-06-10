@@ -477,7 +477,7 @@ export class DiscoveryInputComponent {
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div ref={el => this.root = el}>
-        <div class="discovery-input-wrapper">
+        <div class={'discovery-input-wrapper type-' + this.subType}>
           {this.getInput()}
           {this.innerOptions.input?.showButton && this.type !== 'input:multi-cb' ?
             <div class="discovery-input-btn-wrapper">

@@ -31,13 +31,13 @@
 
 ## Methods
 
-### `exec(refresh?: boolean) => Promise<void>`
+### `exec(refresh?: boolean) => Promise<unknown>`
 
 
 
 #### Returns
 
-Type: `Promise<void>`
+Type: `Promise<unknown>`
 
 
 
