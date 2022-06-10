@@ -27,21 +27,21 @@ export class PdfLib {
       LOG.debug(['generatePDF'], {width, height, dashboard, save, output});
       const doc = new jsPDF({
         unit: 'pt',
-        format: [width, height],
+        format: [width, height + 40],
         orientation: width > height ? 'landscape' : 'portrait'
       });
       const cellSpacing = 5;
       const xMargin = 10;
       const cellHeight = (dashboard.cellHeight || 220) + 18;
       doc.setFillColor(dashboard.bgColor);
-      doc.rect(0, 0, width, height, 'F');
+      doc.rect(0, 0, width, height + 40, 'F');
       const fontColor = ColorLib.hexToRgb(dashboard.fontColor) || [0, 0, 0];
       doc.setTextColor(fontColor[0], fontColor[1], fontColor[2]);
-      if(!!dashboard.title) {
+      if (!!dashboard.title) {
         doc.setFontSize(32);
         doc.text(dashboard.title, Math.round(width / 2), 30, {align: 'center', lineHeightFactor: 1});
       }
-      if(!!dashboard.description) {
+      if (!!dashboard.description) {
         doc.setFontSize(16);
         doc.text(dashboard.description, Math.round(width / 2), 70, {align: 'center', lineHeightFactor: 1});
       }
@@ -55,10 +55,17 @@ export class PdfLib {
         const tx = t.x * (width - xMargin * 2) / (dashboard.cols || 12) + bounds.width / 2 + cellSpacing + xMargin;
         doc.setFontSize(18);
         doc.text(t.title || '', tx, t.y * cellHeight + 90 + cellSpacing + 24, {align: 'center', lineHeightFactor: 1});
+        doc.setFillColor(t.bgColor);
+        doc.rect(
+          t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,
+          t.y * cellHeight + 90 + cellSpacing - 1,
+          bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'F');
+
         doc.setDrawColor('#a0a0a0');
         doc.rect(t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,
           t.y * cellHeight + 90 + cellSpacing - 1,
           bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'S')
+
         if (!!t.png && t.png !== 'data:,') {
           let png = t.png;
           if (Array.isArray(t.png)) {

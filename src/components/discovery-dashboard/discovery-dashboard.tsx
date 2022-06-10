@@ -139,7 +139,7 @@ export class DiscoveryDashboardComponent {
     const res: { dataUrl: string, bgColor: string }[] = await Promise.all(tiles.map((t => t.elem?.export('png'))));
     for (let i = 0; i < tiles.length; i++) {
       tiles[i].png = res[i]?.dataUrl;
-      tiles[i].bgColor = res[i]?.bgColor;
+      tiles[i].bgColor = Utils.getCSSColor(this.el,'--warp-view-tile-background', res[i]?.bgColor);
       tiles[i].uid = uuidv4();
       delete tiles[i].macro;
       delete tiles[i].data;
@@ -150,7 +150,7 @@ export class DiscoveryDashboardComponent {
     result.cellHeight = result.cellHeight || this.cellHeight || 220;
     result.cols = result.cols || this.cols || 12;
     result.bgColor = Utils.getCSSColor(this.el, '--warp-view-dashboard-background', '#fff');
-    result.fontColor = Utils.getCSSColor(this.el, '--gts-stack-font-color', '#000');
+    result.fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000');
     return {...new Dashboard(), ...result};
   }
 

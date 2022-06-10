@@ -75,7 +75,10 @@ export class DiscoveryTabular {
   @Method()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
-    return (await html2canvas(this.pngWrapper)).toDataURL();
+    return (await html2canvas(this.pngWrapper, {
+      allowTaint: true,
+      backgroundColor: (this.options as Param).bgColor || Utils.getCSSColor(this.el, '--warp-view-tile-background', '#fff'),
+    })).toDataURL();
   }
 
 
@@ -87,7 +90,7 @@ export class DiscoveryTabular {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.tabularData = this.convert(this.result  || new DataModel())
+    this.tabularData = this.convert(this.result || new DataModel())
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -111,8 +114,8 @@ export class DiscoveryTabular {
   }
 
   private convert(data: DataModel): Dataset[] {
-    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) ;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) ;
+    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.options = {...options};
     let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {
@@ -124,7 +127,7 @@ export class DiscoveryTabular {
         dataGrid = this.parseCustomData(data, dataList);
       }
     } else {
-      dataGrid = this.parseCustomData(data, [data.data ]);
+      dataGrid = this.parseCustomData(data, [data.data]);
     }
     this.parsing = false;
     return dataGrid;
@@ -187,7 +190,7 @@ export class DiscoveryTabular {
 
   render() {
     this.draw.emit();
-    return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el }>
+    return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el}>
       <div class="tabular-wrapper-inner">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
