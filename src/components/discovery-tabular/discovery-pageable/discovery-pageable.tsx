@@ -20,7 +20,7 @@ import {Logger} from '../../../utils/logger';
 import {Param} from '../../../model/param';
 import {GTSLib} from '../../../utils/gts.lib';
 import {Utils} from '../../../utils/utils';
-import {Dataset} from '../discovery-tabular';
+import {Dataset} from '../../../model/types';
 
 @Component({
   tag: 'discovery-pageable',

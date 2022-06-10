@@ -56,3 +56,9 @@ export type MapParams = {
   step?: number;
   delay?: number;
 };
+export type Dataset = {
+  name: string;
+  values: any[];
+  headers: string[];
+  isGTS: boolean;
+}

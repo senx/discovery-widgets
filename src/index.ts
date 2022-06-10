@@ -20,7 +20,7 @@ export {Param} from './model/param'
 export {GTS} from './model/GTS'
 export {Tile} from './model/tile'
 export {Logger} from './utils/logger';
-export {ChartType, MapParams, TimeMode, TimeUnit} from './model/types'
+export {ChartType, MapParams, TimeMode, TimeUnit, Dataset} from './model/types'
 export {ChartBounds} from './model/chartBounds';
 export {Dashboard} from './model/dashboard';
 export {DataModel} from './model/dataModel';

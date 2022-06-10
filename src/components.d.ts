@@ -6,13 +6,12 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DataModel } from "./model/dataModel";
-import { ChartType } from "./model/types";
+import { ChartType, Dataset } from "./model/types";
 import { Param } from "./model/param";
 import { XAXisOption } from "echarts/types/dist/shared";
 import { DiscoveryEvent } from "./model/discoveryEvent";
 import { Dashboard } from "./model/dashboard";
 import { Tile } from "./model/tile";
-import { Dataset } from "./components/discovery-tabular/discovery-tabular";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
