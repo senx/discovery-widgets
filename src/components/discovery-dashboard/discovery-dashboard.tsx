@@ -146,7 +146,7 @@ export class DiscoveryDashboardComponent {
       delete tiles[i].elem;
       delete tiles[i].endpoint;
     }
-    result.tiles = tiles;
+    result.tiles = tiles.filter(t => t.type !== 'hidden');
     result.cellHeight = result.cellHeight || this.cellHeight || 220;
     result.cols = result.cols || this.cols || 12;
     result.bgColor = Utils.getCSSColor(this.el, '--warp-view-dashboard-background', '#fff');
