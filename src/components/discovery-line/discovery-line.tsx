@@ -220,7 +220,8 @@ export class DiscoveryLineComponent {
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
+          saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
+          dataZoom: {show: true},
         }
       },
       legend: {

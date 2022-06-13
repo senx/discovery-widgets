@@ -263,7 +263,8 @@ export class DiscoveryAnnotation {
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
+          saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
+          dataZoom: {show: true},
         }
       },
       xAxis: {
