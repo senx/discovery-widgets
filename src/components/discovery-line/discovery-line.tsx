@@ -247,6 +247,17 @@ export class DiscoveryLineComponent {
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
+
+    for (let i = 0; i < gtsCount; i++) {
+      const gts = gtsList[i];
+      if (GTSLib.isGtsToPlot(gts)) {
+        min = Math.min(min, ...gts.v.map(v => v[0]));
+        max = Math.max(max, ...gts.v.map(v => v[0]));
+      }
+    }
+    if (max - min <= 1000) {
+      this.innerOptions.timeMode = 'timestamp';
+    }
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts)) {
@@ -267,8 +278,6 @@ export class DiscoveryLineComponent {
             }))
           };
         }
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
         hasTimeBounds = true;
         const s = {
           type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
