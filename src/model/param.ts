@@ -115,4 +115,5 @@ export class Param {
     dayLabel?: string[],
     monthLabel?: string[],
   };
+  extra?: any;
 }
