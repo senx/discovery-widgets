@@ -28,6 +28,7 @@ export class Param {
   timeZone = 'UTC';
   timeFormat?: string;
   unit?: string;
+  title?: string;
   type?: ChartType;
   subType?: ChartType;
   showRangeSelector?: boolean = false;

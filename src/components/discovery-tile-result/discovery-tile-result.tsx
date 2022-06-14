@@ -189,12 +189,15 @@ export class DiscoveryTileResultComponent {
       options: this.innerOptions,
       result: this.result
     });
-    if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
-      this.innerOptions = JSON.parse(this.options);
-    } else {
-      this.innerOptions = this.options as Param;
-    }
+    let options = new Param();
     this.innerResult = GTSLib.getData(this.result);
+    if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
+      options = {...options, ...JSON.parse(this.options)};
+    } else {
+      options = {...options, ...this.options as Param};
+    }
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
+    this.innerOptions = {...options};
     this.innerVars = JSON.parse(this.vars || '{}');
     this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
     this.LOG?.debug(['componentWillLoad 2'], {
@@ -497,7 +500,7 @@ export class DiscoveryTileResultComponent {
              color: this.fontColor,
              height: '100%', width: '100%'
            }}>
-        {this.chartTitle ? <h2 ref={el => this.title = el as HTMLDivElement}>{this.chartTitle}</h2> : ''}
+        {this.innerOptions?.title || this.chartTitle ? <h2 ref={el => this.title = el as HTMLDivElement}>{this.innerOptions?.title || this.chartTitle || ''}</h2> : ''}
         <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
         </div>
