@@ -61,6 +61,7 @@ export class DiscoveryAnnotation {
   private divider = 1000;
   private hasFocus = false;
   private gtsList = [];
+  private bounds: { min: number; max: number };
 
   @Watch('result')
   updateRes() {
@@ -203,6 +204,7 @@ export class DiscoveryAnnotation {
     this.displayExpander = this.gtsList.length > 1;
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
+      this.bounds = {min, max};
     }
 
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
@@ -354,16 +356,20 @@ export class DiscoveryAnnotation {
     this.myChart.on('dataZoom', (event: any) => {
       const {start, end} = (event.batch || [])[0] || {};
       if (start && end) {
-        this.dataZoom.emit({start, end, min: this.innerOptions.bounds?.minDate, max: this.innerOptions.bounds?.maxDate});
+        this.dataZoom.emit({
+          start,
+          end,
+          min: this.innerOptions.bounds?.minDate || this.bounds?.min,
+          max: this.innerOptions.bounds?.maxDate || this.bounds?.max
+        });
       }
     });
     this.myChart.on('restore', () => {
-      const dataZoom = this.myChart.getOption().dataZoom[1];
       this.dataZoom.emit({
-        start: dataZoom.startValue,
-        end: dataZoom.endValue,
-        min: dataZoom.startValue,
-        max: dataZoom.endValue
+        start: 0,
+        end: 100,
+        min: this.innerOptions.bounds?.minDate || this.bounds?.min,
+        max: this.innerOptions.bounds?.maxDate || this.bounds?.max
       });
     });
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
@@ -376,7 +382,7 @@ export class DiscoveryAnnotation {
   @Method()
   async setZoom(dataZoom: { start: number, end: number }) {
     if (this.myChart) {
-      this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom});
+      this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 1});
     }
     return Promise.resolve();
   }

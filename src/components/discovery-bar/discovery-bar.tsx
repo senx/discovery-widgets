@@ -62,6 +62,7 @@ export class DiscoveryBarComponent {
   private myChart: ECharts;
   private leftMargin: number;
   private hasFocus = false;
+  private bounds: { min: number; max: number };
 
   @Watch('result')
   updateRes() {
@@ -99,7 +100,7 @@ export class DiscoveryBarComponent {
   @Method()
   async setZoom(dataZoom: { start: number, end: number }) {
     if (this.myChart) {
-      this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom});
+      this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 2});
     }
     return Promise.resolve();
   }
@@ -257,6 +258,7 @@ export class DiscoveryBarComponent {
     }
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
+      this.bounds = {min, max};
     }
     this.LOG?.debug(['convert', 'series'], series);
     const opts = {
@@ -502,7 +504,12 @@ export class DiscoveryBarComponent {
       this.myChart.on('dataZoom', (event: any) => {
         const {start, end} = (event.batch || [])[0] || {};
         if (start && end) {
-          this.dataZoom.emit({start, end, min: this.innerOptions.bounds?.minDate, max: this.innerOptions.bounds?.maxDate});
+          this.dataZoom.emit({
+            start,
+            end,
+            min: this.innerOptions.bounds?.minDate || this.bounds?.min,
+            max: this.innerOptions.bounds?.maxDate || this.bounds?.max
+          });
         }
       });
       this.myChart.on('restore', () => {
@@ -510,8 +517,8 @@ export class DiscoveryBarComponent {
         this.dataZoom.emit({
           start: dataZoom.startValue,
           end: dataZoom.endValue,
-          min: dataZoom.startValue,
-          max: dataZoom.endValue
+          min: this.innerOptions.bounds?.minDate || this.bounds?.min,
+          max: this.innerOptions.bounds?.maxDate || this.bounds?.max
         });
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
