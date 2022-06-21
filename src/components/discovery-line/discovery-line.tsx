@@ -221,7 +221,7 @@ export class DiscoveryLineComponent {
         show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
-          dataZoom: {show: true},
+          dataZoom: {show: true, filterMode: 'none'},
           restore: {show: true},
         }
       },
