@@ -354,8 +354,7 @@ export class DiscoveryAnnotation {
     this.myChart.on('dataZoom', (event: any) => {
       const {start, end} = (event.batch || [])[0] || {};
       if (start && end) {
-        const dataZoom = this.myChart.getOption().dataZoom[1];
-        this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
+        this.dataZoom.emit({start, end, min: this.innerOptions.bounds?.minDate, max: this.innerOptions.bounds?.maxDate});
       }
     });
     this.myChart.on('restore', () => {
