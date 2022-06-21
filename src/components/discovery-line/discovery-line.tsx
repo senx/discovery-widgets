@@ -222,6 +222,7 @@ export class DiscoveryLineComponent {
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
           dataZoom: {show: true},
+          restore: {show: true},
         }
       },
       legend: {
@@ -238,7 +239,7 @@ export class DiscoveryLineComponent {
         },
         {
           type: 'inside',
-          filterMode: 'none'
+          filterMode: 'weakFilter'
         }
       ],
       visualMap: new Array(gtsCount),
@@ -657,6 +658,7 @@ export class DiscoveryLineComponent {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
+      this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
       this.myChart.setOption(this.chartOpts || {}, true, false);
