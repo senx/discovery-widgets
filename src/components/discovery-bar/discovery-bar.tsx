@@ -414,7 +414,15 @@ export class DiscoveryBarComponent {
         },
         {
           type: 'inside',
-          filterMode: 'none'
+          filterMode: 'none',
+          orient: 'vertical',
+          zoomOnMouseWheel: 'ctrl',
+        },
+        {
+          type: 'inside',
+          filterMode: 'none',
+          orient: 'horizontal',
+          zoomOnMouseWheel: true,
         }
       ],
       series
