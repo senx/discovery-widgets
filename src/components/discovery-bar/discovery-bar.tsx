@@ -309,6 +309,7 @@ export class DiscoveryBarComponent {
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
           dataZoom: {show: true},
+          restore: {show: true},
         }
       },
       legend: {
@@ -408,10 +409,12 @@ export class DiscoveryBarComponent {
         {
           type: 'slider',
           height: '20px',
-          show: !!this.innerOptions.showRangeSelector
+          show: !!this.innerOptions.showRangeSelector,
+          filterMode: 'none'
         },
         {
-          type: 'inside'
+          type: 'inside',
+          filterMode: 'none'
         }
       ],
       series
@@ -495,6 +498,16 @@ export class DiscoveryBarComponent {
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
       });
+      this.myChart.on('restore', () => {
+        const dataZoom = this.myChart.getOption().dataZoom[1];
+        this.dataZoom.emit({
+          start: dataZoom.startValue,
+          end: dataZoom.endValue,
+          min: dataZoom.startValue,
+          max: dataZoom.endValue
+        });
+      });
+      this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
       this.setOpts();

@@ -239,7 +239,7 @@ export class DiscoveryLineComponent {
         },
         {
           type: 'inside',
-          filterMode: 'weakFilter'
+          filterMode: 'none'
         }
       ],
       visualMap: new Array(gtsCount),
@@ -657,6 +657,15 @@ export class DiscoveryLineComponent {
           const dataZoom = this.myChart.getOption().dataZoom[1];
           this.dataZoom.emit({start, end, min: dataZoom.startValue, max: dataZoom.endValue});
         }
+      });
+      this.myChart.on('restore', () => {
+        const dataZoom = this.myChart.getOption().dataZoom[1];
+        this.dataZoom.emit({
+          start: dataZoom.startValue,
+          end: dataZoom.endValue,
+          min: dataZoom.startValue,
+          max: dataZoom.endValue
+        });
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
