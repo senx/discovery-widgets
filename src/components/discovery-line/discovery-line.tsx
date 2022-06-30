@@ -253,7 +253,7 @@ export class DiscoveryLineComponent {
       ],
       visualMap: new Array(gtsCount),
       series: [],
-      ... this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {}
     };
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
@@ -291,7 +291,7 @@ export class DiscoveryLineComponent {
         }
         hasTimeBounds = true;
         const s = {
-          type: this.type === 'scatter' || gts.v.length <= 1 ? 'scatter' : 'line',
+          type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
           name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           data: gts.v.map(d => {
             return [
@@ -320,7 +320,17 @@ export class DiscoveryLineComponent {
           } : undefined,
           showAllSymbol: false,
           lineStyle: !opts.visualMap[i] ? {color} : undefined,
-          itemStyle: {color}
+          itemStyle: type === 'bar' ? {
+            opacity: 0.8,
+            borderColor: color,
+            color: {
+              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+                {offset: 1, color: ColorLib.transparentize(color, 0.3)}
+              ]
+            }
+          } : {color}
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
