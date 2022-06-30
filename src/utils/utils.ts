@@ -49,6 +49,8 @@ export class Utils {
         }
       };
       xmlHttp.open('POST', theUrl, true); // true for asynchronous
+      xmlHttp.setRequestHeader('Content-Type', 'text/plain');
+      xmlHttp.setRequestHeader('Accept', 'application/json');
       Object.keys(headers || {})
         .filter(h => h.toLowerCase() !== 'accept' && h.toLowerCase() !== 'content-type')
         .forEach(h => xmlHttp.setRequestHeader(h, headers[h]));
