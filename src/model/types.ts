@@ -55,6 +55,7 @@ export type MapParams = {
   track?: boolean;
   step?: number;
   delay?: number;
+  tooltip?:any;
 };
 export type Dataset = {
   name: string;

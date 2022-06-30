@@ -560,6 +560,10 @@ export class DiscoveryMapComponent {
       let content = '';
       content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value || 'na'}</p>`;
       Object.keys(positionData.properties || []).forEach(k => content += `<b>${k}</b>: ${positionData.properties[k]}<br />`);
+
+      if(!!positionData.tooltip[ts]) {
+        content += positionData.tooltip[ts];
+      }
       marker.on('mouseover', () => {
         marker.openPopup();
         this.markerOver = true;

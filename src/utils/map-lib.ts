@@ -18,6 +18,7 @@ import {GTSLib} from './gts.lib';
 import {ColorLib} from './color-lib';
 import {Logger} from './logger';
 import {Param} from '../model/param';
+
 // noinspection JSUnusedGlobalSymbols
 export enum MapTypes {
   NONE = 'NONE',
@@ -39,6 +40,7 @@ export enum MapTypes {
   CARTODB = 'CARTODB',
   CARTODB_DARK = 'CARTODB_DARK',
 }
+
 export class MapLib {
   static BASE_RADIUS = 2;
   private static LOG: Logger = new Logger(MapLib, true);
@@ -138,18 +140,19 @@ export class MapLib {
     },
   };
 
-  static toLeafletMapPaths(data: { gts: any[]; params: any[] }, hiddenData: {[key: string]: boolean}, scheme: string) {
+  static toLeafletMapPaths(data: { gts: any[]; params: any[] }, hiddenData: { [key: string]: boolean }, scheme: string) {
     const paths = [];
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
+      gts.id = gts.id || i;
       this.LOG?.debug(['toLeafletMapPaths'], gts, data.params ? data.params[i] : '');
-      let params = (data.params || [])[i];
-      if (!params) {
-        params = {};
-      }
+      const params = (data.params || [])[i] || {};
+      gts.tooltip = params.map?.tooltip || {};
       if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[GTSLib.serializeGtsMetadata(gts)] && !params.map?.heatmap) {
         const path: any = {};
+        path.id = gts.id;
+        path.tooltip = gts.tooltip;
         MapLib.extractCommonParameters(path, params, i, scheme);
         path.path = MapLib.gtsToPath(gts);
         if (!!params.render) {
@@ -269,11 +272,10 @@ export class MapLib {
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
-      let globalParams = (data.params || [])[i];
-      if (!globalParams) {
-        globalParams = {};
-      }
-      if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0  && !globalParams.map?.heatmap) {
+      gts.id = gts.id || i;
+      const globalParams = (data.params || [])[i] || {};
+      gts.tooltip = globalParams.map?.tooltip || {};
+      if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0 && !globalParams.map?.heatmap) {
         this.LOG?.debug(['toLeafletMapPositionArray'], gts, data.params ? data.params[i] : '');
         const posArray = gts;
         const gtsParam = data.params ? data.params[i] || {} : {};
