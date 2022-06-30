@@ -258,6 +258,7 @@ export class DiscoveryHeatmap {
         type: 'category',
         splitArea: {show: true}
       },
+      ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 

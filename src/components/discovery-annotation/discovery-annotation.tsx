@@ -331,7 +331,8 @@ export class DiscoveryAnnotation {
           filterMode: 'none'
         }
       ],
-      series
+      series,
+      ... this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 

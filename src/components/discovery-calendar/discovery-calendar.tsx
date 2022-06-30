@@ -277,7 +277,8 @@ export class DiscoveryCalendar {
       legend: {bottom: 10, left: 'center', show: false},
       visualMap,
       series,
-      calendar
+      calendar,
+      ... this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 

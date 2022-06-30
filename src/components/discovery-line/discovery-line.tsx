@@ -252,7 +252,8 @@ export class DiscoveryLineComponent {
         }
       ],
       visualMap: new Array(gtsCount),
-      series: []
+      series: [],
+      ... this.innerOptions?.extra?.chartOpts || {}
     };
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;

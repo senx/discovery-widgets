@@ -427,7 +427,8 @@ export class DiscoveryBarComponent {
           zoomOnMouseWheel: true,
         }
       ],
-      series
+      series,
+      ... this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
     const markArea = (this.innerOptions.thresholds || [])
       .map(t => {

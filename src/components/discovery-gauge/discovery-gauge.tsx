@@ -338,7 +338,8 @@ export class DiscoveryGauge {
         containLabel: true
       },
       legend: {show: false},
-      series
+      series,
+      ... this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 
