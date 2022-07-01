@@ -663,14 +663,16 @@ export class DiscoveryLineComponent {
         }
         let found = false;
         let x = 0;
-        while (!found) {
-          found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
-          x++;
-        }
-        if (this.leftMargin !== x) {
-          setTimeout(() => this.leftMarginComputed.emit(x));
-          this.leftMargin = x;
-        }
+        setTimeout(() => {
+          while (!found && x < 1024) {
+            found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
+            x++;
+          }
+          if (this.leftMargin !== x) {
+            setTimeout(() => this.leftMarginComputed.emit(x));
+            this.leftMargin = x;
+          }
+        });
       });
       this.myChart.on('dataZoom', (event: any) => {
 
