@@ -63,6 +63,7 @@ export class DiscoveryBarComponent {
   private leftMargin: number;
   private hasFocus = false;
   private bounds: { min: number; max: number };
+  private isGTS = false;
 
   @Watch('result')
   updateRes() {
@@ -217,6 +218,7 @@ export class DiscoveryBarComponent {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
+        this.isGTS = true;
         const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         min = Math.min(min, ...gts.v.map(v => v[0]));
@@ -320,21 +322,26 @@ export class DiscoveryBarComponent {
       },
       xAxis: {
         show: !this.innerOptions.hideXAxis,
-        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'value' : 'category',
+        emphasis: {
+          focus: 'series'
+        },
+        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'value' : this.isGTS ? 'time' : 'category',
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
           }
         },
         axisLabel: {
+          show: !this.innerOptions.hideXAxis,
           color: Utils.getLabelColor(this.el),
-          formatter: value =>
-            !!(this.innerOptions.bar || {horizontal: false}).horizontal
-              ? value
-              : this.innerOptions.timeMode === 'date'
-                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-                : value
+          formatter: !(this.innerOptions.bar || {horizontal: false}).horizontal
+            ? this.innerOptions.timeMode === 'date'
+              ? this.innerOptions.fullDateDisplay ? value =>
+                  GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                    .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                : undefined
+              : undefined
+            : undefined
         },
         axisTick: {
           lineStyle: {
@@ -346,8 +353,7 @@ export class DiscoveryBarComponent {
             ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined
             : !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
               ? this.innerOptions.timeMode === 'date'
-                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
                 : this.innerOptions.bounds.minDate
               : undefined,
         max:
@@ -355,16 +361,18 @@ export class DiscoveryBarComponent {
             ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined
             : !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
               ? this.innerOptions.timeMode === 'date'
-                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
                 : this.innerOptions.bounds.maxDate
               : undefined,
       },
       yAxis: {
         name: this.unit || this.innerOptions.unit,
         show: !this.innerOptions.hideYAxis,
+        emphasis: {
+          focus: 'series'
+        },
         nameTextStyle: {color: Utils.getLabelColor(this.el)},
-        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'category' : 'value',
+        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? this.isGTS ? 'time' : 'category' : 'value',
         splitLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -377,13 +385,14 @@ export class DiscoveryBarComponent {
         },
         axisLabel: {
           color: Utils.getLabelColor(this.el),
-          formatter: value =>
-            !!(this.innerOptions.bar || {horizontal: false}).horizontal
-              ? this.innerOptions.timeMode === 'date'
-                ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-                : value
-              : value
+          formatter: !!(this.innerOptions.bar || {horizontal: false}).horizontal
+            ? this.innerOptions.timeMode === 'date'
+              ? this.innerOptions.fullDateDisplay ? value =>
+                  GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                    .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                : undefined
+              : undefined
+            : undefined
         },
         axisTick: {
           lineStyle: {
@@ -393,16 +402,14 @@ export class DiscoveryBarComponent {
         min: !!(this.innerOptions.bar || {horizontal: false}).horizontal
           ? !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
             ? this.innerOptions.timeMode === 'date'
-              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.minDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
               : this.innerOptions.bounds.minDate
             : undefined
           : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
         max: !!(this.innerOptions.bar || {horizontal: false}).horizontal
           ? !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
             ? this.innerOptions.timeMode === 'date'
-              ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(this.innerOptions.bounds.maxDate, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
               : this.innerOptions.bounds.maxDate
             : undefined
           : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
@@ -412,17 +419,15 @@ export class DiscoveryBarComponent {
           type: 'slider',
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
-          filterMode: 'none'
+          bottom: !!this.innerOptions.showLegend ? 30 : 20,
         },
         {
           type: 'inside',
-          filterMode: 'none',
           orient: 'vertical',
           zoomOnMouseWheel: 'ctrl',
         },
         {
           type: 'inside',
-          filterMode: 'none',
           orient: 'horizontal',
           zoomOnMouseWheel: true,
         }
