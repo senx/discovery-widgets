@@ -68,7 +68,7 @@ export class DiscoveryDisplayComponent {
   @Watch('result')
   updateRes() {
     this.result = GTSLib.getData(this.result);
-    this.message = this.convert(this.result  || new DataModel());
+    this.message = this.convert(this.result || new DataModel());
     this.flexFont();
   }
 
@@ -111,7 +111,7 @@ export class DiscoveryDisplayComponent {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions ) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.result as unknown as DataModel) || {
       globalParams: {bgColor}
     }).globalParams || {bgColor}) as Param;
@@ -129,7 +129,7 @@ export class DiscoveryDisplayComponent {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.message = this.convert(this.result  || new DataModel())
+    this.message = this.convert(this.result || new DataModel())
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -156,8 +156,8 @@ export class DiscoveryDisplayComponent {
   }
 
   private convert(dataModel: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) ;
-    options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams) ;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams);
     this.innerOptions = {...options};
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
@@ -206,7 +206,7 @@ export class DiscoveryDisplayComponent {
         this.fitties = fitty(this.wrapper, {maxSize: height * 0.80, minSize: 14});
         this.fitties.element.addEventListener('fit', () => {
           if (this.initial) {
-            setTimeout(() => this.draw.emit(), 100);
+            setTimeout(() => this.draw.emit());
             this.initial = false;
           }
         });
@@ -216,12 +216,12 @@ export class DiscoveryDisplayComponent {
   }
 
   render() {
-    return <div ref={(el) => this.pngWrapper = el } class="png-wrapper">
+    return <div ref={(el) => this.pngWrapper = el} class="png-wrapper">
       <style>{this.generateStyle(this.innerStyle)}</style>
       <div style={{color: this.innerOptions.fontColor}} class="display-container">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-        <div ref={(el) => this.wrapper = el } class="value">
+        <div ref={(el) => this.wrapper = el} class="value">
           <span innerHTML={this.message}/><small>{this.innerOptions.unit || this.unit || ''}</small>
         </div>
       </div>

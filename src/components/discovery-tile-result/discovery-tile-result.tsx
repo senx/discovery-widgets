@@ -500,7 +500,8 @@ export class DiscoveryTileResultComponent {
              color: this.fontColor,
              height: '100%', width: '100%'
            }}>
-        {this.innerOptions?.title || this.chartTitle ? <h2 ref={el => this.title = el as HTMLDivElement}>{this.innerOptions?.title || this.chartTitle || ''}</h2> : ''}
+        {this.innerOptions?.title || this.chartTitle ? <h2
+          ref={el => this.title = el as HTMLDivElement}>{this.innerOptions?.title || this.chartTitle || ''}</h2> : ''}
         <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
         </div>
@@ -510,7 +511,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async parseEvents() {
-    ((this.innerResult as unknown as DataModel)?.events || [])
+    setTimeout(() => ((this.innerResult as unknown as DataModel)?.events || [])
       .filter(e => !!e.value)
       .filter(e => e.type !== 'zoom' && e.type !== 'margin' && !this.initial)
       .forEach(e => {
@@ -518,7 +519,7 @@ export class DiscoveryTileResultComponent {
           this.LOG?.debug(['parseResult', 'emit'], {discoveryEvent: e});
         }
         this.discoveryEvent.emit(e);
-      });
+      }), 200);
     return Promise.resolve();
   }
 

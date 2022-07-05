@@ -70,7 +70,7 @@ export class Utils {
   }
 
   static mergeDeep<T>(base: T, ext: any) {
-    const obj = {...base} ;
+    const obj = {...base};
     const extended = {...ext} as T;
     for (const prop in extended || {}) {
       // If property is an object, merge properties
@@ -80,7 +80,7 @@ export class Utils {
         obj[prop] = extended[prop];
       }
     }
-    return obj ;
+    return obj;
   }
 
   static getLabelColor(el: HTMLElement) {
@@ -131,7 +131,7 @@ export class Utils {
           type = eh.split('=')[1];
         }
       });
-      const tagRex = new RegExp(tag);
+      const tagRex = new RegExp('^' + tag + '$');
       if (evt.tags && typeof evt.tags === 'string') {
         evt.tags = [evt.tags];
       }
