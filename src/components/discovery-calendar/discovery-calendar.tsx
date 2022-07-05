@@ -233,6 +233,7 @@ export class DiscoveryCalendar {
           series.push({
             type: 'heatmap',
             coordinateSystem: 'calendar',
+            name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
             calendarIndex: cal,
             data: Object.keys(dataStruct[currentRange]).map(d => [d, dataStruct[currentRange][d]])
           } as SeriesOption);
