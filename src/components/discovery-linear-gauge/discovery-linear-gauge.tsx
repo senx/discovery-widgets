@@ -319,7 +319,7 @@ export class DiscoveryLinearGauge {
               class="discovery-legend">{d.value || '0'}{this.innerOptions.unit || ''} {!this.innerOptions.gauge?.horizontal ?
               <br/> : ''}
               <span
-                class="small">of {d.max}{this.innerOptions.unit || ''}</span></h3>
+                class="small">of {d.max}{this.innerOptions.unit || this.unit || ''}</span></h3>
             <div class="discovery-progress" onMouseOver={() => this.showTooltip(d)}
                  onMouseLeave={() => this.hideTooltip()}>
               <div class="ticks">
