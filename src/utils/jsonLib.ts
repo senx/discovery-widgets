@@ -184,7 +184,7 @@ export class JsonLib {
         this.check(']');
         return array;   // empty array
       }
-      while (this.ch) {
+      while (this.ch !== undefined) {
         array.push(this.value());
         this.white();
         if (this.ch === ']') {
@@ -244,7 +244,7 @@ export class JsonLib {
     }
   }
 
-  public parse(source: string, reviver?: any) {
+  public parse(source: string, reviver?: any): any {
     this.text = source;
     this.at = 0;
     this.ch = ' ';
@@ -259,7 +259,7 @@ export class JsonLib {
         let k;
         let v;
         const value = holder[key];
-        if (value && typeof value === 'object') {
+        if (value !== undefined && typeof value === 'object') {
           for (k in value) {
             if (Object.prototype.hasOwnProperty.call(value, k)) {
               v = walk(value, k);

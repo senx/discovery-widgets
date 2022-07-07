@@ -273,17 +273,19 @@ export class GTSLib {
   static getData(data: any): DataModel {
     if (typeof data === 'string') {
       if (data.startsWith('[') || data.startsWith('{')) {
-        return GTSLib.getData(new JsonLib().parse(data ));
+        return GTSLib.getData(new JsonLib().parse(data));
       } else {
         return {data: new JsonLib().parse(`[${data}]`)};
       }
     } else if (data && (data.hasOwnProperty('data') || data.hasOwnProperty('events'))) {
-      data.data = data.data || [];
+      if ('' !== data.data) {
+        data.data = data.data || [];
+      }
       if (!GTSLib.isArray(data.data)) {
         data.data = [data.data];
       }
       return data as DataModel;
-    } else if (GTSLib.isArray(data) && data.length > 0 && (data[0].data || data[0].events)) {
+    } else if (GTSLib.isArray(data) && data.length > 0 && (data[0].data !== undefined || data[0].events)) {
       data[0].data = data[0].data || [];
       return data[0] as DataModel;
     } else if (GTSLib.isArray(data)) {

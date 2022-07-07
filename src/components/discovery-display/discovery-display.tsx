@@ -165,7 +165,7 @@ export class DiscoveryDisplayComponent {
     this.LOG?.debug(['convert'], 'dataModel', dataModel);
 
     let display: any;
-    if (dataModel.data) {
+    if (!!dataModel.data) {
       display = GTSLib.isArray(dataModel.data) ? dataModel.data[0] : dataModel.data;
     } else {
       display = GTSLib.isArray(dataModel) ? dataModel[0] : dataModel;
