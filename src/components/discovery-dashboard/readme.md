@@ -17,6 +17,7 @@
 | `options`        | `options`         |             | `Param \| string`                  | `new Param()` |
 | `type`           | `type`            |             | `"dashboard" \| "flex" \| "scada"` | `'dashboard'` |
 | `url`            | `url`             |             | `string`                           | `undefined`   |
+| `vars`           | `vars`            |             | `string`                           | `'{}'`        |
 
 
 ## Events

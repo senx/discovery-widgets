@@ -82,6 +82,7 @@ export namespace Components {
         "options": Param | string;
         "type": 'scada' | 'dashboard' | 'flex';
         "url": string;
+        "vars": string;
     }
     interface DiscoveryDisplay {
         "debug": boolean;
@@ -615,6 +616,7 @@ declare namespace LocalJSX {
         "options"?: Param | string;
         "type"?: 'scada' | 'dashboard' | 'flex';
         "url"?: string;
+        "vars"?: string;
     }
     interface DiscoveryDisplay {
         "debug"?: boolean;

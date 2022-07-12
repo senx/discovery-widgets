@@ -43,6 +43,7 @@ export class DiscoveryDashboardComponent {
   @Prop() cellHeight = 220;
   @Prop() cols = 12;
   @Prop() type: 'scada' | 'dashboard' | 'flex' = 'dashboard';
+  @Prop() vars = '{}';
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
@@ -70,6 +71,7 @@ export class DiscoveryDashboardComponent {
   private renderedTiles: Tile[];
   private done: any = {};
   private dash: HTMLDivElement;
+  private innerVars = {}
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -80,6 +82,21 @@ export class DiscoveryDashboardComponent {
       options: this.options,
       newValue, oldValue
     });
+  }
+
+
+  @Watch('vars')
+  varsUpdate(newValue: string, oldValue: string) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+      this.exec();
+    }
+    if (this.LOG) {
+      this.LOG?.debug(['varsUpdate'], {
+        vars: this.vars,
+        newValue, oldValue
+      });
+    }
   }
 
   @Listen('discoveryEvent', {target: 'window'})
@@ -211,6 +228,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   private processResult(tmpResult: Dashboard) {
+    this.innerVars = JSON.parse(this.vars);
     if (this.innerType === 'scada') {
       const tiles = tmpResult.tiles as Tile[];  // items array
       if (tiles.length > 0) {
@@ -227,6 +245,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     }
     tmpResult.tiles = tmpResult.tiles || [];
     this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
+    tmpResult.vars = {...tmpResult.vars || {}, ... this.innerVars};
     this.result = {...tmpResult};
     this.tiles = [];
     for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {
