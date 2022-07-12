@@ -43,7 +43,7 @@ export class DiscoveryDashboardComponent {
   @Prop() cellHeight = 220;
   @Prop() cols = 12;
   @Prop() type: 'scada' | 'dashboard' | 'flex' = 'dashboard';
-  @Prop() vars = '{}';
+  @Prop() vars: any | string = '{}';
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
@@ -90,6 +90,8 @@ export class DiscoveryDashboardComponent {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
       this.exec();
+    } else {
+      this.innerVars = this.vars || {};
     }
     if (this.LOG) {
       this.LOG?.debug(['varsUpdate'], {
@@ -156,7 +158,7 @@ export class DiscoveryDashboardComponent {
     const res: { dataUrl: string, bgColor: string }[] = await Promise.all(tiles.map((t => t.elem?.export('png'))));
     for (let i = 0; i < tiles.length; i++) {
       tiles[i].png = res[i]?.dataUrl;
-      tiles[i].bgColor = Utils.getCSSColor(this.el,'--warp-view-tile-background', res[i]?.bgColor);
+      tiles[i].bgColor = Utils.getCSSColor(this.el, '--warp-view-tile-background', res[i]?.bgColor);
       tiles[i].uid = uuidv4();
       delete tiles[i].macro;
       delete tiles[i].data;
@@ -228,7 +230,11 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   private processResult(tmpResult: Dashboard) {
-    this.innerVars = JSON.parse(this.vars);
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    } else {
+      this.innerVars = this.vars || {};
+    }
     if (this.innerType === 'scada') {
       const tiles = tmpResult.tiles as Tile[];  // items array
       if (tiles.length > 0) {
@@ -245,7 +251,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     }
     tmpResult.tiles = tmpResult.tiles || [];
     this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
-    tmpResult.vars = {...tmpResult.vars || {}, ... this.innerVars};
+    tmpResult.vars = {...tmpResult.vars || {}, ...this.innerVars};
     this.result = {...tmpResult};
     this.tiles = [];
     for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {
