@@ -18,6 +18,7 @@
 | `type`           | `type`            |             | `"dashboard" \| "flex" \| "scada"` | `'dashboard'` |
 | `url`            | `url`             |             | `string`                           | `undefined`   |
 | `vars`           | `vars`            |             | `any`                              | `'{}'`        |
+| `warpscript`     | `warpscript`      |             | `string`                           | `undefined`   |
 
 
 ## Events

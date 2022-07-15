@@ -37,6 +37,7 @@ import {PdfLib} from '../../utils/pdfLib';
 export class DiscoveryDashboardComponent {
   @Prop() url: string;
   @Prop() dashboardTitle: string;
+  @Prop() warpscript: string;
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() debug = false;
   @Prop({mutable: true}) autoRefresh = -1;
@@ -96,6 +97,20 @@ export class DiscoveryDashboardComponent {
     if (this.LOG) {
       this.LOG?.debug(['varsUpdate'], {
         vars: this.vars,
+        newValue, oldValue
+      });
+    }
+  }
+
+
+  @Watch('warpscript')
+  warpscriptUpdate(newValue: string, oldValue: string) {
+    if (!!this.warpscript ) {
+      this.exec();
+    }
+    if (this.LOG) {
+      this.LOG?.debug(['warpscriptUpdate'], {
+        ws: this.ws,
         newValue, oldValue
       });
     }
@@ -174,11 +189,11 @@ export class DiscoveryDashboardComponent {
   }
 
   exec() {
-    this.ws = this.el.innerText;
+    this.ws = this.warpscript || this.el.innerText;
     if (this.ws && this.ws !== '') {
       this.loaded = false;
       this.done = {};
-      Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
+      Utils.httpPost(this.url, this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', (this.options as Param).httpHeaders)
         .then((res: any) => {
           const result = new JsonLib().parse(res.data as string);
           const tmpResult: Dashboard = result.length > 0 ? result[0] : new Dashboard();
