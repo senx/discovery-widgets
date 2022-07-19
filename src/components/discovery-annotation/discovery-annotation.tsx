@@ -175,13 +175,21 @@ export class DiscoveryAnnotation {
     let hasTimeBounds = false;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
+      if (GTSLib.isGtsToPlot(gts)) {
+        min = Math.min(min, ...gts.v.map(v => v[0]));
+        max = Math.max(max, ...gts.v.map(v => v[0]));
+      }
+    }
+    if (max - min <= 1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
+      this.innerOptions.timeMode = 'timestamp';
+    }
+    for (let i = 0; i < gtsCount; i++) {
+      const gts = gtsList[i];
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
         this.gtsList.push(gts);
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         if (this.expanded) linesCount++;
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
         hasTimeBounds = true;
         series.push({
           type: 'scatter',

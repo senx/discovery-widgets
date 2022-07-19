@@ -266,7 +266,7 @@ export class DiscoveryLineComponent {
         max = Math.max(max, ...gts.v.map(v => v[0]));
       }
     }
-    if (max - min <= 1000) {
+    if (max - min <= 1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
       this.innerOptions.timeMode = 'timestamp';
     }
     for (let i = 0; i < gtsCount; i++) {
