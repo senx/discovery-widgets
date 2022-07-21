@@ -88,8 +88,8 @@ export class DiscoveryInputComponent {
   updateRes() {
     this.LOG.debug(['updateRes'], this.innerResult);
     this.innerResult = GTSLib.getData(this.result);
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) ;
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) ;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
     this.innerOptions = {...options};
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
@@ -110,7 +110,7 @@ export class DiscoveryInputComponent {
     this.width = dims.w - 15;
     this.height = dims.h;
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions ) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions) || {bgColor}).bgColor || bgColor;
     const dm: Param = (((this.result as unknown as DataModel) || {
       globalParams: {bgColor}
     }).globalParams || {bgColor}) as Param;
@@ -134,8 +134,8 @@ export class DiscoveryInputComponent {
     }
     this.innerResult = GTSLib.getData(this.result);
     this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {}) ;
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams) ;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
     this.innerOptions = {...options};
     const btnLabel = (this.innerOptions.button || {label: 'Ok'}).label;
     const dm = ((this.result as unknown as DataModel) || {
@@ -339,9 +339,15 @@ export class DiscoveryInputComponent {
             return {k: s, v: s, h: false};
           });
         }
-        setTimeout(() => this.value = (this.innerOptions.input || {value: ''}).value || '');
-        this.selectedValue = this.value;
-        (this.inputField as HTMLSelectElement).selectedIndex = -1;
+        let index = 0
+        if (!!(this.innerOptions.input || {}).value) {
+          index = this.values.map(o => o.v).indexOf((this.innerOptions.input || {}).value);
+        }
+        (this.inputField as HTMLSelectElement).selectedIndex = index;
+        setTimeout(() => {
+          this.value = (this.innerOptions.input || {value: ''}).value || '';
+          this.selectedValue = this.value;
+        })
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {
             src: this.values,
@@ -401,40 +407,40 @@ export class DiscoveryInputComponent {
       case 'text':
         return <input type="text" class="discovery-input" value={this.value as string}
                       onInput={e => this.handleSelect(e)}
-                      ref={el => this.inputField = el }
+                      ref={el => this.inputField = el}
         />
       case 'secret':
         return <input type="password" class="discovery-input" value={this.value as string}
                       onInput={e => this.handleSelect(e)}
-                      ref={el => this.inputField = el }
+                      ref={el => this.inputField = el}
         />
       case 'date':
         return <input type="text" class="discovery-input"
-                      ref={el => this.inputField = el }
+                      ref={el => this.inputField = el}
         />
       case 'date-range':
         return <input type="text" class="discovery-input"
-                      ref={el => this.inputField = el }
+                      ref={el => this.inputField = el}
         />
       case 'autocomplete':
         return <input type="text" class="discovery-input" value={this.value as string}
-                      ref={el => this.inputField = el }
+                      ref={el => this.inputField = el}
         />
       case 'slider':
         return <div class="slider-wrapper" ref={el => this.pngWrapper = el}>
           <discovery-slider options={this.innerOptions}
                             onValueChanged={e => this.handleSelect(e)}
-                            ref={el => this.inputField = el }
+                            ref={el => this.inputField = el}
           />
         </div>
       case 'list':
         return <select class="discovery-input" onInput={e => this.handleSelect(e)}
-                       ref={el => this.inputField = el }>
+                       ref={el => this.inputField = el}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
         </select>
       case 'multi':
         return <select class="discovery-input" onInput={e => this.handleSelect(e)} multiple
-                       ref={el => this.inputField = el }>
+                       ref={el => this.inputField = el}>
           {this.values.map(v => (
             <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
         </select>
@@ -445,7 +451,7 @@ export class DiscoveryInputComponent {
               ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)}/>
               : ''
             }
-            <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el }>
+            <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el}>
               {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
               {this.values.map(v => (<div class={{'multi-cb-item-wrapper': true, hidden: v.h}}>
                 <input type="checkbox" value={v.k}
