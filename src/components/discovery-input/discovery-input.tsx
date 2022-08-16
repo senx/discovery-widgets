@@ -235,7 +235,7 @@ export class DiscoveryInputComponent {
       }
     }
     (this.innerResult?.events || []).forEach(e => {
-      if (!!this.selectedValue || this.selectedValue === '') {
+      if (this.selectedValue !== undefined) {
         if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
           return;
         }
