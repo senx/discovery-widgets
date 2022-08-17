@@ -65,6 +65,7 @@ export class DiscoveryLineComponent {
   private myChart: ECharts;
   private leftMargin: number;
   private hasFocus = false;
+  private focusDate: number;
   private bounds: { min: number; max: number };
 
   @Watch('type')
@@ -168,7 +169,7 @@ export class DiscoveryLineComponent {
     const opts: EChartsOption = {
       animation: false,
       grid: {
-        left: 10,
+        left: this.innerOptions.leftMargin || 10,
         top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (!!this.innerOptions.showRangeSelector ? 40 : 0),
         right: 10,
@@ -191,11 +192,13 @@ export class DiscoveryLineComponent {
         },
         axisPointer: {
           type: 'line',
+          animation: false,
           lineStyle: {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
           }
         },
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
+
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
           if (this.hasFocus) {
@@ -212,7 +215,10 @@ export class DiscoveryLineComponent {
               value = coords[1];
               return s.seriesName;
             }).join('|') + ')';
-            this.dataPointOver.emit({date, name: regexp, value, meta: {}});
+            if (this.focusDate !== date) {
+              this.dataPointOver.emit({date, name: regexp, value, meta: {}});
+              this.focusDate = date;
+            }
           }
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
           return obj;
@@ -657,10 +663,6 @@ export class DiscoveryLineComponent {
       let initial = false;
       this.myChart.on('rendered', () => {
         this.rendering = false;
-        if (initial) {
-          setTimeout(() => this.draw.emit());
-          initial = false;
-        }
         let found = false;
         let x = 0;
         setTimeout(() => {
@@ -668,14 +670,15 @@ export class DiscoveryLineComponent {
             found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
             x++;
           }
-          if (this.leftMargin !== x) {
+          if (this.leftMargin !== x && initial && x < 1024) {
             setTimeout(() => this.leftMarginComputed.emit(x));
             this.leftMargin = x;
           }
+          if(initial) setTimeout(() => this.draw.emit());
+          initial = false;
         });
       });
       this.myChart.on('dataZoom', (event: any) => {
-
         const {start, end} = (event.batch || [])[0] || {};
         if (start && end) {
           this.dataZoom.emit({

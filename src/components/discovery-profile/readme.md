@@ -20,12 +20,13 @@
 
 ## Events
 
-| Event           | Description | Type                                                                     |
-| --------------- | ----------- | ------------------------------------------------------------------------ |
-| `dataPointOver` |             | `CustomEvent<any>`                                                       |
-| `dataZoom`      |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
-| `draw`          |             | `CustomEvent<void>`                                                      |
-| `timeBounds`    |             | `CustomEvent<any>`                                                       |
+| Event                | Description | Type                                                                     |
+| -------------------- | ----------- | ------------------------------------------------------------------------ |
+| `dataPointOver`      |             | `CustomEvent<any>`                                                       |
+| `dataZoom`           |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
+| `draw`               |             | `CustomEvent<void>`                                                      |
+| `leftMarginComputed` |             | `CustomEvent<number>`                                                    |
+| `timeBounds`         |             | `CustomEvent<any>`                                                       |
 
 
 ## Methods

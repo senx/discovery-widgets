@@ -1,4 +1,3 @@
-
 // noinspection ES6UnusedImports
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
@@ -39,6 +38,7 @@ export class DiscoveryProfile {
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() dataPointOver: EventEmitter;
   @Event() timeBounds: EventEmitter;
+  @Event() leftMarginComputed: EventEmitter<number>;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -52,8 +52,10 @@ export class DiscoveryProfile {
   private displayExpander = false;
   private myChart: ECharts;
   private divider = 1000;
+  private leftMargin: number;
   private hasFocus = false;
   private gtsList = [];
+  private focusDate: number;
   private bounds: { min: number; max: number };
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
@@ -296,25 +298,29 @@ export class DiscoveryProfile {
         right: 10,
         top: 20,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
-        left: (this.innerOptions.leftMargin || 10),
+        left: this.innerOptions.leftMargin || 10,
         containLabel: true
       },
       throttle: 70,
       tooltip: {
+        trigger: 'axis',
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
             ${this.innerOptions.timeMode === 'timestamp'
-            ? params.value[1]
-            : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params.value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+            ? params[0].value[1]
+            : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
               this.innerOptions.timeFormat) || '')
               .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
           }
            </div>
-           <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params.seriesName}</span>
-           <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${GTSLib.toDuration(params.value[3], this.divider)}</span>`;
+           ${params[0].marker}
+           <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params[0].seriesName}</span>
+           <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${GTSLib.toDuration(params[0].value[3], this.divider)}</span>`;
         },
         axisPointer: {
+          axis: 'x',
           type: 'line',
+          animation: false,
           lineStyle: {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
           }
@@ -322,13 +328,15 @@ export class DiscoveryProfile {
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
           const obj = {top: this.expanded ? pos[1] - 25 : 10};
-          const p = params as any;
+          const p = params[0] as any;
           if (this.hasFocus) {
             const date = this.innerOptions.timeMode === 'date'
               ? GTSLib.zonedTimeToUtc(p.value[1], 1, this.innerOptions.timeZone) * this.divider
               : p.value[1];
-            const regexp = p.seriesName;
-            this.dataPointOver.emit({date, name: regexp, value: 0, meta: {}});
+            if (this.focusDate !== date) {
+              this.dataPointOver.emit({date, name: p.seriesName, value: p.value[3], meta: {}});
+              this.focusDate = date;
+            }
           }
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
           return obj;
@@ -416,13 +424,20 @@ export class DiscoveryProfile {
     });
     this.myChart.on('rendered', () => {
       this.rendering = false;
-      if (initial) {
-        setTimeout(() => this.draw.emit());
+      let found = false;
+      let x = 0;
+      setTimeout(() => {
+        while (!found && x < 1024) {
+          found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
+          x++;
+        }
+        if (this.leftMargin !== x && initial && x < 1024) {
+          setTimeout(() => this.leftMarginComputed.emit(x));
+          this.leftMargin = x;
+        }
+        if (initial) setTimeout(() => this.draw.emit());
         initial = false;
-      }
-    });
-    this.myChart.on('mouseover', (event: any) => {
-      this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      });
     });
     this.myChart.on('dataZoom', (event: any) => {
       const {start, end} = (event.batch || [])[0] || {};
