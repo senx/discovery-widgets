@@ -34,6 +34,7 @@ export type ChartType =
   | 'button' | 'button:radio'
   | 'hidden'
   | 'calendar' | 'heatmap'
+  | 'profile'
   ;
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 export type TimeUnit = 'us' | 'ms' | 'ns';

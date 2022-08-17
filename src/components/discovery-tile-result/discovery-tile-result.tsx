@@ -410,6 +410,14 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
+      case 'profile':
+        return <discovery-profile
+          result={this.innerResult}
+          type={this.innerType}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          debug={this.debug}
+        />;
       default:
         this.LOG?.debug(['getView'], PluginManager.getInstance().registry);
         if (PluginManager.getInstance().has(this.innerType)) {

@@ -225,6 +225,22 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryProfile {
+        "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "height": number;
+        "hide": (regexp: string) => Promise<void>;
+        "options": Param | string;
+        "resize": () => Promise<void>;
+        "result": DataModel | string;
+        "setFocus": (regexp: string, ts: number) => Promise<void>;
+        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
+        "show": (regexp: string) => Promise<void>;
+        "type": ChartType;
+        "unFocus": () => Promise<void>;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoverySlider {
         "debug": boolean;
         "export": (type: 'png' | 'svg', bgColor: string) => Promise<any>;
@@ -366,6 +382,10 @@ export interface DiscoveryPieCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoveryPieElement;
 }
+export interface DiscoveryProfileCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDiscoveryProfileElement;
+}
 export interface DiscoverySliderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoverySliderElement;
@@ -489,6 +509,12 @@ declare global {
         prototype: HTMLDiscoveryPieElement;
         new (): HTMLDiscoveryPieElement;
     };
+    interface HTMLDiscoveryProfileElement extends Components.DiscoveryProfile, HTMLStencilElement {
+    }
+    var HTMLDiscoveryProfileElement: {
+        prototype: HTMLDiscoveryProfileElement;
+        new (): HTMLDiscoveryProfileElement;
+    };
     interface HTMLDiscoverySliderElement extends Components.DiscoverySlider, HTMLStencilElement {
     }
     var HTMLDiscoverySliderElement: {
@@ -543,6 +569,7 @@ declare global {
         "discovery-modal": HTMLDiscoveryModalElement;
         "discovery-pageable": HTMLDiscoveryPageableElement;
         "discovery-pie": HTMLDiscoveryPieElement;
+        "discovery-profile": HTMLDiscoveryProfileElement;
         "discovery-slider": HTMLDiscoverySliderElement;
         "discovery-spinner": HTMLDiscoverySpinnerElement;
         "discovery-svg": HTMLDiscoverySvgElement;
@@ -747,6 +774,19 @@ declare namespace LocalJSX {
         "unit"?: string;
         "width"?: number;
     }
+    interface DiscoveryProfile {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDataPointOver"?: (event: DiscoveryProfileCustomEvent<any>) => void;
+        "onDataZoom"?: (event: DiscoveryProfileCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
+        "onDraw"?: (event: DiscoveryProfileCustomEvent<void>) => void;
+        "onTimeBounds"?: (event: DiscoveryProfileCustomEvent<any>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
     interface DiscoverySlider {
         "debug"?: boolean;
         "onStartDrag"?: (event: DiscoverySliderCustomEvent<void>) => void;
@@ -828,6 +868,7 @@ declare namespace LocalJSX {
         "discovery-modal": DiscoveryModal;
         "discovery-pageable": DiscoveryPageable;
         "discovery-pie": DiscoveryPie;
+        "discovery-profile": DiscoveryProfile;
         "discovery-slider": DiscoverySlider;
         "discovery-spinner": DiscoverySpinner;
         "discovery-svg": DiscoverySvg;
@@ -857,6 +898,7 @@ declare module "@stencil/core" {
             "discovery-modal": LocalJSX.DiscoveryModal & JSXBase.HTMLAttributes<HTMLDiscoveryModalElement>;
             "discovery-pageable": LocalJSX.DiscoveryPageable & JSXBase.HTMLAttributes<HTMLDiscoveryPageableElement>;
             "discovery-pie": LocalJSX.DiscoveryPie & JSXBase.HTMLAttributes<HTMLDiscoveryPieElement>;
+            "discovery-profile": LocalJSX.DiscoveryProfile & JSXBase.HTMLAttributes<HTMLDiscoveryProfileElement>;
             "discovery-slider": LocalJSX.DiscoverySlider & JSXBase.HTMLAttributes<HTMLDiscoverySliderElement>;
             "discovery-spinner": LocalJSX.DiscoverySpinner & JSXBase.HTMLAttributes<HTMLDiscoverySpinnerElement>;
             "discovery-svg": LocalJSX.DiscoverySvg & JSXBase.HTMLAttributes<HTMLDiscoverySvgElement>;

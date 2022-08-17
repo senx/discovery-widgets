@@ -91,6 +91,7 @@ graph TD;
   discovery-tile-result --> discovery-hidden
   discovery-tile-result --> discovery-calendar
   discovery-tile-result --> discovery-heatmap
+  discovery-tile-result --> discovery-profile
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
@@ -105,6 +106,7 @@ graph TD;
   discovery-input --> discovery-slider
   discovery-calendar --> discovery-spinner
   discovery-heatmap --> discovery-spinner
+  discovery-profile --> discovery-spinner
   discovery-modal --> discovery-dashboard
   style discovery-dashboard fill:#f9f,stroke:#333,stroke-width:4px
 ```

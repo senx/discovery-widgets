@@ -18,10 +18,15 @@ import {DataModel} from '../model/dataModel';
 import {GTS} from '../model/GTS';
 import {Logger} from './logger';
 import {JsonLib} from './jsonLib';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import moment from 'moment/min/moment-with-locales';
 import {tz} from 'moment-timezone'
+
+dayjs.extend(duration)
+
 
 // @dynamic
 export class GTSLib {
@@ -388,5 +393,18 @@ export class GTSLib {
     const ourOffsetInMillis = tz(moment.utc(zonedTime / divider), ourTimezone).utcOffset() * 60000;
     const givenTimezoneOffsetInMillis = tz(moment.utc(zonedTime / divider), timeZone || 'UTC').utcOffset() * 60000;
     return zonedTime / divider - givenTimezoneOffsetInMillis + ourOffsetInMillis;
+  }
+
+  static toDuration(time: number, divider: number) {
+    let distance = time / divider;
+    const hours = Math.floor(distance / 3600000);
+    distance -= hours * 3600000;
+    const minutes = Math.floor(distance / 60000);
+    distance -= minutes * 60000;
+    const seconds = Math.floor(distance / 1000);
+    distance -= seconds * 60000;
+    const ms = distance / 1000.0;
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+    return `${hours}h ${('0' + minutes).slice(-2)}m ${('0' + seconds).slice(-2)}s ${('0' + ms).slice(-2)}ms`;
   }
 }

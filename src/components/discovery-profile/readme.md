@@ -1,4 +1,4 @@
-# discovery-calendar
+# discovery-profile
 
 
 
@@ -20,10 +20,12 @@
 
 ## Events
 
-| Event           | Description | Type                |
-| --------------- | ----------- | ------------------- |
-| `dataPointOver` |             | `CustomEvent<any>`  |
-| `draw`          |             | `CustomEvent<void>` |
+| Event           | Description | Type                                                                     |
+| --------------- | ----------- | ------------------------------------------------------------------------ |
+| `dataPointOver` |             | `CustomEvent<any>`                                                       |
+| `dataZoom`      |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
+| `draw`          |             | `CustomEvent<void>`                                                      |
+| `timeBounds`    |             | `CustomEvent<any>`                                                       |
 
 
 ## Methods
@@ -58,7 +60,37 @@ Type: `Promise<void>`
 
 
 
+### `setFocus(regexp: string, ts: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `show(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `unFocus() => Promise<void>`
 
 
 
@@ -82,9 +114,9 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  discovery-calendar --> discovery-spinner
-  discovery-tile-result --> discovery-calendar
-  style discovery-calendar fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-profile --> discovery-spinner
+  discovery-tile-result --> discovery-profile
+  style discovery-profile fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------
