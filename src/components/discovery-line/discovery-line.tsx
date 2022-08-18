@@ -410,6 +410,11 @@ export class DiscoveryLineComponent {
           animation: false,
           large: true,
           showSymbol: true,
+          label: {
+            show: !!this.innerOptions.showValues,
+            position: 'top',
+            textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
+          },
           itemStyle: {
             opacity: 0.8,
             borderColor: color,

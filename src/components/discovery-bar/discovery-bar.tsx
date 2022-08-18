@@ -175,6 +175,11 @@ export class DiscoveryBarComponent {
           }
         }
       },
+      label: {
+        show: !!this.innerOptions.showValues,
+        position: 'top',
+        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
+      },
       lineStyle: {color},
       itemStyle: {
         opacity: 0.8,

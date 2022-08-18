@@ -50,6 +50,7 @@ export class Param {
   hideYAxis = false;
   hideXAxis = false;
   showLegend = false;
+  showValues = false;
   fullDateDisplay = false;
   responsive?: boolean;
   autoRefresh?: number;
