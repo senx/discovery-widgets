@@ -73,7 +73,7 @@ export class DiscoveryProfile {
         type: 'rect',
         transition: ['shape'],
         shape: rectShape,
-        style: api.style()
+        style: api.style({})
       });
   };
 
@@ -230,7 +230,18 @@ export class DiscoveryProfile {
           clip: true,
           showAllSymbol: true,
           renderItem: DiscoveryProfile.renderItem.bind(this),
-          itemStyle: {color},
+          itemStyle: {
+            opacity: 0.8,
+            borderColor: color,
+            borderWidth: 1,
+            color: {
+              type: 'linear', x: 1, y: 0, x2: 0, y2: 0,
+              colorStops: [
+                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+                {offset: 1, color: ColorLib.transparentize(color, 0.3)}
+              ]
+            }
+          },
           encode: {x: [1, 2], y: 0},
         } as SeriesOption);
         if (this.expanded) catId++;
@@ -250,6 +261,11 @@ export class DiscoveryProfile {
           series.push({
             type: 'custom',
             name: key,
+            label: {
+              show: !!this.innerOptions.showValues,
+              position: 'inside',
+              textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
+            },
             data: Object.keys(values[key]).map(ts => {
               let startTS = +ts;
               startTS = this.innerOptions.timeMode === 'date'
@@ -266,7 +282,18 @@ export class DiscoveryProfile {
             clip: true,
             showAllSymbol: true,
             renderItem: DiscoveryProfile.renderItem.bind(this),
-            itemStyle: {color},
+            itemStyle: {
+              opacity: 0.8,
+              borderColor: color,
+              borderWidth: 1,
+              color: {
+                type: 'linear', x: 1, y: 0, x2: 0, y2: 0,
+                colorStops: [
+                  {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+                  {offset: 1, color: ColorLib.transparentize(color, 0.3)}
+                ]
+              }
+            },
             encode: {x: [1, 2], y: 0},
           } as SeriesOption);
           if (this.expanded) catId++;
