@@ -192,6 +192,7 @@ export class DiscoveryLineComponent {
         },
         axisPointer: {
           type: 'line',
+          axis: 'x',
           animation: false,
           lineStyle: {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
