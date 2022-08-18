@@ -61,15 +61,11 @@ export class DiscoveryProfile {
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
     const start = api.coord([+api.value(1), y]);
-    const end = api.coord([+api.value(2), y]);
+    const width = api.coord([+api.value(2), y])[0] - start[0];
     const height = api.size([0, 1])[1];
     const coordSys = params.coordSys as any;
-    const rectShape = graphic.clipRectByRect({
-        x: start[0],
-        y: start[1] - height / 2,
-        width: end[0] - start[0],
-        height
-      },
+    const rectShape = graphic.clipRectByRect(
+      {x: start[0], y: start[1] - height / 2, width, height},
       {x: coordSys.x, y: coordSys.y, width: coordSys.width, height: coordSys.height}
     );
     return (
@@ -205,7 +201,7 @@ export class DiscoveryProfile {
     let catId = 0;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
-      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
+      if (GTSLib.isGts(gts) && !!gts.v) {
         this.gtsList.push(gts);
         const name = ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts);
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
@@ -220,10 +216,10 @@ export class DiscoveryProfile {
           name,
           data: gts.v.map(d => {
             let startTS = +d[0];
-            let endTS = +d[0] + +d[d.length - 1];
             startTS = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
               : startTS;
+            let endTS = +d[0] + +d[d.length - 1];
             endTS = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(endTS, this.divider, this.innerOptions.timeZone)
               : endTS;
@@ -256,10 +252,10 @@ export class DiscoveryProfile {
             name: key,
             data: Object.keys(values[key]).map(ts => {
               let startTS = +ts;
-              let endTS = startTS + +values[key][ts];
               startTS = this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
                 : startTS;
+              let endTS = startTS + +values[key][ts];
               endTS = this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(endTS, this.divider, this.innerOptions.timeZone)
                 : endTS;
@@ -305,17 +301,30 @@ export class DiscoveryProfile {
       tooltip: {
         trigger: 'axis',
         formatter: (params) => {
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
+          if ('profile' === this.type) {
+            return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
             ${this.innerOptions.timeMode === 'timestamp'
-            ? params[0].value[1]
-            : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-              this.innerOptions.timeFormat) || '')
-              .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-          }
+              ? params[0].value[1]
+              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+                this.innerOptions.timeFormat) || '')
+                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
            </div>
            ${params[0].marker}
            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params[0].seriesName}</span>
            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${GTSLib.toDuration(params[0].value[3], this.divider)}</span>`;
+          } else if ('annotation' === this.type) {
+            return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
+              this.innerOptions.timeMode === 'timestamp'
+                ? params[0].value[0]
+                : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+                  this.innerOptions.timeFormat) || '')
+                  .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
+               ${params.map(s => {
+              const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
+              return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${value[value.length - 1]}</span>`
+            }).join('<br>')}`;
+          }
         },
         axisPointer: {
           axis: 'x',
@@ -383,7 +392,7 @@ export class DiscoveryProfile {
           show: !this.innerOptions.hideYAxis,
         } : {show: false},
         type: 'category',
-        data: categories || ['-'],
+        data: categories.length === 0 ? ['-'] : categories,
         splitNumber: Math.max(categories.length, 1),
         interval: 1,
         boundaryGap: [0, 0],
@@ -493,9 +502,9 @@ export class DiscoveryProfile {
         .filter(s => new RegExp(regexp).test(s.name))
         .forEach(s => {
           seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
-          const data = s.data.filter(d => d[0] === date);
+          const data = s.data.filter(d => d[1] === date);
           if (data && data[0]) {
-            dataIndex = s.data.indexOf(data[0])
+            dataIndex = s.data.indexOf(data[0]);
             s.markPoint = {
               symbol: 'rect',
               symbolSize: [4, 30],
@@ -505,11 +514,11 @@ export class DiscoveryProfile {
                   color: '#fff',
                   borderColor: s.itemStyle.color,
                 },
-                yAxis: data[0][1],
+                yAxis: data[0][0],
                 xAxis: date
               }]
             }
-            ttp = [date, data[0][1]]
+            ttp = [date, data[0][0]]
           }
         });
       this.myChart.dispatchAction({

@@ -398,24 +398,31 @@ export class DiscoveryTileResultComponent {
         return <discovery-calendar
           result={this.innerResult}
           type={this.innerType}
+          unit={this.unit}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'heatmap':
         return <discovery-heatmap
           result={this.innerResult}
           type={this.innerType}
+          unit={this.unit}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       case 'profile':
         return <discovery-profile
           result={this.innerResult}
           type={this.innerType}
+          unit={this.unit}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
+          onDataZoom={event => this.handleZoom(event)}
+          onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
         />;
       default:

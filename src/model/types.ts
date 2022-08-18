@@ -25,7 +25,6 @@ export type ChartType =
   | 'map'
   | 'gauge' | 'linear-gauge' | 'circle' | 'compass'
   | 'pie'
-  | 'plot'
   | 'doughnut'
   | 'rose'
   | 'tabular'

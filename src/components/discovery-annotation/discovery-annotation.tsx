@@ -18,7 +18,7 @@
 import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
 import {ChartType, ECharts} from '../../model/types';
 import {Param} from '../../model/param';
-import {EChartsOption, init} from 'echarts';
+import {CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, graphic, init} from 'echarts';
 import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
@@ -61,7 +61,27 @@ export class DiscoveryAnnotation {
   private divider = 1000;
   private hasFocus = false;
   private gtsList = [];
+  private focusDate: number;
   private bounds: { min: number; max: number };
+
+  private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
+    const y = +api.value(0);
+    const start = api.coord([+api.value(1), y]);
+    const height = api.size([0, 1])[1];
+    const width = 1;
+    const coordSys = params.coordSys as any;
+    const rectShape = graphic.clipRectByRect(
+      {x: start[0], y: start[1] - height / 2, width, height},
+      {x: coordSys.x, y: coordSys.y, width: coordSys.width, height: coordSys.height}
+    );
+    return (
+      rectShape && {
+        type: 'rect',
+        transition: ['shape'],
+        shape: rectShape,
+        style: api.style()
+      });
+  };
 
   @Watch('result')
   updateRes() {
@@ -165,17 +185,19 @@ export class DiscoveryAnnotation {
     this.innerOptions = {...options};
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     const series: any[] = [];
+    const categories: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     this.gtsList = [];
     this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let linesCount = 1;
+    let catId = 0;
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
-      if (GTSLib.isGtsToPlot(gts)) {
+      if (GTSLib.isGts(gts)) {
         min = Math.min(min, ...gts.v.map(v => v[0]));
         max = Math.max(max, ...gts.v.map(v => v[0]));
       }
@@ -189,24 +211,32 @@ export class DiscoveryAnnotation {
         this.gtsList.push(gts);
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        if (this.expanded) linesCount++;
+        const name = ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts);
+        if (this.expanded) {
+          linesCount++;
+          categories.push(name);
+        }
         hasTimeBounds = true;
         series.push({
-          type: 'scatter',
-          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [this.innerOptions.timeMode === 'date'
-            ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
-            : d[0]
-            , (this.expanded ? i : 0) + 0.5]),
+          type: 'custom',
+          name,
+          data: gts.v.map(d => {
+              let startTS = +d[0];
+              startTS = this.innerOptions.timeMode === 'date'
+                ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
+                : startTS;
+              return [catId, startTS, d[d.length - 1]]
+            }
+          ),
           animation: false,
           large: true,
-          showSymbol: true,
-          symbol: 'rect',
-          symbolSize: [2, 30],
           clip: true,
           showAllSymbol: true,
+          renderItem: DiscoveryAnnotation.renderItem.bind(this),
           itemStyle: {color},
+          encode: {x: 1, y: 0},
         } as SeriesOption);
+        if (this.expanded) catId++;
       }
     }
     this.displayExpander = this.gtsList.length > 1;
@@ -218,7 +248,7 @@ export class DiscoveryAnnotation {
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
     this.LOG?.debug(['convert'], {
       expanded: this.expanded,
-      series,
+      series, categories,
       height: this.height,
       linesCount,
       opts: this.innerOptions
@@ -239,22 +269,22 @@ export class DiscoveryAnnotation {
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode === 'timestamp'
-              ? params[0].value[0]
-              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+              ? params[0].value[1]
+              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.timeFormat) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
-            const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
             return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
-            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${value[value.length - 1]}</span>`
+            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[2]}</span>`
           }).join('<br>')}`;
         },
         axisPointer: {
+          axis: 'x',
           type: 'line',
+          animation: false,
           lineStyle: {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
           }
-
         },
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
@@ -264,7 +294,10 @@ export class DiscoveryAnnotation {
               ? GTSLib.zonedTimeToUtc(params[0]?.axisValue || 0, 1, this.innerOptions.timeZone) * this.divider
               : params[0]?.axisValue || 0;
             const regexp = '(' + (params as any[]).map(s => s.seriesName).join('|') + ')';
-            this.dataPointOver.emit({date, name: regexp, value: 0, meta: {}});
+            if (this.focusDate !== date) {
+              this.dataPointOver.emit({date, name: regexp, value: (params as any).map(p => p.value[2]), meta: {}});
+              this.focusDate = date;
+            }
           }
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
           return obj;
@@ -305,19 +338,14 @@ export class DiscoveryAnnotation {
       },
       yAxis: {
         show: true,
-        min: 0,
         axisTick: {show: false},
         axisLabel: {show: false},
-        max: this.expanded ? linesCount - 1 : 1,
-        type: 'value',
-        splitNumber: linesCount,
+        type: 'category',
+        data: categories.length === 0 ? ['-'] : categories,
+        splitNumber: Math.max(categories.length, 1),
         interval: 1,
         boundaryGap: [0, 0],
-        splitLine: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        },
+        splitLine: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -340,7 +368,7 @@ export class DiscoveryAnnotation {
         }
       ],
       series,
-      ... this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 
@@ -416,9 +444,9 @@ export class DiscoveryAnnotation {
         .filter(s => new RegExp(regexp).test(s.name))
         .forEach(s => {
           seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
-          const data = s.data.filter(d => d[0] === date);
+          const data = s.data.filter(d => d[1] === date);
           if (data && data[0]) {
-            dataIndex = s.data.indexOf(data[0])
+            dataIndex = s.data.indexOf(data[0]);
             s.markPoint = {
               symbol: 'rect',
               symbolSize: [4, 30],
@@ -428,11 +456,11 @@ export class DiscoveryAnnotation {
                   color: '#fff',
                   borderColor: s.itemStyle.color,
                 },
-                yAxis: data[0][1],
+                yAxis: data[0][0],
                 xAxis: date
               }]
             }
-            ttp = [date, data[0][1]]
+            ttp = [date, data[0][0]]
           }
         });
       this.myChart.dispatchAction({
