@@ -271,7 +271,7 @@ export class DiscoveryProfile {
               startTS = this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
                 : startTS;
-              let endTS = startTS + +values[key][ts];
+              let endTS = +ts +  +values[key][ts];
               endTS = this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(endTS, this.divider, this.innerOptions.timeZone)
                 : endTS;
@@ -303,7 +303,7 @@ export class DiscoveryProfile {
     this.displayExpander = series.length > 1;
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
-      this.bounds = {min, max};
+     // this.bounds = {min, max};
     }
 
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
