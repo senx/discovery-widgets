@@ -343,7 +343,9 @@ export class DiscoveryInputComponent {
         if (!!(this.innerOptions.input || {}).value) {
           index = this.values.map(o => o.v).indexOf((this.innerOptions.input || {}).value);
         }
-        (this.inputField as HTMLSelectElement).selectedIndex = index;
+        if(!!this.inputField) {
+          (this.inputField as HTMLSelectElement).selectedIndex = index;
+        }
         setTimeout(() => {
           this.value = (this.innerOptions.input || {value: ''}).value || '';
           this.selectedValue = this.value;
