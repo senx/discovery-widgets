@@ -271,7 +271,7 @@ export class DiscoveryProfile {
               startTS = this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
                 : startTS;
-              let endTS = +ts +  +values[key][ts];
+              let endTS = +ts + +values[key][ts];
               endTS = this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(endTS, this.divider, this.innerOptions.timeZone)
                 : endTS;
@@ -300,10 +300,68 @@ export class DiscoveryProfile {
         });
       });
     }
+    const markArea = [...(this.innerOptions.thresholds || [])
+      .filter(t => !!t.fill)
+      .map(t => {
+        return [{
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+            borderType: t.type || 'dashed',
+            name: t.name || t.value || 0,
+          },
+          yAxis: t.value || 0
+        }, {yAxis: 0}];
+      }),
+      ...(this.innerOptions.markers || [])
+        .filter(t => !!t.fill)
+        .map(t => {
+          return [{
+            itemStyle: {
+              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+              borderType: t.type || 'dashed'
+            },
+            label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
+            name: t.name || t.value || 0,
+            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+          },
+            {
+              itemStyle: {
+                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+                borderType: t.type || 'dashed'
+              },
+              xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+            }];
+        })
+    ];
+    const markLine = [
+      ...(this.innerOptions.markers || [])
+        .filter(t => !t.fill)
+        .map(t => {
+          return {
+            name: t.name || t.value || 0,
+            label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name},
+            lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
+            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+          }
+        })];
+    if (markArea.length > 0 || markLine.length > 0) {
+      series.push({
+        name: '',
+        type: 'line',
+        symbolSize: 0,
+        data: [],
+        markArea: {data: markArea},
+        markLine: {
+          emphasis: {lineStyle: {width: 1}},
+          symbol: ['none', 'none'],
+          data: markLine
+        }
+      });
+    }
     this.displayExpander = series.length > 1;
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
-     // this.bounds = {min, max};
+      // this.bounds = {min, max};
     }
 
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
