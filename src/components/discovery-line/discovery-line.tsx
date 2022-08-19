@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {EChartsOption, init} from 'echarts';
+import {CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, init} from 'echarts';
 import {GTSLib} from '../../utils/gts.lib';
 import {SeriesOption} from 'echarts/lib/util/types';
 import {ColorLib} from '../../utils/color-lib';
@@ -482,6 +482,26 @@ export class DiscoveryLineComponent {
         (opts.series as any[]).push(s);
       }
     }
+    (this.innerOptions.polygons || []).forEach((polygon, i) => {
+      const s: SeriesOption = {
+        type: 'custom', renderItem: (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) => {
+          if (params.context.rendered) {
+            return;
+          }
+          params.context.rendered = true;
+          const color = polygon.color || ColorLib.getColor(i, this.innerOptions.scheme);
+          return {
+            type: 'polygon',
+            transition: ['shape'],
+            shape: {points: polygon.shape.map(p => api.coord(p))},
+            style: api.style({fill: !!polygon.fill ? ColorLib.transparentize(color) : undefined, stroke: color})
+          };
+        },
+        clip: true,
+        data: polygon.shape
+      };
+      (opts.series as any[]).push(s);
+    });
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
       this.bounds = {min, max};
@@ -600,7 +620,7 @@ export class DiscoveryLineComponent {
       }
     }
     return {
-      type: this.innerOptions.xLabelsMapping? 'category': 'value',
+      type: this.innerOptions.xLabelsMapping ? 'category' : 'value',
       name: unit || this.unit || this.innerOptions.unit,
       show: !this.innerOptions.hideYAxis,
       nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
@@ -608,7 +628,7 @@ export class DiscoveryLineComponent {
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el), show: !this.innerOptions.hideYAxis,},
       axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      data: this.innerOptions.xLabelsMapping? Object.keys(this.innerOptions.xLabelsMapping).map(k=>this.innerOptions.xLabelsMapping[k]): undefined,
+      data: this.innerOptions.xLabelsMapping ? Object.keys(this.innerOptions.xLabelsMapping).map(k => this.innerOptions.xLabelsMapping[k]) : undefined,
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
       min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
       max: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
@@ -681,7 +701,7 @@ export class DiscoveryLineComponent {
             setTimeout(() => this.leftMarginComputed.emit(x));
             this.leftMargin = x;
           }
-          if(initial) setTimeout(() => this.draw.emit());
+          if (initial) setTimeout(() => this.draw.emit());
           initial = false;
         });
       });
