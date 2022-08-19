@@ -317,7 +317,7 @@ export class DiscoveryProfile {
         .map(t => {
           return [{
             itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ?  t.alpha || 0.5 : 0),
               borderType: t.type || 'dashed'
             },
             label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
@@ -326,7 +326,7 @@ export class DiscoveryProfile {
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ?  t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed'
               },
               xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)

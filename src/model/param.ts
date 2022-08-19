@@ -56,7 +56,7 @@ export class Param {
   autoRefresh?: number;
   showControls = false;
   thresholds?: { color?: string; fill?: boolean, value?: number; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
-  markers?: { color?: string; value?: number; start?: number; fill?: boolean; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
+  markers?: { color?: string; value?: number; start?: number; fill?: boolean; name?: string, type?: 'solid' | 'dashed' | 'dotted', alpha?: number; }[];
   pieces?: { color?: string; lte?: number; gte?: number }[];
   yLabelsMapping?: { [key: number]: string };
   xpieces?: boolean;
