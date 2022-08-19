@@ -620,7 +620,7 @@ export class DiscoveryLineComponent {
       }
     }
     return {
-      type: this.innerOptions.xLabelsMapping ? 'category' : 'value',
+      type: this.innerOptions.yLabelsMapping ? 'category' : 'value',
       name: unit || this.unit || this.innerOptions.unit,
       show: !this.innerOptions.hideYAxis,
       nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
@@ -628,7 +628,7 @@ export class DiscoveryLineComponent {
       axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
       axisLabel: {color: color || Utils.getLabelColor(this.el), show: !this.innerOptions.hideYAxis,},
       axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      data: this.innerOptions.xLabelsMapping ? Object.keys(this.innerOptions.xLabelsMapping).map(k => this.innerOptions.xLabelsMapping[k]) : undefined,
+      data: this.innerOptions.yLabelsMapping ? Object.keys(this.innerOptions.yLabelsMapping).map(k => this.innerOptions.yLabelsMapping[k]) : undefined,
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
       min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
       max: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,

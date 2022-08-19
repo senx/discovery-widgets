@@ -58,7 +58,7 @@ export class Param {
   thresholds?: { color?: string; fill?: boolean, value?: number; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
   markers?: { color?: string; value?: number; start?: number; fill?: boolean; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
   pieces?: { color?: string; lte?: number; gte?: number }[];
-  xLabelsMapping?: { [key: number]: string };
+  yLabelsMapping?: { [key: number]: string };
   xpieces?: boolean;
   showErrors?: boolean;
   showStatus?: boolean;
