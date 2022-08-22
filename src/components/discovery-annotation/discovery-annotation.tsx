@@ -239,7 +239,7 @@ export class DiscoveryAnnotation {
         if (this.expanded) catId++;
       }
     }
-    this.displayExpander = this.gtsList.length > 1;
+    this.displayExpander = series.length > 1 && !!this.innerOptions.displayExpander;
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
       this.bounds = {min, max};

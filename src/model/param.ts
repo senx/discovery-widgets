@@ -63,6 +63,7 @@ export class Param {
   showErrors?: boolean;
   showStatus?: boolean;
   expandAnnotation = false;
+  displayExpander = true;
   showGTSTree?: boolean;
   foldGTSTree?: boolean;
   split?: 'Y' | 'M' | 'D' | 'h' | 'm' | 's';

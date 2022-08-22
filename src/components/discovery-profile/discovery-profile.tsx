@@ -358,7 +358,7 @@ export class DiscoveryProfile {
         }
       });
     }
-    this.displayExpander = series.length > 1;
+    this.displayExpander = series.length > 1 && !!this.innerOptions.displayExpander;
     if (hasTimeBounds) {
       this.timeBounds.emit({min, max});
     }
@@ -655,7 +655,7 @@ export class DiscoveryProfile {
           px`, height: `${(this.height + (this.expanded ? 50 : 0))}
           px`
     }}>
-      {this.displayExpander
+      {!!this.displayExpander
         ?
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
