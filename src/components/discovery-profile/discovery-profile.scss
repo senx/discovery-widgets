@@ -18,6 +18,17 @@
   & > div {
     width: 100%;
     height: 100%;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 15px;
+
+    .chart-wrapper {
+      height: 100%;
+      position: absolute;
+      width: calc(100% - 20px);
+    }
+
     & > div {
       width: 100%;
       height: 100%;

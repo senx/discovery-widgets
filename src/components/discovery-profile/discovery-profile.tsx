@@ -1,6 +1,22 @@
+/*
+ *   Copyright 2022  SenX S.A.S.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
 // noinspection ES6UnusedImports
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {DataModel} from '../../model/dataModel';
 import {ChartType, ECharts} from '../../model/types';
 import {Param} from '../../model/param';
@@ -654,31 +670,32 @@ export class DiscoveryProfile {
   }
 
   render() {
-    return <Host style={{
-      width: `${this.width}
-          px`, height: `${(this.height + (this.expanded ? 50 : 0))}
-          px`
+    return <div style={{
+      width: `${this.width}px`,
+      maxHeight: `${(this.height + (this.expanded ? 50 : 30))}px`
     }}>
-      {!!this.displayExpander
-        ?
-        <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
-        : ''}
-      <div class="chart-area"
-           style={{
-             width: `${this.width}
+      <div class="chart-wrapper">
+        {!!this.displayExpander
+          ?
+          <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
+          : ''}
+        <div class="chart-area"
+             style={{
+               width: `${this.width}
           px`,
-             height: `${(this.height + (!!this.innerOptions.showLegend ? 50 : 0) + (!!this.innerOptions.fullDateDisplay ? 50 : 0))}
+               height: `${(this.height + (!!this.innerOptions.showLegend ? 50 : 0) + (!!this.innerOptions.fullDateDisplay ? 50 : 0))}
           px`
-           }}>
-        {this.parsing ? <div class="discovery-chart-spinner">
-          <discovery-spinner>Parsing data...</discovery-spinner>
-        </div> : ''}
-        {this.rendering ? <div class="discovery-chart-spinner">
-          <discovery-spinner>Rendering data...</discovery-spinner>
-        </div> : ''}
-        <div ref={(el) => this.graph = el} onMouseOver={() => this.hideMarkers()}/>
+             }}>
+          {this.parsing ? <div class="discovery-chart-spinner">
+            <discovery-spinner>Parsing data...</discovery-spinner>
+          </div> : ''}
+          {this.rendering ? <div class="discovery-chart-spinner">
+            <discovery-spinner>Rendering data...</discovery-spinner>
+          </div> : ''}
+          <div ref={(el) => this.graph = el} onMouseOver={() => this.hideMarkers()}/>
+        </div>
       </div>
-    </Host>
+    </div>
   }
 
   private toggle() {
