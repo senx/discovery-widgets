@@ -333,7 +333,13 @@ export class DiscoveryBarComponent {
         emphasis: {
           focus: 'series'
         },
-        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? 'value' : this.isGTS ? 'time' : 'category',
+        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal
+          ? 'value'
+          : this.isGTS
+            ? this.innerOptions.timeMode === 'date'
+              ? 'time'
+              : 'value'
+            : 'category',
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)
@@ -380,7 +386,13 @@ export class DiscoveryBarComponent {
           focus: 'series'
         },
         nameTextStyle: {color: Utils.getLabelColor(this.el)},
-        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal ? this.isGTS ? 'time' : 'category' : 'value',
+        type: !!(this.innerOptions.bar || {horizontal: false}).horizontal
+          ? this.isGTS
+            ?  this.innerOptions.timeMode === 'date'
+              ? 'time'
+              : 'category'
+            : 'category'
+          : 'value',
         splitLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el)

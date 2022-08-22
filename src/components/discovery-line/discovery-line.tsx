@@ -647,9 +647,9 @@ export class DiscoveryLineComponent {
       axisLabel: {
         show: !this.innerOptions.hideXAxis,
         color: color || Utils.getLabelColor(this.el),
-        formatter: this.innerOptions.fullDateDisplay ? value =>
-            GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-              .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+        formatter: this.innerOptions.fullDateDisplay
+          ? value => GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+            .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
           : undefined
       },
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
