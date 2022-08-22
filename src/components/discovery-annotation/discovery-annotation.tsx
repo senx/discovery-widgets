@@ -46,6 +46,7 @@ export class DiscoveryAnnotation {
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() dataPointOver: EventEmitter;
   @Event() timeBounds: EventEmitter;
+  @Event() leftMarginComputed: EventEmitter<number>;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -63,6 +64,7 @@ export class DiscoveryAnnotation {
   private gtsList = [];
   private focusDate: number;
   private bounds: { min: number; max: number };
+  private leftMargin = 0;
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -260,7 +262,9 @@ export class DiscoveryAnnotation {
         right: 10,
         top: 20,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
-        left: (this.innerOptions.leftMargin || 10),
+        left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
+          ? this.innerOptions.leftMargin - this.leftMargin + 10
+          : 10,
         containLabel: true
       },
       throttle: 70,
@@ -382,10 +386,22 @@ export class DiscoveryAnnotation {
     });
     this.myChart.on('rendered', () => {
       this.rendering = false;
-      if (initial) {
-        setTimeout(() => this.draw.emit());
+      let found = false;
+      let x = 0;
+      setTimeout(() => {
+        while (!found && x < 1024) {
+          found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
+          x++;
+        }
+        if (this.leftMargin !== x && x < 1024) {
+          setTimeout(() => {
+            this.leftMarginComputed.emit(x);
+            this.leftMargin = x;
+          });
+        }
+        if (initial) setTimeout(() => this.draw.emit());
         initial = false;
-      }
+      });
     });
     this.myChart.on('mouseover', (event: any) => {
       this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});

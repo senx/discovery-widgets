@@ -585,6 +585,7 @@ declare namespace LocalJSX {
         "onDataPointOver"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryAnnotationCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: DiscoveryAnnotationCustomEvent<void>) => void;
+        "onLeftMarginComputed"?: (event: DiscoveryAnnotationCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

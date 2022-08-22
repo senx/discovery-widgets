@@ -317,7 +317,7 @@ export class DiscoveryProfile {
         .map(t => {
           return [{
             itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ?  t.alpha || 0.5 : 0),
+              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
               borderType: t.type || 'dashed'
             },
             label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
@@ -326,7 +326,7 @@ export class DiscoveryProfile {
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ?  t.alpha || 0.5 : 0),
+                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed'
               },
               xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
@@ -378,7 +378,9 @@ export class DiscoveryProfile {
         right: 10,
         top: 20,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
-        left: this.innerOptions.leftMargin || 10,
+        left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
+          ? this.innerOptions.leftMargin - this.leftMargin + 10
+          : 10,
         containLabel: true
       },
       throttle: 70,
@@ -524,9 +526,11 @@ export class DiscoveryProfile {
           found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
           x++;
         }
-        if (this.leftMargin !== x && initial && x < 1024) {
-          setTimeout(() => this.leftMarginComputed.emit(x));
-          this.leftMargin = x;
+        if (this.leftMargin !== x && x < 1024) {
+          setTimeout(() => {
+            this.leftMarginComputed.emit(x);
+            this.leftMargin = x;
+          });
         }
         if (initial) setTimeout(() => this.draw.emit());
         initial = false;

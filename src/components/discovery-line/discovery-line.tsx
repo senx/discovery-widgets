@@ -63,7 +63,7 @@ export class DiscoveryLineComponent {
   private LOG: Logger;
   private divider = 1000;
   private myChart: ECharts;
-  private leftMargin: number;
+  private leftMargin = 0;
   private hasFocus = false;
   private focusDate: number;
   private bounds: { min: number; max: number };
@@ -169,11 +169,13 @@ export class DiscoveryLineComponent {
     const opts: EChartsOption = {
       animation: false,
       grid: {
-        left: this.innerOptions.leftMargin || 10,
+        left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
+          ? this.innerOptions.leftMargin - this.leftMargin + 10
+          : 10,
         top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (!!this.innerOptions.showRangeSelector ? 40 : 0),
         right: 10,
-        containLabel: true
+        containLabel: true,
       },
       responsive: true,
       throttle: 70,
@@ -565,7 +567,7 @@ export class DiscoveryLineComponent {
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ?  t.alpha || 0.5 : 0),
+                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed'
               },
               xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
@@ -697,9 +699,11 @@ export class DiscoveryLineComponent {
             found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
             x++;
           }
-          if (this.leftMargin !== x && initial && x < 1024) {
-            setTimeout(() => this.leftMarginComputed.emit(x));
-            this.leftMargin = x;
+          if (this.leftMargin !== x && x < 1024) {
+            setTimeout(() => {
+              this.leftMarginComputed.emit(x);
+              this.leftMargin = x;
+            });
           }
           if (initial) setTimeout(() => this.draw.emit());
           initial = false;

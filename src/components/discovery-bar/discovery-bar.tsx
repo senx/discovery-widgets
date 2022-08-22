@@ -271,7 +271,10 @@ export class DiscoveryBarComponent {
     const opts = {
       animation: !!this.innerOptions?.bar?.animate,
       grid: {
-        left: 10, top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
+        left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
+          ? this.innerOptions.leftMargin - this.leftMargin + 10
+          : 10,
+        top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
         bottom: !!this.innerOptions.showLegend ? 30 : 10,
         right: 10,
         containLabel: true
@@ -497,10 +500,6 @@ export class DiscoveryBarComponent {
       this.myChart = echarts.init(this.graph);
       this.myChart.on('rendered', () => {
         this.rendering = false;
-        if (initial) {
-          setTimeout(() => this.draw.emit());
-          initial = false;
-        }
         let found = false;
         let x = 0;
         setTimeout(() => {
@@ -508,10 +507,14 @@ export class DiscoveryBarComponent {
             found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
             x++;
           }
-          if (this.leftMargin !== x) {
-            setTimeout(() => this.leftMarginComputed.emit(x));
-            this.leftMargin = x;
+          if (this.leftMargin !== x && x < 1024) {
+            setTimeout(() => {
+              this.leftMarginComputed.emit(x);
+              this.leftMargin = x;
+            });
           }
+          if (initial) setTimeout(() => this.draw.emit());
+          initial = false;
         });
       });
       this.myChart.on('dataZoom', (event: any) => {
