@@ -338,7 +338,7 @@ export class DiscoveryBarComponent {
           : this.isGTS
             ? this.innerOptions.timeMode === 'date'
               ? 'time'
-              : 'value'
+              : 'category'
             : 'category',
         axisLine: {
           lineStyle: {
