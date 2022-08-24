@@ -1,5 +1,13 @@
 # Discovery
 
+Discovery is a dashboard as code tool. It includes dashboards generation (either through WarpScript or in an HTML page), single chart tiles and inputs as web components.
+
+The global idea is to generate a structure which defines a dashboard and its tiles.
+
+Tiles could depend on an execution result, so, your dashboard can change according to an alert for example.
+
+A tile is an atomic dataviz component representing a line chart, a pie, a value, and so on. You can also define special tiles acting as inputs (ie: autocomplete, date-range, buttons, ...).
+
 ## Usage
 
 ### In a Web Environment
