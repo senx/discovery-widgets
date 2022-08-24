@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 /*
  *   Copyright 2022  SenX S.A.S.
  *
@@ -15,6 +13,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+
+/* eslint-disable @typescript-eslint/naming-convention */
 
 export enum Colors {
   COHESIVE = 'COHESIVE',

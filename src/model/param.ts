@@ -1,5 +1,3 @@
-// noinspection JSUnusedGlobalSymbols
-
 /*
  *   Copyright 2022  SenX S.A.S.
  *
@@ -15,6 +13,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+
+// noinspection JSUnusedGlobalSymbols
+
 import {ChartType, MapParams, TimeMode, TimeUnit} from './types';
 
 export class Param {
