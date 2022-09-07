@@ -267,6 +267,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     tmpResult.tiles = tmpResult.tiles || [];
     this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
     tmpResult.vars = {...tmpResult.vars || {}, ...this.innerVars};
+    tmpResult.cols = tmpResult.cols || this.cols || 12;
     this.result = {...tmpResult};
     this.tiles = [];
     for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {
@@ -338,7 +339,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             <div class="discovery-dashboard-wrapper" style={{
               width: '100%',
               gridAutoRows: `minmax(${(this.result?.cellHeight || this.cellHeight)}px, auto)`,
-              gridTemplateColumns: `repeat(${this.cols}, 1fr)`
+              gridTemplateColumns: `repeat(${this.result.cols}, 1fr)`
             }}>
               {(this.renderedTiles || []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
@@ -387,7 +388,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                      style={{
                        height: `${((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
                        minHeight: '100%',
-                       maxWidth: `calc(100% / ${this.cols} * ${t.w})`
+                       maxWidth: `calc(100% / ${this.result.cols} * ${t.w} - var(--warp-view-dashboard-gap, 10px) * 2)`
                      }}
                 >
                   <div>
