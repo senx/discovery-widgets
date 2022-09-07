@@ -119,6 +119,8 @@ export class Utils {
       focus: undefined,
       margin: undefined,
       bounds: undefined,
+      title: undefined,
+      description: undefined,
     }
     if (eventHandler) {
       let tag = '.*';
@@ -166,6 +168,12 @@ export class Utils {
             break;
           case 'bounds':
             parsed.bounds = evt.value;
+            break;
+          case 'title':
+            parsed.title = evt.value;
+            break;
+          case 'description':
+            parsed.description = evt.value;
             break;
           default:
           // nothing

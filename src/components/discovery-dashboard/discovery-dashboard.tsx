@@ -60,6 +60,8 @@ export class DiscoveryDashboardComponent {
   @State() start: number;
   @State() innerStyle: { [k: string]: string; };
   @State() audioFile: string;
+  @State() title: string;
+  @State() description: string;
 
   private LOG: Logger;
   private ws: string;
@@ -128,6 +130,12 @@ export class DiscoveryDashboardComponent {
     }
     if (res.audio) {
       this.audioFile = res.audio;
+    }
+    if(res.title) {
+      this.title = res.title;
+    }
+    if(res.description) {
+      this.description = res.description;
     }
   }
 
@@ -269,6 +277,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     tmpResult.vars = {...tmpResult.vars || {}, ...this.innerVars};
     tmpResult.cols = tmpResult.cols || this.cols || 12;
     this.result = {...tmpResult};
+    this.title  = this.dashboardTitle || this.result.title;
+    this.description = this.result.description;
     this.tiles = [];
     for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {
       this.done[i] = 0;
@@ -291,8 +301,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     switch (this.innerType) {
       case 'scada':
         return <div class="discovery-scada-main">
-          {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
-          {this.result.description ? <p>{this.result.description}</p> : ''}
+          <h1>{this.title}</h1>
+          <p>{this.description}</p>
           <div class="discovery-scada-wrapper" style={{height: `${this.scadaHeight}px`}}>
             {(this.renderedTiles || []).map((t, i) =>
               <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
@@ -334,8 +344,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       case 'dashboard':
         return this.result ?
           <div class="discovery-dashboard-main">
-            {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
-            {this.result.description ? <p>{this.result.description}</p> : ''}
+            <h1>{this.title}</h1>
+            <p>{this.description}</p>
             <div class="discovery-dashboard-wrapper" style={{
               width: '100%',
               gridAutoRows: `minmax(${(this.result?.cellHeight || this.cellHeight)}px, auto)`,
@@ -380,8 +390,8 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       case 'flex':
         return this.result ?
           <div class="discovery-flex-main">
-            {this.dashboardTitle || this.result.title ? <h1>{this.dashboardTitle || this.result.title}</h1> : ''}
-            {this.result.description ? <p>{this.result.description}</p> : ''}
+            <h1>{this.title}</h1>
+            <p>{this.description}</p>
             <div class="discovery-flex-wrapper">
               {(this.renderedTiles || []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
