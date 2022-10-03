@@ -159,8 +159,8 @@ export class DiscoveryLinearGauge {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {}) ;
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams) ;
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.isVertical = !this.innerOptions.gauge?.horizontal;
@@ -185,7 +185,8 @@ export class DiscoveryLinearGauge {
     }
     this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
-    let overallMax = this.innerOptions.maxValue || Number.MIN_VALUE;
+    let overallMax = this.innerOptions.maxValue || 0;
+    let overallMin = this.innerOptions.minValue || 0;
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
@@ -208,9 +209,13 @@ export class DiscoveryLinearGauge {
             overallMax = value;
           }
         }
-        let min = 0;
+        let min: number = Number.MAX_VALUE;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
+        } else {
+          if (overallMin > value) {
+            overallMin = value;
+          }
         }
         dataStruct.push({
           key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
@@ -226,9 +231,13 @@ export class DiscoveryLinearGauge {
             overallMax = gts.value || Number.MIN_VALUE;
           }
         }
-        let min = 0;
+        let min: number = Number.MAX_VALUE;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
+        } else {
+          if (overallMin > gts.value || Number.MAX_VALUE) {
+            overallMin = gts.value || Number.MAX_VALUE;
+          }
         }
         if (gts.hasOwnProperty('value')) {
           dataStruct.push({key: gts.key || '', value: gts.value || 0, max, min, color});
@@ -240,10 +249,18 @@ export class DiscoveryLinearGauge {
     this.LOG?.debug(['convert', 'dataStruct'], dataStruct);
     dataStruct.forEach(d => {
       d.max = Math.max(overallMax, d.max);
+      d.min = Math.min(overallMin, d.min);
       if (d.max === Number.MIN_VALUE) {
-        d.max = 100;
+        d.max = d.value > 0 ? 100 : 0;
       }
-      d.progress = d.value / d.max * 100.0;
+      if (d.min === Number.MAX_VALUE) {
+        d.min = d.value < 0 ? -100 : 0;
+      }
+      if (d.value > 0) {
+        d.progress = d.value / d.max * 100.0;
+      } else {
+        d.progress = d.value / d.min * -100.0;
+      }
     });
     this.dataStruct = dataStruct;
   }
@@ -271,7 +288,7 @@ export class DiscoveryLinearGauge {
 
   setMousePosition(e: MouseEvent) {
     const r = this.el.getBoundingClientRect();
-    this.tooltip.style.top =  `${e.clientY - r.y}px`;
+    this.tooltip.style.top = `${e.clientY - r.y}px`;
     this.tooltip.style.left = `${e.clientX - r.x}px`;
   }
 
@@ -288,7 +305,7 @@ export class DiscoveryLinearGauge {
         : ''
     }</div>
       <span class="label">${GTSLib.formatLabel(data.key)}</span>
-      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}</span>`
+      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}{this.innerOptions.unit || this.unit || ''}</span>`
   }
 
   hideTooltip() {
@@ -304,9 +321,7 @@ export class DiscoveryLinearGauge {
       <div ref={el => this.root = el} onMouseMove={e => this.setMousePosition(e)} class={
         {'vertical-wrapper': !this.innerOptions.gauge?.horizontal}
       }>
-        <div class="wv-tooltip" style={{display: 'none'}}
-             ref={el => this.tooltip = el}
-        ></div>
+        <div class="wv-tooltip" style={{display: 'none'}} ref={el => this.tooltip = el}></div>
         {this.dataStruct.map(d =>
           <div class={
             {
@@ -319,17 +334,40 @@ export class DiscoveryLinearGauge {
               class="discovery-legend">{d.value || '0'}{this.innerOptions.unit || ''} {!this.innerOptions.gauge?.horizontal ?
               <br/> : ''}
               <span
-                class="small">of {d.max}{this.innerOptions.unit || this.unit || ''}</span></h3>
-            <div class="discovery-progress" onMouseOver={() => this.showTooltip(d)}
-                 onMouseLeave={() => this.hideTooltip()}>
-              <div class="ticks">
-                {Array((this.innerOptions.gauge?.showTicks ? 10 : 0)).fill(0).map(() => <i class="tick"></i>)}
-              </div>
-              <div class="discovery-progress-bar" style={{
-                width: this.innerOptions.gauge?.horizontal ? `${d.progress}%` : 'var(--warp-view-progress-size, 1rem)',
-                height: !this.innerOptions.gauge?.horizontal ? `${d.progress}%` : 'var(--warp-view-progress-size, 1rem)',
-                backgroundColor: d.color
-              }}></div>
+                class="small">of {d.value > 0 ? d.max: d.min}{this.innerOptions.unit || this.unit || ''}</span></h3>
+            <div class={{
+              'discovery-progress-container-horizontal': this.innerOptions.gauge?.horizontal
+            }}>
+              {d.min < 0 ?
+                <div class="discovery-progress negative" onMouseOver={() => this.showTooltip(d)}
+                     onMouseLeave={() => this.hideTooltip()}>
+                  <div class="ticks">
+                    {Array((this.innerOptions.gauge?.showTicks ? 10 : 0)).fill(0).map(() => <i class="tick"></i>)}
+                  </div>
+                  <div class="discovery-progress-bar" style={{
+                    width: this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
+                    height: !this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
+                    display: d.progress > 0 ? 'none' : 'block',
+                    backgroundColor: d.color
+                  }}></div>
+                </div>
+                : ''
+              }
+              {d.max > 0 ?
+                <div class="discovery-progress positive" onMouseOver={() => this.showTooltip(d)}
+                     onMouseLeave={() => this.hideTooltip()}>
+                  <div class="ticks">
+                    {Array((this.innerOptions.gauge?.showTicks ? 10 : 0)).fill(0).map(() => <i class="tick"></i>)}
+                  </div>
+                  <div class="discovery-progress-bar" style={{
+                    width: this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
+                    height: !this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
+                    backgroundColor: d.color,
+                    display: d.progress < 0 ? 'none' : 'block'
+                  }}></div>
+                </div>
+                : ''
+              }
             </div>
             {this.innerOptions.showLegend && this.innerOptions.gauge?.horizontal ?
               <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
