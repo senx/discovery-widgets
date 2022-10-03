@@ -168,6 +168,8 @@ export class DiscoveryInputComponent {
           static: true,
           enableSeconds: true,
           time_24hr: true,
+          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * 1000, divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
         } as any;
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
           opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone,
@@ -343,7 +345,7 @@ export class DiscoveryInputComponent {
         if (!!(this.innerOptions.input || {}).value) {
           index = this.values.map(o => o.v).indexOf((this.innerOptions.input || {}).value);
         }
-        if(!!this.inputField) {
+        if (!!this.inputField) {
           (this.inputField as HTMLSelectElement).selectedIndex = index;
         }
         setTimeout(() => {
