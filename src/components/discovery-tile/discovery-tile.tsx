@@ -104,6 +104,14 @@ export class DiscoveryTileComponent {
         });
       }
     }
+    if (res.selected) {
+      this.innerVars = {...(this.innerVars || {}), ...this.innerVars, ...res.selected};
+      if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
+        void this.exec(true).then(() => {
+          // empty
+        });
+      }
+    }
   }
 
   @Method()

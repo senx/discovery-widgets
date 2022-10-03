@@ -23,6 +23,7 @@ import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import html2canvas from 'html2canvas';
+import {DiscoveryEvent} from '../../model/discoveryEvent';
 
 @Component({
   tag: 'discovery-tabular',
@@ -42,6 +43,13 @@ export class DiscoveryTabular {
 
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
+  @Event({
+    eventName: 'discoveryEvent',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -104,6 +112,11 @@ export class DiscoveryTabular {
   private handleDataPointOver(event: CustomEvent) {
     event.stopImmediatePropagation();
     this.dataPointOver.emit(event.detail);
+  }
+
+  private handleDataPointSelected(event: CustomEvent) {
+    event.stopImmediatePropagation();
+    this.dataPointSelected.emit(event.detail);
   }
 
   private convert(data: DataModel): Dataset[] {
@@ -190,6 +203,7 @@ export class DiscoveryTabular {
         {this.tabularData.map(d =>
           <discovery-pageable data={d}
                               onDataPointOver={event => this.handleDataPointOver(event)}
+                              onDataPointSelected={event => this.handleDataPointSelected(event)}
                               divider={this.divider}
                               options={this.options as Param}
                               debug={this.debug}

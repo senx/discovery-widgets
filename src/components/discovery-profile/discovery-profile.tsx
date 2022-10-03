@@ -53,6 +53,7 @@ export class DiscoveryProfile {
   @Event() draw: EventEmitter<void>;
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
   @Event() leftMarginComputed: EventEmitter<number>;
 
@@ -572,7 +573,13 @@ export class DiscoveryProfile {
       });
     });
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
-    this.el.addEventListener('mouseover', () => this.hasFocus = true);
+    this.el.addEventListener('mouseover', (event: any) => {
+      this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      this.hasFocus = true;
+    });
+    this.myChart.on('click', (event: any) => {
+      this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+    });
     this.el.addEventListener('mouseout', () => this.hasFocus = false);
     initial = true;
     this.setOpts();

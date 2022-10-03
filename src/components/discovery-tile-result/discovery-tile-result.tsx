@@ -236,6 +236,15 @@ export class DiscoveryTileResultComponent {
       });
   }
 
+  handleDataSelected(event: CustomEvent) {
+    ((this.innerResult as unknown as DataModel).events || [])
+      .filter(e => e.type === 'selected')
+      .forEach(e => {
+        e.value = event.detail;
+        this.discoveryEvent.emit(e);
+      });
+  }
+
   getView() {
     switch (this.innerType) {
       case 'line':
@@ -255,6 +264,7 @@ export class DiscoveryTileResultComponent {
           debug={this.debug}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           ref={el => this.tile = el || this.tile}
         />;
       case 'annotation':
@@ -266,6 +276,7 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
         />;
       case 'bar':
@@ -277,6 +288,7 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
         />;
       case 'display':
@@ -327,6 +339,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
         />;
       case 'linear-gauge':
@@ -349,6 +362,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
         />;
       case 'tabular':
@@ -358,6 +372,7 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.innerOptions}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
         />;
@@ -402,6 +417,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
         />;
       case 'heatmap':
@@ -412,6 +428,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
         />;
       case 'profile':
@@ -423,6 +440,7 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
         />;
       default:

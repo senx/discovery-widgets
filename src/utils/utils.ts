@@ -121,6 +121,7 @@ export class Utils {
       bounds: undefined,
       title: undefined,
       description: undefined,
+      selected: undefined,
     }
     if (eventHandler) {
       let tag = '.*';
@@ -174,6 +175,10 @@ export class Utils {
             break;
           case 'description':
             parsed.description = evt.value;
+            break;
+          case 'selected':
+            parsed.selected = parsed.selected || {};
+            parsed.selected[evt.selector] = evt.value;
             break;
           default:
           // nothing

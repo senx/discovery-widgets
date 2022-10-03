@@ -44,6 +44,7 @@ export class DiscoveryHeatmap {
 
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -285,6 +286,9 @@ export class DiscoveryHeatmap {
       });
       this.myChart.on('mouseover', (event: any) => {
         this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      });
+      this.myChart.on('click', (event: any) => {
+        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
