@@ -37,6 +37,7 @@ import {PdfLib} from '../../utils/pdfLib';
 export class DiscoveryDashboardComponent {
   @Prop() url: string;
   @Prop() dashboardTitle: string;
+  @Prop({mutable: true}) data: Dashboard | string;
   @Prop() warpscript: string;
   @Prop({mutable: true}) options: Param | string = new Param();
   @Prop() debug = false;
@@ -87,6 +88,21 @@ export class DiscoveryDashboardComponent {
     });
   }
 
+  @Watch('data')
+  dataUpdate(newValue: string, oldValue: string) {
+
+    if (!!this.data && typeof this.data === 'string') {
+      this.processResult(JSON.parse(this.data));
+    }
+    if (!!this.data && typeof this.data !== 'string') {
+      this.processResult(this.data);
+    }
+    this.LOG?.debug(['optionsUpdate'], {
+      options: this.options,
+      newValue, oldValue
+    });
+  }
+
 
   @Watch('vars')
   varsUpdate(newValue: string, oldValue: string) {
@@ -104,10 +120,9 @@ export class DiscoveryDashboardComponent {
     }
   }
 
-
   @Watch('warpscript')
   warpscriptUpdate(newValue: string, oldValue: string) {
-    if (!!this.warpscript ) {
+    if (!!this.warpscript) {
       this.exec();
     }
     if (this.LOG) {
@@ -131,10 +146,10 @@ export class DiscoveryDashboardComponent {
     if (res.audio) {
       this.audioFile = res.audio;
     }
-    if(res.title) {
+    if (res.title) {
       this.title = res.title;
     }
-    if(res.description) {
+    if (res.description) {
       this.description = res.description;
     }
   }
@@ -249,7 +264,35 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.statusError.emit(e);
         this.LOG?.error(['exec'], e);
       });
+    } else {
+      this.parseResult();
     }
+  }
+
+  private parseResult() {
+    let tmpResult: Dashboard = new Dashboard();
+    this.options = {...this.options as Param, ...tmpResult.options};
+    if (!!this.data && typeof this.data === 'string') {
+      tmpResult = JSON.parse(this.data) as Dashboard;
+    } else {
+      tmpResult = this.data as Dashboard;
+    }
+    this.innerType = tmpResult.type || this.type || 'dashboard';
+    this.loaded = true;
+    if (typeof tmpResult.tiles === 'string') {
+      this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
+      Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', this.options.httpHeaders).then((t: any) => {
+        this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
+        this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
+        this.processResult(tmpResult);
+      }).catch(e => {
+        this.LOG?.error(['exec'], e);
+        tmpResult.tiles = [];
+      });
+    } else {
+      this.renderedTiles = tmpResult.tiles || [];
+    }
+    this.processResult(tmpResult);
   }
 
   private processResult(tmpResult: Dashboard) {
@@ -277,7 +320,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     tmpResult.vars = {...tmpResult.vars || {}, ...this.innerVars};
     tmpResult.cols = tmpResult.cols || this.cols || 12;
     this.result = {...tmpResult};
-    this.title  = this.dashboardTitle || this.result.title;
+    this.title = this.dashboardTitle || this.result.title;
     this.description = this.result.description;
     this.tiles = [];
     for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {

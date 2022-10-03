@@ -76,6 +76,7 @@ export namespace Components {
         "cellHeight": number;
         "cols": number;
         "dashboardTitle": string;
+        "data": Dashboard | string;
         "debug": boolean;
         "getDashboardStructure": () => Promise<Dashboard>;
         "getPDF": (save?: boolean, output?: string) => Promise<any>;
@@ -638,6 +639,7 @@ declare namespace LocalJSX {
         "cellHeight"?: number;
         "cols"?: number;
         "dashboardTitle"?: string;
+        "data"?: Dashboard | string;
         "debug"?: boolean;
         "onRendered"?: (event: DiscoveryDashboardCustomEvent<void>) => void;
         "onStatusError"?: (event: DiscoveryDashboardCustomEvent<any>) => void;
