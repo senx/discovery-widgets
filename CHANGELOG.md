@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.1.39
+
+> +  2022/10/03  | v1.1.39  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6d892dac6f239e6a696e69e8a44eb73e190f0cbf)*)
+> +  2022/10/03  | add "selected" discovery event  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/872801eda2bca4d802588e814b215646e9b9cb9e)*)
+> +  2022/10/03  | add "selected" discovery event  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c2480b62fdc76a32ddd023fe2333da3dacfd55dd)*)
+> +  2022/10/03  | Add changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/54b0b2c2d95ece4d81397c0b1303a9215fdaf1ae)*)
+> +  2022/10/03  | Fix duration display when an autorefresh or an event occurs  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/0bd2c5d1684bdff94c494fef74ca0b890b778448)*)
+> +  2022/10/03  | Add data attribute to discovery-dashboard tag to pass a WarpScript execution result  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/381fb8f870894dc356438b6f143391570226eb2e)*)
+> +  2022/10/03  | Fix datetime format in input:date and input:date-range  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/0c42a651c73c096ac499172f7468d8f76f2e9365)*)
+> +  2022/10/03  | Fix linear gauges with negative values  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/eba65a78e5cd71d3730b2da700cffca592d4f127)*)
+> +  2022/10/03  | Fix input:multi event emitting  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/4eee2232fcba2b285501e872d9a8e29d0ecc6e5b)*)
+
 ## v1.1.38
 
 > +  2022/09/07  | v1.1.38  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c355e4eb4d4d78b3c5648300d955f148e7d7392f)*)
@@ -55,13 +67,5 @@ Discovery
 > +  2022/07/21  | v1.1.30  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/e6aa0b2de4bdc89cdffac30ab45fa9233f514cf6)*)
 > +  2022/07/21  | fix list input reset on default value  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/bd4399debb67919221e76fc43d9a70737ac936ce)*)
 > +  2022/07/21  | fix auto timestamp mode  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/8ff036f23654dfdc88e18da0b874c0573db89381)*)
-
-## v1.1.29
-
-> +  2022/07/19  | v1.1.29  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/bfcf332c45f398603ab6f2fb11d14bd4b1e1a36c)*)
-> +  2022/07/19  | deps update  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/7107e33b368cca240bfb10e986b9bae23f3519c5)*)
-> +  2022/07/19  | fix auto timestamp mode  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/9500bbc83dfcbb3e972c4fcbe414b212f5e61a10)*)
-> +  2022/07/15  | macro and attribute handling  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/e998b93fd3212a24ec6c4cc4e7a851f9bee82ff7)*)
-> +  2022/07/15  | fix vars injection into dashboards  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/0cd6ee278816b1c375eae0b68d1836b63e05c978)*)
 
 
