@@ -36,6 +36,7 @@ export class DiscoveryPageable {
   @Prop({mutable: true}) windowed = 5;
 
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
 
   private LOG: Logger;
   private page = 0;
@@ -72,7 +73,7 @@ export class DiscoveryPageable {
     if (!this.data) {
       return;
     }
-    const options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {}) ;
+    const options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {});
     this.options = {...options};
     this.pages = [];
     for (let i = 0; i < (this.data.values || []).length / this.elemsCount; i++) {
@@ -96,19 +97,27 @@ export class DiscoveryPageable {
   }
 
   private setSelected(value: any) {
+    this.dataPointSelected.emit({
+        date: this.data.isGTS ? value[0] : undefined,
+        name: this.data.name,
+        value: value,
+        meta: {header: this.data.headers}
+      }
+    );
+  }
+
+  private setOver(value: any) {
     this.dataPointOver.emit({
         date: this.data.isGTS ? value[0] : undefined,
         name: this.data.name,
         value: value,
-        meta: {
-          header: this.data.headers
-        }
+        meta: {header: this.data.headers}
       }
     );
   }
 
   private formatDate(date: number): string {
-    const opts = this.options ;
+    const opts = this.options;
     return (opts.timeMode === 'timestamp' || !this.data.isGTS)
       ? date.toString()
       : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(date, this.divider, opts.timeZone), 1, opts.timeZone,
@@ -124,7 +133,8 @@ export class DiscoveryPageable {
           style={{width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'}}>{header}</th>)}</thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
-          <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}>
+          <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}
+              onMouseOver={() => this.setOver(value)}>
             {value.map((v, j) => <td><span innerHTML={j === 0 ? this.formatDate(v) : v}/></td>)}
           </tr>
         )}

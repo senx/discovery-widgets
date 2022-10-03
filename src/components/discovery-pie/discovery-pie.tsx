@@ -45,6 +45,7 @@ export class DiscoveryPieComponent {
 
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -318,6 +319,9 @@ export class DiscoveryPieComponent {
       });
       this.myChart.on('mouseover', (event: any) => {
         this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      });
+      this.myChart.on('click', (event: any) => {
+        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
       this.setOpts();
       initial = true;

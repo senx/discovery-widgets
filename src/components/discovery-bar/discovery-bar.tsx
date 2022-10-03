@@ -48,6 +48,7 @@ export class DiscoveryBarComponent {
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() leftMarginComputed: EventEmitter<number>;
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
 
   @State() parsing = false;
@@ -388,7 +389,7 @@ export class DiscoveryBarComponent {
         nameTextStyle: {color: Utils.getLabelColor(this.el)},
         type: !!(this.innerOptions.bar || {horizontal: false}).horizontal
           ? this.isGTS
-            ?  this.innerOptions.timeMode === 'date'
+            ? this.innerOptions.timeMode === 'date'
               ? 'time'
               : 'category'
             : 'category'
@@ -550,8 +551,14 @@ export class DiscoveryBarComponent {
         });
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
-      this.el.addEventListener('mouseover', () => this.hasFocus = true);
+      this.el.addEventListener('mouseover', (event: any) => {
+        this.hasFocus = true;
+        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      });
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
+      this.myChart.on('click', (event: any) => {
+        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      });
       this.setOpts();
       initial = true;
     });

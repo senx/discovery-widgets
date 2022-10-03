@@ -584,6 +584,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryAnnotationCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: DiscoveryAnnotationCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryAnnotationCustomEvent<number>) => void;
@@ -598,6 +599,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryBarCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryBarCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: DiscoveryBarCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBarCustomEvent<number>) => void;
@@ -627,6 +629,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryCalendarCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryCalendarCustomEvent<any>) => void;
         "onDraw"?: (event: DiscoveryCalendarCustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -664,6 +667,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryGaugeCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryGaugeCustomEvent<any>) => void;
         "onDraw"?: (event: DiscoveryGaugeCustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -675,6 +679,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryHeatmapCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryHeatmapCustomEvent<any>) => void;
         "onDraw"?: (event: DiscoveryHeatmapCustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -719,6 +724,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryLineCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryLineCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: DiscoveryLineCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryLineCustomEvent<number>) => void;
@@ -763,6 +769,7 @@ declare namespace LocalJSX {
         "divider"?: number;
         "elemsCount"?: number;
         "onDataPointOver"?: (event: DiscoveryPageableCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryPageableCustomEvent<any>) => void;
         "options"?: Param;
         "windowed"?: number;
     }
@@ -770,6 +777,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryPieCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryPieCustomEvent<any>) => void;
         "onDraw"?: (event: DiscoveryPieCustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
@@ -781,6 +789,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryProfileCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryProfileCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryProfileCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
         "onDraw"?: (event: DiscoveryProfileCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryProfileCustomEvent<number>) => void;
@@ -818,6 +827,8 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryTabularCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryTabularCustomEvent<any>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryTabularCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryTabularCustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

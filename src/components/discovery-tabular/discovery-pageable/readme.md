@@ -19,9 +19,10 @@
 
 ## Events
 
-| Event           | Description | Type               |
-| --------------- | ----------- | ------------------ |
-| `dataPointOver` |             | `CustomEvent<any>` |
+| Event               | Description | Type               |
+| ------------------- | ----------- | ------------------ |
+| `dataPointOver`     |             | `CustomEvent<any>` |
+| `dataPointSelected` |             | `CustomEvent<any>` |
 
 
 ## Dependencies

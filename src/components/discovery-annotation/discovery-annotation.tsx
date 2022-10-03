@@ -45,6 +45,7 @@ export class DiscoveryAnnotation {
   @Event() draw: EventEmitter<void>;
   @Event() dataZoom: EventEmitter<{ start: number, end: number, min: number, max: number }>;
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
   @Event() leftMarginComputed: EventEmitter<number>;
 
@@ -405,6 +406,9 @@ export class DiscoveryAnnotation {
     });
     this.myChart.on('mouseover', (event: any) => {
       this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+    });
+    this.myChart.on('click', (event: any) => {
+      this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
     });
     this.myChart.on('dataZoom', (event: any) => {
       const {start, end} = (event.batch || [])[0] || {};
