@@ -156,6 +156,9 @@ export class DiscoveryDisplayComponent {
   }
 
   private convert(dataModel: DataModel) {
+    if (!!this.timer) {
+      clearInterval(this.timer);
+    }
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams);
     this.innerOptions = {...options};
