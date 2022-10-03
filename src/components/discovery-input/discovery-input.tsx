@@ -229,7 +229,7 @@ export class DiscoveryInputComponent {
   }
 
   private handleClick = () => {
-    if (this.inputField && this.subType !== 'date' && this.subType !== 'date-range') {
+    if (this.inputField && this.subType !== 'date' && this.subType !== 'date-range' && this.subType !== 'multi') {
       if ('value' in this.inputField) {
         this.selectedValue = this.inputField.value;
       }
@@ -257,7 +257,7 @@ export class DiscoveryInputComponent {
     this.selectedValue = e.target.value || e.detail;
     if (this.type === 'input:multi' && e.target?.options) {
       this.selectedValue = Array.from(e.target.options)
-        .filter((o: HTMLOptionElement) => o.selected)
+        .filter((o: HTMLOptionElement) => !!o.selected)
         .map((o: HTMLOptionElement) => o.value);
     }
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
