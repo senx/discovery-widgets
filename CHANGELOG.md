@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.40
+
+> +  2022/10/04  | v1.1.40  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/59192a8eda09b2f6ef987f0036b4a67816a91d7f)*)
+> +  2022/10/04  | Fix event handling at dashboard level for an execution result.  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/e2355ef078146644aa0a0b38a6778ae466700efb)*)
+> +  2022/10/03  | update changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c8b145b36d505954b39c7a9ada986673c2d91eeb)*)
+
 ## v1.1.39
 
 > +  2022/10/03  | v1.1.39  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6d892dac6f239e6a696e69e8a44eb73e190f0cbf)*)
@@ -61,11 +67,5 @@ Discovery
 > +  2022/08/17  | fix profile component  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/cbb00bbc7ea43ac32071d47c8cae6c568e54ee6a)*)
 > +  2022/08/17  | add profile component  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c42d4664d34caa3956d59b8cf1fb5bbb095beb86)*)
 > +  2022/08/16  | fix slider's 0 value event handling  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/242a564d7bc02b44de0eef72e7e09a6cdce5171b)*)
-
-## v1.1.30
-
-> +  2022/07/21  | v1.1.30  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/e6aa0b2de4bdc89cdffac30ab45fa9233f514cf6)*)
-> +  2022/07/21  | fix list input reset on default value  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/bd4399debb67919221e76fc43d9a70737ac936ce)*)
-> +  2022/07/21  | fix auto timestamp mode  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/8ff036f23654dfdc88e18da0b874c0573db89381)*)
 
 
