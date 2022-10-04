@@ -271,12 +271,13 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
   private parseResult() {
     let tmpResult: Dashboard = new Dashboard();
-    this.options = {...this.options as Param, ...tmpResult.options};
     if (!!this.data && typeof this.data === 'string') {
-      tmpResult = JSON.parse(this.data) as Dashboard;
+      const res = JSON.parse(this.data);
+      tmpResult = GTSLib.isArray(res)? res[0]: res;
     } else {
-      tmpResult = this.data as Dashboard;
+      tmpResult = GTSLib.isArray(this.data)? this.data[0]: this.data;
     }
+    this.options = {...this.options as Param, ...tmpResult.options};
     this.innerType = tmpResult.type || this.type || 'dashboard';
     this.loaded = true;
     if (typeof tmpResult.tiles === 'string') {
