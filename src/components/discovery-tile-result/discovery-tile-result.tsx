@@ -53,6 +53,7 @@ export class DiscoveryTileResultComponent {
   @State() innerOptions: Param;
   @State() innerStyle: { [k: string]: string; };
   @State() innerType: ChartType;
+  @State() innerTitle: string;
 
   @Event({
     eventName: 'discoveryEvent',
@@ -533,8 +534,8 @@ export class DiscoveryTileResultComponent {
              color: this.fontColor,
              height: '100%', width: '100%'
            }}>
-        {this.innerOptions?.title || this.chartTitle ? <h2
-          ref={el => this.title = el as HTMLDivElement}>{this.innerOptions?.title || this.chartTitle || ''}</h2> : ''}
+        {this.innerTitle ? <h2
+          ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2> : ''}
         <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
         </div>
@@ -559,7 +560,9 @@ export class DiscoveryTileResultComponent {
   private parseResult() {
     setTimeout(() => {
       this.unit = (this.options as Param).unit || this.unit
+      this.innerOptions = {...this.innerOptions, ...(this.innerResult as unknown as DataModel)?.globalParams || {}};
       this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
+      this.innerTitle = this.innerOptions?.title || this.chartTitle || '';
       this.handleCSSColors();
       void this.parseEvents().then(() => {
         //
