@@ -453,7 +453,6 @@ export class DiscoveryMapComponent {
       case 'path': {
         icon = this.icon(gts.color, gts.marker);
         size = (gts.path || []).length;
-
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
           if (i > 0 || !gts.marker) {
