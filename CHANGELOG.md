@@ -1,6 +1,20 @@
 Discovery
 ---
 
+## v1.1.41
+
+> +  2022/10/14  | v1.1.41  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/af1565039f9c7d1d817b2d51b42b4211c562fb30)*)
+> +  2022/10/14  | fix display tile for HTML support  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/384f01366200a80d02b572b790ca569fe3dac846)*)
+> +  2022/10/14  | fix date display when time unit is ns  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/a570f146943c7ed464b7bc67bed08f258eaf51b3)*)
+> +  2022/10/14  | css color names support  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/410e6e62f6b024efdd9deb2f4d20861c4adf55a3)*)
+> +  2022/10/14  | fix dynamic tile title  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c46fa87de48012ea72ac6d29c273f7ea9b582bce)*)
+> +  2022/10/14  | add unit in slider  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/1271c5c4c24192fd33930a6c44750632a604bc23)*)
+> +  2022/10/14  | fix slider rounded values in tooltip and ruler  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/8882282e04bd18a39945a521fd851f4f65969046)*)
+> +  2022/10/14  | deps update  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/a69263f37e6922ed9cc902f90d8d0f81c128c9bb)*)
+> +  2022/10/14  | typo  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/50f856333677e73bf3688eb6633ce0c5c21b015c)*)
+> +  2022/10/14  | deps update  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/ff7aea25b1239b9f25f2c4cf207c4bb40a857fc8)*)
+> +  2022/10/04  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/494d6c3c56cb5be2406d0e8e733fef8edd5addf8)*)
+
 ## v1.1.40
 
 > +  2022/10/04  | v1.1.40  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/59192a8eda09b2f6ef987f0036b4a67816a91d7f)*)
@@ -54,18 +68,5 @@ Discovery
 > +  2022/08/19  | fix custom data support  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/86f05897242f9b768a5ba1bd0e052fa7af3284f6)*)
 > +  2022/08/19  | fix multi cb  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/fd1dc3567b63fe6e598c33a278dfec9f6dfa021e)*)
 > +  2022/08/19  | fix yLabelMapping  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c7757a27c1c83897e91397ec1c4cc19578852d6a)*)
-
-## v1.1.32
-
-> +  2022/08/19  | v1.1.32  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/23543ea9809c0ae9298c43cc266bb1533fcf46d8)*)
-> +  2022/08/19  | add polygons support on line/scatter family charts  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/e6dfafba1964fac21c6bd0cf780491c859c7c55c)*)
-> +  2022/08/18  | style  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c2dfa0d7b0b6b11f6dffb3504d2ebd6944d5377f)*)
-> +  2022/08/18  | add values  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/f94e72160f2ef3e55f1fe6d8788d2919e2c4ca59)*)
-> +  2022/08/18  | fix pointer in line chart  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/80c5626fe088cb160b6246a91119226938571851)*)
-> +  2022/08/18  | add custom Y axis Labels  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/ef43745de739f26842a06354c6a1d3af1f5e4984)*)
-> +  2022/08/18  | fix profile and annotation components  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/245f46a32054f4b0959a851dcb9ea1354b93a1a5)*)
-> +  2022/08/17  | fix profile component  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/cbb00bbc7ea43ac32071d47c8cae6c568e54ee6a)*)
-> +  2022/08/17  | add profile component  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c42d4664d34caa3956d59b8cf1fb5bbb095beb86)*)
-> +  2022/08/16  | fix slider's 0 value event handling  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/242a564d7bc02b44de0eef72e7e09a6cdce5171b)*)
 
 
