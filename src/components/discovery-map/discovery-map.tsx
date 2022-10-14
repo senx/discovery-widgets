@@ -552,7 +552,7 @@ export class DiscoveryMapComponent {
     if (!!positionData) {
       let date = ts;
       if (ts && (this.innerOptions.timeMode || 'date') === 'date') {
-        date = (GTSLib.toISOString(GTSLib.utcToZonedTime(ts, 1, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
+        date = (GTSLib.toISOString(GTSLib.utcToZonedTime(ts,  this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
           this.innerOptions.timeFormat) || '')
           .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }
@@ -560,7 +560,7 @@ export class DiscoveryMapComponent {
       content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value || 'na'}</p>`;
       Object.keys(positionData.properties || []).forEach(k => content += `<b>${k}</b>: ${positionData.properties[k]}<br />`);
 
-      if(!!positionData.tooltip[ts]) {
+      if (!!positionData.tooltip[ts]) {
         content += positionData.tooltip[ts];
       }
       marker.on('mouseover', () => {
