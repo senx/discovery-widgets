@@ -198,12 +198,12 @@ export class DiscoveryTileComponent {
   @Method()
   async exec(refresh = false) {
     return new Promise(resolve => {
-      if (this.el.innerText && this.el.innerText !== '') {
+      if (this.el.innerHTML && this.el.innerHTML !== '') {
         if (!refresh) {
           setTimeout(() => this.loaded = false);
         }
         this.ws = LangUtils.prepare(
-          this.el.innerText,
+          Utils.unsescape(this.el.innerHTML),
           this.innerVars || {},
           (this.options as Param)?.skippedVars || [],
           this.type,
@@ -334,7 +334,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               language={this.language}
               chart-title={this.chartTitle}
               vars={JSON.stringify(this.innerVars)}
-              ref={(el) => this.tileResult = el }
+              ref={(el) => this.tileResult = el}
             />
             {this.statusMessage
               ? <div class="discovery-tile-status">{this.statusMessage}</div>

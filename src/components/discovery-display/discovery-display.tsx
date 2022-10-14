@@ -57,7 +57,7 @@ export class DiscoveryDisplayComponent {
 
   private wrapper: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
-  private defOptions: Param = new Param();
+  private defOptions: Param = {...new Param(), responsive: true};
   private divider = 1000;
   private LOG: Logger;
   private timer: any;
@@ -206,14 +206,21 @@ export class DiscoveryDisplayComponent {
         if (this.fitties) {
           this.fitties.unsubscribe();
         }
-        this.fitties = fitty(this.wrapper, {maxSize: height * 0.80, minSize: 14});
-        this.fitties.element.addEventListener('fit', () => {
+        if (!!this.innerOptions.responsive) {
+          this.fitties = fitty(this.wrapper, {maxSize: height * 0.80, minSize: 14});
+          this.fitties.element.addEventListener('fit', () => {
+            if (this.initial) {
+              setTimeout(() => this.draw.emit());
+              this.initial = false;
+            }
+          });
+          this.fitties.fit();
+        } else {
           if (this.initial) {
             setTimeout(() => this.draw.emit());
             this.initial = false;
           }
-        });
-        this.fitties.fit();
+        }
       }
     }
   }

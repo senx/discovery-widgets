@@ -212,7 +212,7 @@ export class DiscoveryDashboardComponent {
   }
 
   exec() {
-    this.ws = this.warpscript || this.el.innerText;
+    this.ws = this.warpscript || Utils.unsescape(this.el.innerHTML);
     if (this.ws && this.ws !== '') {
       this.loaded = false;
       this.done = {};

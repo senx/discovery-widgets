@@ -107,6 +107,14 @@ export class Utils {
     }
   }
 
+  static unsescape(str: string) {
+    return str.replace(/&gt;/g, '>')
+      .replace(/&lt;/g, '<')
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, '\'')
+      .replace(/&amp;/g, '&');
+  }
+
   static parseEventData(evt: DiscoveryEvent, eventHandler: string) {
     const parsed = {
       style: undefined,
