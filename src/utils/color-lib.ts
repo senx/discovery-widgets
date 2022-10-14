@@ -13,6 +13,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+import cssColorNames from 'css-color-names'
+import isCssColorName from 'is-css-color-name'
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
@@ -152,7 +154,26 @@ export class ColorLib {
     ];
   }
 
+  static sanitizeColor(color: string) {
+    if (color.startsWith('#')) {
+      return color;
+    } else if (color.startsWith('rgb(')) {
+      const rex = /^rgb\((\d+), ?(\d+), ?(\d+)\)/gi
+      const res = rex.exec(color);
+      if (!res || res.length < 4) return color;
+      return ColorLib.rgb2hex(parseInt(res[1], 10), parseInt(res[2], 10), parseInt(res[3], 10))
+    } else if (color.startsWith('rgba(')) {
+      const rex = /^rgba\((\d+), ?(\d+), ?(\d+), ?\d\)/gi
+      const res = rex.exec(color);
+      if (!res || res.length < 4) return color;
+      return ColorLib.rgb2hex(res[1], res[2], res[3]);
+    } else {
+      return isCssColorName(color) ? cssColorNames[color.toLowerCase()] : color
+    }
+  }
+
   static getBlendedColorGradient(id: number, scheme: string, bg = '#000000') {
+    bg = ColorLib.sanitizeColor(bg);
     return [
       [0, ColorLib.blendColors(bg, ColorLib.getColor(id, scheme), 0)],
       [1, ColorLib.blendColors(bg, ColorLib.getColor(id, scheme), 1)]
@@ -173,6 +194,7 @@ export class ColorLib {
   }
 
   static transparentize(color, alpha = 0.5): string {
+    color = ColorLib.sanitizeColor(color);
     return 'rgba(' + ColorLib.hexToRgb(color).concat(alpha).join(',') + ')';
   }
 
@@ -324,6 +346,8 @@ export class ColorLib {
   }
 
   static blendColors(color1, color2, percentage) {
+    color1 = ColorLib.sanitizeColor(color1);
+    color2 = ColorLib.sanitizeColor(color2);
     // check input
     color1 = color1 || '#000000';
     color2 = color2 || '#ffff';
