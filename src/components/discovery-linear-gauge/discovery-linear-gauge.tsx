@@ -305,7 +305,7 @@ export class DiscoveryLinearGauge {
         : ''
     }</div>
       <span class="label">${GTSLib.formatLabel(data.key)}</span>
-      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}{this.innerOptions.unit || this.unit || ''}</span>`
+      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}${this.innerOptions.unit || this.unit || ''}</span>`
   }
 
   hideTooltip() {
