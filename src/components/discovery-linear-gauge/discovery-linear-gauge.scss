@@ -123,6 +123,18 @@
       height: var(--warp-view-progress-size, 1rem);
       width: 100%;
     }
+
+    .discovery-progress-container-vertical {
+      display: flex;
+      flex-direction: row;
+      font-size: .75rem;
+      background-color: var(--warp-view-progress-bg-color, #e9ecef);
+      border-radius: 0.25rem;
+      border: solid 1px var(--warp-view-chart-grid-color, #8e8e8e);
+      width: var(--warp-view-progress-size, 1rem);
+      height: 100%;
+    }
+
     .discovery-progress {
       display: flex;
       width: 100%;

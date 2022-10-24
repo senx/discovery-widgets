@@ -191,6 +191,7 @@ export class DiscoveryLinearGauge {
     for (let i = 0; i < gtsCount; i++) {
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      const unit = ((data.params || [])[i] || {}).unit || this.innerOptions.unit  || this.unit || '';
       const gts = gtsList[i];
       if (GTSLib.isGts(gts)) {
         let max: number = Number.MIN_VALUE;
@@ -219,7 +220,7 @@ export class DiscoveryLinearGauge {
         }
         dataStruct.push({
           key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          value, max, min, color, ts
+          value, max, min, color, ts, unit
         });
       } else {
         // custom data format
@@ -240,9 +241,9 @@ export class DiscoveryLinearGauge {
           }
         }
         if (gts.hasOwnProperty('value')) {
-          dataStruct.push({key: gts.key || '', value: gts.value || 0, max, min, color});
+          dataStruct.push({key: gts.key || '', value: gts.value || 0, max, min, color, unit});
         } else {
-          dataStruct.push({key: '', value: gts || 0, max, min, color});
+          dataStruct.push({key: '', value: gts || 0, max, min, color, unit});
         }
       }
     }
@@ -305,7 +306,7 @@ export class DiscoveryLinearGauge {
         : ''
     }</div>
       <span class="label">${GTSLib.formatLabel(data.key)}</span>
-      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}${this.innerOptions.unit || this.unit || ''}</span>`
+      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}${data.unit}</span>`
   }
 
   hideTooltip() {
@@ -331,12 +332,13 @@ export class DiscoveryLinearGauge {
           }>{this.innerOptions.showLegend && !this.innerOptions.gauge?.horizontal ?
             <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
             <h3
-              class="discovery-legend">{d.value || '0'}{this.innerOptions.unit || ''} {!this.innerOptions.gauge?.horizontal ?
+              class="discovery-legend">{d.value || '0'}{d.unit} {!this.innerOptions.gauge?.horizontal ?
               <br/> : ''}
               <span
-                class="small">of {d.value > 0 ? d.max: d.min}{this.innerOptions.unit || this.unit || ''}</span></h3>
+                class="small">of {d.value > 0 ? d.max: d.min}{d.unit}</span></h3>
             <div class={{
-              'discovery-progress-container-horizontal': this.innerOptions.gauge?.horizontal
+              'discovery-progress-container-horizontal': this.innerOptions.gauge?.horizontal,
+              'discovery-progress-container-vertical': !this.innerOptions.gauge?.horizontal
             }}>
               {d.min < 0 ?
                 <div class="discovery-progress negative" onMouseOver={() => this.showTooltip(d)}
