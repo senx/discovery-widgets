@@ -268,6 +268,7 @@ export class DiscoveryGauge {
       }
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      const unit = ((data.params || [])[i] || {}).unit || this.innerOptions.unit  || this.unit || '';
       const angles = DiscoveryGauge.getAngles(this.type)
       series.push({
         ...this.getCommonSeriesParam(color),
@@ -318,7 +319,7 @@ export class DiscoveryGauge {
         } : {show: false},
         radius: `${radius}%`,
         detail: {
-          formatter: '{value}' + (this.unit || this.innerOptions.unit || ''),
+          formatter: '{value}' + unit,
           fontSize: 12,
           offsetCenter: [0, this.type === 'gauge' ? '-20%' : this.type === 'compass' ? 40 : 0],
           color: Utils.getLabelColor(this.el)
