@@ -245,10 +245,9 @@ export class DiscoveryGauge {
         let max: number = this.innerOptions.maxValue || Number.MIN_VALUE;
         if (!!data.params && !!data.params[i] && !!data.params[i].maxValue) {
           max = data.params[i].maxValue;
+          overallMax = Math.max(max, overallMax);
         } else {
-          if (overallMax < gts || Number.MIN_VALUE) {
-            overallMax = gts || Number.MIN_VALUE;
-          }
+          overallMax = Math.max((gts.hasOwnProperty('value') ? gts.value : gts) || Number.MIN_VALUE, overallMax);
         }
         let min = 0;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
@@ -261,8 +260,7 @@ export class DiscoveryGauge {
         }
       }
     }
-    const radius = Math.round(100 / Math.ceil(gtsCount / 2)) *
-      (this.type === 'compass' ? 0.8 : 0.8);
+    const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * (this.type === 'compass' ? 0.8 : 0.8);
     let floor = 1;
     dataStruct.forEach((d, i) => {
       if (i % 2 === 0) {
@@ -275,7 +273,7 @@ export class DiscoveryGauge {
         ...this.getCommonSeriesParam(color),
         name: d.key,
         min: d.min,
-        max: Math.max(d.max, overallMax),
+        max: d.max === Number.MIN_VALUE ? overallMax : d.max,
         startAngle: angles.s,
         endAngle: angles.e,
         tooltip: {formatter: '{a} <br/>{b} : {c}%'},
@@ -340,7 +338,7 @@ export class DiscoveryGauge {
       },
       legend: {show: false},
       series,
-      ... this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 
