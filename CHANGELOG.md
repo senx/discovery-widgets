@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.42
+
+> +  2022/10/24  | v1.1.42  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/f0f56da027442bae20d4a15d23b63df2ae88e47b)*)
+> +  2022/10/24  | Fix gauges unit per series  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/af9f9d3a41c035141835dd5166b19a779267570e)*)
+> +  2022/10/24  | Fix linear gauges unit per series and vertical gauges display  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/4f0ca738b5dd82c4c0f4de179b8d8984023db19b)*)
+> +  2022/10/24  | Fix tooltip display for linear gauges  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/3c94bf4ba462c33e13eb7089cae65d7a115346fa)*)
+> +  2022/10/24  | Fix gauge fed with custom data  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/aa02fdb995d55a492ef1153819e1012b5661521f)*)
+> +  2022/10/14  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/112659798a6a2c500f7d0f57d90f7d0baa7be7e7)*)
+
 ## v1.1.41
 
 > +  2022/10/14  | v1.1.41  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/af1565039f9c7d1d817b2d51b42b4211c562fb30)*)
@@ -59,14 +68,5 @@ Discovery
 > +  2022/08/22  | fix left margin handling  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/814e22e17047d5196d7f069143b2b5478445e053)*)
 > +  2022/08/22  | fix expander hide/show  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/2b122da93ab45b9d36a6f6cd9240ce12f074177c)*)
 > +  2022/08/19  | add alpha support for markers  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/0f763850b3368cda32bff90650c8b07cc702ac63)*)
-
-## v1.1.34
-
-> +  2022/08/19  | v1.1.34  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/3582c7379a446ee0795a2b327694210137414208)*)
-> +  2022/08/19  | fix time bounds  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c6a4fc1e55246a7668e4f3bb33bae31b96b30036)*)
-> +  2022/08/19  | add marker support  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/f005f9cd06bb818465789f4a35cdb9888943a83d)*)
-> +  2022/08/19  | fix custom data support  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/86f05897242f9b768a5ba1bd0e052fa7af3284f6)*)
-> +  2022/08/19  | fix multi cb  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/fd1dc3567b63fe6e598c33a278dfec9f6dfa021e)*)
-> +  2022/08/19  | fix yLabelMapping  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c7757a27c1c83897e91397ec1c4cc19578852d6a)*)
 
 
