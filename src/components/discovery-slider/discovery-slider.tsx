@@ -126,7 +126,7 @@ export class DiscoverySlider {
         ? (GTSLib.toISOString(GTSLib.zonedTimeToUtc(v, 1, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
           this.innerOptions.timeFormat) || '')
           .replace('T', '<br />').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-        : parseFloat((v).toFixed(4)).toString() + this.innerOptions.unit || ''
+        : parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || '')
       ,
       from: Number
     };
@@ -141,7 +141,7 @@ export class DiscoverySlider {
       connect: this.innerOptions.input?.progress || this.progress ? 'lower' : false,
       orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
       tooltips: this.innerOptions.timeMode === 'date' ? true : {
-        to: v => parseFloat((v).toFixed(4)).toString() + this.innerOptions.unit || '',
+        to: v => parseFloat((v).toFixed(4)).toString() +  (this.innerOptions.unit || ''),
         from: v => parseFloat((v).toFixed(4))
       },
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
