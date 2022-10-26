@@ -117,7 +117,10 @@ export class DiscoverySlider {
   }
 
   private getSliderOptions() {
-    const minmax = {min: this.innerOptions.input?.min || 0, max: this.innerOptions.input?.max || 100}
+    const minmax = {
+      min: this.innerOptions.input?.min || 0,
+      max: (!!this.innerOptions.input?.max || this.innerOptions.input?.max === 0) ? this.innerOptions.input?.max : 100
+    }
     const start = this.innerValue;
     const range = minmax.max - minmax.min;
     const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
@@ -141,7 +144,7 @@ export class DiscoverySlider {
       connect: this.innerOptions.input?.progress || this.progress ? 'lower' : false,
       orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
       tooltips: this.innerOptions.timeMode === 'date' ? true : {
-        to: v => parseFloat((v).toFixed(4)).toString() +  (this.innerOptions.unit || ''),
+        to: v => parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || ''),
         from: v => parseFloat((v).toFixed(4))
       },
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
