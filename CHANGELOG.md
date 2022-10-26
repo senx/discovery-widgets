@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.1.43
+
+> +  2022/10/26  | v1.1.43  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/38c5e286991d949825ba8777b5def49ed3ebdfeb)*)
+> +  2022/10/26  | Fix slider max value when set to 0  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/47c9b10179bcb6186576f4ff032362df809cbc26)*)
+> +  2022/10/26  | Add Chip list component  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/54b69183a7ecb701904a86603178f9e8c815157b)*)
+> +  2022/10/25  | Fix slider unit display  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/06de1f3a8b8257deab88c5037e8453bde65d0f28)*)
+> +  2022/10/24  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/dd3dddb422018b07d175f00522d7372fcc866d31)*)
+
 ## v1.1.42
 
 > +  2022/10/24  | v1.1.42  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/f0f56da027442bae20d4a15d23b63df2ae88e47b)*)
@@ -60,13 +68,5 @@ Discovery
 
 > +  2022/08/22  | v1.1.36  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/5564bc7ae493586c2a25104daffe96710ee315d5)*)
 > +  2022/08/22  | fix timeMode timestamp in bar charts  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/611c915c6969cd3baeb68477ebb73dd5646715cb)*)
-
-## v1.1.35
-
-> +  2022/08/22  | v1.1.35  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/96de0e083c38becf2102f4c1dea98c39af57a7f8)*)
-> +  2022/08/22  | fix profile overflow  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/6d895fa42f2c7fedc4320cf13aed6ab4d5393d49)*)
-> +  2022/08/22  | fix left margin handling  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/814e22e17047d5196d7f069143b2b5478445e053)*)
-> +  2022/08/22  | fix expander hide/show  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/2b122da93ab45b9d36a6f6cd9240ce12f074177c)*)
-> +  2022/08/19  | add alpha support for markers  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/0f763850b3368cda32bff90650c8b07cc702ac63)*)
 
 
