@@ -29,7 +29,7 @@ export type ChartType =
   | 'rose'
   | 'tabular'
   | 'svg'
-  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:slider' | 'input:date' | 'input:date-range' | 'input:multi' | 'input:multi-cb'
+  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:chips' | 'input:chips-autocomplete' | 'input:slider' | 'input:date' | 'input:date-range' | 'input:multi' | 'input:multi-cb'
   | 'button' | 'button:radio'
   | 'hidden'
   | 'calendar' | 'heatmap'

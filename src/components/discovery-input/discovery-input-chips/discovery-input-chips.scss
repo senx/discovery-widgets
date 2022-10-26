@@ -1,0 +1,91 @@
+/*!
+ *   Copyright 2022  SenX S.A.S.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+@import "../../../scss/vars";
+
+:host {
+  position: relative;
+  --chip-input-font-size: var(--warp-view-input-font-size, 1rem);
+  --chip-input-border-radius: 0;
+  --chip-input-border-color: transparent;
+  --chip-input-border-width: 1px;
+  --chip-input-autocomplete-background: var(--warp-view-input-bg-color, #{$w10-white});
+  --chip-input-autocomplete-font-size: var(--warp-view-input-font-size, 1rem);
+  --chip-input-autocomplete-hover-background-color: var(--warp-view-autocomplete-hover-background-color, #{$w10-lightgrey});
+  --chip-background-color: var(--warp-view-chip-background-color, #{$w10-lightgrey});
+  --chip-height: 20px;
+  --chip-border-color: var(--warp-view-input-border-color, #{$w10-lightgrey});
+  --chip-border-width: 1px;
+  --chip-font-size: var(--warp-view-input-font-size, 1rem);
+  --chip-icon-height: 15px;
+  --chip-icon-width: 15px;
+  --chip-close-icon-height: var(--warp-view-input-font-size, 1rem);
+  --chip-close-icon-width: var(--warp-view-input-font-size, 1rem);
+  --chip-close-icon-fill: var(--warp-view-chip-close-icon-fill, #{$w10-charcoal-trans});
+  --chip-close-icon-hover-fill: var(--warp-view-chip-hover-fill, #{$w10-charcoal});
+
+  .wrapper {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    border-style: solid;
+    border-radius: var(--chip-input-border-radius, 0px);
+    border-color: var(--chip-input-border-color, transparent transparent #e0e0e0 transparent);
+    border-width: var(--chip-input-border-width, 0px 0px 2px 0px);
+    margin: 0;
+    padding: 0;
+    height: 32px;
+  }
+
+  .chip-input-autocomplete-container {
+    display: none;
+    position: absolute;
+    background-color: var(--chip-input-autocomplete-background-color, white);
+    border: 1px solid var(--warp-view-input-border-color, #{$w10-lightgrey});
+    border-radius: var(--warp-view-input-border-radius, 0.25rem);
+    font-size: var(--chip-input-autocomplete-font-size, 24px);
+    padding: var(--chip-input-autocomplete-padding, 5px 10px);
+    max-height: var(--chip-input-autocomplete-max-height, 200px);
+    overflow: auto;
+  }
+
+  .real_input {
+    font-size: var(--chip-input-font-size, 24px);
+    line-height: var(--chip-input-font-size, 24px);
+    border: none;
+    margin-left: 5px;
+    flex-shrink: 100;
+    flex-grow: 1;
+    flex-basis: 20%;
+    min-width: 20px;
+    background-color: transparent;
+    padding: 0;
+    height: 32px;
+
+    &:focus {
+      outline: none;
+
+    }
+  }
+
+  .caret_position_tracker {
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: -5000px;
+  }
+}

@@ -105,6 +105,8 @@ graph TD;
   discovery-tabular --> discovery-pageable
   discovery-svg --> discovery-spinner
   discovery-input --> discovery-slider
+  discovery-input --> discovery-input-chips
+  discovery-input-chips --> discovery-input-chips-chip
   discovery-calendar --> discovery-spinner
   discovery-heatmap --> discovery-spinner
   discovery-profile --> discovery-spinner

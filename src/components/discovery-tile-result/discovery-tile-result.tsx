@@ -395,6 +395,8 @@ export class DiscoveryTileResultComponent {
       case 'input:date-range':
       case 'input:multi':
       case 'input:multi-cb':
+      case 'input:chips':
+      case 'input:chips-autocomplete':
         return <discovery-input
           result={this.innerResult}
           type={this.innerType}

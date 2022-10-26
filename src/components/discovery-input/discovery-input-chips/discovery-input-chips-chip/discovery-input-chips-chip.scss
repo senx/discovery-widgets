@@ -1,0 +1,61 @@
+/*!
+ *   Copyright 2022  SenX S.A.S.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+:host {
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--chip-background-color, #f0f0f0);
+  border-color: var(--chip-border-color, transparent);
+  border-width: var(--chip-border-width, 0px);
+ // border-radius: 500px; /* this is a hack for variable size 'pill' shape, massive border radius gives auto-scaled pill */
+  font-size: var(--chip-font-size, 24px);
+  line-height: var(--chip-font-size, 24px);
+  white-space: nowrap;
+  border-radius: var(--warp-view-input-border-radius, 0.25rem);
+  margin-left: 3px;
+  padding: 5px;
+  height: 20px;
+
+  #label {
+    padding-left: 5px;
+  }
+
+  #close_icon {
+    cursor: pointer;
+  }
+
+  #icon {
+    height: var(--chip-icon-height, 16px);
+    width: var(--chip-icon-width, 16px);
+    object-fit: scale-down;
+  }
+  #close_icon {
+    height: var(--chip-close-icon-height, 16px);
+    width: var(--chip-close-icon-width, 16px);
+    object-fit: scale-down;
+    margin-left: 5px;
+    pointer-events: all;
+    display: inline-table;
+  }
+  #close_icon_stroke {
+    fill: var(--chip-close-icon-fill, lightgrey);
+
+  }
+  #close_icon:hover #close_icon_stroke {
+    fill: var(--chip-close-icon-hover-fill, lightblue);
+  }
+}

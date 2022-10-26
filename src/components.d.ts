@@ -154,6 +154,15 @@ export namespace Components {
         "url": string;
         "width": number;
     }
+    interface DiscoveryInputChips {
+        "autocomplete": (value: string) => Promise<any>;
+        "chips": string[];
+        "constrain_input": boolean;
+        "value": string;
+    }
+    interface DiscoveryInputChipsChip {
+        "label": string;
+    }
     interface DiscoveryLine {
         "debug": boolean;
         "export": (type?: 'png' | 'svg') => Promise<string>;
@@ -363,6 +372,14 @@ export interface DiscoveryInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoveryInputElement;
 }
+export interface DiscoveryInputChipsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDiscoveryInputChipsElement;
+}
+export interface DiscoveryInputChipsChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDiscoveryInputChipsChipElement;
+}
 export interface DiscoveryLineCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoveryLineElement;
@@ -474,6 +491,18 @@ declare global {
         prototype: HTMLDiscoveryInputElement;
         new (): HTMLDiscoveryInputElement;
     };
+    interface HTMLDiscoveryInputChipsElement extends Components.DiscoveryInputChips, HTMLStencilElement {
+    }
+    var HTMLDiscoveryInputChipsElement: {
+        prototype: HTMLDiscoveryInputChipsElement;
+        new (): HTMLDiscoveryInputChipsElement;
+    };
+    interface HTMLDiscoveryInputChipsChipElement extends Components.DiscoveryInputChipsChip, HTMLStencilElement {
+    }
+    var HTMLDiscoveryInputChipsChipElement: {
+        prototype: HTMLDiscoveryInputChipsChipElement;
+        new (): HTMLDiscoveryInputChipsChipElement;
+    };
     interface HTMLDiscoveryLineElement extends Components.DiscoveryLine, HTMLStencilElement {
     }
     var HTMLDiscoveryLineElement: {
@@ -564,6 +593,8 @@ declare global {
         "discovery-hidden": HTMLDiscoveryHiddenElement;
         "discovery-image": HTMLDiscoveryImageElement;
         "discovery-input": HTMLDiscoveryInputElement;
+        "discovery-input-chips": HTMLDiscoveryInputChipsElement;
+        "discovery-input-chips-chip": HTMLDiscoveryInputChipsChipElement;
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-linear-gauge": HTMLDiscoveryLinearGaugeElement;
         "discovery-map": HTMLDiscoveryMapElement;
@@ -719,6 +750,20 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "url"?: string;
         "width"?: number;
+    }
+    interface DiscoveryInputChips {
+        "autocomplete"?: (value: string) => Promise<any>;
+        "chips"?: string[];
+        "constrain_input"?: boolean;
+        "onChipChange"?: (event: DiscoveryInputChipsCustomEvent<string[]>) => void;
+        "onChipClick"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
+        "onChipCreate"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
+        "onChipInput"?: (event: DiscoveryInputChipsCustomEvent<void>) => void;
+        "value"?: string;
+    }
+    interface DiscoveryInputChipsChip {
+        "label"?: string;
+        "onRemoveChip"?: (event: DiscoveryInputChipsChipCustomEvent<string>) => void;
     }
     interface DiscoveryLine {
         "debug"?: boolean;
@@ -877,6 +922,8 @@ declare namespace LocalJSX {
         "discovery-hidden": DiscoveryHidden;
         "discovery-image": DiscoveryImage;
         "discovery-input": DiscoveryInput;
+        "discovery-input-chips": DiscoveryInputChips;
+        "discovery-input-chips-chip": DiscoveryInputChipsChip;
         "discovery-line": DiscoveryLine;
         "discovery-linear-gauge": DiscoveryLinearGauge;
         "discovery-map": DiscoveryMap;
@@ -907,6 +954,8 @@ declare module "@stencil/core" {
             "discovery-hidden": LocalJSX.DiscoveryHidden & JSXBase.HTMLAttributes<HTMLDiscoveryHiddenElement>;
             "discovery-image": LocalJSX.DiscoveryImage & JSXBase.HTMLAttributes<HTMLDiscoveryImageElement>;
             "discovery-input": LocalJSX.DiscoveryInput & JSXBase.HTMLAttributes<HTMLDiscoveryInputElement>;
+            "discovery-input-chips": LocalJSX.DiscoveryInputChips & JSXBase.HTMLAttributes<HTMLDiscoveryInputChipsElement>;
+            "discovery-input-chips-chip": LocalJSX.DiscoveryInputChipsChip & JSXBase.HTMLAttributes<HTMLDiscoveryInputChipsChipElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-linear-gauge": LocalJSX.DiscoveryLinearGauge & JSXBase.HTMLAttributes<HTMLDiscoveryLinearGaugeElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;

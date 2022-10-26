@@ -55,8 +55,8 @@ export class DiscoveryInputComponent {
 
   @State() parsing = false;
   @State() rendering = false;
-  @State() value: string | number | number[] | string[] = '';
-  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' = 'text';
+  @State() value: string | number | number[] | string[] | any [] = '';
+  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' | 'chips' | 'chips-autocomplete' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label = 'Ok';
@@ -66,7 +66,7 @@ export class DiscoveryInputComponent {
   private defOptions: Param = new Param();
   private innerOptions: Param = new Param();
   private LOG: Logger;
-  private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement;
+  private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
   private disabled = false;
   private min = 0;
   private max = 100;
@@ -231,7 +231,14 @@ export class DiscoveryInputComponent {
   }
 
   private handleClick = () => {
-    if (this.inputField && this.subType !== 'date' && this.subType !== 'date-range' && this.subType !== 'multi') {
+    if (
+      this.inputField &&
+      this.subType !== 'date' &&
+      this.subType !== 'date-range' &&
+      this.subType !== 'multi' &&
+      this.subType !== 'chips' &&
+      this.subType !== 'chips-autocomplete'
+    ) {
       if ('value' in this.inputField) {
         this.selectedValue = this.inputField.value;
       }
@@ -257,12 +264,15 @@ export class DiscoveryInputComponent {
 
   private handleSelect(e) {
     this.selectedValue = e.target.value || e.detail;
-    if (this.type === 'input:multi' && e.target?.options) {
+    if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
+      this.selectedValue = e.detail;
+    }
+    if (this.subType === 'multi' && e.target?.options) {
       this.selectedValue = Array.from(e.target.options)
         .filter((o: HTMLOptionElement) => !!o.selected)
         .map((o: HTMLOptionElement) => o.value);
     }
-    if (this.type === 'input:multi-cb' && this.checkBoxes) {
+    if (this.subType === 'multi-cb' && this.checkBoxes) {
       this.selectedValue = Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
         .filter((o: HTMLInputElement) => o.checked)
         .map((o: HTMLInputElement) => o.value);
@@ -322,14 +332,14 @@ export class DiscoveryInputComponent {
         this.selectedValue = this.value;
         this.innerOptions.input = this.innerOptions.input || {};
         this.innerOptions.input.value = this.value as number;
-        void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number).then(() => {
-          //
-        })
+        void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number);
         break;
       case 'list':
       case 'multi':
       case 'multi-cb':
       case 'autocomplete':
+      case 'chips':
+      case 'chips-autocomplete':
         this.values = [];
         if (GTSLib.isArray(data) && data.length > 0) {
           this.values = data as any[];
@@ -349,9 +359,15 @@ export class DiscoveryInputComponent {
           (this.inputField as HTMLSelectElement).selectedIndex = index;
         }
         setTimeout(() => {
-          this.value = (this.innerOptions.input || {value: ''}).value || '';
+          let value: string | number | number[] | string[] = (this.innerOptions.input || {value: ''}).value || '';
+          if (this.subType === 'multi' || this.subType === 'multi-cb' || this.subType === 'chips' || this.subType === 'chips-autocomplete') {
+            if (!GTSLib.isArray(value)) {
+              value = [value] as number[] | string[];
+            }
+          }
+          this.value = value;
           this.selectedValue = this.value;
-        })
+        });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {
             src: this.values,
@@ -406,48 +422,60 @@ export class DiscoveryInputComponent {
     }
   }
 
+  private handleAutoComplete(input: string) {
+    if (this.subType === 'chips-autocomplete') {
+      return this.values
+        .filter(v => v.k.match(new RegExp('^.*' + input + '.*$')))
+        .map(v => {
+          return v.k
+        });
+    } else {
+      return [];
+    }
+  }
+
   private getInput() {
     switch (this.subType) {
       case 'text':
         return <input type="text" class="discovery-input" value={this.value as string}
                       onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el}
-        />
+        />;
       case 'secret':
         return <input type="password" class="discovery-input" value={this.value as string}
                       onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el}
-        />
+        />;
       case 'date':
         return <input type="text" class="discovery-input"
                       ref={el => this.inputField = el}
-        />
+        />;
       case 'date-range':
         return <input type="text" class="discovery-input"
                       ref={el => this.inputField = el}
-        />
+        />;
       case 'autocomplete':
         return <input type="text" class="discovery-input" value={this.value as string}
                       ref={el => this.inputField = el}
-        />
+        />;
       case 'slider':
         return <div class="slider-wrapper" ref={el => this.pngWrapper = el}>
           <discovery-slider options={this.innerOptions}
                             onValueChanged={e => this.handleSelect(e)}
                             ref={el => this.inputField = el}
           />
-        </div>
+        </div>;
       case 'list':
         return <select class="discovery-input" onInput={e => this.handleSelect(e)}
                        ref={el => this.inputField = el}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
-        </select>
+        </select>;
       case 'multi':
         return <select class="discovery-input" onInput={e => this.handleSelect(e)} multiple
                        ref={el => this.inputField = el}>
           {this.values.map(v => (
             <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
-        </select>
+        </select>;
       case 'multi-cb':
         return <div class="multi-cb-wrapper" ref={el => this.pngWrapper = el}>
           <div class="multi-cb-layout">
@@ -477,7 +505,18 @@ export class DiscoveryInputComponent {
                         onClick={this.handleClick}>{this.label}</button>
               </div> : ''}
           </div>
-        </div>
+        </div>;
+      case 'chips':
+      case 'chips-autocomplete':
+        return <div class="chips-input-wrapper">
+          <discovery-input-chips
+            ref={el => this.inputField = el}
+            chips={this.value as string[]}
+            autocomplete={this.handleAutoComplete.bind(this)}
+            onChipChange={e => this.handleSelect(e)}
+            constrain_input={this.subType === 'chips-autocomplete'}
+          ></discovery-input-chips>
+        </div>;
       default:
         return '';
     }
