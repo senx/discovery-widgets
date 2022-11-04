@@ -551,11 +551,11 @@ export class DiscoveryBarComponent {
         });
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
-      this.el.addEventListener('mouseover', (event: any) => {
-        this.hasFocus = true;
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
-      });
+      this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => this.hasFocus = false);
+      this.myChart.on('mouseover', (event: any) => {
+        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      });
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });

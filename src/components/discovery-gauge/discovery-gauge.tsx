@@ -268,7 +268,7 @@ export class DiscoveryGauge {
       }
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-      const unit = ((data.params || [])[i] || {}).unit || this.innerOptions.unit  || this.unit || '';
+      const unit = ((data.params || [])[i] || {}).unit || this.innerOptions.unit || this.unit || '';
       const angles = DiscoveryGauge.getAngles(this.type)
       series.push({
         ...this.getCommonSeriesParam(color),

@@ -291,7 +291,7 @@ export class DiscoveryPieComponent {
         show: false
       },
       series,
-      ... this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 

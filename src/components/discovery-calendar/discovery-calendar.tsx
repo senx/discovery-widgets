@@ -280,7 +280,7 @@ export class DiscoveryCalendar {
       visualMap,
       series,
       calendar,
-      ... this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
   }
 
