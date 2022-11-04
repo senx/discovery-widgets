@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.44
+
+> +  2022/11/04  | v1.1.44  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/de6e25e27697cd03040798be824196f15e81d4ce)*)
+> +  2022/11/04  | Fix on mouse over error  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6ded077423b8eadcc88287e14d7e0c14e6274935)*)
+> +  2022/10/26  | Changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/251262ffbe525d2f07d101f6f61e5ad5b329e826)*)
+
 ## v1.1.43
 
 > +  2022/10/26  | v1.1.43  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/38c5e286991d949825ba8777b5def49ed3ebdfeb)*)
@@ -63,10 +69,5 @@ Discovery
 > +  2022/08/24  | update readme  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/557305d7b7d730ba62db6ed577b6c3cbb9a7d15e)*)
 > +  2022/08/24  | update copyright  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/2308bd06a78e0c822f71cd5f7d817792f5af11c3)*)
 > +  2022/08/23  | fix timeMode timestamp in bar charts  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/ef8e7b3fcbd58ca8b1ae3d4125139de6d436c3f3)*)
-
-## v1.1.36
-
-> +  2022/08/22  | v1.1.36  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/5564bc7ae493586c2a25104daffe96710ee315d5)*)
-> +  2022/08/22  | fix timeMode timestamp in bar charts  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/611c915c6969cd3baeb68477ebb73dd5646715cb)*)
 
 
