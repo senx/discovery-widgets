@@ -140,7 +140,7 @@ export class MapLib {
     },
   };
 
-  static toLeafletMapPaths(data: { gts: any[]; params: any[] }, hiddenData: { [key: string]: boolean }, scheme: string) {
+  static toLeafletMapPaths(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: { [key: string]: boolean }, scheme: string) {
     const paths = [];
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
@@ -155,11 +155,11 @@ export class MapLib {
         path.tooltip = gts.tooltip;
         MapLib.extractCommonParameters(path, params, i, scheme);
         path.path = MapLib.gtsToPath(gts);
-        if (!!params.render) {
-          path.render = params.render;
+        if (!!params.render || data.globalParams?.map?.render) {
+          path.render = params.render || data.globalParams?.map?.render;
         }
-        if (!!params.marker) {
-          path.marker = params.marker;
+        if (!!params.marker|| data?.globalParams?.map?.marker) {
+          path.marker = params.marker || data?.globalParams?.map?.marker;
         }
         path.line = params.hasOwnProperty('line') ? params.line : true;
         path.render = path.render || 'dots';
@@ -267,7 +267,7 @@ export class MapLib {
     return true;
   }
 
-  static toLeafletMapPositionArray(data: { gts: any[]; params: any[] }, hiddenData: number[], scheme: string) {
+  static toLeafletMapPositionArray(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: number[], scheme: string) {
     const positions = [];
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
@@ -280,7 +280,7 @@ export class MapLib {
         const posArray = gts;
         const gtsParam = data.params ? data.params[i] || {} : {};
         MapLib.extractCommonParameters(posArray, gtsParam, i, scheme);
-        posArray.render = gtsParam.render || 'dots';
+        posArray.render = gtsParam.render || globalParams?.map?.render || 'dots';
         posArray.maxValue = gtsParam.maxValue || 0;
         posArray.minValue = gtsParam.minValue || 0;
         posArray.line = gtsParam.hasOwnProperty('line') ? gtsParam.line : false;
@@ -291,7 +291,7 @@ export class MapLib {
           MapLib.validateWeightedColoredDotsPositionArray(posArray, gtsParam);
         }
         if (posArray.render === 'marker') {
-          posArray.marker = gtsParam.marker;
+          posArray.marker = gtsParam.marker || data?.globalParams?.map?.marker;
         }
         if (data.params && data.params[i] && data.params[i].color) {
           posArray.color = data.params[i].color;

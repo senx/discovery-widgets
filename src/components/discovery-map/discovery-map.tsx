@@ -207,8 +207,8 @@ export class DiscoveryMapComponent {
         }
       }
     })
-    this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params}, this.hidden, this.innerOptions.scheme) || [];
-    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params}, [], this.innerOptions.scheme) || [];
+    this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params, globalParams: this.innerOptions}, this.hidden, this.innerOptions.scheme) || [];
+    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params, globalParams: this.innerOptions}, [], this.innerOptions.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
 
     if (this.mapOpts.mapType !== 'NONE') {
@@ -437,9 +437,17 @@ export class DiscoveryMapComponent {
   private icon(color: string, marker = '') {
     const c = `${color.slice(1)}`;
     const m = marker !== '' ? marker : 'circle';
+    let iconUrl = '';
+    if(marker.startsWith('http') || marker.startsWith('data:image') ) {
+      iconUrl = marker;
+    } else if (marker.startsWith('<svg')) {
+      iconUrl = 'data:image/svg+xml;base64,' + window.btoa(marker);
+    } else {
+      iconUrl = `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=14&size=40&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`;
+    }
     return Leaflet.icon({
       // eslint-disable-next-line max-len
-      iconUrl: `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=14&size=40&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`,
+      iconUrl,
       iconAnchor: this.iconAnchor,
       popupAnchor: this.popupAnchor
     });
@@ -552,7 +560,7 @@ export class DiscoveryMapComponent {
     if (!!positionData) {
       let date = ts;
       if (ts && (this.innerOptions.timeMode || 'date') === 'date') {
-        date = (GTSLib.toISOString(GTSLib.utcToZonedTime(ts,  this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+        date = (GTSLib.toISOString(GTSLib.utcToZonedTime(ts, this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
           this.innerOptions.timeFormat) || '')
           .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }

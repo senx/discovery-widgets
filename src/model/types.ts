@@ -50,6 +50,7 @@ export type MapParams = {
   startZoom?: number;
   animate?: boolean;
   marker?: string;
+  render?: string;
   maxNativeZoom?: number;
   maxZoom?: number;
   track?: boolean;
