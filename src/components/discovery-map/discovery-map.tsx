@@ -336,6 +336,7 @@ export class DiscoveryMapComponent {
       if (m.geometry.type === 'Point') {
         opts.pointToLayer = (geoJsonPoint, latlng) => Leaflet.marker(latlng, {
           icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || {marker: 'circle'}).marker : 'circle'),
+          riseOnHover: true,
           opacity: 1,
         });
       }
@@ -480,13 +481,14 @@ export class DiscoveryMapComponent {
                 radius: gts.baseRadius || MapLib.BASE_RADIUS,
                 color: gts.color,
                 fillColor: gts.color,
-                fillOpacity: 1
+                fillOpacity: 1,
+                riseOnHover: true,
               }
             );
             this.addPopup(gts, g.val, g.ts, marker);
             dots.push(marker);
           } else {
-            const marker = Leaflet.marker(g, {icon, opacity: 1});
+            const marker = Leaflet.marker(g, {icon, riseOnHover: true, opacity: 1});
             this.addPopup(gts, g.val, g.ts, marker);
             dots.push(marker);
           }
@@ -498,7 +500,7 @@ export class DiscoveryMapComponent {
         size = (gts.path || []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
-          const marker = Leaflet.marker(g, {icon, opacity: 1});
+          const marker = Leaflet.marker(g, {icon, riseOnHover: true, opacity: 1});
           this.addPopup(gts, g.val, g.ts, marker);
           dots.push(marker);
         }
@@ -517,6 +519,7 @@ export class DiscoveryMapComponent {
               radius: radius === 0 ? 1 : radius,
               color: gts.borderColor || 'transparent',
               fillColor: gts.color, fillOpacity: 0.5,
+              riseOnHover: true,
               weight: 1
             });
           this.addPopup(gts, p.val, p.ts, marker);
@@ -532,6 +535,7 @@ export class DiscoveryMapComponent {
             g, {
               radius: gts.baseRadius || MapLib.BASE_RADIUS,
               color: gts.color,
+              riseOnHover: true,
               fillColor: gts.color,
               fillOpacity: 1
             }
@@ -670,7 +674,7 @@ export class DiscoveryMapComponent {
         size = (positionData.positions || []).length;
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
-          const marker = Leaflet.marker({lat: p[0], lng: p[1]}, {icon, opacity: 1});
+          const marker = Leaflet.marker({lat: p[0], lng: p[1]}, {icon,            riseOnHover: true,opacity: 1});
           this.addPopup(positionData, p[2], undefined, marker);
           group.addLayer(marker);
         }
@@ -699,6 +703,7 @@ export class DiscoveryMapComponent {
                 positionData.colorGradient[p[5]].r,
                 positionData.colorGradient[p[5]].g,
                 positionData.colorGradient[p[5]].b),
+              riseOnHover: true,
               fillOpacity: 0.3,
             });
           this.addPopup(positionData, p[2], undefined, marker);
@@ -716,6 +721,7 @@ export class DiscoveryMapComponent {
               color: positionData.borderColor || positionData.color,
               fillColor: positionData.color,
               weight: 2,
+              riseOnHover: true,
               fillOpacity: 0.3,
             });
           this.addPopup(positionData, p[2], undefined, marker);
@@ -733,6 +739,7 @@ export class DiscoveryMapComponent {
               color: positionData.borderColor || positionData.color,
               fillColor: positionData.color,
               weight: 2,
+              riseOnHover: true,
               fillOpacity: 0.7,
             });
           this.addPopup(positionData, p[2] || 'na', undefined, marker);
