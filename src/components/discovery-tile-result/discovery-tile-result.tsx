@@ -246,6 +246,15 @@ export class DiscoveryTileResultComponent {
       });
   }
 
+  handleGeoBounds(event: CustomEvent) {
+    ((this.innerResult as unknown as DataModel).events || [])
+      .filter(e => e.type === 'bounds')
+      .forEach(e => {
+        e.value = event.detail;
+        this.discoveryEvent.emit(e);
+      });
+  }
+
   getView() {
     switch (this.innerType) {
       case 'line':
@@ -308,6 +317,8 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
+          onGeoBounds={event => this.handleGeoBounds(event)}
           debug={this.debug}
         />;
       case 'image':

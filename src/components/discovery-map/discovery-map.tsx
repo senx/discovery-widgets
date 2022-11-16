@@ -47,6 +47,8 @@ export class DiscoveryMapComponent {
 
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
+  @Event() dataPointSelected: EventEmitter;
+  @Event() geoBounds: EventEmitter<string>;
 
   @State() parsing = false;
   @State() toDisplay: string[] = [];
@@ -207,8 +209,16 @@ export class DiscoveryMapComponent {
         }
       }
     })
-    this.pathData = MapLib.toLeafletMapPaths({gts: dataList, params, globalParams: this.innerOptions}, this.hidden, this.innerOptions.scheme) || [];
-    this.positionData = MapLib.toLeafletMapPositionArray({gts: dataList, params, globalParams: this.innerOptions}, [], this.innerOptions.scheme) || [];
+    this.pathData = MapLib.toLeafletMapPaths({
+      gts: dataList,
+      params,
+      globalParams: this.innerOptions
+    }, this.hidden, this.innerOptions.scheme) || [];
+    this.positionData = MapLib.toLeafletMapPositionArray({
+      gts: dataList,
+      params,
+      globalParams: this.innerOptions
+    }, [], this.innerOptions.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
 
     if (this.mapOpts.mapType !== 'NONE') {
@@ -267,6 +277,7 @@ export class DiscoveryMapComponent {
       this.map.on('zoomend', () => {
         if (!this.firstDraw) {
           this.currentZoom = this.map.getZoom();
+          this.geoBounds.emit(this.map.getBounds().toBBoxString());
         }
       });
       this.map.on('moveend', () => {
@@ -437,8 +448,8 @@ export class DiscoveryMapComponent {
   private icon(color: string, marker = '') {
     const c = `${color.slice(1)}`;
     const m = marker !== '' ? marker : 'circle';
-    let iconUrl = '';
-    if(marker.startsWith('http') || marker.startsWith('data:image') ) {
+    let iconUrl;
+    if (marker.startsWith('http') || marker.startsWith('data:image')) {
       iconUrl = marker;
     } else if (marker.startsWith('<svg')) {
       iconUrl = 'data:image/svg+xml;base64,' + window.btoa(marker);
@@ -594,9 +605,13 @@ export class DiscoveryMapComponent {
       this.markersRef[positionData.key][ts] = marker;
       marker.bindPopup(content, {autoClose: true});
     }
-    marker.on('mouseout', () => {
-      this.markerOver = false;
-    })
+    marker.on('mouseout', () => this.markerOver = false);
+    marker.on('click', () => this.dataPointSelected.emit({
+      date: ts,
+      name: positionData.key,
+      value,
+      meta: positionData.properties
+    }));
   }
 
   @Method()
