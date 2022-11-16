@@ -249,7 +249,7 @@ export class DiscoveryBarComponent {
         this.LOG?.debug(['convert', 'gts'], gts);
         (gts.columns || []).forEach((label, index: number) => {
           const c = ColorLib.getColor(gts.id || index, this.innerOptions.scheme);
-          const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+          const color = ((data.params || [])[index] || {datasetColor: c}).datasetColor || c;
           series.push({
             ...this.getCommonSeriesParam(color),
             name: label,
