@@ -34,7 +34,7 @@ Type: `Promise<any>`
 
 
 
-### `setValue(value: number) => Promise<void>`
+### `setValue(value: number | number[]) => Promise<void>`
 
 
 

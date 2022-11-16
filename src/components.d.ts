@@ -256,7 +256,7 @@ export namespace Components {
         "export": (type: 'png' | 'svg', bgColor: string) => Promise<any>;
         "options": Param | string;
         "progress": boolean;
-        "setValue": (value: number) => Promise<void>;
+        "setValue": (value: number | number[]) => Promise<void>;
     }
     interface DiscoverySpinner {
         "message": string;

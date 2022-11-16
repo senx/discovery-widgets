@@ -46,7 +46,7 @@ export class DiscoverySlider {
   private LOG: Logger;
   private slider: API;
   private divider: number;
-  private innerValue: number;
+  private innerValue: number | number[];
 
 
   @Watch('options')
@@ -86,13 +86,13 @@ export class DiscoverySlider {
   }
 
   componentDidLoad() {
-    this.innerValue = this.innerValue || this.innerOptions.input?.value as number || this.innerOptions.input?.min || 0;
+    this.innerValue = this.innerValue || this.innerOptions.input?.value as number | number[] || this.innerOptions.input?.min || 0;
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
     this.setChangeListener();
   }
 
   @Method()
-  async setValue(value: number) {
+  async setValue(value: number | number[]) {
     this.innerValue = value;
     this.slider.set(value);
     return Promise.resolve();
@@ -138,10 +138,14 @@ export class DiscoverySlider {
     } else {
       this.sliderDiv.classList.remove('discovery-date');
     }
+    let connect: boolean | boolean[] | string | string[] = this.innerOptions.input?.progress || this.progress ? 'lower' : false;
+    if(GTSLib.isArray(this.innerValue)) {
+      connect = true;
+    }
     return {
       format,
       start,
-      connect: this.innerOptions.input?.progress || this.progress ? 'lower' : false,
+      connect,
       orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
       tooltips: this.innerOptions.timeMode === 'date' ? true : {
         to: v => parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || ''),
@@ -161,14 +165,21 @@ export class DiscoverySlider {
 
   private setChangeListener() {
     const throttledHandler = v => {
-      const r = this.innerOptions.timeMode === 'date'
-        ? GTSLib.zonedTimeToUtc(v, 1, this.innerOptions.timeZone)
-        : Number(v);
+      let r;
+      if (GTSLib.isArray(v) && v.length > 1) {
+        r = this.innerOptions.timeMode === 'date'
+          ? [GTSLib.zonedTimeToUtc(v[0], 1, this.innerOptions.timeZone), GTSLib.zonedTimeToUtc(v[1], 1, this.innerOptions.timeZone)]
+          : [Number(v[0]), Number(v[1])];
+      } else {
+        r = this.innerOptions.timeMode === 'date'
+          ? GTSLib.zonedTimeToUtc(v[0], 1, this.innerOptions.timeZone)
+          : Number(v[0]);
+      }
       this.valueChanged.emit(r);
     };
     const handler = Utils.throttle(throttledHandler, 200);
     this.slider.on(this.innerOptions.input?.immediate ? 'slide' : 'change', (values, handle, unencoded) => {
-      handler(unencoded[0] || 0);
+      handler(unencoded || [0]);
     });
   }
 }

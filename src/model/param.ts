@@ -103,7 +103,7 @@ export class Param {
   };
   input?: {
     showButton?: boolean,
-    value?: string | number,
+    value?: string | number | number[],
     min?: number,
     max?: number,
     step?: number,
