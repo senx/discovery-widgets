@@ -57,6 +57,7 @@ export type MapParams = {
   step?: number;
   delay?: number;
   tooltip?:any;
+  iconSize?: number| number[];
 };
 export type Dataset = {
   name: string;

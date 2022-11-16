@@ -291,13 +291,13 @@ export class DiscoveryMapComponent {
     for (let i = 0; i < pathDataSize; i++) {
       const path = this.pathData[i];
       if (!!path) {
-        this.updateGtsPath(path);
+        this.updateGtsPath(path, data.params[i]);
       }
     }
     this.LOG?.debug(['displayMap'], 'pathData', this.pathData);
     const positionsSize = (this.positionData || []).length;
     for (let i = 0; i < positionsSize; i++) {
-      this.updatePositionArray(this.positionData[i]);
+      this.updatePositionArray(this.positionData[i], data.params[i]);
     }
     this.LOG?.debug(['displayMap'], 'positionData', this.positionData);
     (this.mapOpts.tiles || []).forEach(t => {
@@ -335,7 +335,7 @@ export class DiscoveryMapComponent {
       } as any;
       if (m.geometry.type === 'Point') {
         opts.pointToLayer = (geoJsonPoint, latlng) => Leaflet.marker(latlng, {
-          icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || {marker: 'circle'}).marker : 'circle'),
+          icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || {marker: 'circle'}).marker : 'circle', (data.params && data.params[i])),
           riseOnHover: true,
           opacity: 1,
         });
@@ -446,32 +446,41 @@ export class DiscoveryMapComponent {
       }, 500));
   }
 
-  private icon(color: string, marker = '') {
+  private icon(color: string, marker = '', param: Param) {
     const c = `${color.slice(1)}`;
     const m = marker !== '' ? marker : 'circle';
     let iconUrl;
+    let iconSize = [48, 48];
+    let iconAnchor = [24, 24];
+    if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
+      const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || [48, 48];
+      iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
+      iconAnchor = [iconSize[0] / 2, iconSize[0] / 2];
+    }
     if (marker.startsWith('http') || marker.startsWith('data:image')) {
       iconUrl = marker;
     } else if (marker.startsWith('<svg')) {
       iconUrl = 'data:image/svg+xml;base64,' + window.btoa(marker);
     } else {
-      iconUrl = `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=14&size=40&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`;
+      iconAnchor = [20, 38];
+      const margin = 2;
+      if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
+        const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || [40, 40];
+        iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
+        iconAnchor = [iconSize[0] / 2, iconSize[0] - margin];
+      }
+      iconUrl = `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=${iconSize[0] / 2 - margin * 2 }&size=${iconSize[0]}&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`;
     }
-    return Leaflet.icon({
-      // eslint-disable-next-line max-len
-      iconUrl,
-      iconAnchor: this.iconAnchor,
-      popupAnchor: this.popupAnchor
-    });
+    return Leaflet.icon({iconUrl, iconAnchor, iconSize, popupAnchor: this.popupAnchor});
   }
 
-  private getGTSDots(gts) {
+  private getGTSDots(gts, param: Param) {
     const dots = [];
     let icon;
     let size;
     switch (gts.render) {
       case 'path': {
-        icon = this.icon(gts.color, gts.marker);
+        icon = this.icon(gts.color, gts.marker, param);
         size = (gts.path || []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
@@ -496,7 +505,7 @@ export class DiscoveryMapComponent {
         break;
       }
       case 'marker':
-        icon = this.icon(gts.color, gts.marker);
+        icon = this.icon(gts.color, gts.marker, param);
         size = (gts.path || []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
@@ -548,7 +557,7 @@ export class DiscoveryMapComponent {
     return dots;
   }
 
-  private updateGtsPath(gts: any) {
+  private updateGtsPath(gts: any, param: Param) {
     const path = MapLib.pathDataToLeaflet(gts.path);
     const group = Leaflet.featureGroup();
     if ((path || []).length > 1 && !!gts.line && (gts.render === 'dots' || gts.render === 'path')) {
@@ -563,7 +572,7 @@ export class DiscoveryMapComponent {
         group.addLayer(Leaflet.polyline(path || [], {color: gts.color, opacity: 0.5}));
       }
     }
-    const dots = this.getGTSDots(gts);
+    const dots = this.getGTSDots(gts, param);
     const size = (dots || []).length;
     for (let i = 0; i < size; i++) {
       group.addLayer(dots[i]);
@@ -647,7 +656,7 @@ export class DiscoveryMapComponent {
     return Promise.resolve();
   }
 
-  private updatePositionArray(positionData: any) {
+  private updatePositionArray(positionData: any, param: Param) {
     const group = Leaflet.featureGroup();
     const path = MapLib.updatePositionArrayToLeaflet(positionData.positions);
     if ((positionData.positions || []).length > 1 && !!positionData.line) {
@@ -670,11 +679,11 @@ export class DiscoveryMapComponent {
 
     switch (positionData.render) {
       case 'marker':
-        icon = this.icon(positionData.color, positionData.marker);
+        icon = this.icon(positionData.color, positionData.marker, param);
         size = (positionData.positions || []).length;
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
-          const marker = Leaflet.marker({lat: p[0], lng: p[1]}, {icon,            riseOnHover: true,opacity: 1});
+          const marker = Leaflet.marker({lat: p[0], lng: p[1]}, {icon, riseOnHover: true, opacity: 1});
           this.addPopup(positionData, p[2], undefined, marker);
           group.addLayer(marker);
         }
