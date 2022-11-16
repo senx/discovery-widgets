@@ -1,6 +1,19 @@
 Discovery
 ---
 
+## v1.22.20
+
+> +  2022/11/16  | v1.22.20  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/89c92075a6f887d325a27132ed1581924d62be8c)*)
+> +  2022/11/16  | Add an id to the event emitter to simplify event handling  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/678bb6ba1233315d830cc8f3bf827cf3aabb8ab3)*)
+> +  2022/11/16  | Add range slider support  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/45db554a3154d6eede4160a92ffde29b0ca263bb)*)
+> +  2022/11/16  | Fix dataset color for custom format in bar charts  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6572005ba55e27bb6db370a96a78aa1f7c92cc4d)*)
+> +  2022/11/16  | code cleanup  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/684205b06d127bc82542ffaa89776c087fa9e2bb)*)
+> +  2022/11/16  | add icon size support  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/a1d2a4fde890ed05356184d87683dd10e513e975)*)
+> +  2022/11/16  | rise markers on over  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/aaf2f21e436c9ed9a194efd66d8567f643bef673)*)
+> +  2022/11/16  | add data selected and geo bounds event  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/9a341109adc3d8d035b077fa505eb6db5265ce94)*)
+> +  2022/11/15  | Add custom markers support in maps (ur, base64, svg)  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/bc8d28b0c820480adea9f73ba233c072f01eeac2)*)
+> +  2022/11/04  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/9a75b71e3761ca728a153e85c8d14569b66cd38e)*)
+
 ## v1.1.44
 
 > +  2022/11/04  | v1.1.44  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/de6e25e27697cd03040798be824196f15e81d4ce)*)
@@ -61,13 +74,5 @@ Discovery
 > +  2022/09/07  | v1.1.38  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c355e4eb4d4d78b3c5648300d955f148e7d7392f)*)
 > +  2022/09/07  | add dashboard's title and description events  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/d6cd843ec7f406de2274fc73c4cc049ceef15499)*)
 > +  2022/09/07  | fix flex dashboards  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/e3d1a142894cdaa05536723f8bc389aff936fe1e)*)
-
-## v1.1.37
-
-> +  2022/08/25  | v1.1.37  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/9a3c368802269da1c2e190d7527b2132639576a5)*)
-> +  2022/08/24  | update license  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/3e3f5e3acbeff6d59111925912d3bfa7bbea3890)*)
-> +  2022/08/24  | update readme  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/557305d7b7d730ba62db6ed577b6c3cbb9a7d15e)*)
-> +  2022/08/24  | update copyright  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/2308bd06a78e0c822f71cd5f7d817792f5af11c3)*)
-> +  2022/08/23  | fix timeMode timestamp in bar charts  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/ef8e7b3fcbd58ca8b1ae3d4125139de6d436c3f3)*)
 
 
