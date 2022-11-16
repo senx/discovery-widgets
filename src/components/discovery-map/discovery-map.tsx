@@ -69,7 +69,6 @@ export class DiscoveryMapComponent {
   private currentZoom: number;
   private currentLat: number;
   private currentLong: number;
-  private iconAnchor: Leaflet.PointExpression = [20, 38];
   private popupAnchor: Leaflet.PointExpression = [0, -50];
   private pathData: any[] = [];
   private positionData: any[] = [];
