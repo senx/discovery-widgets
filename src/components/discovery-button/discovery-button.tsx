@@ -82,7 +82,7 @@ export class DiscoveryButtonComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.el.id);
     if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
@@ -158,7 +158,7 @@ export class DiscoveryButtonComponent {
         if (!!result) {
           (result.events || []).forEach(e => {
             this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e});
-            this.discoveryEvent.emit(e);
+            this.discoveryEvent.emit({...e, source: this.el.id});
           });
         }
         this.execResult.emit(res.data);
@@ -177,7 +177,7 @@ export class DiscoveryButtonComponent {
         e.value = {};
       }
       e.value[e.selector] = value;
-      this.discoveryEvent.emit(e);
+      this.discoveryEvent.emit({...e, source: this.el.id});
     });
   }
 

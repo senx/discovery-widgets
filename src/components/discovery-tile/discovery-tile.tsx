@@ -23,6 +23,7 @@ import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {DiscoveryEvent} from '../../model/discoveryEvent';
 import {LangUtils} from '../../utils/lang-utils';
+import {v4} from 'uuid';
 
 @Component({
   tag: 'discovery-tile',
@@ -63,6 +64,7 @@ export class DiscoveryTileComponent {
   private innerVars = {}
   private tileResult: HTMLDiscoveryTileResultElement;
   private socket: WebSocket;
+  private componentId: string;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -95,7 +97,7 @@ export class DiscoveryTileComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.componentId);
     if (res.vars) {
       this.innerVars = {...(this.innerVars || {}), ...this.innerVars, ...res.vars};
       if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
@@ -155,6 +157,7 @@ export class DiscoveryTileComponent {
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileComponent, this.debug);
+    this.componentId = v4();
     this.LOG?.debug(['componentWillLoad'], {
       url: this.url,
       type: this.type,
@@ -335,6 +338,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               chart-title={this.chartTitle}
               vars={JSON.stringify(this.innerVars)}
               ref={(el) => this.tileResult = el}
+              id={this.componentId}
             />
             {this.statusMessage
               ? <div class="discovery-tile-status">{this.statusMessage}</div>

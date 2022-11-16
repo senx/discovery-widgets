@@ -115,7 +115,7 @@ export class Utils {
       .replace(/&amp;/g, '&');
   }
 
-  static parseEventData(evt: DiscoveryEvent, eventHandler: string) {
+  static parseEventData(evt: DiscoveryEvent, eventHandler: string, id: string) {
     const parsed = {
       style: undefined,
       data: undefined,
@@ -131,7 +131,7 @@ export class Utils {
       description: undefined,
       selected: undefined,
     }
-    if (eventHandler) {
+    if (eventHandler && evt.source !== id) {
       let tag = '.*';
       let type = '.*';
       eventHandler.split(',').forEach(eh => {

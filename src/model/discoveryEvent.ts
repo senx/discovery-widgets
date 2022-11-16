@@ -19,4 +19,5 @@ export class DiscoveryEvent {
   type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus' | 'margin' | 'bounds' | 'title' | 'description' | 'selected';
   value: any;
   selector?: string;
+  source: string;
 }

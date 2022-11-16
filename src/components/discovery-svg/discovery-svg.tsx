@@ -123,7 +123,7 @@ export class DiscoverySvgComponent {
 
   private processEvent(event: CustomEvent<DiscoveryEvent>) {
     return new Promise(resolve => {
-      const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
+      const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.el.id);
       if (res.style) {
         this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
       }

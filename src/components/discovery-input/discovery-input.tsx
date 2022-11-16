@@ -78,7 +78,7 @@ export class DiscoveryInputComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler);
+    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.el.id);
     if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }
@@ -253,7 +253,7 @@ export class DiscoveryInputComponent {
         }
         e.value[e.selector] = this.selectedValue;
         this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e, subtype: this.subType}, this.selectedValue);
-        this.discoveryEvent.emit(e);
+        this.discoveryEvent.emit({...e, source: this.el.id});
       }
     });
   }

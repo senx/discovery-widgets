@@ -26,7 +26,7 @@ import {DataModel} from '../../model/dataModel';
 import {DiscoveryEvent} from '../../model/discoveryEvent';
 import {Tile} from '../../model/tile';
 import {JsonLib} from '../../utils/jsonLib';
-import {v4 as uuidv4} from 'uuid';
+import {v4, v4 as uuidv4} from 'uuid';
 import {PdfLib} from '../../utils/pdfLib';
 
 @Component({
@@ -76,6 +76,7 @@ export class DiscoveryDashboardComponent {
   private done: any = {};
   private dash: HTMLDivElement;
   private innerVars = {}
+  private componentId: string;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -135,7 +136,7 @@ export class DiscoveryDashboardComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.componentId);
     if (res.popup && this.modal) {
       this.modalContent = res.popup;
       await this.modal.open();
@@ -156,6 +157,7 @@ export class DiscoveryDashboardComponent {
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
+    this.componentId = v4();
     this.LOG?.debug(['componentWillLoad'], {url: this.url, options: this.options});
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       this.options = JSON.parse(this.options);

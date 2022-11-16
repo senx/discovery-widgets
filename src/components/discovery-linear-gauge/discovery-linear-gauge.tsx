@@ -102,7 +102,7 @@ export class DiscoveryLinearGauge {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler);
+    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.el.id);
     if (res.style) {
       this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
     }

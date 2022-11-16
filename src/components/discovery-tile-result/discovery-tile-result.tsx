@@ -25,6 +25,7 @@ import {GTSLib} from '../../utils/gts.lib';
 import {DiscoveryEvent} from '../../model/discoveryEvent';
 import elementResizeEvent from 'element-resize-event';
 import {PluginManager} from '../../utils/PluginManager';
+import {v4} from 'uuid';
 
 @Component({
   tag: 'discovery-tile-result',
@@ -32,6 +33,8 @@ import {PluginManager} from '../../utils/PluginManager';
   shadow: true,
 })
 export class DiscoveryTileResultComponent {
+  @Element() el: HTMLElement;
+
   @Prop({mutable: true}) result: DataModel | string;
   @Prop({mutable: true}) type: ChartType;
   @Prop() start: number;
@@ -43,7 +46,6 @@ export class DiscoveryTileResultComponent {
   @Prop() url: string;
   @Prop() chartTitle: string;
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
-  @Element() el: HTMLElement;
   @Prop() vars = '{}';
 
   @State() execTime = 0;
@@ -70,6 +72,7 @@ export class DiscoveryTileResultComponent {
   private tile: any;
   private initial = true
   private innerVars = {};
+  private componentId: string;
 
   @Watch('type')
   updateType(newValue: string) {
@@ -121,7 +124,7 @@ export class DiscoveryTileResultComponent {
       type: event.detail.type,
       event: event.detail
     });
-    const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '');
+    const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '', this.componentId);
     if (res.data) {
       this.innerResult = res.data;
       this.parseResult();
@@ -169,7 +172,7 @@ export class DiscoveryTileResultComponent {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'margin')
       .forEach(e => {
-        this.discoveryEvent.emit({type: 'margin', tags: e.tags, value: event.detail})
+        this.discoveryEvent.emit({source: this.componentId, type: 'margin', tags: e.tags, value: event.detail})
       })
   }
 
@@ -178,12 +181,13 @@ export class DiscoveryTileResultComponent {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'bounds')
       .forEach(e => {
-        this.discoveryEvent.emit({type: 'bounds', tags: e.tags, value: event.detail})
+        this.discoveryEvent.emit({source: this.componentId, type: 'bounds', tags: e.tags, value: event.detail})
       })
   }
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
+    this.componentId = this.el.id || v4();
     this.innerType = this.type;
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
@@ -224,7 +228,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'zoom')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit(e);
+        this.discoveryEvent.emit({...e, source: this.el.id});
       });
   }
 
@@ -233,7 +237,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'focus')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit(e);
+        this.discoveryEvent.emit({...e, source: this.el.id});
       });
   }
 
@@ -242,7 +246,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'selected')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit(e);
+        this.discoveryEvent.emit({...e, source: this.el.id});
       });
   }
 
@@ -251,7 +255,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'bounds')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit(e);
+        this.discoveryEvent.emit({...e, source: this.el.id});
       });
   }
 
@@ -276,6 +280,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           ref={el => this.tile = el || this.tile}
+          id={this.componentId}
         />;
       case 'annotation':
         return <discovery-annotation
@@ -288,6 +293,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'bar':
         return <discovery-bar
@@ -300,6 +306,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'display':
         return <discovery-display
@@ -309,6 +316,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'map':
         return <discovery-map
@@ -320,6 +328,7 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           onGeoBounds={event => this.handleGeoBounds(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'image':
         return <discovery-image
@@ -328,6 +337,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'button':
       case 'button:radio':
@@ -340,6 +350,7 @@ export class DiscoveryTileResultComponent {
           vars={JSON.stringify(this.innerVars)}
           language={this.language}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'gauge':
       case 'circle':
@@ -353,6 +364,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'linear-gauge':
         return <discovery-linear-gauge
@@ -363,6 +375,7 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'pie':
       case 'doughnut':
@@ -376,6 +389,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'tabular':
         return <discovery-tabular
@@ -387,6 +401,7 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'svg':
         return <discovery-svg
@@ -396,6 +411,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'input:text':
       case 'input:autocomplete':
@@ -414,6 +430,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'hidden':
         return <discovery-hidden
@@ -422,6 +439,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'calendar':
         return <discovery-calendar
@@ -433,6 +451,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'heatmap':
         return <discovery-heatmap
@@ -444,6 +463,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       case 'profile':
         return <discovery-profile
@@ -456,6 +476,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
+          id={this.componentId}
         />;
       default:
         this.LOG?.debug(['getView'], PluginManager.getInstance().registry);
@@ -470,6 +491,7 @@ export class DiscoveryTileResultComponent {
             width={this.width}
             ref={el => this.tile = el || this.tile}
             debug={this.debug}
+            id={this.componentId}
           />;
         }
         return '';
@@ -565,7 +587,7 @@ export class DiscoveryTileResultComponent {
         if (this.LOG) {
           this.LOG?.debug(['parseResult', 'emit'], {discoveryEvent: e});
         }
-        this.discoveryEvent.emit(e);
+        this.discoveryEvent.emit({...e, source: this.el.id});
       }), 200);
     return Promise.resolve();
   }
