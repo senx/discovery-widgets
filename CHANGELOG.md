@@ -1,7 +1,7 @@
 Discovery
 ---
 
-## v1.22.20
+## v1.1.45
 
 > +  2022/11/16  | v1.22.20  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/89c92075a6f887d325a27132ed1581924d62be8c)*)
 > +  2022/11/16  | Add an id to the event emitter to simplify event handling  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/678bb6ba1233315d830cc8f3bf827cf3aabb8ab3)*)
