@@ -296,7 +296,10 @@ export class DiscoveryMapComponent {
     this.LOG?.debug(['displayMap'], 'pathData', this.pathData);
     const positionsSize = (this.positionData || []).length;
     for (let i = 0; i < positionsSize; i++) {
-      this.updatePositionArray(this.positionData[i], data.params[i]);
+      const pData = this.positionData[i];
+      if (!!pData) {
+        this.updatePositionArray(this.positionData[i], data.params[i]);
+      }
     }
     this.LOG?.debug(['displayMap'], 'positionData', this.positionData);
     (this.mapOpts.tiles || []).forEach(t => {
@@ -323,29 +326,31 @@ export class DiscoveryMapComponent {
     const geoJsonSize = (this.geoJson || []).length;
     for (let i = 0; i < geoJsonSize; i++) {
       const m = this.geoJson[i];
-      const color = ColorLib.getColor(i, this.innerOptions.scheme);
-      const opts = {
-        style: () => ({
-          color: (data.params && data.params[i]) ? data.params[i].datasetColor || color : color,
-          fillColor: (data.params && data.params[i])
-            ? ColorLib.transparentize(data.params[i].fillColor || color)
-            : ColorLib.transparentize(color),
-        })
-      } as any;
-      if (m.geometry.type === 'Point') {
-        opts.pointToLayer = (geoJsonPoint, latlng) => Leaflet.marker(latlng, {
-          icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || {marker: 'circle'}).marker : 'circle', (data.params && data.params[i])),
-          riseOnHover: true,
-          opacity: 1,
-        });
+      if (!!m) {
+        const color = ColorLib.getColor(i, this.innerOptions.scheme);
+        const opts = {
+          style: () => ({
+            color: (data.params && data.params[i]) ? data.params[i].datasetColor || color : color,
+            fillColor: (data.params && data.params[i])
+              ? ColorLib.transparentize(data.params[i].fillColor || color)
+              : ColorLib.transparentize(color),
+          })
+        } as any;
+        if (m.geometry.type === 'Point') {
+          opts.pointToLayer = (geoJsonPoint, latlng) => Leaflet.marker(latlng, {
+            icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || { marker: 'circle' }).marker : 'circle', (data.params && data.params[i])),
+            riseOnHover: true,
+            opacity: 1,
+          });
+        }
+        let display = '';
+        const geoShape = Leaflet.geoJSON(m, opts);
+        if (m.properties) {
+          Object.keys(m.properties).forEach(k => display += `<b>${k}</b>: ${m.properties[k]}<br />`);
+          geoShape.bindPopup(display);
+        }
+        geoShape.addTo(this.geoJsonLayer);
       }
-      let display = '';
-      const geoShape = Leaflet.geoJSON(m, opts);
-      if (m.properties) {
-        Object.keys(m.properties).forEach(k => display += `<b>${k}</b>: ${m.properties[k]}<br />`);
-        geoShape.bindPopup(display);
-      }
-      geoShape.addTo(this.geoJsonLayer);
     }
     let hasHeatmap = false;
     // HeatMap
