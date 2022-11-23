@@ -18,6 +18,8 @@ import {GTSLib} from './gts.lib';
 import {ColorLib} from './color-lib';
 import {Logger} from './logger';
 import {Param} from '../model/param';
+import { pathToFileURL } from 'url';
+import path from 'path';
 
 // noinspection JSUnusedGlobalSymbols
 export enum MapTypes {
@@ -180,6 +182,8 @@ export class MapLib {
           path.color = ColorLib.getColor(i, scheme);
         }
         paths.push(path);
+      } else {
+        paths.push(null); // push something to keep matching with params order.
       }
     }
     return paths;
@@ -300,6 +304,8 @@ export class MapLib {
         }
         this.LOG?.debug(['toLeafletMapPositionArray', 'posArray'], posArray);
         positions.push(posArray);
+      } else {
+        positions.push(null); // push something to keep matching with params order.
       }
     }
     return positions;
@@ -417,6 +423,8 @@ export class MapLib {
         geoJsons.push(d);
       } else if (d && d.type && defShapes.indexOf(d.type) > -1) {
         geoJsons.push({type: 'Feature', geometry: d});
+      } else {
+        geoJsons.push(null); // push something to keep matching with params order.
       }
     });
     return geoJsons;
