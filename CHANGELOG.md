@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.49
+
+> +  2022/11/24  | v1.1.49  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/8933fbf89ffb2cb4d49f6ef78cc3069658db8b47)*)
+> +  2022/11/24  | Fix map onDraw event  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6efd0bd9d8930dfe0d9d430d4826eac5b43bccf8)*)
+> +  2022/11/24  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6507de99b5a5199ea9a314bd178082f265bde0ed)*)
+
 ## v1.1.48
 
 > +  2022/11/24  | v1.1.48  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/ac2638a497a77fbbab6d676d37d5c45cb17b6980)*)
@@ -59,19 +65,5 @@ Discovery
 > +  2022/10/24  | Fix tooltip display for linear gauges  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/3c94bf4ba462c33e13eb7089cae65d7a115346fa)*)
 > +  2022/10/24  | Fix gauge fed with custom data  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/aa02fdb995d55a492ef1153819e1012b5661521f)*)
 > +  2022/10/14  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/112659798a6a2c500f7d0f57d90f7d0baa7be7e7)*)
-
-## v1.1.41
-
-> +  2022/10/14  | v1.1.41  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/af1565039f9c7d1d817b2d51b42b4211c562fb30)*)
-> +  2022/10/14  | fix display tile for HTML support  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/384f01366200a80d02b572b790ca569fe3dac846)*)
-> +  2022/10/14  | fix date display when time unit is ns  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/a570f146943c7ed464b7bc67bed08f258eaf51b3)*)
-> +  2022/10/14  | css color names support  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/410e6e62f6b024efdd9deb2f4d20861c4adf55a3)*)
-> +  2022/10/14  | fix dynamic tile title  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c46fa87de48012ea72ac6d29c273f7ea9b582bce)*)
-> +  2022/10/14  | add unit in slider  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/1271c5c4c24192fd33930a6c44750632a604bc23)*)
-> +  2022/10/14  | fix slider rounded values in tooltip and ruler  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/8882282e04bd18a39945a521fd851f4f65969046)*)
-> +  2022/10/14  | deps update  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/a69263f37e6922ed9cc902f90d8d0f81c128c9bb)*)
-> +  2022/10/14  | typo  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/50f856333677e73bf3688eb6633ce0c5c21b015c)*)
-> +  2022/10/14  | deps update  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/ff7aea25b1239b9f25f2c4cf207c4bb40a857fc8)*)
-> +  2022/10/04  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/494d6c3c56cb5be2406d0e8e733fef8edd5addf8)*)
 
 
