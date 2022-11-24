@@ -1,8 +1,22 @@
 Discovery
 ---
 
+## v1.1.47
+
+> +  2022/11/24  | v1.1.47  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/482df7132fc0d7da4f35c135a542ce31238dcf47)*)
+> +  2022/11/24  | deps update  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/67bb11c07cc30da130be7a62905dddbf0f240535)*)
+> +  2022/11/24  | add vars to tiles  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/7213fff95e5acfa88686b6021c2eb42b4ff20782)*)
+> +  2022/11/22  | fix map param mismatch when mixing geojson  (*[pi-r-p](pierre.papin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/e6d001ba384e490d56382ed85c5228e5bd96a42f)*)
+
+## v1.1.46
+
+> +  2022/11/18  | v1.1.46  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/4ee2889e6814842f81f518f386a3baa713590f1f)*)
+> +  2022/11/16  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c8eb41e50b16409262b7ca7f860771413bb47bc5)*)
+
 ## v1.1.45
 
+> +  2022/11/16  | v1.1.45  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/7ad0195b8b21e02603f23c450917e77494a1282a)*)
+> +  2022/11/16  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/eedc26369058a37f0fd5422f571069f25e213f99)*)
 > +  2022/11/16  | v1.22.20  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/89c92075a6f887d325a27132ed1581924d62be8c)*)
 > +  2022/11/16  | Add an id to the event emitter to simplify event handling  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/678bb6ba1233315d830cc8f3bf827cf3aabb8ab3)*)
 > +  2022/11/16  | Add range slider support  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/45db554a3154d6eede4160a92ffde29b0ca263bb)*)
@@ -56,23 +70,5 @@ Discovery
 > +  2022/10/04  | v1.1.40  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/59192a8eda09b2f6ef987f0036b4a67816a91d7f)*)
 > +  2022/10/04  | Fix event handling at dashboard level for an execution result.  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/e2355ef078146644aa0a0b38a6778ae466700efb)*)
 > +  2022/10/03  | update changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c8b145b36d505954b39c7a9ada986673c2d91eeb)*)
-
-## v1.1.39
-
-> +  2022/10/03  | v1.1.39  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6d892dac6f239e6a696e69e8a44eb73e190f0cbf)*)
-> +  2022/10/03  | add "selected" discovery event  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/872801eda2bca4d802588e814b215646e9b9cb9e)*)
-> +  2022/10/03  | add "selected" discovery event  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c2480b62fdc76a32ddd023fe2333da3dacfd55dd)*)
-> +  2022/10/03  | Add changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/54b0b2c2d95ece4d81397c0b1303a9215fdaf1ae)*)
-> +  2022/10/03  | Fix duration display when an autorefresh or an event occurs  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/0bd2c5d1684bdff94c494fef74ca0b890b778448)*)
-> +  2022/10/03  | Add data attribute to discovery-dashboard tag to pass a WarpScript execution result  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/381fb8f870894dc356438b6f143391570226eb2e)*)
-> +  2022/10/03  | Fix datetime format in input:date and input:date-range  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/0c42a651c73c096ac499172f7468d8f76f2e9365)*)
-> +  2022/10/03  | Fix linear gauges with negative values  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/eba65a78e5cd71d3730b2da700cffca592d4f127)*)
-> +  2022/10/03  | Fix input:multi event emitting  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/4eee2232fcba2b285501e872d9a8e29d0ecc6e5b)*)
-
-## v1.1.38
-
-> +  2022/09/07  | v1.1.38  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/c355e4eb4d4d78b3c5648300d955f148e7d7392f)*)
-> +  2022/09/07  | add dashboard's title and description events  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/d6cd843ec7f406de2274fc73c4cc049ceef15499)*)
-> +  2022/09/07  | fix flex dashboards  (*[xavier](marin.xavier@gmail.com) | [view commit](https://github.com/senx/discovery-widgets/commit/e3d1a142894cdaa05536723f8bc389aff936fe1e)*)
 
 
