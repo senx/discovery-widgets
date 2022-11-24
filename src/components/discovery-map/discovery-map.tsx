@@ -197,6 +197,7 @@ export class DiscoveryMapComponent {
     this.LOG?.debug(['drawMap', 'this.options'], {...this.innerOptions});
     data.data = GTSLib.flatDeep(data.data as any[]);
     const dataList = data.data as any[];
+    data.params = data.params || [];
     const params = data.params;
     this.mapOpts = this.innerOptions.map || {};
     this.pointslayer = [];
