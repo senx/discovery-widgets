@@ -80,6 +80,7 @@ export namespace Components {
         "debug": boolean;
         "getDashboardStructure": () => Promise<Dashboard>;
         "getPDF": (save?: boolean, output?: string) => Promise<any>;
+        "getVars": () => Promise<any>;
         "options": Param | string;
         "type": 'scada' | 'dashboard' | 'flex';
         "url": string;

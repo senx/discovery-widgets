@@ -77,6 +77,7 @@ export class DiscoveryDashboardComponent {
   private dash: HTMLDivElement;
   private innerVars = {}
   private componentId: string;
+  private eventState: any = {};
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -136,6 +137,7 @@ export class DiscoveryDashboardComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+    this.eventState = Utils.mergeDeep(this.eventState, Utils.parseEventData(event.detail, 'tag=.*,type=.*', this.componentId));
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.componentId);
     if (res.popup && this.modal) {
       this.modalContent = res.popup;
@@ -189,6 +191,14 @@ export class DiscoveryDashboardComponent {
     } catch (e) {
       this.LOG?.error(['getPDF'], e);
     }
+  }
+
+  @Method()
+  async getVars(): Promise<any> {
+    return Promise.resolve({
+      ... this.innerVars,
+      ... (this.eventState?.vars || {})
+    });
   }
 
   @Method()
@@ -381,7 +391,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                       debug={this.debug}
                                       id={`chart-${i}}`}
                                       ref={(el) => this.addTile(el, t, i)}
-                                      vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars,t.vars]))}
+                                      vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result
@@ -427,7 +437,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                         unit={t.unit}
                                         id={`chart-${i}}`}
                                         ref={(el) => this.addTile(el, t, i)}
-                                        vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars,t.vars]))}
+                                        vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
@@ -468,7 +478,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                         unit={t.unit}
                                         id={`chart-${i}}`}
                                         ref={(el) => this.addTile(el, t, i)}
-                                        vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars,t.vars]))}
+                                        vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result

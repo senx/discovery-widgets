@@ -53,6 +53,16 @@ Type: `Promise<any>`
 
 
 
+### `getVars() => Promise<any>`
+
+
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
 
 ## Dependencies
 
