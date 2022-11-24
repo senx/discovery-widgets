@@ -83,7 +83,7 @@ export class DiscoveryMapComponent {
   private shadowHeatmapLayer = Leaflet.featureGroup();
   private firstDraw = true;
   private mapOpts: MapParams;
-  private initial = false;
+  private initial = true;
   private hidden: { [key: string]: boolean } = {};
   private poputTimeout;
   private markerOver = false;

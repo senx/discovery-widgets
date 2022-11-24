@@ -52,6 +52,7 @@ export class DiscoveryDashboardComponent {
   @Event() rendered: EventEmitter<void>;
 
   @Element() el: HTMLElement;
+
   @State() width: number;
   @State() height: number;
   @State() result: Dashboard;
