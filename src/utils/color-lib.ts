@@ -168,7 +168,7 @@ export class ColorLib {
       if (!res || res.length < 4) return color;
       return ColorLib.rgb2hex(res[1], res[2], res[3]);
     } else {
-      return isCssColorName(color) ? cssColorNames[color.toLowerCase()] : color
+      return isCssColorName(color) ? cssColorNames[color.toLowerCase()] : color === 'transparent' ? '#ffffffff' : color;
     }
   }
 
