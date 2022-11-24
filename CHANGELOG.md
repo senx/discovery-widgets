@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.48
+
+> +  2022/11/24  | v1.1.48  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/ac2638a497a77fbbab6d676d37d5c45cb17b6980)*)
+> +  2022/11/24  | add a var export method on dashboard  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c82f8f8d8b37a04fa46c86c0aa6b27ef134a4da0)*)
+> +  2022/11/24  | fix pdf export  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/00925116675a984bf52a0401361d60777b0c2ed1)*)
+> +  2022/11/24  | fix map when no param are set  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/3ace0af945f3711f085fe3fdb69b03d56380c073)*)
+> +  2022/11/24  | fix 'na' display in map tooltips when the value equals 0  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/74749f6147855e8cafc4f976cd14a85492add7ce)*)
+> +  2022/11/24  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/f26b462d757abfb4c145c274feed6f7dd4e32a50)*)
+
 ## v1.1.47
 
 > +  2022/11/24  | v1.1.47  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/482df7132fc0d7da4f35c135a542ce31238dcf47)*)
@@ -64,11 +73,5 @@ Discovery
 > +  2022/10/14  | typo  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/50f856333677e73bf3688eb6633ce0c5c21b015c)*)
 > +  2022/10/14  | deps update  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/ff7aea25b1239b9f25f2c4cf207c4bb40a857fc8)*)
 > +  2022/10/04  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/494d6c3c56cb5be2406d0e8e733fef8edd5addf8)*)
-
-## v1.1.40
-
-> +  2022/10/04  | v1.1.40  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/59192a8eda09b2f6ef987f0036b4a67816a91d7f)*)
-> +  2022/10/04  | Fix event handling at dashboard level for an execution result.  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/e2355ef078146644aa0a0b38a6778ae466700efb)*)
-> +  2022/10/03  | update changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/c8b145b36d505954b39c7a9ada986673c2d91eeb)*)
 
 
