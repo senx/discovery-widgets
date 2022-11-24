@@ -338,7 +338,7 @@ export class DiscoveryMapComponent {
         } as any;
         if (m.geometry.type === 'Point') {
           opts.pointToLayer = (geoJsonPoint, latlng) => Leaflet.marker(latlng, {
-            icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || { marker: 'circle' }).marker : 'circle', (data.params && data.params[i])),
+            icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || {marker: 'circle'}).marker : 'circle', (data.params && data.params[i])),
             riseOnHover: true,
             opacity: 1,
           });
@@ -473,7 +473,7 @@ export class DiscoveryMapComponent {
         iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
         iconAnchor = [iconSize[0] / 2, iconSize[0] - margin];
       }
-      iconUrl = `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=${iconSize[0] / 2 - margin * 2 }&size=${iconSize[0]}&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`;
+      iconUrl = `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=${iconSize[0] / 2 - margin * 2}&size=${iconSize[0]}&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`;
     }
     return Leaflet.icon({iconUrl, iconAnchor, iconSize, popupAnchor: this.popupAnchor});
   }
@@ -593,7 +593,7 @@ export class DiscoveryMapComponent {
           .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }
       let content = '';
-      content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value || 'na'}</p>`;
+      content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value === 0 ? 0 : value || 'na'}</p>`;
       Object.keys(positionData.properties || []).forEach(k => content += `<b>${k}</b>: ${positionData.properties[k]}<br />`);
 
       if (!!positionData.tooltip[ts]) {
@@ -755,7 +755,7 @@ export class DiscoveryMapComponent {
               riseOnHover: true,
               fillOpacity: 0.7,
             });
-          this.addPopup(positionData, p[2] || 'na', undefined, marker);
+          this.addPopup(positionData, p[2] === 0 ? 0 : p[2] || 'na', undefined, marker);
           group.addLayer(marker);
         }
         break;
