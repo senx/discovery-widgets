@@ -303,7 +303,7 @@ export namespace Components {
         "unFocus": () => Promise<void>;
         "unit": string;
         "url": string;
-        "vars": string;
+        "vars": any | string;
     }
     interface DiscoveryTileResult {
         "chartTitle": string;
@@ -895,7 +895,7 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "unit"?: string;
         "url"?: string;
-        "vars"?: string;
+        "vars"?: any | string;
     }
     interface DiscoveryTileResult {
         "chartTitle"?: string;

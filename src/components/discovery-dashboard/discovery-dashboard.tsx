@@ -275,9 +275,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     let tmpResult: Dashboard = new Dashboard();
     if (!!this.data && typeof this.data === 'string') {
       const res = JSON.parse(this.data);
-      tmpResult = GTSLib.isArray(res)? res[0]: res;
+      tmpResult = GTSLib.isArray(res) ? res[0] : res;
     } else {
-      tmpResult = GTSLib.isArray(this.data)? this.data[0]: this.data;
+      tmpResult = GTSLib.isArray(this.data) ? this.data[0] : this.data;
     }
     this.options = {...this.options as Param, ...tmpResult.options};
     this.innerType = tmpResult.type || this.type || 'dashboard';
@@ -338,6 +338,18 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     return {...new Param(), ...options as Param, ...options2}
   }
 
+  static mergeVars(vars: any[] | string[]) {
+    let myVars: any = {};
+    vars.map(v => {
+      if (typeof v === 'string') {
+        return JSON.parse(v);
+      } else {
+        return v;
+      }
+    }).forEach(v => myVars = {...myVars, ...v});
+    return myVars;
+  }
+
   static sanitize(data: string | DataModel | any): string | DataModel {
     if (typeof data === 'string') return '["' + data + '"]';
     else return GTSLib.isArray(data) ? data : [data];
@@ -369,7 +381,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                       debug={this.debug}
                                       id={`chart-${i}}`}
                                       ref={(el) => this.addTile(el, t, i)}
-                                      vars={JSON.stringify(this.result.vars)}
+                                      vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars,t.vars]))}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result
@@ -415,7 +427,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                         unit={t.unit}
                                         id={`chart-${i}}`}
                                         ref={(el) => this.addTile(el, t, i)}
-                                        vars={JSON.stringify(this.result.vars)}
+                                        vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars,t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
@@ -456,7 +468,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                         unit={t.unit}
                                         id={`chart-${i}}`}
                                         ref={(el) => this.addTile(el, t, i)}
-                                        vars={JSON.stringify(this.result.vars)}
+                                        vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars,t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result

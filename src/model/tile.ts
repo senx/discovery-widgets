@@ -34,4 +34,5 @@ export class Tile {
   png?: string;
   uid?: string;
   bgColor?: string;
+  vars?: any[] | string[];
 }

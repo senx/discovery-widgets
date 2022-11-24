@@ -39,7 +39,7 @@ export class DiscoveryTileComponent {
   @Prop() debug = false;
   @Prop() unit = '';
   @Prop({mutable: true}) autoRefresh = -1;
-  @Prop() vars = '{}';
+  @Prop() vars: any | string = '{}';
 
   @Event({bubbles: true}) statusHeaders: EventEmitter<string[]>;
   @Event({bubbles: true}) statusError: EventEmitter;
