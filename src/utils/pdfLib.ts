@@ -14,11 +14,10 @@
  *   limitations under the License.
  */
 
-import {Dashboard} from '../model/dashboard';
-import {Tile} from '../model/tile';
 import {jsPDF} from 'jspdf';
 import {Logger} from './logger';
 import {ColorLib} from './color-lib';
+import {Dashboard, Tile} from '../model/types';
 
 export class PdfLib {
 
@@ -58,8 +57,11 @@ export class PdfLib {
         };
         const tx = t.x * (width - xMargin * 2) / (dashboard.cols || 12) + bounds.width / 2 + cellSpacing + xMargin;
         doc.setFontSize(18);
-        doc.text(t.title || '', tx, t.y * cellHeight + topSpace + cellSpacing + 24, {align: 'center', lineHeightFactor: 1});
-        t.bgColor = t.bgColor === 'transparent'? '#ffffff' : t.bgColor;
+        doc.text(t.title || '', tx, t.y * cellHeight + topSpace + cellSpacing + 24, {
+          align: 'center',
+          lineHeightFactor: 1
+        });
+        t.bgColor = t.bgColor === 'transparent' ? '#ffffff' : t.bgColor;
         doc.setFillColor(ColorLib.sanitizeColor(t.bgColor));
         doc.rect(
           t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,

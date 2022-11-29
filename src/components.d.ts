@@ -5,13 +5,9 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { DataModel } from "./model/dataModel";
-import { ChartType, Dataset } from "./model/types";
+import { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, Tile } from "./model/types";
 import { Param } from "./model/param";
 import { XAXisOption } from "echarts/types/dist/shared";
-import { DiscoveryEvent } from "./model/discoveryEvent";
-import { Dashboard } from "./model/dashboard";
-import { Tile } from "./model/tile";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
@@ -904,6 +900,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "language"?: 'warpscript' | 'flows';
         "onDiscoveryEvent"?: (event: DiscoveryTileResultCustomEvent<DiscoveryEvent>) => void;
+        "onDraw"?: (event: DiscoveryTileResultCustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "start"?: number;

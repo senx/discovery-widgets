@@ -18,8 +18,6 @@ import {GTSLib} from './gts.lib';
 import {ColorLib} from './color-lib';
 import {Logger} from './logger';
 import {Param} from '../model/param';
-import { pathToFileURL } from 'url';
-import path from 'path';
 
 // noinspection JSUnusedGlobalSymbols
 export enum MapTypes {
@@ -160,7 +158,7 @@ export class MapLib {
         if (!!params.render || data.globalParams?.map?.render) {
           path.render = params.render || data.globalParams?.map?.render;
         }
-        if (!!params.marker|| data?.globalParams?.map?.marker) {
+        if (!!params.marker || data?.globalParams?.map?.marker) {
           path.marker = params.marker || data?.globalParams?.map?.marker;
         }
         path.line = params.hasOwnProperty('line') ? params.line : true;

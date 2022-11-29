@@ -17,7 +17,6 @@ import cssColorNames from 'css-color-names'
 import isCssColorName from 'is-css-color-name'
 
 /* eslint-disable @typescript-eslint/naming-convention */
-
 export enum Colors {
   COHESIVE = 'COHESIVE',
   COHESIVE_2 = 'COHESIVE_2',

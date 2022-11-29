@@ -16,9 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, h, Method, Prop, State, Watch} from '@stencil/core';
-import {Tile} from '../../model/tile';
-import {Dashboard} from '../../model/dashboard';
-import {ChartType} from '../../model/types';
+import {ChartType, Dashboard, Tile} from '../../model/types';
 import {Utils} from '../../utils/utils';
 import {Param} from '../../model/param';
 import {Logger} from '../../utils/logger';

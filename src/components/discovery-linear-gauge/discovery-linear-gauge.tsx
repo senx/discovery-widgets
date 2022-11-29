@@ -16,8 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from '../../model/dataModel';
-import {ChartType, ECharts} from '../../model/types';
+import {ChartType, DataModel, DiscoveryEvent, ECharts} from '../../model/types';
 import {Param} from '../../model/param';
 import {EChartsOption} from 'echarts';
 import {Logger} from '../../utils/logger';
@@ -25,7 +24,6 @@ import {GTSLib} from '../../utils/gts.lib';
 import {ColorLib} from '../../utils/color-lib';
 import {Utils} from '../../utils/utils';
 import domtoimage from 'dom-to-image';
-import {DiscoveryEvent} from '../../model/discoveryEvent';
 
 @Component({
   tag: 'discovery-linear-gauge',

@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, ECharts} from '../../model/types';
+import {ChartType, DataModel, ECharts} from '../../model/types';
 import {Param} from '../../model/param';
 import {CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, graphic, init} from 'echarts';
 import {Logger} from '../../utils/logger';
@@ -24,7 +24,6 @@ import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
 import {SeriesOption} from 'echarts/lib/util/types';
-import {DataModel} from '../../model/dataModel';
 
 @Component({
   tag: 'discovery-annotation',
@@ -159,7 +158,7 @@ export class DiscoveryAnnotation {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG?.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
-    this.chartOpts = this.convert(this.result || new DataModel())
+    this.chartOpts = this.convert(this.result || new DataModel());
   }
 
   private setOpts(notMerge = false) {

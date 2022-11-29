@@ -16,8 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {DataModel} from '../../model/dataModel';
-import {ChartType} from '../../model/types';
+import {ChartType, DataModel, DiscoveryEvent} from '../../model/types';
 import {Param} from '../../model/param';
 import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
@@ -25,7 +24,6 @@ import fitty, {FittyInstance} from 'fitty';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {Utils} from '../../utils/utils';
-import {DiscoveryEvent} from '../../model/discoveryEvent';
 import domtoimage from 'dom-to-image';
 
 dayjs.extend(relativeTime)
@@ -129,7 +127,7 @@ export class DiscoveryDisplayComponent {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.message = this.convert(this.result || new DataModel())
+    this.message = this.convert(this.result || new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,

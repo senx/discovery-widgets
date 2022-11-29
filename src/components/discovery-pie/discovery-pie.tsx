@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, ECharts} from '../../model/types';
+import {ChartType, DataModel, ECharts} from '../../model/types';
 import {Param} from '../../model/param';
 import * as echarts from 'echarts';
 import {EChartsOption} from 'echarts';
@@ -25,7 +25,6 @@ import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
 import {SeriesOption} from 'echarts/lib/util/types';
-import {DataModel} from '../../model/dataModel';
 
 @Component({
   tag: 'discovery-pie',

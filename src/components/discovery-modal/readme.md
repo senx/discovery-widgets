@@ -65,6 +65,7 @@ graph TD;
   discovery-tile-result --> discovery-calendar
   discovery-tile-result --> discovery-heatmap
   discovery-tile-result --> discovery-profile
+  discovery-tile-result --> discovery-dashboard
   discovery-line --> discovery-spinner
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner

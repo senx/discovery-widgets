@@ -14,7 +14,9 @@
  *   limitations under the License.
  */
 
+// eslint-disable-next-line max-classes-per-file
 import * as echarts from 'echarts';
+import {Param} from './param';
 
 export type ChartType =
   'line' | 'area' | 'scatter' | 'step-area' | 'spline-area' | 'spline' | 'step' | 'step-after' | 'step-before'
@@ -34,11 +36,16 @@ export type ChartType =
   | 'hidden'
   | 'calendar' | 'heatmap'
   | 'profile'
+  | 'dashboard' | 'dashboard:flex' | 'dashboard:scada'
   ;
+
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
+
 export type TimeUnit = 'us' | 'ms' | 'ns';
+
 export type ECharts = ReturnType<typeof echarts.init>;
-export type MapParams = {
+
+export class MapParams {
   tiles?: any[];
   heatmap?: boolean;
   heatRadius?: number;
@@ -58,10 +65,86 @@ export type MapParams = {
   delay?: number;
   tooltip?:any;
   iconSize?: number| number[];
-};
-export type Dataset = {
+}
+
+export class Dataset {
   name: string;
   values: any[];
   headers: string[];
   isGTS: boolean;
+}
+
+export class Label {
+  key: string;
+  value: string;
+}
+
+export class Tile {
+  type: string;
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+  z?: number;
+  data?: string | DataModel;
+  title?: string;
+  macro?: string;
+  endpoint?: string;
+  unit?: string;
+  options: Param = new Param();
+  elem?: HTMLDiscoveryTileElement | HTMLDiscoveryTileResultElement;
+  png?: string;
+  uid?: string;
+  bgColor?: string;
+  vars?: any[] | string[];
+}
+
+export class GTS {
+  c: string;
+  l: Label[];
+  a: Label[];
+  v: any[][];
+  id?: number;
+}
+
+export class DiscoveryEvent {
+  tags: string[];
+  type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus' | 'margin' | 'bounds' | 'title' | 'description' | 'selected';
+  value: any;
+  selector?: string;
+  source: string;
+}
+
+export class DataModel {
+  data: any[] | any | string;
+  params?: Param[];
+  globalParams?: Param;
+  events?: DiscoveryEvent[];
+  bounds?: {
+    xmin?: number,
+    xmax?: number,
+    ymin?: number,
+    ymax?: number
+  };
+}
+
+export class Dashboard {
+  title: string;
+  type: 'dashboard' | 'scada' = 'dashboard';
+  description: string;
+  tiles: Tile[] | string = [];
+  vars: { [key: string]: any; } = {};
+  options?: Param;
+  cols = 12;
+  cellHeight = 220;
+  bgColor = '#fff';
+  fontColor = '#000';
+}
+
+export class ChartBounds {
+  tsmin = 0;
+  tsmax = 0;
+  msmin = '';
+  msmax = '';
+  marginLeft = 0;
 }

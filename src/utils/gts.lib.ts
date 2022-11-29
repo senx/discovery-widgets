@@ -14,8 +14,6 @@
  *   limitations under the License.
  */
 
-import {DataModel} from '../model/dataModel';
-import {GTS} from '../model/GTS';
 import {Logger} from './logger';
 import {JsonLib} from './jsonLib';
 import dayjs from 'dayjs';
@@ -24,6 +22,7 @@ import duration from 'dayjs/plugin/duration';
 // @ts-ignore
 import moment from 'moment/min/moment-with-locales';
 import {tz} from 'moment-timezone'
+import {DataModel, GTS} from '../model/types';
 
 dayjs.extend(duration)
 

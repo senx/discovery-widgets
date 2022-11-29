@@ -17,11 +17,10 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {Utils} from '../../utils/utils';
-import {ChartType} from '../../model/types';
+import {ChartType, DiscoveryEvent} from '../../model/types';
 import {Param} from '../../model/param';
 import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
-import {DiscoveryEvent} from '../../model/discoveryEvent';
 import {LangUtils} from '../../utils/lang-utils';
 import {v4} from 'uuid';
 

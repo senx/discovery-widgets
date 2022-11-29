@@ -14,11 +14,10 @@
  *   limitations under the License.
  */
 
-import {DiscoveryEvent} from '../model/discoveryEvent';
 import {GTSLib} from './gts.lib';
 import {Param} from '../model/param';
-import {DataModel} from '../model/dataModel';
 import {cloneDeep} from 'lodash'
+import {DataModel, DiscoveryEvent} from '../model/types';
 
 export class Utils {
   static clone = (inObject) => {
