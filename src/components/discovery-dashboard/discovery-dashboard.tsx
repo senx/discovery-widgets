@@ -152,6 +152,12 @@ export class DiscoveryDashboardComponent {
     if (res.description) {
       this.description = res.description;
     }
+    if (res.vars) {
+      this.innerVars = {...(this.innerVars || {}), ...this.innerVars, ...res.vars};
+      if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
+        this.exec();
+      }
+    }
   }
 
   componentWillLoad() {
@@ -193,8 +199,8 @@ export class DiscoveryDashboardComponent {
   @Method()
   async getVars(): Promise<any> {
     return Promise.resolve({
-      ... this.innerVars,
-      ... (this.eventState?.vars || {})
+      ...this.innerVars,
+      ...(this.eventState?.vars || {})
     });
   }
 
@@ -325,7 +331,12 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
         this.scadaHeight = height + 20;
       }
     }
-    tmpResult.tiles = tmpResult.tiles || [];
+
+    if (GTSLib.isArray(tmpResult.tiles)) {
+      tmpResult.tiles = [...(tmpResult.tiles as Tile[]) || []];
+    } else {
+      tmpResult.tiles = tmpResult.tiles || [];
+    }
     this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
     tmpResult.vars = {...tmpResult.vars || {}, ...this.innerVars};
     tmpResult.cols = tmpResult.cols || this.cols || 12;

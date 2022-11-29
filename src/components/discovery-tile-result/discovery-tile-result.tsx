@@ -479,34 +479,20 @@ export class DiscoveryTileResultComponent {
           id={this.componentId}
         />;
       case 'dashboard':
-        return <discovery-dashboard
-          data={GTSLib.getData(this.innerResult).data}
-          vars={this.innerVars}
-          type="dashboard"
-          url={this.url}
-          options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
-          onRendered={() => this.draw.emit()}
-          debug={this.debug}
-          id={this.componentId}
-        />;
       case 'dashboard:flex':
-        return <discovery-dashboard
-          data={GTSLib.getData(this.innerResult).data}
-          vars={this.innerVars}
-          type="flex"
-          url={this.url}
-          options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
-          onRendered={() => this.draw.emit()}
-          debug={this.debug}
-          id={this.componentId}
-        />;
       case 'dashboard:scada':
+        const sub = this.innerType.split(':');
+        let dashBoardType = 'dashboard';
+        if (sub.length > 1) {
+          dashBoardType = sub[1];
+        }
         return <discovery-dashboard
-          data={GTSLib.getData(this.innerResult).data}
+          warpscript={`<'
+          ${JSON.stringify(GTSLib.getData(this.innerResult).data)}
+'>
+JSON-> 0 GET`}
           vars={this.innerVars}
-          type="scada"
+          type={dashBoardType as any}
           url={this.url}
           options={this.innerOptions}
           ref={el => this.tile = el || this.tile}
