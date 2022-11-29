@@ -38,6 +38,7 @@
     .discovery-dashboard-wrapper {
       display: grid;
       grid-gap: var(--warp-view-dashboard-gap, 10px);
+      padding-bottom: 20px;
 
       .discovery-dashboard-tile {
         width: 100%;
@@ -46,6 +47,12 @@
         border-radius: var(--warp-view-tile-border-radius, 0);
         overflow: visible;
         background: var(--warp-view-tile-background, $w10-transparent);
+
+        &.dashboard, &.dashboard-flex, &.dashboard-scada {
+          overflow-y: auto;
+          overflow-x: hidden;
+          margin-bottom: 20px;
+        }
 
         &.annotation, &.plot {
           height: 100% !important;
@@ -123,6 +130,7 @@
     .discovery-scada-wrapper {
       position: relative;
       height: 100%;
+      padding-bottom: 20px;
 
       .discovery-scada-tile {
         width: 100%;
@@ -135,6 +143,10 @@
         border-radius: var(--warp-view-tile-border-radius, 0);
         overflow: visible;
         background: var(--warp-view-tile-background);
+
+        &.dashboard, &.dashboard-flex, &.dashboard-scada {
+          overflow: auto;
+        }
 
         &.annotations, &.plot {
           overflow-y: auto;

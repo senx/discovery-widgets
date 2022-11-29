@@ -61,6 +61,7 @@ export class DiscoveryTileResultComponent {
     cancelable: true,
     bubbles: true,
   }) discoveryEvent: EventEmitter<DiscoveryEvent>;
+  @Event() draw: EventEmitter<void>;
 
   private LOG: Logger;
   private wrapper: HTMLDivElement;
@@ -156,6 +157,7 @@ export class DiscoveryTileResultComponent {
   }
 
   @Listen('draw', {capture: false})
+  @Listen('rendered', {capture: false})
   onDrawHandler() {
     if (!!this.tile) {
       if (!!this.tile.resize) {
@@ -473,6 +475,42 @@ export class DiscoveryTileResultComponent {
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
+          debug={this.debug}
+          id={this.componentId}
+        />;
+      case 'dashboard':
+        return <discovery-dashboard
+          data={GTSLib.getData(this.innerResult).data}
+          vars={this.innerVars}
+          type="dashboard"
+          url={this.url}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          onRendered={() => this.draw.emit()}
+          debug={this.debug}
+          id={this.componentId}
+        />;
+      case 'dashboard:flex':
+        return <discovery-dashboard
+          data={GTSLib.getData(this.innerResult).data}
+          vars={this.innerVars}
+          type="flex"
+          url={this.url}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          onRendered={() => this.draw.emit()}
+          debug={this.debug}
+          id={this.componentId}
+        />;
+      case 'dashboard:scada':
+        return <discovery-dashboard
+          data={GTSLib.getData(this.innerResult).data}
+          vars={this.innerVars}
+          type="scada"
+          url={this.url}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          onRendered={() => this.draw.emit()}
           debug={this.debug}
           id={this.componentId}
         />;
