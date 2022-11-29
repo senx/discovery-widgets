@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.51
+
+> +  2022/11/29  | v1.1.51  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/e57a1b22dd0bff683300e033776da0b9533c98da)*)
+> +  2022/11/29  | dashboard in dashboard event handling fix  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/53c755fb8406058f3af67ecdc30b8aee948e83e2)*)
+> +  2022/11/29  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/f1baee1a1031a332e4cae5a10e9a6f5b7164e633)*)
+
 ## v1.1.50
 
 > +  2022/11/29  | v1.1.50  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/709904c100df8596e01ceac5d29e48ff155801bd)*)
@@ -55,13 +61,5 @@ Discovery
 > +  2022/11/04  | v1.1.44  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/de6e25e27697cd03040798be824196f15e81d4ce)*)
 > +  2022/11/04  | Fix on mouse over error  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6ded077423b8eadcc88287e14d7e0c14e6274935)*)
 > +  2022/10/26  | Changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/251262ffbe525d2f07d101f6f61e5ad5b329e826)*)
-
-## v1.1.43
-
-> +  2022/10/26  | v1.1.43  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/38c5e286991d949825ba8777b5def49ed3ebdfeb)*)
-> +  2022/10/26  | Fix slider max value when set to 0  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/47c9b10179bcb6186576f4ff032362df809cbc26)*)
-> +  2022/10/26  | Add Chip list component  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/54b69183a7ecb701904a86603178f9e8c815157b)*)
-> +  2022/10/25  | Fix slider unit display  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/06de1f3a8b8257deab88c5037e8453bde65d0f28)*)
-> +  2022/10/24  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/dd3dddb422018b07d175f00522d7372fcc866d31)*)
 
 
