@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.1.50
+
+> +  2022/11/29  | v1.1.50  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/709904c100df8596e01ceac5d29e48ff155801bd)*)
+> +  2022/11/29  | Add a dashboard tile  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/647945625978d0427492ba04a267739392ab244e)*)
+> +  2022/11/29  | refactoring  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/907dd7e7dc0a183aac9e36a2b25e7120ac6f7928)*)
+> +  2022/11/24  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/b82aed26a3a2f203f2ed2bbc3b5f1aac5ce65c33)*)
+
 ## v1.1.49
 
 > +  2022/11/24  | v1.1.49  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/8933fbf89ffb2cb4d49f6ef78cc3069658db8b47)*)
@@ -56,14 +63,5 @@ Discovery
 > +  2022/10/26  | Add Chip list component  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/54b69183a7ecb701904a86603178f9e8c815157b)*)
 > +  2022/10/25  | Fix slider unit display  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/06de1f3a8b8257deab88c5037e8453bde65d0f28)*)
 > +  2022/10/24  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/dd3dddb422018b07d175f00522d7372fcc866d31)*)
-
-## v1.1.42
-
-> +  2022/10/24  | v1.1.42  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/f0f56da027442bae20d4a15d23b63df2ae88e47b)*)
-> +  2022/10/24  | Fix gauges unit per series  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/af9f9d3a41c035141835dd5166b19a779267570e)*)
-> +  2022/10/24  | Fix linear gauges unit per series and vertical gauges display  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/4f0ca738b5dd82c4c0f4de179b8d8984023db19b)*)
-> +  2022/10/24  | Fix tooltip display for linear gauges  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/3c94bf4ba462c33e13eb7089cae65d7a115346fa)*)
-> +  2022/10/24  | Fix gauge fed with custom data  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/aa02fdb995d55a492ef1153819e1012b5661521f)*)
-> +  2022/10/14  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/112659798a6a2c500f7d0f57d90f7d0baa7be7e7)*)
 
 
