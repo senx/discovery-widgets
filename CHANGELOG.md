@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.52
+
+> +  2022/12/02  | v1.1.52  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/29ecfc456425e6dcf5a7451145919d8a19f139e4)*)
+> +  2022/12/02  | Fix multi:cb reset  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/d7b3ffb7d9ce8043d47b33d45b9570d4407ee586)*)
+> +  2022/12/02  | Fix range slider values in ns  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/fb2485f444b2c560f87478e77381ab340b8d3521)*)
+> +  2022/12/02  | Fix range slider values in ns  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/1cdf01acd51bf3bb6157477c50048e79829e8c00)*)
+> +  2022/12/02  | Fix range slider initial values  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/ad43564f0fc400c24dd73a0ef103b9a896d0b9cb)*)
+> +  2022/11/29  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/8e9dc0e3aea2bf4c2788435692ffa328e63006ba)*)
+
 ## v1.1.51
 
 > +  2022/11/29  | v1.1.51  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/e57a1b22dd0bff683300e033776da0b9533c98da)*)
@@ -55,11 +64,5 @@ Discovery
 > +  2022/11/16  | add data selected and geo bounds event  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/9a341109adc3d8d035b077fa505eb6db5265ce94)*)
 > +  2022/11/15  | Add custom markers support in maps (ur, base64, svg)  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/bc8d28b0c820480adea9f73ba233c072f01eeac2)*)
 > +  2022/11/04  | changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/9a75b71e3761ca728a153e85c8d14569b66cd38e)*)
-
-## v1.1.44
-
-> +  2022/11/04  | v1.1.44  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/de6e25e27697cd03040798be824196f15e81d4ce)*)
-> +  2022/11/04  | Fix on mouse over error  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/6ded077423b8eadcc88287e14d7e0c14e6274935)*)
-> +  2022/10/26  | Changelog  (*[Xavier Marin](xavier.marin@senx.io) | [view commit](https://github.com/senx/discovery-widgets/commit/251262ffbe525d2f07d101f6f61e5ad5b329e826)*)
 
 
