@@ -94,7 +94,8 @@ export class DiscoverySlider {
   @Method()
   async setValue(value: number | number[]) {
     this.innerValue = value;
-    this.slider.set(value);
+    this.slider.destroy();
+    this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
     return Promise.resolve();
   }
 
@@ -126,7 +127,7 @@ export class DiscoverySlider {
     const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
     const format = {
       to: v => this.innerOptions.timeMode === 'date'
-        ? (GTSLib.toISOString(GTSLib.zonedTimeToUtc(v, 1, this.innerOptions.timeZone), this.divider, this.innerOptions.timeZone,
+        ? (GTSLib.toISOString(GTSLib.zonedTimeToUtc(v, this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
           this.innerOptions.timeFormat) || '')
           .replace('T', '<br />').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
         : parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || '')
@@ -139,7 +140,7 @@ export class DiscoverySlider {
       this.sliderDiv.classList.remove('discovery-date');
     }
     let connect: boolean | boolean[] | string | string[] = this.innerOptions.input?.progress || this.progress ? 'lower' : false;
-    if(GTSLib.isArray(this.innerValue)) {
+    if (GTSLib.isArray(this.innerValue)) {
       connect = true;
     }
     return {
