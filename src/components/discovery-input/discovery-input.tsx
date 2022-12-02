@@ -333,16 +333,19 @@ export class DiscoveryInputComponent {
       case 'autocomplete':
       case 'chips':
       case 'chips-autocomplete':
+        if(this.checkBoxes) {
+          Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+            .filter((o: HTMLInputElement) => o.checked)
+            .forEach((o: HTMLInputElement) => o.checked = false);
+        }
         this.values = [];
         if (GTSLib.isArray(data) && data.length > 0) {
-          this.values = data as any[];
+          this.values = [...data as any[]];
         } else {
           this.values = [data.toString() as string];
         }
         if (typeof this.values[0] === 'string' || typeof this.values[0] === 'number') {
-          this.values = this.values.map(s => {
-            return {k: s, v: s, h: false};
-          });
+          this.values = this.values.map(s => ({k: s, v: s, h: false}));
         }
         let index = 0
         if (!!(this.innerOptions.input || {}).value) {
@@ -409,9 +412,10 @@ export class DiscoveryInputComponent {
   private handleFilter(e) {
     e.stopPropagation();
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
-      this.values = this.values.map(v => {
-        return {...v, h: !new RegExp(`.*${(e.target.value || e.detail || '')}.*`, 'gi').test(v.v)}
-      });
+      this.values = this.values.map(v => ({
+        ...v,
+        h: !new RegExp(`.*${(e.target.value || e.detail || '')}.*`, 'gi').test(v.v)
+      }));
     }
   }
 
