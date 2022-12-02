@@ -50,7 +50,7 @@ export class DiscoveryTileResultComponent {
   @State() bgColor: string;
   @State() fontColor: string;
   @State() innerResult: DataModel | string;
-  @State() innerOptions: Param;
+  @State() innerOptions: Param = new Param();
   @State() innerStyle: { [k: string]: string; };
   @State() innerType: ChartType;
   @State() innerTitle: string;
@@ -199,9 +199,9 @@ export class DiscoveryTileResultComponent {
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       options = {...options, ...JSON.parse(this.options)};
     } else {
-      options = {...options, ...this.options as Param};
+      options = {...options, ...(this.options as Param || {})};
     }
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
+    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams || {});
     this.innerOptions = {...options};
     this.innerVars = JSON.parse(this.vars || '{}');
     this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;

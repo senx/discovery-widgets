@@ -322,15 +322,10 @@ export class DiscoveryInputComponent {
         }
         break;
       case 'slider':
-        if (GTSLib.isArray(data) && data.length > 0) {
-          this.value = data[0];
-        } else {
-          this.value = data;
-        }
-        this.selectedValue = this.value;
         this.innerOptions.input = this.innerOptions.input || {};
-        this.innerOptions.input.value = this.value as number;
-        void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number);
+        this.value = this.innerOptions.input.value || data;
+        this.selectedValue = this.value;
+        void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number | number[]);
         break;
       case 'list':
       case 'multi':
@@ -460,6 +455,7 @@ export class DiscoveryInputComponent {
         return <div class="slider-wrapper" ref={el => this.pngWrapper = el}>
           <discovery-slider options={this.innerOptions}
                             onValueChanged={e => this.handleSelect(e)}
+                            debug={this.debug}
                             ref={el => this.inputField = el}
           />
         </div>;

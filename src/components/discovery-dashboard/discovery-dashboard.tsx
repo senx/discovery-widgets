@@ -163,10 +163,13 @@ export class DiscoveryDashboardComponent {
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
     this.componentId = v4();
-    this.LOG?.debug(['componentWillLoad'], {url: this.url, options: this.options});
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
-      this.options = JSON.parse(this.options);
+      this.options = JSON.parse(this.options || '{}');
     }
+    if(this.options === 'undefined') {
+      this.options = new Param();
+    }
+    this.LOG?.debug(['componentWillLoad'], {url: this.url, options: this.options});
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
