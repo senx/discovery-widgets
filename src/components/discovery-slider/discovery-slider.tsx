@@ -96,6 +96,7 @@ export class DiscoverySlider {
     this.innerValue = value;
     this.slider.destroy();
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
+    this.setChangeListener();
     return Promise.resolve();
   }
 
@@ -169,11 +170,11 @@ export class DiscoverySlider {
       let r;
       if (GTSLib.isArray(v) && v.length > 1) {
         r = this.innerOptions.timeMode === 'date'
-          ? [GTSLib.zonedTimeToUtc(v[0], 1, this.innerOptions.timeZone), GTSLib.zonedTimeToUtc(v[1], 1, this.innerOptions.timeZone)]
+          ? [GTSLib.zonedTimeToUtc(v[0], this.divider, this.innerOptions.timeZone) * this.divider, GTSLib.zonedTimeToUtc(v[1], this.divider, this.innerOptions.timeZone) * this.divider]
           : [Number(v[0]), Number(v[1])];
       } else {
         r = this.innerOptions.timeMode === 'date'
-          ? GTSLib.zonedTimeToUtc(v[0], 1, this.innerOptions.timeZone)
+          ? GTSLib.zonedTimeToUtc(v[0], this.divider, this.innerOptions.timeZone) * this.divider
           : Number(v[0]);
       }
       this.valueChanged.emit(r);
