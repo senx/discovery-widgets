@@ -8,7 +8,7 @@ let md =
 
 `;
 
-let tagList = execSync('git tag -l --sort=-v:refname | head -n 10');
+let tagList = execSync('git tag -l --sort=-v:refname | head -n 1000');
 tagList = tagList.toString().split('\n').filter(i => i !== '');
 tagList = semverSort.desc(tagList);
 let lastTag = tagList[0];
@@ -17,7 +17,7 @@ tagList.forEach(tag => {
   md += `## ${lastTag}
 
 `;
-  execSync(`git log --no-merges --date=iso --format="> +  ts%ct  | %s %N (*[%cN](%ce) | [view commit](${repo}/commit/%H)*)" ${tag}..${lastTag}`)
+  execSync(`git log --no-merges --date=iso --format="> +  ts%ct  | %s %N" ${tag}..${lastTag}`)
     .toString().split('\n').forEach(l => {
     let timestamp = /ts([0-9]+)/.exec(l);
     if (timestamp) {
