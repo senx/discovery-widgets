@@ -98,13 +98,13 @@ export class DiscoveryAnnotation {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
+      if (!!newValue && typeof newValue === 'string') {
+        this.innerOptions = JSON.parse(newValue);
       } else {
-        this.innerOptions = {...this.options as Param};
+        this.innerOptions = {...newValue as Param};
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
@@ -183,8 +183,8 @@ export class DiscoveryAnnotation {
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    options = Utils.mergeDeep<Param>(options, data.globalParams || {});
+    this.innerOptions = {...options, leftMargin: this.innerOptions.leftMargin};
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     const series: any[] = [];
     const categories: any[] = [];
@@ -262,9 +262,9 @@ export class DiscoveryAnnotation {
         right: 10,
         top: 20,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
-        left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
-          ? this.innerOptions.leftMargin - this.leftMargin + 10
-          : 10,
+        left: (this.innerOptions.leftMargin !== undefined && this.innerOptions.leftMargin > this.leftMargin)
+          ? this.innerOptions.leftMargin
+          : this.leftMargin || 10,
         containLabel: true
       },
       throttle: 70,
@@ -373,7 +373,7 @@ export class DiscoveryAnnotation {
       ],
       series,
       ...this.innerOptions?.extra?.chartOpts || {}
-    } as EChartsOption;
+    } as EChartsOption
   }
 
   componentDidLoad() {
@@ -393,7 +393,7 @@ export class DiscoveryAnnotation {
           found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
           x++;
         }
-        if (this.leftMargin !== x && x < 1024) {
+        if (this.leftMargin !== x && x < this.innerOptions.leftMargin || 1024) {
           setTimeout(() => {
             this.leftMarginComputed.emit(x);
             this.leftMargin = x;
