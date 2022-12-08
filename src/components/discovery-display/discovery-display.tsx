@@ -180,13 +180,17 @@ export class DiscoveryDisplayComponent {
     }
     switch (this.innerOptions.timeMode) {
       case 'date':
-        display = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
-          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
+        if(display && !isNaN(parseInt(display, 10))) {
+          display = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
+        }
         break;
       case 'duration':
-        const start = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
-          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
-        display = this.displayDuration(dayjs(start));
+        if(display && !isNaN(parseInt(display, 10))) {
+          const start = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
+          display = this.displayDuration(dayjs(start));
+        }
         break;
       case 'custom':
       case 'timestamp':
