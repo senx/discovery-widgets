@@ -166,7 +166,7 @@ export class DiscoveryInputComponent {
           static: true,
           enableSeconds: true,
           time_24hr: true,
-          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * 1000, divider, this.innerOptions.timeZone,
+          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * divider, divider, this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
         } as any;
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
