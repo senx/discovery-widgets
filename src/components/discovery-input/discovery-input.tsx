@@ -86,9 +86,7 @@ export class DiscoveryInputComponent {
   updateRes() {
     this.LOG.debug(['updateRes'], this.innerResult);
     this.innerResult = GTSLib.getData(this.result);
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = Utils.mergeDeep<Param>(this.innerOptions || {} as Param, this.innerResult.globalParams);
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
@@ -325,7 +323,7 @@ export class DiscoveryInputComponent {
         this.innerOptions.input = this.innerOptions.input || {};
         this.value = this.innerOptions.input.value || data;
         this.selectedValue = this.value;
-        void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number | number[]);
+   //     void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number | number[]);
         break;
       case 'list':
       case 'multi':
@@ -525,7 +523,7 @@ export class DiscoveryInputComponent {
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div ref={el => this.root = el}>
         <div class={'discovery-input-wrapper type-' + this.subType}>
-          {this.getInput()}
+          {this.getInput()} {this.innerOptions.input?.showButton}
           {this.innerOptions.input?.showButton && this.type !== 'input:multi-cb' ?
             <div class="discovery-input-btn-wrapper">
               <button

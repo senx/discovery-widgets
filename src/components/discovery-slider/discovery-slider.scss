@@ -19,9 +19,12 @@
 
 :host {
   display: block;
-  width: 100%;
   padding-left: 10px;
   padding-right: 10px;
+
+  & > div {
+    position: relative;
+  }
 
   #slider {
     height: 10px;

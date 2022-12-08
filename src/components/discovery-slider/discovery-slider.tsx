@@ -58,13 +58,16 @@ export class DiscoverySlider {
       } else {
         this.innerOptions = {...this.options as Param};
       }
-      this.slider.updateOptions(this.getSliderOptions(), false);
-      this.slider.off('change');
-      this.slider.off('slide');
-      this.setChangeListener();
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-      }
+      setTimeout(() => {
+        this.slider.updateOptions(this.getSliderOptions(), false);
+
+        this.slider.off('change');
+        this.slider.off('slide');
+        this.setChangeListener();
+        if (this.LOG) {
+          this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        }
+      }, 5000);
     }
   }
 
