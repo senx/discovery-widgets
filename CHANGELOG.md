@@ -1,6 +1,17 @@
 Discovery
 ---
 
+## v1.1.53
+
+> +  2022/12/08  | v1.1.53 
+> +  2022/12/08  | Fix slider update 
+> +  2022/12/08  | Fix date and date-range for nanoseconds 
+> +  2022/12/08  | Fix display with empty or NaN value for date and duration 
+> +  2022/12/07  | changelog 
+> +  2022/12/07  | fix map focus 
+> +  2022/12/07  | fix leftMargin 
+> +  2022/12/02  | changelog 
+
 ## v1.1.52
 
 > +  2022/12/02  | v1.1.52 
