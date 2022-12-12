@@ -232,7 +232,9 @@ export class DiscoveryTileComponent {
           Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
             .then((res: any) => {
               const toRefresh = this.result === res.data;
-              this.result = '';
+              if(this.type.startsWith('input')) {
+                this.result = '';
+              }
               this.headers = {};
               res.headers.split('\n')
                 .filter(header => header !== '' && header.toLowerCase().startsWith('x-warp10'))
