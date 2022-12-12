@@ -89,15 +89,13 @@ export class DiscoveryTileResultComponent {
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = {...this.options as Param};
-      }
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-      }
+    if (!!this.options && typeof this.options === 'string') {
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = {...this.options as Param};
+    }
+    if (this.LOG) {
+      this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
     }
   }
 
@@ -610,20 +608,20 @@ JSON-> 0 GET`}
           this.LOG?.debug(['parseResult', 'emit'], {discoveryEvent: e});
         }
         this.discoveryEvent.emit({...e, source: this.el.id});
-      }), 200);
+      }));
     return Promise.resolve();
   }
 
   private parseResult() {
     setTimeout(() => {
-      this.unit = (this.options as Param).unit || this.unit
-      this.innerOptions = {...this.innerOptions, ...(this.innerResult as unknown as DataModel)?.globalParams || {}};
-      this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
-      this.innerTitle = this.innerOptions?.title || this.chartTitle || '';
-      this.handleCSSColors();
-      void this.parseEvents().then(() => {
-        //
-      })
+      void (async () => {
+        this.unit = (this.options as Param).unit || this.unit
+        this.innerOptions = {...this.innerOptions, ...(this.innerResult as unknown as DataModel)?.globalParams || {}};
+        this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
+        this.innerTitle = this.innerOptions?.title || this.chartTitle || '';
+        this.handleCSSColors();
+        await this.parseEvents();
+      })();
     });
     if (this.LOG) {
       this.LOG?.debug(['parseResult'], {

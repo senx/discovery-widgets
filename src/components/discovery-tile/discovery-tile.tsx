@@ -230,9 +230,9 @@ export class DiscoveryTileComponent {
           });
 
           Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
-            .then(async (res: any) => {
+            .then((res: any) => {
               const toRefresh = this.result === res.data;
-              this.result = res.data as string;
+              this.result = '';
               this.headers = {};
               res.headers.split('\n')
                 .filter(header => header !== '' && header.toLowerCase().startsWith('x-warp10'))
@@ -258,16 +258,19 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                   this.timer = window.setInterval(() => void this.exec(true), this.autoRefresh * 1000);
                 }
               }
-              this.LOG?.debug(['exec', 'result'], this.result);
-              this.execResult.emit(this.result);
-              if (toRefresh && refresh) {
-                await this.tileResult.parseEvents();
-              }
               setTimeout(() => {
-                this.loaded = true;
-                this.showLoader = false;
+                void (async () => {
+                  this.loaded = true;
+                  this.showLoader = false;
+                  this.LOG?.debug(['exec', 'result'], this.result);
+                  this.result = res.data as string;
+                  this.execResult.emit(this.result);
+                  if (toRefresh && refresh) {
+                    await this.tileResult.parseEvents();
+                  }
+                  resolve(true);
+                })();
               });
-              resolve(true);
             }).catch(e => {
             this.statusError.emit(e);
             setTimeout(() => {

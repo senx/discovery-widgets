@@ -52,23 +52,20 @@ export class DiscoverySlider {
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = {...this.options as Param};
-      }
-      setTimeout(() => {
-        this.slider.updateOptions(this.getSliderOptions(), false);
-
-        this.slider.off('change');
-        this.slider.off('slide');
-        this.setChangeListener();
-        if (this.LOG) {
-          this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-        }
-      }, 5000);
+    if (!!this.options && typeof this.options === 'string') {
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = {...this.options as Param};
     }
+    setTimeout(() => {
+      this.slider.updateOptions(this.getSliderOptions(), false);
+      this.slider.off('change');
+      this.slider.off('slide');
+      this.slider.set(this.innerOptions.input?.value);
+      if (this.LOG) {
+        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      }
+    });
   }
 
   componentWillLoad() {
