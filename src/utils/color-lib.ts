@@ -136,14 +136,18 @@ export class ColorLib {
     return ColorLib.heatMaps[scheme] || ColorLib.heatMaps.DEFAULT;
   }
 
-  static getColor(i: number, scheme: string) {
-    if (!ColorLib.color[scheme]) {
-      scheme = 'WARP10';
+  static getColor(i: number, scheme: string | string[]) {
+    if (typeof scheme === 'string') {
+      if (!ColorLib.color[scheme]) {
+        scheme = 'WARP10';
+      }
+      return ColorLib.color[scheme][i % 2 === 0
+        ? i % ColorLib.color[scheme].length
+        : ColorLib.color[scheme].length - i % ColorLib.color[scheme].length
+        ];
+    } else {
+      return scheme[i % 2 === 0 ? i % scheme.length : scheme.length - i % scheme.length];
     }
-    return ColorLib.color[scheme][i % 2 === 0
-      ? i % ColorLib.color[scheme].length
-      : ColorLib.color[scheme].length - i % ColorLib.color[scheme].length
-      ];
   }
 
   static getColorGradient(id: number, scheme: string) {
