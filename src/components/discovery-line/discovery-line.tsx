@@ -312,7 +312,7 @@ export class DiscoveryLineComponent {
           }),
           animation: false,
           large: true,
-          showSymbol: this.type === 'scatter' || this.innerOptions.showDots,
+          showSymbol: this.type === 'scatter' || this.innerOptions.showDots || this.innerOptions.showValues,
           smooth: type === 'spline' || type === 'spline-area' ? 0.2 : undefined,
           clip: true,
           step: DiscoveryLineComponent.getStepShape(type),
@@ -328,6 +328,11 @@ export class DiscoveryLineComponent {
             }
           } : undefined,
           showAllSymbol: false,
+          label: {
+            show: !!this.innerOptions.showValues,
+            position: 'top',
+            textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
+          },
           lineStyle: !opts.visualMap[i] ? {color} : undefined,
           itemStyle: type === 'bar' ? {
             opacity: 0.8,
