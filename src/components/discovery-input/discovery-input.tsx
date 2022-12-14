@@ -164,7 +164,7 @@ export class DiscoveryInputComponent {
           static: true,
           enableSeconds: true,
           time_24hr: true,
-          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * divider, divider, this.innerOptions.timeZone,
+          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * divider, divider, 'AUTO',
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
         } as any;
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
@@ -323,7 +323,7 @@ export class DiscoveryInputComponent {
         this.innerOptions.input = this.innerOptions.input || {};
         this.value = this.innerOptions.input.value || data;
         this.selectedValue = this.value;
-   //     void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number | number[]);
+        //     void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number | number[]);
         break;
       case 'list':
       case 'multi':
@@ -331,7 +331,7 @@ export class DiscoveryInputComponent {
       case 'autocomplete':
       case 'chips':
       case 'chips-autocomplete':
-        if(this.checkBoxes) {
+        if (this.checkBoxes) {
           Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
             .filter((o: HTMLInputElement) => o.checked)
             .forEach((o: HTMLInputElement) => o.checked = false);

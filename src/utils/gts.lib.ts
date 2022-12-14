@@ -351,7 +351,7 @@ export class GTSLib {
     return display;
   };
 
-  static toISOString(timestamp: number, divider: number, timeZone: string, timeFormat: string) {
+  static toISOString(timestamp: number, divider: number, timeZone: string, timeFormat: string): string {
     const locale = (window.navigator as any).userLanguage || window.navigator.language;
     moment.updateLocale(locale.split('-')[0], {});
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
@@ -362,10 +362,14 @@ export class GTSLib {
     }
   }
 
-  static toTimestamp(date: string, divider: number, timeZone: string) {
+  static toTimestamp(date: string, divider: number, timeZone: string, format?: string): number {
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     if (timeZone !== 'UTC') {
-      return tz(date, timeZone).utc().valueOf() * divider;
+      if (!!format) {
+        return tz(date, format, timeZone).utc().valueOf() * divider;
+      } else {
+        return tz(date, timeZone).utc().valueOf() * divider;
+      }
     } else {
       return moment.utc(date).valueOf() * divider;
     }
