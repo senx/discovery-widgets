@@ -62,6 +62,7 @@ export class DiscoverySlider {
       this.slider.off('change');
       this.slider.off('slide');
       this.slider.set(this.innerOptions.input?.value);
+      this.setChangeListener();
       if (this.LOG) {
         this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
