@@ -82,6 +82,7 @@ export class DiscoveryTileResultComponent {
 
   @Watch('result')
   updateRes(newValue: string) {
+    this.LOG?.debug(['updateRes'], newValue);
     this.innerResult = GTSLib.getData(newValue);
     this.parseResult();
   }
@@ -600,9 +601,10 @@ JSON-> 0 GET`}
 
   @Method()
   async parseEvents() {
+    this.LOG?.debug(['parseEvents'], {discoveryEvents: ((this.innerResult as unknown as DataModel)?.events || [])});
     setTimeout(() => ((this.innerResult as unknown as DataModel)?.events || [])
-      .filter(e => !!e.value)
-      .filter(e => e.type !== 'zoom' && e.type !== 'margin' && !this.initial)
+      .filter(e => e.value !== undefined)
+      .filter(e => e.type !== 'zoom' && e.type !== 'margin')
       .forEach(e => {
         if (this.LOG) {
           this.LOG?.debug(['parseResult', 'emit'], {discoveryEvent: e});

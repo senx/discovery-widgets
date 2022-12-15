@@ -244,10 +244,15 @@ export class DiscoveryInputComponent {
         if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
           return;
         }
-        if (!e.value) {
-          e.value = {};
+        if(e.selector) {
+          if (!e.value) {
+            e.value = {};
+          }
+
+          e.value[e.selector] = this.selectedValue;
+        } else {
+          e.value = this.selectedValue;
         }
-        e.value[e.selector] = this.selectedValue;
         this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e, subtype: this.subType}, this.selectedValue);
         this.discoveryEvent.emit({...e, source: this.el.id});
       }
