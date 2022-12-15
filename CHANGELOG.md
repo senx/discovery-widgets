@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.56
+
+> +  2022/12/15  | v1.1.56 
+> +  2022/12/15  | deps update 
+> +  2022/12/14  | Fix value display 
+> +  2022/12/14  | Allow custom color scheme 
+> +  2022/12/14  | Fix timezone support in input:date and input:date-range 
+> +  2022/12/14  | changelog 
+
 ## v1.1.55
 
 > +  2022/12/14  | v1.1.55 
