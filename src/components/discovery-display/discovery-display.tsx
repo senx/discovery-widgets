@@ -89,9 +89,9 @@ export class DiscoveryDisplayComponent {
 
   @Listen('discoveryEvent', {target: 'window'})
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.el.id);
+    const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '', this.el.id);
     if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+      this.innerStyle = {...this.innerStyle, ...res.style};
     }
   }
 
@@ -180,13 +180,13 @@ export class DiscoveryDisplayComponent {
     }
     switch (this.innerOptions.timeMode) {
       case 'date':
-        if(display && !isNaN(parseInt(display, 10))) {
+        if (display && !isNaN(parseInt(display, 10))) {
           display = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         break;
       case 'duration':
-        if(display && !isNaN(parseInt(display, 10))) {
+        if (display && !isNaN(parseInt(display, 10))) {
           const start = GTSLib.toISOString(parseInt(display, 10), this.divider, this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
           display = this.displayDuration(dayjs(start));
