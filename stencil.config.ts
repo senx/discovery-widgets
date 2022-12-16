@@ -14,6 +14,7 @@ export const config: Config = {
     ]
   },
   namespace: 'discovery',
+  globalScript: './src/startup.ts',
   globalStyle: './src/styles.css',
   outputTargets: [
     {
