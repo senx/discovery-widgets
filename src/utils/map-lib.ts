@@ -378,7 +378,6 @@ export class MapLib {
     } else {
       posArray.numColorSteps = params.numColorSteps;
     }
-
     posArray.colorGradient = ColorLib.hsvGradientFromRgbColors(
       posArray.startColor,
       posArray.endColor,

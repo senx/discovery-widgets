@@ -18,6 +18,7 @@ import isCssColorName from 'is-css-color-name'
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export enum Colors {
+  // noinspection JSUnusedGlobalSymbols
   COHESIVE = 'COHESIVE',
   COHESIVE_2 = 'COHESIVE_2',
   BELIZE = 'BELIZE',
@@ -150,13 +151,6 @@ export class ColorLib {
     }
   }
 
-  static getColorGradient(id: number, scheme: string) {
-    return [
-      [0, ColorLib.transparentize(ColorLib.getColor(id, scheme), 0)],
-      [1, ColorLib.transparentize(ColorLib.getColor(id, scheme), 0.7)]
-    ];
-  }
-
   static sanitizeColor(color: string) {
     if (color.startsWith('#')) {
       return color;
@@ -175,18 +169,6 @@ export class ColorLib {
     }
   }
 
-  static getBlendedColorGradient(id: number, scheme: string, bg = '#000000') {
-    bg = ColorLib.sanitizeColor(bg);
-    return [
-      [0, ColorLib.blendColors(bg, ColorLib.getColor(id, scheme), 0)],
-      [1, ColorLib.blendColors(bg, ColorLib.getColor(id, scheme), 1)]
-    ];
-  }
-
-  static getColorScale(scheme: string) {
-    return ColorLib.color[scheme].map((c, i) => [i, c]);
-  }
-
   static hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? [
@@ -201,22 +183,6 @@ export class ColorLib {
     return 'rgba(' + ColorLib.hexToRgb(color).concat(alpha).join(',') + ')';
   }
 
-  static generateColors(num, scheme) {
-    const color = [];
-    for (let i = 0; i < num; i++) {
-      color.push(ColorLib.getColor(i, scheme));
-    }
-    return color;
-  }
-
-  static generateTransparentColors(num, scheme) {
-    const color = [];
-    for (let i = 0; i < num; i++) {
-      color.push(ColorLib.transparentize(ColorLib.getColor(i, scheme)));
-    }
-    return color;
-  }
-
   static hsvGradientFromRgbColors(c1, c2, steps) {
     const c1hsv = ColorLib.rgb2hsv(c1.r, c1.g, c1.b);
     const c2hsv = ColorLib.rgb2hsv(c2.r, c2.g, c2.b);
@@ -227,14 +193,14 @@ export class ColorLib {
     c2.s = c2hsv[1];
     c2.v = c2hsv[2];
     const gradient = ColorLib.hsvGradient(c1, c2, steps);
-    gradient.forEach(i => {
-      if (gradient[i]) {
-        gradient[i].rgb = ColorLib.hsv2rgb(gradient[i].h, gradient[i].s, gradient[i].v);
-        gradient[i].r = Math.floor(gradient[i].rgb[0]);
-        gradient[i].g = Math.floor(gradient[i].rgb[1]);
-        gradient[i].b = Math.floor(gradient[i].rgb[2]);
+    for (const item of gradient) {
+      if (item) {
+        item.rgb = ColorLib.hsv2rgb(item.h, item.s, item.v);
+        item.r = Math.floor(item.rgb[0]);
+        item.g = Math.floor(item.rgb[1]);
+        item.b = Math.floor(item.rgb[2]);
       }
-    });
+    }
     return gradient;
   }
 
@@ -342,71 +308,10 @@ export class ColorLib {
 
   static rgb2hex(r, g, b) {
     const componentToHex = (c) => {
+      // noinspection TypeScriptValidateJSTypes
       const hex = c.toString(16);
       return hex.length === 1 ? `0${hex}` : hex;
     }
     return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
-  }
-
-  static blendColors(color1, color2, percentage) {
-    color1 = ColorLib.sanitizeColor(color1);
-    color2 = ColorLib.sanitizeColor(color2);
-    // check input
-    color1 = color1 || '#000000';
-    color2 = color2 || '#ffff';
-    percentage = percentage || 0.5;
-    // 1: validate input, make sure we have provided a valid hex
-    if (color1.length !== 4 && color1.length !== 7) {
-      throw new Error('colors must be provided as hexes');
-    }
-    if (color2.length !== 4 && color2.length !== 7) {
-      throw new Error('colors must be provided as hexes');
-    }
-    if (percentage > 1 || percentage < 0) {
-      throw new Error('percentage must be between 0 and 1');
-    }
-    // 2: check to see if we need to convert 3 char hex to 6 char hex, else slice off hash
-    //      the three character hex is just a representation of the 6 hex where each character is repeated
-    //      ie: #060 => #006600 (green)
-    if (color1.length === 4) {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      color1 = color1[1] + color1[1] + color1[2] + color1[2] + color1[3] + color1[3];
-    } else {
-      color1 = color1.substring(1);
-    }
-    if (color2.length === 4) {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      color2 = color2[1] + color2[1] + color2[2] + color2[2] + color2[3] + color2[3];
-    } else {
-      color2 = color2.substring(1);
-    }
-    // 3: we have valid input, convert colors to rgb
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    color1 = [parseInt(color1[0] + color1[1], 16), parseInt(color1[2] + color1[3], 16), parseInt(color1[4] + color1[5], 16)];
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    color2 = [parseInt(color2[0] + color2[1], 16), parseInt(color2[2] + color2[3], 16), parseInt(color2[4] + color2[5], 16)];
-    // 4: blend
-    const color3 = [
-      (1 - percentage) * color1[0] + percentage * color2[0],
-      (1 - percentage) * color1[1] + percentage * color2[1],
-      (1 - percentage) * color1[2] + percentage * color2[2]
-    ];
-    // return hex
-    return '#' + ColorLib.int_to_hex(color3[0]) + ColorLib.int_to_hex(color3[1]) + ColorLib.int_to_hex(color3[2]);
-  }
-
-  /*
-      convert a Number to a two character hex string
-      must round, or we will end up with more digits than expected (2)
-      note: can also result in single digit, which will need to be padded with a 0 to the left
-      @param: num         => the number to conver to hex
-      @returns: string    => the hex representation of the provided number
-  */
-  static int_to_hex(num: number) {
-    let hex = Math.round(num).toString(16);
-    if (hex.length === 1) {
-      hex = '0' + hex;
-    }
-    return hex;
   }
 }
