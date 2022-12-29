@@ -425,10 +425,14 @@ export class DiscoveryMapComponent {
         }
       }, 10);
     } else {
-      this.LOG?.debug(['displayMap', 'lost'], 'lost', this.currentZoom, this.mapOpts.startZoom);
+      this.LOG?.debug(['displayMap', 'no data'], 'lost', this.currentZoom, this.mapOpts.startZoom);
+      if (!this.mapOpts.track) {
+        this.currentLat = this.mapOpts.startLat || 0;
+        this.currentLong = this.mapOpts.startLong || 0;
+        this.currentZoom = this.mapOpts.startZoom || 2;
+      }
       this.map.setView(
         [
-          this.currentLat || this.mapOpts.startLat || 0,
           this.currentLat || this.mapOpts.startLat || 0,
           this.currentLong || this.mapOpts.startLong || 0
         ],
