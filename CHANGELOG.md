@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.1.58
+
+> +  2022/12/29  | v1.1.58 
+> +  2022/12/29  | Fix lat/lng/zoom reset on map when no data and track = false 
+> +  2022/12/29  | Add scale on map 
+> +  2022/12/29  | Fix map's colored weighted dots gradient computation 
+> +  2022/12/29  | Add ability to use an hidden tile as a line break in a flex dashboard 
+> +  2022/12/16  | add startup info 
+> +  2022/12/15  | changelog 
+
 ## v1.1.57
 
 > +  2022/12/15  | v1.1.57 
