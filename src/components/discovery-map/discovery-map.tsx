@@ -265,6 +265,7 @@ export class DiscoveryMapComponent {
         maxZoom: this.mapOpts.maxZoom || 19
       });
       this.geoJsonLayer.bringToBack();
+      Leaflet.control.scale().addTo(this.map);
       if (this.tilesLayer) {
         this.tilesLayer.bringToBack(); // TODO: test it
         if (!isRefresh) {
