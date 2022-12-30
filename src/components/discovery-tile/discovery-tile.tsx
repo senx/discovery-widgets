@@ -132,11 +132,23 @@ export class DiscoveryTileComponent {
       await this.tileResult.show(regexp);
     }
   }
+  @Method()
+  async showById(id: number) {
+    if (this.tileResult) {
+      await this.tileResult.showById(id);
+    }
+  }
 
   @Method()
   async hide(regexp: string) {
     if (this.tileResult) {
       await this.tileResult.hide(regexp);
+    }
+  }
+  @Method()
+  async hideById(id: number) {
+    if (this.tileResult) {
+      await this.tileResult.hideById(id);
     }
   }
 

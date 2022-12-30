@@ -102,9 +102,7 @@ export class DiscoveryPieComponent {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
     });
     return Promise.resolve();
   }
@@ -113,9 +111,25 @@ export class DiscoveryPieComponent {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async hideById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async showById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
     });
     return Promise.resolve();
   }
@@ -237,6 +251,7 @@ export class DiscoveryPieComponent {
         }
         dataStruct.push({
           ...this.getCommonDataParam(color),
+          id: gts.id,
           name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           value
         });

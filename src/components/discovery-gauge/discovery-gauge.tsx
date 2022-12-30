@@ -88,15 +88,11 @@ export class DiscoveryGauge {
       this.myChart.resize();
     }
     return Promise.resolve();
-  }
-
-  @Method()
+  } @Method()
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
     });
     return Promise.resolve();
   }
@@ -105,9 +101,25 @@ export class DiscoveryGauge {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async hideById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async showById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
     });
     return Promise.resolve();
   }
@@ -234,6 +246,8 @@ export class DiscoveryGauge {
           min = data.params[i].minValue;
         }
         dataStruct.push({
+          id: gts.id,
+          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           value,
           max,
@@ -273,6 +287,7 @@ export class DiscoveryGauge {
         ...this.getCommonSeriesParam(color),
         name: d.key,
         min: d.min,
+        id: d.id,
         max: d.max === Number.MIN_VALUE ? overallMax : d.max,
         startAngle: angles.s,
         endAngle: angles.e,

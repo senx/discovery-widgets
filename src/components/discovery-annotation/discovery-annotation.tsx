@@ -128,9 +128,7 @@ export class DiscoveryAnnotation {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
     });
     return Promise.resolve();
   }
@@ -139,9 +137,25 @@ export class DiscoveryAnnotation {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async hideById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async showById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
     });
     return Promise.resolve();
   }
@@ -231,6 +245,7 @@ export class DiscoveryAnnotation {
             }
           ),
           animation: false,
+          id: gts.id,
           large: true,
           clip: true,
           showAllSymbol: true,

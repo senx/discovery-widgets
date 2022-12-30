@@ -546,10 +546,26 @@ JSON-> 0 GET`}
   }
 
   @Method()
+  async showById(id: number) {
+    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    if (this.tile && this.tile['showById']) {
+      await (this.tile).showById(id);
+    }
+  }
+
+  @Method()
   async hide(regexp: string) {
     /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
     if (this.tile && this.tile['hide']) {
       await (this.tile).hide(regexp);
+    }
+  }
+
+  @Method()
+  async hideById(id: number) {
+    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    if (this.tile && this.tile['hideById']) {
+      await (this.tile).hideById(id);
     }
   }
 

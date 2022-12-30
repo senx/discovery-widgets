@@ -310,6 +310,7 @@ export class DiscoveryLineComponent {
               , d[d.length - 1]
             ]
           }),
+          id: gts.id,
           animation: false,
           large: true,
           showSymbol: this.type === 'scatter' || this.innerOptions.showDots || this.innerOptions.showValues,
@@ -403,6 +404,7 @@ export class DiscoveryLineComponent {
         const s = {
           type: this.type,
           name: gts.label,
+          id: gts.id,
           data: gts.values[0] && gts.values[0].length === 3
             ? (gts.values || []).map(v => {
               min = Math.min(min, ...gts.values.map(v => v[0]));
@@ -772,9 +774,7 @@ export class DiscoveryLineComponent {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
     });
     return Promise.resolve();
   }
@@ -783,9 +783,25 @@ export class DiscoveryLineComponent {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async hideById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s =>  s.id === id)
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async showById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s =>  s.id === id)
     });
     return Promise.resolve();
   }

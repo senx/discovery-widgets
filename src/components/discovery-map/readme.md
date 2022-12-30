@@ -49,6 +49,16 @@ Type: `Promise<void>`
 
 
 
+### `hideById(id: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resize() => Promise<void>`
 
 
@@ -70,6 +80,16 @@ Type: `Promise<void>`
 
 
 ### `show(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `showById(id: number) => Promise<void>`
 
 
 

@@ -136,9 +136,7 @@ export class DiscoveryProfile {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
     });
     return Promise.resolve();
   }
@@ -147,9 +145,25 @@ export class DiscoveryProfile {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async hideById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendUnSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
+    });
+    return Promise.resolve();
+  }
+
+  @Method()
+  async showById(id: number) {
+    this.myChart.dispatchAction({
+      type: 'legendSelect',
+      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
     });
     return Promise.resolve();
   }
@@ -230,6 +244,7 @@ export class DiscoveryProfile {
         series.push({
           type: 'custom',
           name,
+          id: gts.id,
           data: gts.v.map(d => {
             let startTS = +d[0];
             startTS = this.innerOptions.timeMode === 'date'

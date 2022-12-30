@@ -133,9 +133,10 @@ export class DiscoveryMapComponent {
 
   @Method()
   async show(regexp: string) {
-    Object.keys(this.hidden).forEach(k => {
-      if (new RegExp(regexp).test(k)) {
-        this.hidden[k] = false;
+    ((this.result as DataModel || new DataModel()).data as any[]).forEach(gts => {
+      const gtsName = (((this.result as DataModel || new DataModel()).params || [])[gts.id] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts);
+      if (new RegExp(regexp).test(gtsName)) {
+        this.hidden[gts.id] = false;
       }
     });
     this.drawMap(this.result as DataModel || new DataModel(), true);
@@ -144,12 +145,26 @@ export class DiscoveryMapComponent {
 
   @Method()
   async hide(regexp: string) {
-    Object.keys(this.hidden).forEach(k => {
-      if (new RegExp(regexp).test(k)) {
-        this.hidden[k] = true;
+    ((this.result as DataModel || new DataModel()).data as any[]).forEach(gts => {
+      const gtsName = (((this.result as DataModel || new DataModel()).params || [])[gts.id] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts);
+      if (new RegExp(regexp).test(gtsName)) {
+        this.hidden[gts.id] = true;
       }
     });
     this.drawMap(this.result as DataModel || new DataModel(), true);
+    return Promise.resolve();
+  }
+
+  @Method()
+  async hideById(id: number) {
+        this.hidden[id] = true;
+    this.drawMap(this.result as DataModel || new DataModel(), true);
+    return Promise.resolve();
+  }
+
+  @Method()
+  async showById(id: number) {
+    this.hidden[id] = false;
     return Promise.resolve();
   }
 
@@ -202,9 +217,8 @@ export class DiscoveryMapComponent {
     this.pointslayer = [];
     dataList.forEach((g, i) => {
       if (GTSLib.isGts(g)) {
-        const gtsName = ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(g);
-        if (!this.hidden[gtsName]) {
-          this.hidden[gtsName] = false;
+        if (!this.hidden[g.id]) {
+          this.hidden[g.id] = false;
         }
       }
     })
