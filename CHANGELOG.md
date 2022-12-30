@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.1.59
+
+> +  2022/12/30  | v1.1.59 
+> +  2022/12/30  | Fix Show/Hide feature and add Show/Hide by id 
+> +  2022/12/30  | Remove startup script which causes issues with some imports 
+> +  2022/12/29  | changelog 
+
 ## v1.1.58
 
 > +  2022/12/29  | v1.1.58 
