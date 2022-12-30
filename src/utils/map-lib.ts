@@ -145,43 +145,45 @@ export class MapLib {
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
-      gts.id = gts.id || i;
-      this.LOG?.debug(['toLeafletMapPaths'], gts, data.params ? data.params[i] : '');
-      const params = (data.params || [])[i] || {};
-      gts.tooltip = params.map?.tooltip || {};
-      if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[GTSLib.serializeGtsMetadata(gts)] && !params.map?.heatmap) {
-        const path: any = {};
-        path.id = gts.id;
-        path.tooltip = gts.tooltip;
-        MapLib.extractCommonParameters(path, params, i, scheme);
-        path.path = MapLib.gtsToPath(gts);
-        if (!!params.render || data.globalParams?.map?.render) {
-          path.render = params.render || data.globalParams?.map?.render;
-        }
-        if (!!params.marker || data?.globalParams?.map?.marker) {
-          path.marker = params.marker || data?.globalParams?.map?.marker;
-        }
-        path.line = params.hasOwnProperty('line') ? params.line : true;
-        path.render = path.render || 'dots';
-        if (path.render === 'weightedDots') {
-          MapLib.validateWeightedDotsPositionArray(path, params);
-        }
-        if (path.render === 'coloredWeightedDots') {
-          MapLib.validateWeightedColoredDotsPositionArray(path, params);
-        }
-        if (data.params && data.params[i] && data.params[i].key) {
-          path.key = data.params[i].key;
+      if (GTSLib.isGts(gts)) {
+        gts.id = gts.id || i;
+        this.LOG?.debug(['toLeafletMapPaths'], gts, data.params ? data.params[i] : '');
+        const params = (data.params || [])[i] || {};
+        gts.tooltip = params.map?.tooltip || {};
+        if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[GTSLib.serializeGtsMetadata(gts)] && !params.map?.heatmap) {
+          const path: any = {};
+          path.id = gts.id;
+          path.tooltip = gts.tooltip;
+          MapLib.extractCommonParameters(path, params, i, scheme);
+          path.path = MapLib.gtsToPath(gts);
+          if (!!params.render || data.globalParams?.map?.render) {
+            path.render = params.render || data.globalParams?.map?.render;
+          }
+          if (!!params.marker || data?.globalParams?.map?.marker) {
+            path.marker = params.marker || data?.globalParams?.map?.marker;
+          }
+          path.line = params.hasOwnProperty('line') ? params.line : true;
+          path.render = path.render || 'dots';
+          if (path.render === 'weightedDots') {
+            MapLib.validateWeightedDotsPositionArray(path, params);
+          }
+          if (path.render === 'coloredWeightedDots') {
+            MapLib.validateWeightedColoredDotsPositionArray(path, params);
+          }
+          if (data.params && data.params[i] && data.params[i].key) {
+            path.key = data.params[i].key;
+          } else {
+            path.key = GTSLib.serializeGtsMetadata(gts);
+          }
+          if (data.params && data.params[i] && data.params[i].color) {
+            path.color = data.params[i].color;
+          } else {
+            path.color = ColorLib.getColor(i, scheme);
+          }
+          paths.push(path);
         } else {
-          path.key = GTSLib.serializeGtsMetadata(gts);
+          paths.push(null); // push something to keep matching with params order.
         }
-        if (data.params && data.params[i] && data.params[i].color) {
-          path.color = data.params[i].color;
-        } else {
-          path.color = ColorLib.getColor(i, scheme);
-        }
-        paths.push(path);
-      } else {
-        paths.push(null); // push something to keep matching with params order.
       }
     }
     return paths;
