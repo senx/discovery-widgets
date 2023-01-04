@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.1.60
+
+> +  2023/01/04  | v1.1.60 
+> +  2023/01/04  | Fix calendar 
+> +  2022/12/30  | Fix map crash when junks on stack 
+> +  2022/12/30  | changelog 
+
 ## v1.1.59
 
 > +  2022/12/30  | v1.1.59 
