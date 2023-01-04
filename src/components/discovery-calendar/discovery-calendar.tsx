@@ -125,24 +125,6 @@ export class DiscoveryCalendar {
     return Promise.resolve();
   }
 
-  @Method()
-  async hideById(id: number) {
-    this.myChart.dispatchAction({
-      type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
-    });
-    return Promise.resolve();
-  }
-
-  @Method()
-  async showById(id: number) {
-    this.myChart.dispatchAction({
-      type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => s.id === id)
-    });
-    return Promise.resolve();
-  }
-
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryCalendar, this.debug);
@@ -246,7 +228,6 @@ export class DiscoveryCalendar {
           });
           series.push({
             type: 'heatmap',
-            id: gts.id,
             coordinateSystem: 'calendar',
             name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
             calendarIndex: cal,

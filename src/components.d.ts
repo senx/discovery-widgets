@@ -63,12 +63,10 @@ export namespace Components {
         "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
-        "hideById": (id: number) => Promise<void>;
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "show": (regexp: string) => Promise<void>;
-        "showById": (id: number) => Promise<void>;
         "type": ChartType;
         "unit": string;
         "width": number;
