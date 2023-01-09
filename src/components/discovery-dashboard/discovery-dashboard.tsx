@@ -24,6 +24,7 @@ import {ChartType, Dashboard, DataModel, DiscoveryEvent, Tile} from '../../model
 import {JsonLib} from '../../utils/jsonLib';
 import {v4, v4 as uuidv4} from 'uuid';
 import {PdfLib} from '../../utils/pdfLib';
+import {LangUtils} from '../../utils/lang-utils';
 
 @Component({
   tag: 'discovery-dashboard',
@@ -75,6 +76,7 @@ export class DiscoveryDashboardComponent {
   private innerVars = {}
   private componentId: string;
   private eventState: any = {};
+  private refreshTimer;
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -89,17 +91,11 @@ export class DiscoveryDashboardComponent {
 
   @Watch('data')
   dataUpdate(newValue: string, oldValue: string) {
-
-    if (!!this.data && typeof this.data === 'string') {
-      this.processResult(JSON.parse(this.data));
-    }
-    if (!!this.data && typeof this.data !== 'string') {
-      this.processResult(this.data);
-    }
     this.LOG?.debug(['optionsUpdate'], {
       options: this.options,
       newValue, oldValue
     });
+    this.parseResult();
   }
 
 
@@ -166,7 +162,7 @@ export class DiscoveryDashboardComponent {
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       this.options = JSON.parse(this.options || '{}');
     }
-    if(this.options === 'undefined') {
+    if (this.options === 'undefined') {
       this.options = new Param();
     }
     this.LOG?.debug(['componentWillLoad'], {url: this.url, options: this.options});
@@ -265,7 +261,12 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
           if (typeof tmpResult.tiles === 'string') {
             this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
-            Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', this.options.httpHeaders).then((t: any) => {
+            const ws = LangUtils.prepare(
+              Utils.unsescape(tmpResult.tiles + ' EVAL'),
+              this.innerVars || {},
+              (this.options)?.skippedVars || [],
+              'dashboard', 'warpscript');
+            Utils.httpPost(this.url, ws, this.options.httpHeaders).then((t: any) => {
               this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
               this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
               this.processResult(tmpResult);
@@ -288,7 +289,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
   }
 
   private parseResult() {
-    let tmpResult: Dashboard = new Dashboard();
+    let tmpResult: Dashboard;
     if (!!this.data && typeof this.data === 'string') {
       const res = JSON.parse(this.data);
       tmpResult = GTSLib.isArray(res) ? res[0] : res;
@@ -300,18 +301,30 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     this.loaded = true;
     if (typeof tmpResult.tiles === 'string') {
       this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
-      Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', this.options.httpHeaders).then((t: any) => {
-        this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
-        this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
-        this.processResult(tmpResult);
-      }).catch(e => {
-        this.LOG?.error(['exec'], e);
-        tmpResult.tiles = [];
-      });
+      this.processMacroTiles(tmpResult)
     } else {
       this.renderedTiles = tmpResult.tiles || [];
     }
     this.processResult(tmpResult);
+  }
+
+  private processMacroTiles(tmpResult: Dashboard) {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+    }
+    if (typeof tmpResult.tiles === 'string') {
+      Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', (this.options as Param).httpHeaders).then((t: any) => {
+        this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
+        this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
+        this.processResult(tmpResult);
+        if ((this.options as Param).autoRefresh || 0 > 0 && !!this.data) {
+          this.refreshTimer = setTimeout(() => this.processMacroTiles(tmpResult), (this.options as Param).autoRefresh * 1000);
+        }
+      }).catch(e => {
+        this.LOG?.error(['exec'], e);
+        tmpResult.tiles = [];
+      });
+    }
   }
 
   private processResult(tmpResult: Dashboard) {
