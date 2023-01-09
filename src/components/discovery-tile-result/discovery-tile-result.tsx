@@ -651,7 +651,7 @@ JSON-> 0 GET`}
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
-    this.innerStyles = {...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {}};
+    this.innerStyles = {...this.innerStyles, ...styles, ...this.innerOptions.customStyles || {}};
     return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 
