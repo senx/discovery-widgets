@@ -291,7 +291,8 @@ export class DiscoveryPieComponent {
         axisPointer: {
           type: 'shadow'
         },
-        backgroundColor: 'rgba(255, 255, 255, 0.8)'
+        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
+        hideDelay: this.innerOptions.tooltipDelay || 100,
       },
       toolbox: {
         show: this.innerOptions.showControls,

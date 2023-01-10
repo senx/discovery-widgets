@@ -626,7 +626,7 @@ export class DiscoveryMapComponent {
         }
         this.poputTimeout = setTimeout(() => {
           if (marker.isPopupOpen() && !this.markerOver) marker.closePopup();
-        }, 3000);
+        }, this.innerOptions.tooltipDelay || 3000);
         this.dataPointOver.emit({
           date: ts,
           name: positionData.key,

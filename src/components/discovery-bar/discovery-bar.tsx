@@ -284,6 +284,7 @@ export class DiscoveryBarComponent {
         trigger: 'axis',
         axisPointer: {type: 'shadow'},
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
+        hideDelay: this.innerOptions.tooltipDelay || 100,
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode !== 'date'

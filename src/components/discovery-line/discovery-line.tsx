@@ -200,7 +200,8 @@ export class DiscoveryLineComponent {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
           }
         },
-        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white')
+        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
+        hideDelay: this.innerOptions.tooltipDelay || 100,
       },
       toolbox: {
         show: this.innerOptions.showControls,

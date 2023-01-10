@@ -291,7 +291,11 @@ export class DiscoveryGauge {
         max: d.max === Number.MIN_VALUE ? overallMax : d.max,
         startAngle: angles.s,
         endAngle: angles.e,
-        tooltip: {formatter: '{a} <br/>{b} : {c}%'},
+        tooltip: {
+          backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
+          hideDelay: this.innerOptions.tooltipDelay || 100,
+          formatter: '{a} <br/>{b} : {c}%'
+        },
         title: {
           fontSize: 12,
           offsetCenter: this.type === 'compass' ? [0, '110%'] : [0, 10],

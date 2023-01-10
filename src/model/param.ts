@@ -84,6 +84,7 @@ export class Param {
   leftMargin = 0;
   showLoader = false;
   noDataLabel = 'No data';
+  tooltipDelay?: number;
   polygons?: { shape: number[][]; color?: string; name?: string; fill?: boolean }[];
 // components specific params
   bar?: {

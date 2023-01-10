@@ -197,7 +197,8 @@ export class DiscoveryHeatmap {
         axisPointer: {
           type: 'shadow'
         },
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
+        hideDelay: this.innerOptions.tooltipDelay || 100,
         formatter: (params) => `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
           (this.innerOptions.timeMode || 'date') === 'date'
             ? GTSLib.toISOString(

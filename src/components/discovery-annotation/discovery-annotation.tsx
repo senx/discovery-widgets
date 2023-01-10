@@ -305,7 +305,8 @@ export class DiscoveryAnnotation {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
           }
         },
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
+        hideDelay: this.innerOptions.tooltipDelay || 100,
         position: (pos, params, el, elRect, size) => {
           const obj = {top: 10};
           if (this.hasFocus) {

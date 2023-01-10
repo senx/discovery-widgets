@@ -417,6 +417,8 @@ export class DiscoveryProfile {
       throttle: 70,
       tooltip: {
         trigger: 'axis',
+        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
+        hideDelay: this.innerOptions.tooltipDelay || 100,
         formatter: (params) => {
           if ('profile' === this.type) {
             return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
@@ -451,7 +453,6 @@ export class DiscoveryProfile {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
           }
         },
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
         position: (pos, params, el, elRect, size) => {
           const obj = {top: this.expanded ? pos[1] - 25 : 10};
           const p = params[0] as any;
