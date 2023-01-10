@@ -200,32 +200,7 @@ export class DiscoveryLineComponent {
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
           }
         },
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-
-        position: (pos, params, el, elRect, size) => {
-          const obj = {top: 10};
-          if (this.hasFocus) {
-            const date = this.innerOptions.timeMode === 'date'
-              ? GTSLib.zonedTimeToUtc(params[0]?.data[0], 1, this.innerOptions.timeZone) * this.divider
-              : params[0]?.data[0];
-            let value = 0;
-            const regexp = '(' + (params as any[]).map(s => {
-              const gts = this.chartOpts.series[s.seriesIndex]
-              const coords = this.myChart.convertFromPixel({
-                yAxisIndex: gts?.yAxisIndex || 0,
-                xAxisIndex: gts?.xAxisIndex || 0
-              }, pos) || [0, 0];
-              value = coords[1];
-              return s.seriesName;
-            }).join('|') + ')';
-            if (this.focusDate !== date) {
-              this.dataPointOver.emit({date, name: regexp, value, meta: {}});
-              this.focusDate = date;
-            }
-          }
-          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
-          return obj;
-        }
+        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white')
       },
       toolbox: {
         show: this.innerOptions.showControls,

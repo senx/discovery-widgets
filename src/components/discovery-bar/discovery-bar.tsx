@@ -283,7 +283,7 @@ export class DiscoveryBarComponent {
       tooltip: {
         trigger: 'axis',
         axisPointer: {type: 'shadow'},
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode !== 'date'
@@ -295,27 +295,6 @@ export class DiscoveryBarComponent {
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
           ).join('<br>')}`;
         },
-        position: (pos, params, el, elRect, size) => {
-          const obj = {top: 10};
-          if (this.hasFocus) {
-            const date = this.innerOptions.timeMode === 'date'
-              ? GTSLib.zonedTimeToUtc(params[0]?.data[0] || 0, 1, this.innerOptions.timeZone) * this.divider
-              : params[0]?.data[0] || 0;
-            let value = 0;
-            const regexp = '(' + (params as any[]).map(s => {
-              const gts = this.chartOpts.series[s.seriesIndex]
-              const coords = this.myChart.convertFromPixel({
-                yAxisIndex: gts.yAxisIndex || 0,
-                xAxisIndex: gts.xAxisIndex || 0
-              }, pos) || [0, 0];
-              value = coords[1];
-              return s.seriesName;
-            }).join('|') + ')';
-            this.dataPointOver.emit({date, name: regexp, value, meta: {}});
-          }
-          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
-          return obj;
-        }
       },
       toolbox: {
         show: this.innerOptions.showControls,
