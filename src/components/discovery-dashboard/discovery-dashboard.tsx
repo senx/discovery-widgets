@@ -76,6 +76,7 @@ export class DiscoveryDashboardComponent {
   private innerVars = {}
   private componentId: string;
   private eventState: any = {};
+  @State() private types: any = {};
   private refreshTimer;
 
   @Watch('options')
@@ -389,6 +390,15 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     else return GTSLib.isArray(data) ? data : [data];
   }
 
+
+  private getType(id: number, type: string): string {
+    return (this.types[id] || type || '').replace(/:/gi, '-');
+  }
+
+  private setActualType(id: number, type: CustomEvent<ChartType>) {
+    this.types[id] = type.detail;
+    this.types = {...this.types};
+  }
   private getRendering() {
     switch (this.innerType) {
       case 'scada':
@@ -397,7 +407,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
           <p>{this.description}</p>
           <div class="discovery-scada-wrapper" style={{height: `${this.scadaHeight}px`}}>
             {(this.renderedTiles || []).map((t, i) =>
-              <div class={'discovery-scada-tile ' + (t.type || '').replace(/:/gi, '-')}
+              <div class={'discovery-scada-tile ' + this.getType(i, t.type)}
                    style={{
                      left: `${t.x}px`,
                      width: `${t.w}px`,
@@ -412,6 +422,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                       type={t.type as ChartType}
                                       chart-title={t.title}
                                       unit={t.unit}
+                                      onSelfType={type => this.setActualType(i, type)}
                                       debug={this.debug}
                                       id={`chart-${i}}`}
                                       ref={(el) => this.addTile(el, t, i)}
@@ -422,6 +433,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                       url={t.endpoint || this.url}
                       result={DiscoveryDashboardComponent.sanitize(t.data)}
                       type={t.type as ChartType}
+                      onSelfType={type => this.setActualType(i, type)}
                       ref={(el) => this.addTile(el, t, i)}
                       id={`chart-${i}}`}
                       unit={t.unit}
@@ -444,7 +456,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               gridTemplateColumns: `repeat(${this.result.cols}, 1fr)`
             }}>
               {(this.renderedTiles || []).map((t, i) =>
-                <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
+                <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
                      style={{
                        gridColumn: `${(t.x + 1)} / ${(t.x + t.w + 1)}`,
                        gridRow: `${(t.y + 1)} / ${(t.y + t.h + 1)}`,
@@ -461,6 +473,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                         unit={t.unit}
                                         id={`chart-${i}}`}
                                         ref={(el) => this.addTile(el, t, i)}
+                                        onSelfType={type => this.setActualType(i, type)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
@@ -471,6 +484,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                         ref={(el) => this.addTile(el, t, i)}
                         unit={t.unit}
                         id={`chart-${i}}`}
+                        onSelfType={type => this.setActualType(i, type)}
                         options={DiscoveryDashboardComponent.merge(this.options, t.options)}
                         debug={this.debug}
                         chart-title={t.title}
@@ -486,7 +500,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
             <p>{this.description}</p>
             <div class="discovery-flex-wrapper">
               {(this.renderedTiles || []).map((t, i) =>
-                <div class={'discovery-dashboard-tile ' + (t.type || '').replace(/:/gi, '-')}
+                <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
                      style={{
                        height: `${((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
                        minHeight: '100%',
@@ -501,6 +515,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                                         debug={this.debug}
                                         unit={t.unit}
                                         id={`chart-${i}}`}
+                                        onSelfType={type => this.setActualType(i, type)}
                                         ref={(el) => this.addTile(el, t, i)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
@@ -511,6 +526,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                         type={t.type as ChartType}
                         ref={(el) => this.addTile(el, t, i)}
                         unit={t.unit}
+                        onSelfType={type => this.setActualType(i, type)}
                         id={`chart-${i}}`}
                         options={DiscoveryDashboardComponent.merge(this.options, t.options)}
                         debug={this.debug}
@@ -578,5 +594,4 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       });
     }
   }
-
 }

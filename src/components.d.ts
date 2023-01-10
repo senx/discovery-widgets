@@ -904,6 +904,7 @@ declare namespace LocalJSX {
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
         "onExecResult"?: (event: DiscoveryTileCustomEvent<string>) => void;
+        "onSelfType"?: (event: DiscoveryTileCustomEvent<ChartType>) => void;
         "onStatusError"?: (event: DiscoveryTileCustomEvent<any>) => void;
         "onStatusHeaders"?: (event: DiscoveryTileCustomEvent<string[]>) => void;
         "options"?: Param | string;
@@ -919,6 +920,7 @@ declare namespace LocalJSX {
         "language"?: 'warpscript' | 'flows';
         "onDiscoveryEvent"?: (event: DiscoveryTileResultCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryTileResultCustomEvent<void>) => void;
+        "onSelfType"?: (event: DiscoveryTileResultCustomEvent<ChartType>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "start"?: number;

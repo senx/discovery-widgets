@@ -43,6 +43,7 @@ export class DiscoveryTileComponent {
   @Event({bubbles: true}) statusHeaders: EventEmitter<string[]>;
   @Event({bubbles: true}) statusError: EventEmitter;
   @Event({bubbles: true}) execResult: EventEmitter<string>;
+  @Event() selfType: EventEmitter<ChartType>;
 
   @Element() el: HTMLElement;
 
@@ -352,6 +353,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               width={this.width}
               language={this.language}
               chart-title={this.chartTitle}
+              onSelfType={type => this.handleSelfType(type)}
               vars={JSON.stringify(this.innerVars)}
               ref={(el) => this.tileResult = el}
               id={this.componentId}
@@ -369,5 +371,9 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       </div> : ''}
       <pre id="ws"><slot/></pre>
     </div>;
+  }
+
+  private handleSelfType(type) {
+    this.selfType.emit(type);
   }
 }

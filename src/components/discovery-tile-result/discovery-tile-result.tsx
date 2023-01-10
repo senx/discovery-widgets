@@ -62,6 +62,7 @@ export class DiscoveryTileResultComponent {
     bubbles: true,
   }) discoveryEvent: EventEmitter<DiscoveryEvent>;
   @Event() draw: EventEmitter<void>;
+  @Event() selfType: EventEmitter<ChartType>;
 
   private LOG: Logger;
   private wrapper: HTMLDivElement;
@@ -76,7 +77,10 @@ export class DiscoveryTileResultComponent {
   @Watch('type')
   updateType(newValue: string) {
     if (newValue !== this.innerType) {
-      setTimeout(() => this.innerType = this.type);
+      setTimeout(() => {
+        this.innerType = this.type;
+          this.selfType.emit(this.innerType);
+      });
     }
   }
 
@@ -204,6 +208,7 @@ export class DiscoveryTileResultComponent {
     this.innerOptions = {...options};
     this.innerVars = JSON.parse(this.vars || '{}');
     this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
+    this.selfType.emit(this.innerType);
     this.LOG?.debug(['componentWillLoad 2'], {
       type: this.innerType,
       options: this.innerOptions,
@@ -636,6 +641,7 @@ JSON-> 0 GET`}
         this.unit = (this.options as Param).unit || this.unit
         this.innerOptions = {...this.innerOptions, ...(this.innerResult as unknown as DataModel)?.globalParams || {}};
         this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
+        this.selfType.emit(this.innerType);
         this.innerTitle = this.innerOptions?.title || this.chartTitle || '';
         this.handleCSSColors();
         await this.parseEvents();
