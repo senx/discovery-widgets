@@ -175,10 +175,10 @@ export class MapLib {
           } else {
             path.key = GTSLib.serializeGtsMetadata(gts);
           }
-          if (data.params && data.params[i] && data.params[i].color) {
-            path.color = data.params[i].color;
-          } else {
-            path.color = ColorLib.getColor(i, scheme);
+
+          path.color = ColorLib.getColor(gts.id, scheme);
+          if (data.params && data.params[i]) {
+            path.color = data.params[i].datasetColor || data.params[i].color || path.color;
           }
           paths.push(path);
         } else {
