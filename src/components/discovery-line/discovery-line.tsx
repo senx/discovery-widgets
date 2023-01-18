@@ -719,7 +719,10 @@ export class DiscoveryLineComponent {
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
-      this.el.addEventListener('mouseout', () => this.hasFocus = false);
+      this.el.addEventListener('mouseout', () => {
+        this.hasFocus = false;
+        this.dataPointOver.emit({});
+      });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
     });

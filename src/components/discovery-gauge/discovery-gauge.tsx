@@ -88,7 +88,9 @@ export class DiscoveryGauge {
       this.myChart.resize();
     }
     return Promise.resolve();
-  } @Method()
+  }
+
+  @Method()
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
@@ -389,6 +391,7 @@ export class DiscoveryGauge {
       this.myChart.on('mouseover', (event: any) => {
         this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
+      this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });

@@ -446,7 +446,10 @@ export class DiscoveryAnnotation {
     });
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
     this.el.addEventListener('mouseover', () => this.hasFocus = true);
-    this.el.addEventListener('mouseout', () => this.hasFocus = false);
+    this.el.addEventListener('mouseout', () => {
+      this.hasFocus = false;
+      this.dataPointOver.emit({});
+    });
     initial = true;
     this.setOpts();
   }

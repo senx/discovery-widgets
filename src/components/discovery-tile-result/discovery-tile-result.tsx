@@ -140,9 +140,15 @@ export class DiscoveryTileResultComponent {
       });
     }
     if (res.focus) {
-      void this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
-        // empty
-      });
+      if(!!res.focus.date) {
+        void this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
+          // empty
+        });
+      } else {
+        void this.unFocus().then(() => {
+          // empty
+        });
+      }
     }
     if (res.margin) {
       this.innerOptions = {...this.innerOptions, leftMargin: res.margin};

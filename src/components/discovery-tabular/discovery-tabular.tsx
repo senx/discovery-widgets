@@ -97,6 +97,7 @@ export class DiscoveryTabular {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h;
+    this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
   }
 
   private static getHeaderParam(data: DataModel, i: number, j: number, key: string, def: string): string {
