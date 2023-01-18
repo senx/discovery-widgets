@@ -446,8 +446,22 @@ export class DiscoveryAnnotation {
         initial = false;
       });
     });
-    this.myChart.on('mouseover', (event: any) => {
-      this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+    this.myChart.on('highlight', (event: any) => {
+      let ts;
+      let v;
+      const series = [];
+      (event.batch || []).forEach(b => {
+        const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+        ts = s.data[b.dataIndex][0];
+        ts = this.innerOptions.timeMode === 'date'
+          ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+          : ts;
+        v = s.data[b.dataIndex][1];
+        series.push(s.name);
+      });
+      if (ts !== undefined) {
+        this.dataPointOver.emit({date: ts, name: '(' + series.join('|') + ')', value: v, meta: {}});
+      }
     });
     this.myChart.on('click', (event: any) => {
       this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});

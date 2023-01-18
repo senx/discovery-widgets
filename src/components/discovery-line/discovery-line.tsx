@@ -722,8 +722,22 @@ export class DiscoveryLineComponent {
       this.myChart.on('restore', () => this.restoreZoomHandler());
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
-      this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      this.myChart.on('highlight', (event: any) => {
+        let ts;
+        let v;
+        const series = [];
+        (event.batch || []).forEach(b => {
+          const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+          ts = s.data[b.dataIndex][0];
+          ts = this.innerOptions.timeMode === 'date'
+            ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+            : ts;
+          v = s.data[b.dataIndex][1];
+          series.push(s.name);
+        });
+        if (ts !== undefined) {
+          this.dataPointOver.emit({date: ts, name: '(' + series.join('|') + ')', value: v, meta: {}});
+        }
       });
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
@@ -800,10 +814,12 @@ export class DiscoveryLineComponent {
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
+    console.log(regexp, ts)
     if (!this.myChart) return;
     const date = this.innerOptions.timeMode === 'date'
       ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
       : ts || 0;
+    console.log(date)
     let seriesIndex = 0;
     let dataIndex = 0;
     if (!!regexp) {
