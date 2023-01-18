@@ -129,8 +129,7 @@ export class DiscoverySlider {
     const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
     const format = {
       to: v => this.innerOptions.timeMode === 'date'
-        ? (GTSLib.toISOString(GTSLib.zonedTimeToUtc(v, this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-          this.innerOptions.timeFormat) || '')
+        ? (GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone, this.innerOptions.timeFormat) || '')
           .replace('T', '<br />').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
         : parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || '')
       ,
@@ -171,7 +170,7 @@ export class DiscoverySlider {
       let r;
       if (GTSLib.isArray(v) && v.length > 1) {
         r = this.innerOptions.timeMode === 'date'
-          ? [GTSLib.zonedTimeToUtc(v[0], this.divider, this.innerOptions.timeZone) * this.divider, GTSLib.zonedTimeToUtc(v[1], this.divider, this.innerOptions.timeZone) * this.divider]
+          ? [v[0], v[1]]
           : [Number(v[0]), Number(v[1])];
       } else {
         r = this.innerOptions.timeMode === 'date'

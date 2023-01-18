@@ -391,7 +391,7 @@ export class GTSLib {
    * Will revert what utcToZonedTime had done.
    */
   static zonedTimeToUtc(zonedTime: number, divider: number, timeZone = 'UTC') {
-    timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
+    timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone || 'UTC';
     const ourTimezone = tz.guess();
     const ourOffsetInMillis = tz(moment.utc(zonedTime / divider), ourTimezone).utcOffset() * 60000;
     const givenTimezoneOffsetInMillis = tz(moment.utc(zonedTime / divider), timeZone || 'UTC').utcOffset() * 60000;
