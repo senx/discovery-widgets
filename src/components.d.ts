@@ -631,7 +631,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
-        "onDataZoom"?: (event: DiscoveryAnnotationCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?:string }>) => void;
+        "onDataZoom"?: (event: DiscoveryAnnotationCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
         "onDraw"?: (event: DiscoveryAnnotationCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryAnnotationCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;

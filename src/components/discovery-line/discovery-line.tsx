@@ -742,8 +742,8 @@ export class DiscoveryLineComponent {
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
-      this.el.addEventListener('mouseout', () => {
-        this.hasFocus = false;
+      this.el.addEventListener('mouseout', () => this.hasFocus = false);
+      this.myChart.on('downplay', () => {
         this.dataPointOver.emit({});
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
@@ -814,12 +814,10 @@ export class DiscoveryLineComponent {
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
-    console.log(regexp, ts)
     if (!this.myChart) return;
     const date = this.innerOptions.timeMode === 'date'
       ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
       : ts || 0;
-    console.log(date)
     let seriesIndex = 0;
     let dataIndex = 0;
     if (!!regexp) {
