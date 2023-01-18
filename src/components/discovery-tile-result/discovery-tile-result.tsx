@@ -233,7 +233,7 @@ export class DiscoveryTileResultComponent {
     elementResizeEvent.unbind(this.tileElem);
   }
 
-  handleZoom(event: CustomEvent<{ start: number, end: number }>) {
+  handleZoom(event: CustomEvent<{ start?: number, end?: number, type?:string }>) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'zoom')
       .forEach(e => {
@@ -541,7 +541,7 @@ JSON-> 0 GET`}
   }
 
   @Method()
-  async setZoom(dataZoom: { start: number, end: number }) {
+  async setZoom(dataZoom: { start?: number, end?: number, type?:string }) {
     if (this.tile) {
       (this.tile).setZoom(dataZoom);
     }

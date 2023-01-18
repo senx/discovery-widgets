@@ -20,14 +20,14 @@
 
 ## Events
 
-| Event                | Description | Type                                                                     |
-| -------------------- | ----------- | ------------------------------------------------------------------------ |
-| `dataPointOver`      |             | `CustomEvent<any>`                                                       |
-| `dataPointSelected`  |             | `CustomEvent<any>`                                                       |
-| `dataZoom`           |             | `CustomEvent<{ start: number; end: number; min: number; max: number; }>` |
-| `draw`               |             | `CustomEvent<void>`                                                      |
-| `leftMarginComputed` |             | `CustomEvent<number>`                                                    |
-| `timeBounds`         |             | `CustomEvent<any>`                                                       |
+| Event                | Description | Type                                                                                        |
+| -------------------- | ----------- | ------------------------------------------------------------------------------------------- |
+| `dataPointOver`      |             | `CustomEvent<any>`                                                                          |
+| `dataPointSelected`  |             | `CustomEvent<any>`                                                                          |
+| `dataZoom`           |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; type?: string; }>` |
+| `draw`               |             | `CustomEvent<void>`                                                                         |
+| `leftMarginComputed` |             | `CustomEvent<number>`                                                                       |
+| `timeBounds`         |             | `CustomEvent<any>`                                                                          |
 
 
 ## Methods
@@ -82,7 +82,7 @@ Type: `Promise<void>`
 
 
 
-### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
+### `setZoom(dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>`
 
 
 

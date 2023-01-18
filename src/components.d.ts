@@ -19,7 +19,7 @@ export namespace Components {
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "setFocus": (regexp: string, ts: number) => Promise<void>;
-        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
+        "setZoom": (dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "showById": (id: number) => Promise<void>;
         "type": ChartType;
@@ -37,7 +37,7 @@ export namespace Components {
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "setFocus": (regexp: string, ts: number) => Promise<void>;
-        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
+        "setZoom": (dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "showById": (id: number) => Promise<void>;
         "type": ChartType;
@@ -176,7 +176,7 @@ export namespace Components {
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
-        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
+        "setZoom": (dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "showById": (id: number) => Promise<void>;
         "type": ChartType;
@@ -331,7 +331,7 @@ export namespace Components {
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
-        "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
+        "setZoom": (dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "showById": (id: number) => Promise<void>;
         "start": number;
@@ -631,7 +631,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
-        "onDataZoom"?: (event: DiscoveryAnnotationCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
+        "onDataZoom"?: (event: DiscoveryAnnotationCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?:string }>) => void;
         "onDraw"?: (event: DiscoveryAnnotationCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryAnnotationCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
@@ -646,7 +646,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryBarCustomEvent<any>) => void;
-        "onDataZoom"?: (event: DiscoveryBarCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
+        "onDataZoom"?: (event: DiscoveryBarCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?:string }>) => void;
         "onDraw"?: (event: DiscoveryBarCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBarCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryBarCustomEvent<any>) => void;
@@ -785,7 +785,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryLineCustomEvent<any>) => void;
-        "onDataZoom"?: (event: DiscoveryLineCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
+        "onDataZoom"?: (event: DiscoveryLineCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
         "onDraw"?: (event: DiscoveryLineCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryLineCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryLineCustomEvent<any>) => void;
