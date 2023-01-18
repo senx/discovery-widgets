@@ -43,7 +43,7 @@ export class DiscoveryAnnotation {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
-  @Event() dataZoom: EventEmitter<{ start?: number, end?: number, min?: number, max?: number, type?:string }>;
+  @Event() dataZoom: EventEmitter<{ start?: number, end?: number, min?: number, max?: number, type?: string }>;
   @Event() dataPointOver: EventEmitter;
   @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
@@ -400,7 +400,7 @@ export class DiscoveryAnnotation {
       const batch = (event.batch || [])[0] || {};
       start = batch.start || batch.startValue;
       end = batch.end || batch.endValue;
-    } else if(event.start !== undefined && event.end !== undefined) {
+    } else if (event.start !== undefined && event.end !== undefined) {
       start = event.start;
       end = event.end;
     }
@@ -470,8 +470,8 @@ export class DiscoveryAnnotation {
     this.myChart.on('restore', () => this.restoreZoomHandler());
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
     this.el.addEventListener('mouseover', () => this.hasFocus = true);
-    this.el.addEventListener('mouseout', () => {
-      this.hasFocus = false;
+    this.el.addEventListener('mouseout', () => this.hasFocus = false);
+    this.myChart.on('downplay', () => {
       this.dataPointOver.emit({});
     });
     initial = true;
