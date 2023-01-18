@@ -1,6 +1,25 @@
 Discovery
 ---
 
+## v1.1.62
+
+> +  2023/01/18  | v1.1.62 
+> +  2023/01/18  | Fix slider timezone 
+> +  2023/01/18  | Fix zoom and reset zoom  sync 
+> +  2023/01/18  | Fix unFocus sync 
+> +  2023/01/18  | Deps update 
+> +  2023/01/16  | Fix color for maps 
+> +  2023/01/10  | Fix tooltips background and add a tooltip delay 
+> +  2023/01/10  | Fix tooltips position 
+> +  2023/01/10  | Fix type change as a result 
+
+## v1.1.61
+
+> +  2023/01/09  | v1.1.61 
+> +  2023/01/09  | Fix custom Style 
+> +  2023/01/09  | Fix dashboard Autorefresh 
+> +  2023/01/04  | changelog 
+
 ## v1.1.60
 
 > +  2023/01/04  | v1.1.60 
