@@ -400,7 +400,7 @@ export class DiscoveryAnnotation {
       const batch = (event.batch || [])[0] || {};
       start = batch.start || batch.startValue;
       end = batch.end || batch.endValue;
-    } else if(event.start !== undefined && event.end !== undefined) {
+    } else if (event.start !== undefined && event.end !== undefined) {
       start = event.start;
       end = event.end;
     }

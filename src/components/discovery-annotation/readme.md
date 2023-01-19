@@ -82,7 +82,7 @@ Type: `Promise<void>`
 
 
 
-### `setZoom(dataZoom: { start?: number; end?: number; }) => Promise<void>`
+### `setZoom(dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>`
 
 
 

@@ -19,7 +19,7 @@ export namespace Components {
         "resize": () => Promise<void>;
         "result": DataModel | string;
         "setFocus": (regexp: string, ts: number) => Promise<void>;
-        "setZoom": (dataZoom: { start?: number; end?: number; }) => Promise<void>;
+        "setZoom": (dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "showById": (id: number) => Promise<void>;
         "type": ChartType;
@@ -646,7 +646,7 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryBarCustomEvent<any>) => void;
-        "onDataZoom"?: (event: DiscoveryBarCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?:string }>) => void;
+        "onDataZoom"?: (event: DiscoveryBarCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
         "onDraw"?: (event: DiscoveryBarCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBarCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryBarCustomEvent<any>) => void;
