@@ -67,6 +67,7 @@ export class DiscoveryLineComponent {
   private leftMargin = 0;
   private hasFocus = false;
   private bounds: { min: number; max: number };
+  private zoom: { start?: number; end?: number };
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -217,6 +218,12 @@ export class DiscoveryLineComponent {
       },
       dataZoom: [
         {
+          type: 'inside',
+          filterMode: 'none',
+          orient: 'horizontal',
+          zoomOnMouseWheel: true,
+        },
+        {
           type: 'slider',
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
@@ -228,12 +235,6 @@ export class DiscoveryLineComponent {
           filterMode: 'none',
           orient: 'vertical',
           zoomOnMouseWheel: 'ctrl',
-        },
-        {
-          type: 'inside',
-          filterMode: 'none',
-          orient: 'horizontal',
-          zoomOnMouseWheel: true,
         }
       ],
       visualMap: new Array(gtsCount),
@@ -666,34 +667,20 @@ export class DiscoveryLineComponent {
     }
   }
 
-  zoomHandler = _.throttle(event => {
-    let start;
-    let end;
-    if (!!event.batch) {
-      const batch = (event.batch || [])[0] || {};
-      start = batch.start || batch.startValue;
-      end = batch.end || batch.endValue;
-    } else if (event.start !== undefined && event.end !== undefined) {
-      start = event.start;
-      end = event.end;
-    }
-    if (start !== undefined && end !== undefined) {
+  private zoomHandler(start, end) {
       this.dataZoom.emit({
         start,
         end,
         min: this.innerOptions.bounds?.minDate || this.bounds?.min,
         max: this.innerOptions.bounds?.maxDate || this.bounds?.max
       });
-    }
-  }, 100, {'trailing': false});
-
-
-  restoreZoomHandler = _.throttle(() => {
-    this.dataZoom.emit({type: 'restore'});
-  }, 100, {'trailing': false});
+  }
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
+    const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
+      16, {leading: true, trailing: true});
+
     setTimeout(() => {
       this.parsing = false
       this.rendering = true;
@@ -718,8 +705,23 @@ export class DiscoveryLineComponent {
           initial = false;
         });
       });
-      this.myChart.on('dataZoom', event => this.zoomHandler(event));
-      this.myChart.on('restore', () => this.restoreZoomHandler());
+      this.myChart.on('dataZoom', (event: any) => {
+        let start;
+        let end;
+        if (!!event.batch) {
+          const batch = (event.batch || [])[0] || {};
+          start = batch.start || batch.startValue;
+          end = batch.end || batch.endValue;
+          this.zoomHandler(start, end);
+        } else if (event.start !== undefined && event.end !== undefined) {
+          start = event.start;
+          end = event.end;
+          zoomHandler(start, end)
+        }
+      });
+      this.myChart.on('restore', () => {
+        this.dataZoom.emit({type: 'restore', start: 0, end: 100})
+      });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.myChart.on('highlight', (event: any) => {
@@ -760,13 +762,13 @@ export class DiscoveryLineComponent {
   }
 
   @Method()
-  async setZoom(dataZoom: { start?: number, end?: number, type?: string }) {
+  async setZoom(dataZoom: { start?: number, end?: number }) {
     if (!!this.myChart) {
-      if ('restore' === dataZoom.type) {
-        this.myChart.dispatchAction({type: 'restore'})
-      } else {
-        this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 2});
-      }
+        dataZoom.start = dataZoom.start || 0;
+        if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
+          this.zoom = dataZoom;
+          this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 0});
+        }
     }
     return Promise.resolve();
   }

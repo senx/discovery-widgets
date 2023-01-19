@@ -24,11 +24,11 @@ export class Utils {
     return cloneDeep(inObject);
   }
 
-  static throttle(func, delay) {
+  static throttle(func, delay, ctx?) {
     let isRunning;
     return (...args) => {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const context = this;        // store the context of the object that owns this function
+      const context = ctx || this;        // store the context of the object that owns this function
       if (!isRunning) {
         isRunning = true;
         func.apply(context, args) // execute the function with the context of the object that owns it
