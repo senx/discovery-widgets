@@ -109,7 +109,7 @@ export class GTS {
 
 export class DiscoveryEvent {
   tags: string[];
-  type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus' | 'margin' | 'bounds' | 'title' | 'description' | 'selected';
+  type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus' | 'margin' | 'bounds' | 'title' | 'description' | 'selected' | 'link';
   value: any;
   selector?: string;
   source: string;

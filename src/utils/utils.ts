@@ -129,6 +129,7 @@ export class Utils {
       title: undefined,
       description: undefined,
       selected: undefined,
+      link: undefined,
     }
     if (eventHandler && evt.source !== id) {
       let tag = '.*';
@@ -182,6 +183,11 @@ export class Utils {
             break;
           case 'description':
             parsed.description = evt.value;
+            break;
+          case 'link':
+            parsed.link = typeof evt.value === 'string'
+              ? {link: evt.value, target: 'self'}
+              : {...evt.value};
             break;
           case 'selected':
             parsed.selected = parsed.selected || {};

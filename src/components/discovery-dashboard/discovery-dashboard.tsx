@@ -149,6 +149,13 @@ export class DiscoveryDashboardComponent {
     if (res.description) {
       this.description = res.description;
     }
+    if (res.link) {
+      if (res.link.target === '_blank') {
+        window.open(res.link.link, '_blank').focus();
+      } else {
+        window.location.href = res.link.link;
+      }
+    }
     if (res.vars) {
       this.innerVars = {...(this.innerVars || {}), ...this.innerVars, ...res.vars};
       if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
