@@ -56,6 +56,7 @@ export class DiscoveryTabular {
   private LOG: Logger;
   private divider = 1000;
   private pngWrapper: HTMLDivElement;
+  private params: Param[];
 
   @Watch('result')
   updateRes() {
@@ -122,6 +123,7 @@ export class DiscoveryTabular {
     let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.options = {...options};
+    this.params = data.params || [];
     let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {
       const dataList = GTSLib.flatDeep(data.data as any[]);
@@ -146,6 +148,7 @@ export class DiscoveryTabular {
         values: d.rows,
         headers: d.columns,
         isGTS: false,
+        params: d.params,
       };
       flatData.push(dataSet);
     });
@@ -162,6 +165,7 @@ export class DiscoveryTabular {
         values: [],
         headers: [],
         isGTS: false,
+        params: this.params
       };
       if (GTSLib.isGts(d)) {
         this.LOG?.debug(['parseData', 'isGts'], d);

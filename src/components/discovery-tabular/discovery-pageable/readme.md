@@ -14,6 +14,7 @@
 | `divider`    | `divider`     |             | `number`  | `undefined`   |
 | `elemsCount` | `elems-count` |             | `number`  | `15`          |
 | `options`    | --            |             | `Param`   | `new Param()` |
+| `params`     | --            |             | `Param[]` | `[]`          |
 | `windowed`   | `windowed`    |             | `number`  | `5`           |
 
 

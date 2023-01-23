@@ -72,6 +72,7 @@ export class Dataset {
   values: any[];
   headers: string[];
   isGTS: boolean;
+  params: any[] | any;
 }
 
 export class Label {

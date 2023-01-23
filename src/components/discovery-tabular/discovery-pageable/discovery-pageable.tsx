@@ -32,6 +32,7 @@ export class DiscoveryPageable {
   @Prop() divider: number;
   @Prop() data: Dataset;
   @Prop({mutable: true}) options: Param = new Param();
+  @Prop({mutable: true}) params: Param[] = [];
   @Prop({mutable: true}) elemsCount = 15;
   @Prop({mutable: true}) windowed = 5;
 
@@ -134,8 +135,11 @@ export class DiscoveryPageable {
         <tbody>
         {this.displayedValues.map((value, i) =>
           <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}
-              onMouseOver={() => this.setOver(value)}>
-            {value.map((v, j) => <td><span innerHTML={j === 0 ? this.formatDate(v) : v}/></td>)}
+              onMouseOver={() => this.setOver(value)}
+              style={this.getRowStyle(i)}
+          >
+            {value.map((v, j) => <td style={this.getCellStyle(i, j)}><span
+              innerHTML={j === 0 ? this.formatDate(v) : v}/></td>)}
           </tr>
         )}
         </tbody>
@@ -157,5 +161,29 @@ export class DiscoveryPageable {
         </div>
       </div>
     </div>
+  }
+
+  private getRowStyle(row: number) {
+    const h = this.data.values[row][0];
+    const styles: any = {};
+    if (this.data.params && this.data.params[h]) {
+      if (!GTSLib.isArray(this.data.params[h])) {
+        styles.backgroundColor = this.data.params[h].bgColor;
+        styles.color = this.data.params[h].fontColor;
+      }
+    }
+    return styles;
+  }
+
+  private getCellStyle(row: number, cell: number) {
+    const h = this.data.values[row][0];
+    const styles: any = {};
+    if (this.data.params && this.data.params[h]) {
+      if (GTSLib.isArray(this.data.params[h]) && this.data.params[h][cell]) {
+        styles.backgroundColor = this.data.params[h][cell].bgColor;
+        styles.color = this.data.params[h][cell].fontColor;
+      }
+    }
+    return styles;
   }
 }

@@ -227,6 +227,7 @@ export namespace Components {
         "divider": number;
         "elemsCount": number;
         "options": Param;
+        "params": Param[];
         "windowed": number;
     }
     interface DiscoveryPie {
@@ -833,6 +834,7 @@ declare namespace LocalJSX {
         "onDataPointOver"?: (event: DiscoveryPageableCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryPageableCustomEvent<any>) => void;
         "options"?: Param;
+        "params"?: Param[];
         "windowed"?: number;
     }
     interface DiscoveryPie {
