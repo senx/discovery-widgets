@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.1.64
+
+> +  2023/01/23  | v1.1.64 
+> +  2023/01/23  | Fix Focus 
+> +  2023/01/23  | Add rows and cell colors in tabular 
+> +  2023/01/23  | Add link event 
+> +  2023/01/19  | changelog 
+
 ## v1.1.63
 
 > +  2023/01/19  | v1.1.63 
