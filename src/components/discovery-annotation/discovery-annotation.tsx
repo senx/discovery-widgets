@@ -464,10 +464,15 @@ export class DiscoveryAnnotation {
       }
     });
     this.myChart.on('click', (event: any) => {
-      this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      const c = event.data.coord || event.data;
+      this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
     });
     this.myChart.on('dataZoom', event => this.zoomHandler(event));
     this.myChart.on('restore', () => this.restoreZoomHandler());
+    this.myChart.on('mouseover', (event: any) => {
+      const c = event.data.coord || event.data;
+      this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
+    });
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
     this.el.addEventListener('mouseover', () => this.hasFocus = true);
     this.el.addEventListener('mouseout', () => {
