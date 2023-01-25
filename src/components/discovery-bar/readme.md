@@ -72,7 +72,7 @@ Type: `Promise<void>`
 
 
 
-### `setFocus(regexp: string, ts: number) => Promise<void>`
+### `setFocus(regexp: string, ts: number, value?: number) => Promise<void>`
 
 
 

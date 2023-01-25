@@ -181,6 +181,7 @@ export class DiscoveryLineComponent {
       responsive: true,
       throttle: 70,
       tooltip: {
+        transitionDuration: 0,
         trigger: 'axis',
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
@@ -208,7 +209,6 @@ export class DiscoveryLineComponent {
         show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
-          dataZoom: {show: true, filterMode: 'none'},
           restore: {show: true},
         }
       },
@@ -668,18 +668,45 @@ export class DiscoveryLineComponent {
   }
 
   private zoomHandler(start, end) {
-      this.dataZoom.emit({
-        start,
-        end,
-        min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-        max: this.innerOptions.bounds?.maxDate || this.bounds?.max
-      });
+    this.dataZoom.emit({
+      start,
+      end,
+      min: this.innerOptions.bounds?.minDate || this.bounds?.min,
+      max: this.innerOptions.bounds?.maxDate || this.bounds?.max
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
       16, {leading: true, trailing: true});
+
+    const focusHandler = _.throttle((type: string, event: any) => {
+        if (this.hasFocus) {
+          switch (type) {
+            case 'mouseover':
+              const c = event.data.coord || event.data;
+              this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
+              break;
+            case 'highlight':
+              let ts;
+              (event.batch || []).forEach(b => {
+                const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+                ts = s.data[b.dataIndex][0];
+                ts = this.innerOptions.timeMode === 'date'
+                  ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+                  : ts;
+              });
+              if (ts !== undefined) {
+                this.dataPointOver.emit({date: ts, name: '.*', meta: {}});
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      },
+      100, {leading: true, trailing: true});
 
     setTimeout(() => {
       this.parsing = false
@@ -724,30 +751,18 @@ export class DiscoveryLineComponent {
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
-      this.myChart.on('mouseover', (event: any) => {
-        const c = event.data.coord || event.data;
-        this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
+      this.el.addEventListener('mouseout', () => {
+        this.hasFocus = false;
+        this.dataPointOver.emit({});
       });
-      this.myChart.on('highlight', (event: any) => {
-        let ts;
-        (event.batch || []).forEach(b => {
-          const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
-          ts = s.data[b.dataIndex][0];
-          ts = this.innerOptions.timeMode === 'date'
-            ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
-            : ts;
-        });
-        if (ts !== undefined) {
-          this.dataPointOver.emit({date: ts, name: '.*', meta: {}});
-        }
+      this.myChart.on('mouseout', () => {
+        this.dataPointOver.emit({});
       });
+      this.myChart.on('mouseover', (event: any) => focusHandler('mouseover', event));
+      this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
       this.myChart.on('click', (event: any) => {
         const c = event.data.coord || event.data;
         this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
-      });
-      this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      this.myChart.on('downplay', () => {
-        this.dataPointOver.emit({});
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
@@ -765,11 +780,11 @@ export class DiscoveryLineComponent {
   @Method()
   async setZoom(dataZoom: { start?: number, end?: number }) {
     if (!!this.myChart) {
-        dataZoom.start = dataZoom.start || 0;
-        if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
-          this.zoom = dataZoom;
-          this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 0});
-        }
+      dataZoom.start = dataZoom.start || 0;
+      if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
+        this.zoom = dataZoom;
+        this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 0});
+      }
     }
     return Promise.resolve();
   }
@@ -817,7 +832,7 @@ export class DiscoveryLineComponent {
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
-    if (!this.myChart) return;
+    if (!this.myChart || this.hasFocus) return;
     const date = this.innerOptions.timeMode === 'date'
       ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
       : ts || 0;
@@ -874,7 +889,7 @@ export class DiscoveryLineComponent {
 
   @Method()
   async unFocus() {
-    if (!this.myChart) return;
+    if (!this.myChart || this.hasFocus) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     if (GTSLib.isArray(this.chartOpts.xAxis)) {
       (this.chartOpts.xAxis as any[])

@@ -286,6 +286,7 @@ export class DiscoveryAnnotation {
       throttle: 70,
       tooltip: {
         trigger: 'axis',
+        transitionDuration: 0,
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode === 'timestamp'
@@ -328,7 +329,6 @@ export class DiscoveryAnnotation {
         show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
-          dataZoom: {show: true, filterMode: 'none'},
           restore: {show: true},
         }
       },
@@ -393,33 +393,50 @@ export class DiscoveryAnnotation {
     } as EChartsOption
   }
 
-  zoomHandler = _.throttle(event => {
-    let start;
-    let end;
-    if (!!event.batch) {
-      const batch = (event.batch || [])[0] || {};
-      start = batch.start || batch.startValue;
-      end = batch.end || batch.endValue;
-    } else if (event.start !== undefined && event.end !== undefined) {
-      start = event.start;
-      end = event.end;
-    }
-    if (start !== undefined && end !== undefined) {
-      this.dataZoom.emit({
-        start,
-        end,
-        min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-        max: this.innerOptions.bounds?.maxDate || this.bounds?.max
-      });
-    }
-  }, 100, {'trailing': false});
-
+  private zoomHandler(start, end) {
+    this.dataZoom.emit({
+      start,
+      end,
+      min: this.innerOptions.bounds?.minDate || this.bounds?.min,
+      max: this.innerOptions.bounds?.maxDate || this.bounds?.max
+    });
+  }
 
   restoreZoomHandler = _.throttle(() => {
     this.dataZoom.emit({type: 'restore'});
   }, 100, {'trailing': false});
 
   componentDidLoad() {
+
+    const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
+      16, {leading: true, trailing: true});
+
+    const focusHandler = _.throttle((type: string, event: any) => {
+        if (this.hasFocus) {
+          switch (type) {
+            case 'mouseover':
+              const c = event.data.coord || event.data;
+              this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
+              break;
+            case 'highlight':
+              let ts;
+              (event.batch || []).forEach(b => {
+                const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+                ts = s.data[b.dataIndex][0];
+                ts = this.innerOptions.timeMode === 'date'
+                  ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+                  : ts;
+              });
+              if (ts !== undefined) {
+                this.dataPointOver.emit({date: ts, name: '.*', meta: {}});
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      },
+      100, {leading: true, trailing: true});
     this.parsing = false;
     this.rendering = true;
     let initial = false;
@@ -467,12 +484,27 @@ export class DiscoveryAnnotation {
       const c = event.data.coord || event.data;
       this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
     });
-    this.myChart.on('dataZoom', event => this.zoomHandler(event));
-    this.myChart.on('restore', () => this.restoreZoomHandler());
-    this.myChart.on('mouseover', (event: any) => {
-      const c = event.data.coord || event.data;
-      this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
+    this.myChart.on('dataZoom', (event: any) => {
+      let start;
+      let end;
+      if (!!event.batch) {
+        const batch = (event.batch || [])[0] || {};
+        start = batch.start || batch.startValue;
+        end = batch.end || batch.endValue;
+        this.zoomHandler(start, end);
+      } else if (event.start !== undefined && event.end !== undefined) {
+        start = event.start;
+        end = event.end;
+        zoomHandler(start, end)
+      }
     });
+    this.myChart.on('restore', () => this.restoreZoomHandler());
+    this.myChart.on('mouseout', () => {
+      this.dataPointOver.emit({});
+    });
+    this.myChart.on('mouseover', (event: any) => focusHandler('mouseover', event));
+    this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
+
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
     this.el.addEventListener('mouseover', () => this.hasFocus = true);
     this.el.addEventListener('mouseout', () => {
@@ -502,7 +534,7 @@ export class DiscoveryAnnotation {
 
   @Method()
   async setFocus(regexp: string, ts: number) {
-    if (!this.myChart || this.gtsList.length === 0) return;
+    if (!this.myChart || this.gtsList.length === 0 || this.hasFocus) return;
     if (typeof ts === 'string') ts = parseInt(ts, 10);
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
@@ -556,7 +588,7 @@ export class DiscoveryAnnotation {
 
   @Method()
   async unFocus() {
-    if (!this.myChart) return;
+    if (!this.myChart || this.hasFocus) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     (this.chartOpts.xAxis as any).axisPointer = {
       ...(this.chartOpts.xAxis as any).axisPointer || {},

@@ -25,7 +25,6 @@ import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
 import {SeriesOption} from 'echarts/lib/util/types';
-import {XAXisOption} from 'echarts/types/dist/shared';
 import _ from 'lodash';
 
 @Component({
@@ -288,6 +287,7 @@ export class DiscoveryBarComponent {
       },
       tooltip: {
         trigger: 'axis',
+        transitionDuration: 0,
         axisPointer: {type: 'shadow'},
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
@@ -307,7 +307,6 @@ export class DiscoveryBarComponent {
         show: this.innerOptions.showControls,
         feature: {
           saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
-          dataZoom: {show: true, filterMode: 'none'},
           restore: {show: true},
         }
       },
@@ -503,6 +502,33 @@ export class DiscoveryBarComponent {
     const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
       16, {leading: true, trailing: true});
 
+    const focusHandler = _.throttle((type: string, event: any) => {
+        if (this.hasFocus) {
+          switch (type) {
+            case 'mouseover':
+              const c = event.data.coord || event.data;
+              this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
+              break;
+            case 'highlight':
+              let ts;
+              (event.batch || []).forEach(b => {
+                const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+                ts = s.data[b.dataIndex][0];
+                ts = this.innerOptions.timeMode === 'date'
+                  ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+                  : ts;
+              });
+              if (ts !== undefined) {
+                this.dataPointOver.emit({date: ts, name: '.*', meta: {}});
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      },
+      100, {leading: true, trailing: true});
+
     setTimeout(() => {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
       this.parsing = false;
@@ -547,10 +573,16 @@ export class DiscoveryBarComponent {
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
-      this.el.addEventListener('mouseout', () => this.hasFocus = false);
-      this.myChart.on('mouseover', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      this.el.addEventListener('mouseout', () => {
+        this.hasFocus = false;
+        this.dataPointOver.emit({});
       });
+      this.myChart.on('mouseout', () => {
+        this.dataPointOver.emit({});
+      });
+      this.myChart.on('mouseover', (event: any) => focusHandler('mouseover', event));
+      this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
+
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
@@ -601,7 +633,8 @@ export class DiscoveryBarComponent {
   }
 
   @Method()
-  async setFocus(regexp: string, ts: number) {
+  async setFocus(regexp: string, ts: number, value?: number) {
+    if (!this.myChart || this.hasFocus) return;
     const date = this.innerOptions.timeMode === 'date'
       ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
       : ts || 0;
@@ -611,22 +644,33 @@ export class DiscoveryBarComponent {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(s.name))
         .forEach(s => {
-          seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
           const data = s.data.filter(d => d[0] === date);
-          if (data && data[0]) {
+          if (data && data.length > 0 && data[0]) {
+            seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
             dataIndex = s.data.indexOf(data[0]);
           }
         });
-      this.myChart.dispatchAction({
-        type: 'highlight',
-        seriesName: (this.chartOpts.series as any[]).filter(s => new RegExp(regexp).test(s.name)).map(s => s.name)
-      });
     }
-    (this.chartOpts.xAxis as XAXisOption).axisPointer = {
-      ...(this.chartOpts.xAxis as XAXisOption).axisPointer || {},
-      value: dataIndex,
-      status: 'show'
-    };
+    if (GTSLib.isArray(this.chartOpts.xAxis)) {
+      (this.chartOpts.xAxis as any[])
+        .forEach(a => a.axisPointer = {...a.axisPointer || {}, value: date, status: 'show'});
+    } else {
+      (this.chartOpts.xAxis as any).axisPointer = {
+        ...(this.chartOpts.xAxis as any).axisPointer || {},
+        value: date,
+        status: 'show'
+      };
+    }
+    if (GTSLib.isArray(this.chartOpts.yAxis)) {
+      (this.chartOpts.yAxis as any[])
+        .forEach(a => a.axisPointer = {...a.axisPointer || {}, value: value || 0, status: 'show'});
+    } else {
+      (this.chartOpts.yAxis as any).axisPointer = {
+        ...(this.chartOpts.yAxis as any).axisPointer || {},
+        value: value || 0,
+        status: 'show'
+      };
+    }
     (this.chartOpts.tooltip as any).show = true;
     this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
     this.setOpts();
@@ -635,7 +679,7 @@ export class DiscoveryBarComponent {
 
   @Method()
   async unFocus() {
-    if (!this.myChart) return;
+    if (!this.myChart || this.hasFocus) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     (this.chartOpts.xAxis as any).axisPointer = {
       ...(this.chartOpts.xAxis as any).axisPointer || {},

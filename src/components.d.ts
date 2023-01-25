@@ -7,7 +7,6 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, Tile } from "./model/types";
 import { Param } from "./model/param";
-import { XAXisOption } from "echarts/types/dist/shared";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
@@ -36,7 +35,7 @@ export namespace Components {
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
-        "setFocus": (regexp: string, ts: number) => Promise<void>;
+        "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
         "setZoom": (dataZoom: { start?: number; end?: number; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "showById": (id: number) => Promise<void>;

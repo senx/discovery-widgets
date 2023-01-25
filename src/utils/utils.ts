@@ -130,6 +130,7 @@ export class Utils {
       description: undefined,
       selected: undefined,
       link: undefined,
+      hasEvent:false
     }
     if (eventHandler && evt.source !== id) {
       let tag = '.*';
@@ -150,48 +151,62 @@ export class Utils {
         switch (evt.type) {
           case 'data':
             parsed.data = GTSLib.getData(evt.value);
+            parsed.hasEvent = true;
             break;
           case 'style': // map css selector -> content
             parsed.style = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'xpath':
             parsed.xpath = {selector: evt.selector, value: evt.value};
+            parsed.hasEvent = true;
             break;
           case 'popup':
             parsed.popup = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'variable':
             parsed.vars = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'audio':
             parsed.audio = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'zoom':
             parsed.zoom = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'focus':
             parsed.focus = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'margin':
             parsed.margin = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'bounds':
             parsed.bounds = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'title':
             parsed.title = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'description':
             parsed.description = evt.value;
+            parsed.hasEvent = true;
             break;
           case 'link':
             parsed.link = typeof evt.value === 'string'
               ? {link: evt.value, target: 'self'}
               : {...evt.value};
+            parsed.hasEvent = true;
             break;
           case 'selected':
             parsed.selected = parsed.selected || {};
             parsed.selected[evt.selector] = evt.value;
+            parsed.hasEvent = true;
             break;
           default:
           // nothing

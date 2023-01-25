@@ -122,46 +122,48 @@ export class DiscoveryTileResultComponent {
     if (!this.innerOptions?.eventHandler) {
       return;
     }
-    this.LOG?.debug(['discoveryEventHandler'], {
-      type: event.detail.type,
-      event: event.detail
-    });
     const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '', this.componentId);
-    if (res.data) {
-      this.innerResult = res.data;
-      this.parseResult();
-    }
-    if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
-    }
-    if (res.zoom) {
-      void this.setZoom(res.zoom).then(() => {
-        // empty
+    if(res.hasEvent) {
+      this.LOG?.debug(['discoveryEventHandler'], {
+        type: event.detail.type,
+        event: event.detail
       });
-    }
-    if (res.focus) {
-      if(!!res.focus.date) {
-        void this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
-          // empty
-        });
-      } else {
-        void this.unFocus().then(() => {
+      if (res.data) {
+        this.innerResult = res.data;
+        this.parseResult();
+      }
+      if (res.style) {
+        this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+      }
+      if (res.zoom) {
+        void this.setZoom(res.zoom).then(() => {
           // empty
         });
       }
-    }
-    if (res.margin) {
-      this.innerOptions = {...this.innerOptions, leftMargin: res.margin};
-    }
-    if (res.bounds) {
-      this.innerOptions = {
-        ...this.innerOptions,
-        bounds: {
-          ...this.innerOptions.bounds,
-          minDate: res.bounds.min,
-          maxDate: res.bounds.max
+      if (res.focus) {
+        if (!!res.focus.date) {
+          void this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
+            // empty
+          });
+        } else {
+          void this.unFocus().then(() => {
+            // empty
+          });
         }
-      };
+      }
+      if (res.margin) {
+        this.innerOptions = {...this.innerOptions, leftMargin: res.margin};
+      }
+      if (res.bounds) {
+        this.innerOptions = {
+          ...this.innerOptions,
+          bounds: {
+            ...this.innerOptions.bounds,
+            minDate: res.bounds.min,
+            maxDate: res.bounds.max
+          }
+        };
+      }
     }
   }
 
