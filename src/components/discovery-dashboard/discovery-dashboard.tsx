@@ -399,13 +399,15 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
 
 
   private getType(id: number, type: string): string {
-    return (this.types[id] || type || '').replace(/:/gi, '-');
+    return ((this.types[id] || type || '').replace(/:/gi, '-') as string) + (!!this.renderedTiles[id]?.options?.responsive ? ' auto-height' : '');
   }
 
   private setActualType(id: number, type: CustomEvent<ChartType>) {
+    type.stopPropagation();
     this.types[id] = type.detail;
     this.types = {...this.types};
   }
+
   private getRendering() {
     switch (this.innerType) {
       case 'scada':

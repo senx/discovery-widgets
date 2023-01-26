@@ -54,6 +54,12 @@
           margin-bottom: 20px;
         }
 
+        &.dashboard.auto-height, &.dashboard-flex.auto-height, &.dashboard-scada.auto-height {
+          height: auto !important;
+          overflow: hidden;
+          margin-bottom: 20px;
+        }
+
         &.annotation, &.plot {
           height: 100% !important;
         }
@@ -95,6 +101,17 @@
       width: 100%;
       overflow: visible;
       padding: var(--warp-view-dashboard-gap, 10px);
+
+      &.dashboard, &.dashboard-flex, &.dashboard-scada {
+        height: auto !important;
+        margin-bottom: 20px;
+      }
+
+      &.dashboard.auto-height, &.dashboard-flex.auto-height, &.dashboard-scada.auto-height {
+        height: auto !important;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
 
       & > div {
         width: 100%;
@@ -153,6 +170,12 @@
 
         &.dashboard, &.dashboard-flex, &.dashboard-scada {
           overflow: auto;
+        }
+
+        &.dashboard.auto-height, &.dashboard-flex.auto-height, &.dashboard-scada.auto-height {
+          height: auto !important;
+          overflow: hidden;
+          margin-bottom: 20px;
         }
 
         &.annotations, &.plot {
