@@ -342,7 +342,7 @@ export class DiscoveryInputComponent {
             .forEach((o: HTMLInputElement) => o.checked = false);
         }
         this.values = [];
-        if (GTSLib.isArray(data) && data.length > 0) {
+        if (GTSLib.isArray(data)) {
           this.values = [...data as any[]];
         } else {
           this.values = [data.toString() as string];
@@ -358,8 +358,9 @@ export class DiscoveryInputComponent {
           (this.inputField as HTMLSelectElement).selectedIndex = index;
         }
         setTimeout(() => {
-          let value: string | number | number[] | string[] = (this.innerOptions.input || {value: ''}).value || '';
+          let value: string | number | number[] | string[] = this.innerOptions?.input?.value;
           if (this.subType === 'multi' || this.subType === 'multi-cb' || this.subType === 'chips' || this.subType === 'chips-autocomplete') {
+            value = value || [];
             if (!GTSLib.isArray(value)) {
               value = [value] as number[] | string[];
             }

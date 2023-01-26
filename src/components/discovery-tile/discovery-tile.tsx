@@ -245,7 +245,7 @@ export class DiscoveryTileComponent {
           Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
             .then((res: any) => {
               const toRefresh = this.result === res.data;
-              if(this.type.startsWith('input')) {
+              if((this.type || '').startsWith('input')) {
                 this.result = '';
               }
               this.headers = {};
