@@ -144,7 +144,8 @@ export class DiscoveryPieComponent {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(this.result || new DataModel())
+    this.chartOpts = this.convert(this.result || new DataModel());
+    this.setOpts();
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -167,7 +168,9 @@ export class DiscoveryPieComponent {
       this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
     }
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      if (this.myChart) {
+        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      }
     });
   }
 
@@ -275,11 +278,12 @@ export class DiscoveryPieComponent {
         }
       }
     }
-
-    series.push({
-      ...this.getCommonSeriesParam(),
-      data: dataStruct
-    } as SeriesOption);
+    if(dataStruct.length > 0) {
+      series.push({
+        ...this.getCommonSeriesParam(),
+        data: dataStruct
+      } as SeriesOption);
+    }
     this.LOG?.debug(['convert', 'series'], series);
     return {
       grid: {
@@ -339,7 +343,7 @@ export class DiscoveryPieComponent {
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
       });
-      this.setOpts();
+      this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
     });
   }

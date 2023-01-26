@@ -174,6 +174,7 @@ export class DiscoveryAnnotation {
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.LOG?.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions});
     this.chartOpts = this.convert(this.result || new DataModel());
+    this.setOpts();
   }
 
   private setOpts(notMerge = false) {
@@ -192,7 +193,9 @@ export class DiscoveryAnnotation {
       this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
     }
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      if(this.myChart) {
+        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      }
     });
   }
 

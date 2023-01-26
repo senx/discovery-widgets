@@ -64,6 +64,7 @@ export class DiscoveryCalendar {
       setTimeout(() => {
         this.myChart.setOption(this.chartOpts || {}, true, false);
         this.myChart.resize({height: this.height});
+        this.setOpts(true);
       });
     }
   }
@@ -74,6 +75,7 @@ export class DiscoveryCalendar {
     setTimeout(() => {
       this.myChart.setOption(this.chartOpts || {}, true, false);
       this.myChart.resize({height: this.height});
+      this.setOpts(true);
     });
   }
 
@@ -91,6 +93,7 @@ export class DiscoveryCalendar {
         setTimeout(() => {
           this.myChart.setOption(this.chartOpts || {}, true, false);
           this.myChart.resize({height: this.height});
+          this.setOpts(true);
         });
       }
       if (this.LOG) {
@@ -136,6 +139,7 @@ export class DiscoveryCalendar {
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result || new DataModel());
+    this.setOpts();
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -283,6 +287,28 @@ export class DiscoveryCalendar {
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
     return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
+  }
+
+  private setOpts(notMerge = false) {
+    if ((this.chartOpts?.series as any[] || []).length === 0) {
+      this.chartOpts.title = {
+        show: true,
+        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        text: this.innerOptions.noDataLabel || '',
+        left: 'center',
+        top: 'center'
+      };
+      this.chartOpts.xAxis = {show: false};
+      this.chartOpts.yAxis = {show: false};
+      this.chartOpts.tooltip = {show: false};
+    } else {
+      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+    }
+    setTimeout(() => {
+      if (this.myChart) {
+        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      }
+    });
   }
 
   componentDidLoad() {

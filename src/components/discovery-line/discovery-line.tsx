@@ -120,26 +120,29 @@ export class DiscoveryLineComponent {
     });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result || new DataModel());
+    this.setOpts();
   }
 
   setOpts(notMerge = false) {
+    if ((this.chartOpts.series as SeriesOption[]).length === 0) {
+      this.chartOpts.title = {
+        show: true,
+        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        text: this.innerOptions.noDataLabel || '',
+        left: 'center',
+        top: 'center'
+      };
+      this.chartOpts.xAxis = {show: false};
+      this.chartOpts.yAxis = {show: false};
+      this.chartOpts.dataZoom = {show: false};
+      this.chartOpts.tooltip = {show: false};
+    } else {
+      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+    }
     setTimeout(() => {
-      if ((this.chartOpts.series as SeriesOption[]).length === 0) {
-        this.chartOpts.title = {
-          show: true,
-          textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
-          text: this.innerOptions.noDataLabel || '',
-          left: 'center',
-          top: 'center'
-        };
-        this.chartOpts.xAxis = {show: false};
-        this.chartOpts.yAxis = {show: false};
-        this.chartOpts.dataZoom = {show: false};
-        this.chartOpts.tooltip = {show: false};
-      } else {
-        this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+      if(this.myChart) {
+        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
       }
-      this.myChart.setOption(this.chartOpts || {}, notMerge);
     });
   }
 

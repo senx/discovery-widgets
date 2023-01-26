@@ -213,7 +213,7 @@ export class DiscoveryTileComponent {
   @Method()
   async exec(refresh = false) {
     return new Promise(resolve => {
-      if (this.el.innerHTML && this.el.innerHTML !== '') {
+      if (this.el?.innerHTML !==  undefined) {
         if (!refresh) {
           setTimeout(() => this.loaded = false);
         }

@@ -128,6 +128,7 @@ export class DiscoveryBarComponent {
       chartOpts: this.chartOpts
     });
     this.LOG?.debug(['componentWillLoad'], this.el.parentElement.parentElement);
+    this.setOpts()
   }
 
   private setOpts(notMerge = false) {
@@ -146,7 +147,9 @@ export class DiscoveryBarComponent {
       this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
     }
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      if (this.myChart) {
+        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      }
     });
   }
 
@@ -471,20 +474,22 @@ export class DiscoveryBarComponent {
         }
         return m;
       });
-    (opts.series as SeriesOption[]).push({
-      name: '',
-      type: 'line',
-      symbolSize: 0,
-      data: [],
-      markArea: {
-        data: markArea
-      },
-      markLine: {
-        emphasis: {lineStyle: {width: 1}},
-        symbol: ['none', 'none'],
-        data: markLine
-      }
-    });
+    if (markLine.length > 0) {
+      (opts.series as SeriesOption[]).push({
+        name: '',
+        type: 'line',
+        symbolSize: 0,
+        data: [],
+        markArea: {
+          data: markArea
+        },
+        markLine: {
+          emphasis: {lineStyle: {width: 1}},
+          symbol: ['none', 'none'],
+          data: markLine
+        }
+      });
+    }
     this.parsing = false;
     return opts;
   }

@@ -135,7 +135,8 @@ export class DiscoveryGauge {
       this.innerOptions = this.options;
     }
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel())
+    this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
+    this.setOpts();
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -165,7 +166,9 @@ export class DiscoveryGauge {
       this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
     }
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      if (this.myChart) {
+        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      }
     });
   }
 
