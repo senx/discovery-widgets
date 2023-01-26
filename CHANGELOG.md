@@ -1,6 +1,25 @@
 Discovery
 ---
 
+## v1.1.68
+
+> +  2023/01/26  | v1.1.68 
+> +  2023/01/26  | Fix auto height in tiles of type dashboard 
+
+## v1.1.67
+
+> +  2023/01/26  | v1.1.67 
+> +  2023/01/26  | Fix auto height in tiles of type dashboard 
+> +  2023/01/26  | Fix auto height in tiles of type dashboard 
+
+## v1.1.66
+
+> +  2023/01/26  | v1.1.66 
+> +  2023/01/26  | Add auto height in tiles of type dashboard 
+> +  2023/01/26  | Fix no data handling 
+> +  2023/01/26  | Fix multi input when no value 
+> +  2023/01/25  | changelog 
+
 ## v1.1.65
 
 > +  2023/01/25  | v1.1.65 
