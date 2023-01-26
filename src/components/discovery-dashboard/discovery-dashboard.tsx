@@ -402,6 +402,10 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     return ((this.types[id] || type || '').replace(/:/gi, '-') as string) + (!!this.renderedTiles[id]?.options?.responsive ? ' auto-height' : '');
   }
 
+  private getRowSpan(id: number, span: number): string {
+    return !!this.renderedTiles[id]?.options?.responsive? `span ${span}`: `${span}`;
+  }
+
   private setActualType(id: number, type: CustomEvent<ChartType>) {
     type.stopPropagation();
     this.types[id] = type.detail;
@@ -468,9 +472,10 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                 <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
                      style={{
                        gridColumn: `${(t.x + 1)} / ${(t.x + t.w + 1)}`,
-                       gridRow: `${(t.y + 1)} / ${((this.options as Param).responsive ? 'span ' : '')}${(t.y + t.h + 1)}`,
+                       gridRow: `${(t.y + 1)} / ${(t.y + t.h + 1)}`,
                        height: `${((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
-                       minHeight: '100%'
+                       minHeight: '100%',
+                       gridRowEnd: this.getRowSpan(i, t.y + t.h + 1)
                      }}
                 >
                   <div>
