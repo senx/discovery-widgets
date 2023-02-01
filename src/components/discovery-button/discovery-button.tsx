@@ -67,9 +67,7 @@ export class DiscoveryButtonComponent {
 
   @Watch('vars')
   varsUpdate(newValue: string, oldValue: string) {
-    if (!!this.vars && typeof this.vars === 'string') {
-      this.parseResult();
-    }
+    this.parseResult();
     if (this.LOG) {
       this.LOG?.debug(['varsUpdate'], {
         vars: this.vars,
@@ -142,7 +140,12 @@ export class DiscoveryButtonComponent {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
     this.options = {...options};
-    this.innerVars = JSON.parse(this.vars);
+
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    } else if (!!this.vars) {
+      this.innerVars = this.vars;
+    }
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
