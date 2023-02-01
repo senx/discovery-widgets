@@ -149,9 +149,7 @@ export class DiscoveryButtonComponent {
     if (this.options.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
-    if (!!this.innerResult?.data || []) {
-      setTimeout(() => this.active = (this.innerResult.data || []).find(v => v.active)?.value);
-    }
+    setTimeout(() => this.active = (this.innerResult?.data || []).find(v => v.active)?.value);
   }
 
   private handleClick() {
