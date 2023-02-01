@@ -68,13 +68,20 @@ export class DiscoveryButtonComponent {
   @Watch('vars')
   varsUpdate(newValue: string, oldValue: string) {
     if (!!this.vars && typeof this.vars === 'string') {
-      this.innerVars = JSON.parse(this.vars);
+      this.parseResult();
     }
     if (this.LOG) {
       this.LOG?.debug(['varsUpdate'], {
         vars: this.vars,
         newValue, oldValue
       });
+    }
+  }
+
+  @Watch('result')
+  updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      this.parseResult();
     }
   }
 
@@ -114,12 +121,16 @@ export class DiscoveryButtonComponent {
     if (typeof this.options === 'string') {
       this.options = JSON.parse(this.options);
     }
-    this.innerResult = GTSLib.getData(this.result);
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
     });
+    this.parseResult();
+    this.draw.emit();
+  }
 
+  private parseResult() {
+    this.innerResult = GTSLib.getData(this.result);
     const btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
     const dm = (this.innerResult || {
       globalParams: {
@@ -138,7 +149,6 @@ export class DiscoveryButtonComponent {
     if (!!this.innerResult?.data || []) {
       setTimeout(() => this.active = (this.innerResult.data || []).find(v => v.active)?.value);
     }
-    this.draw.emit();
   }
 
   private handleClick() {
@@ -206,5 +216,4 @@ export class DiscoveryButtonComponent {
       </div>
     ];
   }
-
 }
