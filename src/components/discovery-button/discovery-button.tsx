@@ -136,7 +136,7 @@ export class DiscoveryButtonComponent {
       this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
     }
     if (!!this.innerResult?.data || []) {
-      this.active = (this.innerResult.data || []).find(v => v.active)?.value;
+      setTimeout(() => this.active = (this.innerResult.data || []).find(v => v.active)?.value);
     }
     this.draw.emit();
   }

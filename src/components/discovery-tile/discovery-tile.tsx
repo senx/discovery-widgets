@@ -280,7 +280,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
                   this.LOG?.debug(['exec', 'result'], this.result);
                   this.result = res.data as string;
                   this.execResult.emit(this.result);
-                  if (toRefresh && refresh) {
+                  if (toRefresh && refresh && !!this.tileResult) {
                     await this.tileResult.parseEvents();
                   }
                   resolve(true);
