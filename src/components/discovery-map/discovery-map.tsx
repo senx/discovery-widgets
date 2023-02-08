@@ -87,6 +87,7 @@ export class DiscoveryMapComponent {
   private poputTimeout;
   private markerOver = false;
   private markersRef: any;
+  private tileLayers: string[] = [];
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -197,6 +198,7 @@ export class DiscoveryMapComponent {
   drawMap(data: DataModel, isRefresh = false, optionUpdate?: boolean) {
     let tilesPromise: Promise<void>;
     let zoomPromise: Promise<void>;
+    this.tileLayers = [];
     // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     this.LOG?.debug(['drawMap', 'this.options 2 '], {...data.globalParams});
@@ -235,7 +237,7 @@ export class DiscoveryMapComponent {
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
 
     if (this.mapOpts.mapType !== 'NONE') {
-      const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'];
+      const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'] ||  MapLib.mapTypes.DEFAULT;
       const mapOpts: TileLayerOptions = {
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
         maxZoom: this.mapOpts.maxZoom || 40,
@@ -250,8 +252,17 @@ export class DiscoveryMapComponent {
       this.LOG?.debug(['displayMap'], {isRefresh, optionUpdate});
       if (!isRefresh || optionUpdate) {
         this.LOG?.debug(['displayMap'], 'map', map);
-        this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
-        tilesPromise = new Promise(resolve => setTimeout(() => this.tilesLayer.on('load', () => resolve())));
+        this.tileLayers.push(map.link);
+        // eslint-disable-next-line no-underscore-dangle
+        if(!!this.tilesLayer && this.tilesLayer._url !== map.link) {
+          this.tileLayerGroup.removeLayer(this.tilesLayer);
+          this.tilesLayer = undefined;
+        }
+        if (!this.tilesLayer) {
+          this.tilesLayer = Leaflet.tileLayer(map.link, mapOpts);
+          this.tilesLayer.addTo(this.tileLayerGroup);
+          tilesPromise = new Promise(resolve => setTimeout(() => this.tilesLayer.on('load', () => resolve())));
+        }
       }
     }
     if (!!this.map) {
@@ -261,12 +272,6 @@ export class DiscoveryMapComponent {
       this.geoJsonLayer.clearLayers();
       this.heatmapLayer.clearLayers();
       this.shadowHeatmapLayer.clearLayers();
-      if (!isRefresh || optionUpdate) {
-        this.tileLayerGroup.clearLayers();
-        if (optionUpdate && !!this.tilesLayer) {
-          this.tilesLayer.addTo(this.tileLayerGroup);
-        }
-      }
     } else {
       this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.heatmapLayer, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer]);
       this.map = Leaflet.map(this.mapElement, {
@@ -280,13 +285,6 @@ export class DiscoveryMapComponent {
       });
       this.geoJsonLayer.bringToBack();
       Leaflet.control.scale().addTo(this.map);
-      if (this.tilesLayer) {
-        this.tilesLayer.bringToBack(); // TODO: test it
-        if (!isRefresh) {
-          this.tileLayerGroup.clearLayers();
-          this.tilesLayer.addTo(this.tileLayerGroup);
-        }
-      }
       this.map.on('load', () => this.LOG?.debug(['displayMap', 'load'], this.map.getCenter().lng, this.currentLong, this.map.getZoom()));
       this.map.on('zoomend', () => {
         if (!this.firstDraw) {
@@ -331,12 +329,26 @@ export class DiscoveryMapComponent {
         tile.maxZoom = this.mapOpts.maxZoom || 19;
         tile.maxNativeZoom = t.maxNativeZoom || this.mapOpts.maxNativeZoom || 19;
       }
-      this.tileLayerGroup.addLayer(Leaflet.tileLayer(t, {
+      this.tileLayers.push(tile.url);
+      const l = Leaflet.tileLayer(tile.url, {
         subdomains: 'abcd',
         maxNativeZoom: tile.maxNativeZoom || 19,
         maxZoom: this.mapOpts.maxZoom || 19
-      }));
+      });
+
+      // eslint-disable-next-line no-underscore-dangle
+      if (!this.tileLayerGroup.getLayers().find(l => l._url === t.url)) {
+        this.tileLayerGroup.addLayer(l);
+      }
     });
+    if (!isRefresh || optionUpdate) {
+      this.tileLayerGroup.getLayers().forEach(l => {
+        // eslint-disable-next-line no-underscore-dangle
+        if (!this.tileLayers.includes(l._url)) {
+          this.tileLayerGroup.removeLayer(l);
+        }
+      });
+    }
 
     const geoJsonSize = (this.geoJson || []).length;
     for (let i = 0; i < geoJsonSize; i++) {
@@ -418,7 +430,7 @@ export class DiscoveryMapComponent {
                 }, this.currentZoom || this.mapOpts.startZoom || 10,
                 {animate: false});
             }
-          } else {
+          } else if(this.map && this.bounds) {
             this.LOG?.debug(['displayMap', 'setView'], 'fitBounds', 'this.bounds', this.bounds);
             this.map.fitBounds(this.bounds, {padding: [1, 1], animate: false, duration: 0});
           }
@@ -459,7 +471,7 @@ export class DiscoveryMapComponent {
       zoomPromise = new Promise(resolve => setTimeout(() => this.map.once('moveend zoomend', () => resolve())));
     }
     this.firstDraw = false;
-    this.patchMapTileGapBug();
+  //  this.patchMapTileGapBug();
     void Promise.all([zoomPromise, tilesPromise])
       .then(() => setTimeout(() => {
         if (this.initial) {
