@@ -157,7 +157,7 @@ export class DiscoveryMapComponent {
 
   @Method()
   async hideById(id: number) {
-        this.hidden[id] = true;
+    this.hidden[id] = true;
     this.drawMap(this.result as DataModel || new DataModel(), true);
     return Promise.resolve();
   }
@@ -215,13 +215,13 @@ export class DiscoveryMapComponent {
     const params = data.params;
     this.mapOpts = this.innerOptions.map || {};
     this.pointslayer = [];
-    dataList.forEach((g, i) => {
+    dataList.forEach(g => {
       if (GTSLib.isGts(g)) {
         if (!this.hidden[g.id]) {
           this.hidden[g.id] = false;
         }
       }
-    })
+    });
     this.pathData = MapLib.toLeafletMapPaths({
       gts: dataList,
       params,
@@ -507,7 +507,7 @@ export class DiscoveryMapComponent {
         size = (gts.path || []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
-          if (i > 0 || !gts.marker) {
+          if (i < size - 1 || !gts.marker) {
             const marker = Leaflet.circleMarker(
               g, {
                 radius: gts.baseRadius || MapLib.BASE_RADIUS,
