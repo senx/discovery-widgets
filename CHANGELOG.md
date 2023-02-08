@@ -1,6 +1,30 @@
 Discovery
 ---
 
+## v1.1.72
+
+> +  2023/02/08  | v1.1.72 
+> +  2023/02/08  | Fix map refresh flicks 
+> +  2023/02/08  | Fix map path icon position 
+> +  2023/02/08  | Fix image size 
+
+## v1.1.71
+
+> +  2023/02/01  | v1.1.71 
+> +  2023/02/01  | minor fixes 
+> +  2023/02/01  | minor fixes 
+> +  2023/02/01  | minor fixes 
+
+## v1.1.70
+
+> +  2023/02/01  | v1.1.70 
+
+## v1.1.69
+
+> +  2023/02/01  | v1.1.69 
+> +  2023/02/01  | minor fixes 
+> +  2023/01/26  | changelog 
+
 ## v1.1.68
 
 > +  2023/01/26  | v1.1.68 
