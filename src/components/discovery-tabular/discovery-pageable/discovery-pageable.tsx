@@ -43,6 +43,9 @@ export class DiscoveryPageable {
   private page = 0;
   private pages: number[] = [];
   private displayedValues: any[] = [];
+  private sortAsc = false;
+
+  private sortCol = 0;
 
   @Watch('data')
   updateData() {
@@ -82,7 +85,15 @@ export class DiscoveryPageable {
     }
     this.elemsCount = this.options.elemsCount || this.elemsCount;
     this.windowed = this.options.windowed || this.windowed;
-    this.displayedValues = (this.data.values || []).slice(
+    const dataset = (this.data.values || []);
+    if (this.sortCol >= 0) {
+      dataset.sort((a, b) => {
+        if (a[this.sortCol] < b[this.sortCol]) return this.sortAsc ? 1 : -1;
+        if (a[this.sortCol] > b[this.sortCol]) return this.sortAsc ? -1 : 1;
+        return 0;
+      });
+    }
+    this.displayedValues = dataset.slice(
       Math.max(0, this.elemsCount * this.page),
       Math.min(this.elemsCount * (this.page + 1), (this.data.values || []).length)
     );
@@ -117,6 +128,14 @@ export class DiscoveryPageable {
     );
   }
 
+  private sort(header) {
+    if(this.options?.tabular?.sortable) {
+      this.sortCol = header;
+      this.sortAsc = !this.sortAsc;
+      this.drawGridData();
+    }
+  }
+
   private formatDate(date: number): string {
     const opts = this.options;
     return (opts.timeMode === 'timestamp' || !this.data.isGTS)
@@ -129,9 +148,15 @@ export class DiscoveryPageable {
   render() {
     return <div>
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
-      <table>
-        <thead>{this.data.headers.map(header => <th
-          style={{width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'}}>{header}</th>)}</thead>
+      <table class="sortable">
+        <thead>{this.data.headers.map((header, i) => <th
+          data-sort={i}
+          class={this.options?.tabular?.sortable && this.sortCol === i ? 'sortable ' + (this.sortAsc ? 'asc' : 'desc') : ''}
+          onClick={() => this.sort(i)}
+          style={{
+            pointer: 'cursor',
+            width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
+          }}>{header}</th>)}</thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
           <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}

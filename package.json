@@ -65,6 +65,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
     "nouislider": "^15.6.1",
+    "sortable-tablesort": "^2.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

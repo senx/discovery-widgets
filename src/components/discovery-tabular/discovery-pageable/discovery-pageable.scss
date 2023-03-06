@@ -18,10 +18,30 @@
 @import "../../../scss/gts";
 
 :host {
+  @import "~sortable-tablesort/sortable.min.css";
+
   table {
     width: 100%;
     color: var(--warp-view-font-color, $w10-charcoal);
     table-layout: auto;
+
+    th {
+      cursor: pointer;
+
+      &.sortable {
+
+        &.asc::after {
+          margin-right: 3px;
+          content: '▼';
+        }
+
+        &.desc::after {
+          margin-right: 3px;
+          content: '▲';
+        }
+      }
+
+    }
 
     td, th {
       padding: var(--warp-view-datagrid-cell-padding, 5px);

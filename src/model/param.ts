@@ -96,7 +96,8 @@ export class Param {
     label: string
   };
   tabular?: {
-    fixedWidth: boolean
+    fixedWidth: boolean,
+    sortable: boolean,
   };
   gauge?: {
     horizontal: boolean,
