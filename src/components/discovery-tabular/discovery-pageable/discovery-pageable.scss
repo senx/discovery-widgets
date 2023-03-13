@@ -25,6 +25,20 @@
     color: var(--warp-view-font-color, $w10-charcoal);
     table-layout: auto;
 
+    input[type=text].discovery-input {
+      display: inline-block;
+      font-size: var(--warp-view-input-font-size, 1rem);
+      border-radius: var(--warp-view-input-border-radius, 0.25rem);
+      border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
+      color: var(--warp-view-input-label-color, $w10-charcoal);
+      background-color: var(--warp-view-input-bg-color, $w10-white);
+      vertical-align: middle;
+      width: calc(100% - var(--warp-view-datagrid-cell-padding, 5px));
+      height: 34px;
+      padding: 1px 5px;
+      margin-left: calc(var(--warp-view-datagrid-cell-padding, 5px) * -1);
+    }
+
     th {
       cursor: pointer;
 

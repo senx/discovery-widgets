@@ -26,6 +26,7 @@ export class Param {
   datasetColor?: string;
   fillColor?: string;
   fontColor?: string;
+  fontSize?: string;
   timeZone = 'UTC';
   timeFormat?: string;
   unit?: string;
@@ -98,6 +99,7 @@ export class Param {
   tabular?: {
     fixedWidth: boolean,
     sortable: boolean,
+    filterable: boolean,
   };
   gauge?: {
     horizontal: boolean,

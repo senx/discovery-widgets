@@ -44,7 +44,7 @@ export class DiscoveryPageable {
   private pages: number[] = [];
   private displayedValues: any[] = [];
   private sortAsc = false;
-
+  private filters = {};
   private sortCol = 0;
 
   @Watch('data')
@@ -85,7 +85,11 @@ export class DiscoveryPageable {
     }
     this.elemsCount = this.options.elemsCount || this.elemsCount;
     this.windowed = this.options.windowed || this.windowed;
-    const dataset = (this.data.values || []);
+    const dataset = (this.data.values || []).filter(d => {
+      let found = Object.keys(this.filters).length === 0;
+      Object.keys(this.filters).forEach(k => found = found || d[k].toString().startsWith(this.filters[k]));
+      return found;
+    });
     if (this.sortCol >= 0) {
       dataset.sort((a, b) => {
         if (a[this.sortCol] < b[this.sortCol]) return this.sortAsc ? 1 : -1;
@@ -129,11 +133,16 @@ export class DiscoveryPageable {
   }
 
   private sort(header) {
-    if(this.options?.tabular?.sortable) {
+    if (this.options?.tabular?.sortable) {
       this.sortCol = header;
       this.sortAsc = !this.sortAsc;
       this.drawGridData();
     }
+  }
+
+  private filter(i, e) {
+    this.filters[i] = e.srcElement.value;
+    this.drawGridData();
   }
 
   private formatDate(date: number): string {
@@ -149,14 +158,30 @@ export class DiscoveryPageable {
     return <div>
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
       <table class="sortable">
-        <thead>{this.data.headers.map((header, i) => <th
-          data-sort={i}
-          class={this.options?.tabular?.sortable && this.sortCol === i ? 'sortable ' + (this.sortAsc ? 'asc' : 'desc') : ''}
-          onClick={() => this.sort(i)}
-          style={{
-            pointer: 'cursor',
-            width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
-          }}>{header}</th>)}</thead>
+        <thead>
+        {this.data.headers.map((header, i) =>
+          <th
+            data-sort={i}
+            class={this.options?.tabular?.sortable && this.sortCol === i ? 'sortable ' + (this.sortAsc ? 'asc' : 'desc') : ''}
+            onClick={() => this.sort(i)}
+            style={{
+              pointer: 'cursor',
+              width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
+            }}>{header}</th>)
+        }
+        </thead>
+        <thead>
+        {this.options?.tabular?.filterable ? this.data.headers.map((header, i) =>
+            <th
+              data-filter={i}
+              //     class={this.options?.tabular?.sortable && this.sortCol === i ? 'sortable ' + (this.sortAsc ? 'asc' : 'desc') : ''}
+              //     onClick={() => this.sort(i)}
+              style={{
+                width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
+              }}><input type="text" class="discovery-input" onInput={e => this.filter(i, e)}/></th>)
+          : ''
+        }
+        </thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
           <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}
