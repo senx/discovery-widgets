@@ -157,6 +157,7 @@ export class DiscoveryPageable {
   render() {
     return <div>
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
+      {!!this.options?.tabular?.onTop ? this.getPagination() : ''}
       <table class="sortable">
         <thead>
         {this.data.headers.map((header, i) =>
@@ -173,12 +174,9 @@ export class DiscoveryPageable {
         <thead>
         {this.options?.tabular?.filterable ? this.data.headers.map((header, i) =>
             <th
-              data-filter={i}
-              //     class={this.options?.tabular?.sortable && this.sortCol === i ? 'sortable ' + (this.sortAsc ? 'asc' : 'desc') : ''}
-              //     onClick={() => this.sort(i)}
-              style={{
-                width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
-              }}><input type="text" class="discovery-input" onInput={e => this.filter(i, e)}/></th>)
+              data-filter={i} style={{
+              width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
+            }}><input type="text" class="discovery-input" onInput={e => this.filter(i, e)}/></th>)
           : ''
         }
         </thead>
@@ -194,22 +192,7 @@ export class DiscoveryPageable {
         )}
         </tbody>
       </table>
-      <div class="center">
-        <div class="pagination">
-          {this.page !== 0 ? <div class="prev hoverable" onClick={() => this.prev()}>&lt;</div> : ''}
-          {this.page - this.windowed > 0 ? <div class="index disabled">...</div> : ''}
-          {this.pages.length > 1
-            ? this.pages.map(c => <span>
-        {c >= this.page - this.windowed && c <= this.page + this.windowed
-          ? <span class={{index: true, hoverable: this.page !== c, active: this.page === c}}
-                  onClick={() => this.goto(c)}>{c}</span>
-          : ''}
-      </span>) : ''}
-          {this.page + this.windowed < this.pages.length ? <div class="index disabled">...</div> : ''}
-          {this.page + this.elemsCount < (this.data.values || []).length - 1 ?
-            <div class="next hoverable" onClick={() => this.next()}>&gt;</div> : ''}
-        </div>
-      </div>
+      {!this.options?.tabular?.onTop ? this.getPagination() : ''}
     </div>
   }
 
@@ -235,5 +218,24 @@ export class DiscoveryPageable {
       }
     }
     return styles;
+  }
+
+  private getPagination() {
+    return <div class="center">
+      <div class="pagination">
+        {this.page !== 0 ? <div class="prev hoverable" onClick={() => this.prev()}>&lt;</div> : ''}
+        {this.page - this.windowed > 0 ? <div class="index disabled">...</div> : ''}
+        {this.pages.length > 1
+          ? this.pages.map(c => <span>
+        {c >= this.page - this.windowed && c <= this.page + this.windowed
+          ? <span class={{index: true, hoverable: this.page !== c, active: this.page === c}}
+                  onClick={() => this.goto(c)}>{c}</span>
+          : ''}
+      </span>) : ''}
+        {this.page + this.windowed < this.pages.length ? <div class="index disabled">...</div> : ''}
+        {this.page + this.elemsCount < (this.data.values || []).length - 1 ?
+          <div class="next hoverable" onClick={() => this.next()}>&gt;</div> : ''}
+      </div>
+    </div>;
   }
 }

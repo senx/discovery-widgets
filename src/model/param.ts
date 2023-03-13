@@ -100,6 +100,7 @@ export class Param {
     fixedWidth: boolean,
     sortable: boolean,
     filterable: boolean,
+    onTop: boolean
   };
   gauge?: {
     horizontal: boolean,
