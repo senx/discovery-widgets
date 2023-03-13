@@ -245,6 +245,11 @@ export class DiscoveryProfile {
           type: 'custom',
           name,
           id: gts.id,
+          label: {
+            show: !!this.innerOptions.showValues,
+            position: 'inside',
+            textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
+          },
           data: gts.v.map(d => {
             let startTS = +d[0];
             startTS = this.innerOptions.timeMode === 'date'
@@ -478,7 +483,7 @@ export class DiscoveryProfile {
         }
       },
       xAxis: {
-        show: true,
+        show: !this.innerOptions.hideXAxis,
         type: this.innerOptions.timeMode === 'date' ? 'time' : 'value',
         splitNumber: Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 100) - 1, 1),
         splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
@@ -488,7 +493,8 @@ export class DiscoveryProfile {
           formatter: this.innerOptions.fullDateDisplay ? value =>
               GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
                 .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-            : undefined
+            : undefined,
+          show: !this.innerOptions.hideXAxis,
         },
         axisTick: {show: true, lineStyle: {color: Utils.getGridColor(this.el)}},
         scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
@@ -507,7 +513,7 @@ export class DiscoveryProfile {
         show: !this.innerOptions.hideYAxis,
         axisLabel: this.expanded ? {
           color: Utils.getLabelColor(this.el),
-          show: !this.innerOptions.hideYAxis,
+          show: !this.innerOptions.hideYAxis && !this.innerOptions.showLegend,
         } : {show: false},
         type: 'category',
         data: categories.length === 0 ? ['-'] : categories,
