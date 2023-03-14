@@ -16,27 +16,33 @@
 @import "./vars";
 
 .gts-classname {
+  font-size: var(--warp-view-font-size, 1rem);
   color: var(--gts-classname-font-color, $w10-blue);
 }
 
 .gts-labelname {
+  font-size: var(--warp-view-font-size, 1rem);
   color: var(--gts-labelname-font-color, #19A979);
 }
 
 .gts-attrname {
+  font-size: var(--warp-view-font-size, 1rem);
   color: var(--gts-attrname-font-color, #ED4A7B);
 }
 
 .gts-separator {
+  font-size: var(--warp-view-font-size, 1rem);
   color: var(--gts-separator-font-color, $w10-grey);
 }
 
 .gts-labelvalue {
+  font-size: var(--warp-view-font-size, 1rem);
   color: var(--gts-labelvalue-font-color, $w10-black);
   font-style: italic;
 }
 
 .gts-attrvalue {
+  font-size: var(--warp-view-font-size, 1rem);
   color: var(--gts-attrvalue-font-color, $w10-black);
   font-style: italic;
 }
