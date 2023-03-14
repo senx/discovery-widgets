@@ -26,7 +26,6 @@ export class Param {
   datasetColor?: string;
   fillColor?: string;
   fontColor?: string;
-  fontSize?: string;
   timeZone = 'UTC';
   timeFormat?: string;
   unit?: string;

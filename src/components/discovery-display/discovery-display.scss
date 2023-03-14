@@ -55,6 +55,7 @@
       display: inline-block;
       vertical-align: middle;
       align-self: center;
+      font-size: var(--warp-view-font-size, 1rem);
 
       span {
         min-height: 100%;
@@ -62,7 +63,7 @@
       }
 
       small {
-        font-size: 0.5em;
+        font-size: calc(var(--warp-view-font-size, 1rem) / 2);
       }
     }
   }
