@@ -40,9 +40,8 @@
     }
 
     th {
-      cursor: pointer;
-
       &.sortable {
+        cursor: pointer;
 
         &.asc::after {
           margin-right: 3px;
@@ -54,7 +53,6 @@
           content: '▲';
         }
       }
-
     }
 
     td, th {

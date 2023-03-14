@@ -166,7 +166,6 @@ export class DiscoveryPageable {
             class={this.options?.tabular?.sortable && this.sortCol === i ? 'sortable ' + (this.sortAsc ? 'asc' : 'desc') : ''}
             onClick={() => this.sort(i)}
             style={{
-              pointer: 'cursor',
               width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
             }}>{header}</th>)
         }

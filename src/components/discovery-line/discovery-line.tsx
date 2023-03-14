@@ -60,7 +60,7 @@ export class DiscoveryLineComponent {
   private graph: HTMLDivElement;
   private wrap: HTMLDivElement;
   private chartOpts: EChartsOption;
-  private defOptions: Param = {...new Param(), timeMode: 'date'};
+  private defOptions: Param = {...new Param(), timeMode: 'date', xCursor: true, yCursor: false};
   private LOG: Logger;
   private divider = 1000;
   private myChart: ECharts;
@@ -140,7 +140,7 @@ export class DiscoveryLineComponent {
       this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
     }
     setTimeout(() => {
-      if(this.myChart) {
+      if (this.myChart) {
         this.myChart.setOption(this.chartOpts || {}, notMerge, true);
       }
     });
@@ -198,12 +198,19 @@ export class DiscoveryLineComponent {
           ).join('<br>')}`;
         },
         axisPointer: {
-          type: 'line',
-          axis: 'x',
+          type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
+          axis: !!this.innerOptions.yCursor ? 'y' : 'x',
           animation: false,
-          lineStyle: {
-            color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
-          }
+          lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
+            ? undefined
+            : {
+              color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
+            },
+          crossStyle: !!this.innerOptions.yCursor
+            ? {
+              color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
+            }
+            : undefined
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,

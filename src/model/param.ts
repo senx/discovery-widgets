@@ -86,6 +86,8 @@ export class Param {
   noDataLabel = 'No data';
   tooltipDelay?: number;
   polygons?: { shape: number[][]; color?: string; name?: string; fill?: boolean }[];
+  xCursor? :boolean;
+  yCursor? :boolean;
 // components specific params
   bar?: {
     horizontal?: boolean,
