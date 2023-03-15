@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.1.73
+
+> +  2023/03/15  | v1.1.73 
+> +  2023/03/14  | Cross pointer support for line and scatter 
+> +  2023/03/14  | Add font size support through css var for display tiles 
+> +  2023/03/14  | Tabular font size through css var 
+> +  2023/03/13  | Paginator position in tabular 
+> +  2023/03/13  | filtrable tabular 
+> +  2023/03/13  | fix profile for legend 
+> +  2023/03/06  | add sort support on tabular widget 
+> +  2023/02/08  | changelog 
+
 ## v1.1.72
 
 > +  2023/02/08  | v1.1.72 
