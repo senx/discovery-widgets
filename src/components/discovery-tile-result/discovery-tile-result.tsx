@@ -320,6 +320,19 @@ export class DiscoveryTileResultComponent {
           debug={this.debug}
           id={this.componentId}
         />;
+      case 'bar-polar':
+        return <discovery-bar-polar
+          result={this.innerResult}
+          type={this.innerType}
+          unit={this.unit}
+          options={this.innerOptions}
+          ref={el => this.tile = el || this.tile}
+          onDataZoom={event => this.handleZoom(event)}
+          onDataPointOver={event => this.handleDataPointOver(event)}
+          onDataPointSelected={event => this.handleDataSelected(event)}
+          debug={this.debug}
+          id={this.componentId}
+        />;
       case 'display':
         return <discovery-display
           result={this.innerResult}

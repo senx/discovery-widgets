@@ -21,7 +21,7 @@ import {Param} from './param';
 export type ChartType =
   'line' | 'area' | 'scatter' | 'step-area' | 'spline-area' | 'spline' | 'step' | 'step-after' | 'step-before'
   | 'annotation'
-  | 'bar'
+  | 'bar' | 'bar-polar'
   | 'display'
   | 'image'
   | 'map'

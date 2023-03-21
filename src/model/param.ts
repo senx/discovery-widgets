@@ -92,7 +92,7 @@ export class Param {
   bar?: {
     horizontal?: boolean,
     stacked?: boolean,
-    animate?: boolean
+    animate?: boolean,
   };
   button?: {
     label: string
