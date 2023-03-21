@@ -156,7 +156,6 @@ export class DiscoveryBarComponent {
   private getCommonSeriesParam(color) {
     const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
     return {
-      type: 'bar',
       stack: (this.innerOptions.bar || {stacked: false}).stacked ? 'total' : undefined,
       animation: !!this.innerOptions?.bar?.animate,
       large: true,
@@ -237,9 +236,26 @@ export class DiscoveryBarComponent {
         min = Math.min(min, ...gts.v.map(v => v[0]));
         max = Math.max(max, ...gts.v.map(v => v[0]));
         hasTimeBounds = true;
+        let type = ((data.params || [])[i] || {type: 'bar'}).type || 'bar';
+        let areaStyle;
+        if (type === 'area') {
+          type = 'line';
+          areaStyle = {
+            opacity: 0.8,
+            color: {
+              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+              ],
+              global: false // false by default
+            }
+          }
+        }
         series.push({
           ...this.getCommonSeriesParam(color),
           id: gts.id,
+          type, areaStyle,
           name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
           data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
             const ts = this.innerOptions.timeMode === 'date'
@@ -258,9 +274,26 @@ export class DiscoveryBarComponent {
         (gts.columns || []).forEach((label, index: number) => {
           const c = ColorLib.getColor(gts.id || index, this.innerOptions.scheme);
           const color = ((data.params || [])[index] || {datasetColor: c}).datasetColor || c;
+          let type = ((data.params || [])[index] || {type: 'bar'}).type || 'bar';
+          let areaStyle;
+          if (type === 'area') {
+            type = 'line';
+            areaStyle = {
+              opacity: 0.8,
+              color: {
+                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                colorStops: [
+                  {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+                  {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+                ],
+                global: false // false by default
+              }
+            }
+          }
           series.push({
             ...this.getCommonSeriesParam(color),
             name: label,
+            type, areaStyle,
             data: gts.rows.map(r => {
               if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
                 return [r[index + 1], r[0]];
