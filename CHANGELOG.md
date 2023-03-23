@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.74
+
+> +  2023/03/23  | v1.1.74 
+> +  2023/03/23  | Update copyright 
+> +  2023/03/23  | add hover and click handler to SVG 
+> +  2023/03/21  | add mixed chart support for bar charts 
+> +  2023/03/21  | add bar-polar chart 
+> +  2023/03/15  | Changelog 
+
 ## v1.1.73
 
 > +  2023/03/15  | v1.1.73 
