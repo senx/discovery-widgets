@@ -921,6 +921,7 @@ declare namespace LocalJSX {
         "chartTitle"?: string;
         "debug"?: boolean;
         "height"?: number;
+        "onDiscoveryEvent"?: (event: DiscoverySvgCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoverySvgCustomEvent<void>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

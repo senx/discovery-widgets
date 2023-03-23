@@ -16,7 +16,7 @@
 
 // noinspection JSUnusedGlobalSymbols
 
-import {ChartType, MapParams, TimeMode, TimeUnit} from './types';
+import {ChartType, DiscoveryEvent, MapParams, TimeMode, TimeUnit} from './types';
 
 export class Param {
   skippedVars?: string[];
@@ -86,8 +86,8 @@ export class Param {
   noDataLabel = 'No data';
   tooltipDelay?: number;
   polygons?: { shape: number[][]; color?: string; name?: string; fill?: boolean }[];
-  xCursor? :boolean;
-  yCursor? :boolean;
+  xCursor?: boolean;
+  yCursor?: boolean;
 // components specific params
   bar?: {
     horizontal?: boolean,
@@ -121,6 +121,9 @@ export class Param {
     immediate?: boolean,
   }
   map?: MapParams;
+  svg?: {
+    handlers?: { selector?: string, event: DiscoveryEvent, hover: boolean, click: boolean }[],
+  }
   calendar?: {
     horizontal?: boolean,
     firstDay?: number,

@@ -23,9 +23,10 @@
 
 ## Events
 
-| Event  | Description | Type                |
-| ------ | ----------- | ------------------- |
-| `draw` |             | `CustomEvent<void>` |
+| Event            | Description | Type                          |
+| ---------------- | ----------- | ----------------------------- |
+| `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
+| `draw`           |             | `CustomEvent<void>`           |
 
 
 ## Methods

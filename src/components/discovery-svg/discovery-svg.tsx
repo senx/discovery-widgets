@@ -41,6 +41,12 @@ export class DiscoverySvgComponent {
   @Prop() chartTitle: string;
 
   @Event() draw: EventEmitter<void>;
+  @Event({
+    eventName: 'discoveryEvent',
+    composed: true,
+    cancelable: true,
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
 
   @Element() el: HTMLElement;
 
@@ -56,6 +62,7 @@ export class DiscoverySvgComponent {
   private LOG: Logger;
   private defOptions: Param = new Param();
   private funqueue = [];
+  private refs: HTMLDivElement[] = [];
 
   @Watch('result')
   updateRes() {
@@ -97,6 +104,7 @@ export class DiscoverySvgComponent {
 
   convert(data: DataModel) {
     const toDisplay = [];
+    this.refs = [];
     this.LOG?.debug(['convert'], data)
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
@@ -168,6 +176,25 @@ export class DiscoverySvgComponent {
       options: this.innerOptions,
       toDisplay: this.toDisplay,
     });
+    setTimeout(() => {
+      console.log(this.options);
+      this.refs.forEach(svgWrapper => {
+        (this.innerOptions.svg?.handlers || []).forEach(h => {
+          if (!!h.selector) {
+            svgWrapper.querySelectorAll(h.selector).forEach(elem => {
+              elem.classList.add('hoverable');
+              if (!!h.click) {
+                elem.addEventListener('click', () => this.triggerEvent(h.event))
+              }
+              if (!!h.hover) {
+                elem.addEventListener('mouseover', () => this.triggerEvent(h.event))
+              }
+            });
+          }
+        });
+
+      });
+    })
     this.parsing = false;
     this.draw.emit();
   }
@@ -206,6 +233,10 @@ export class DiscoverySvgComponent {
           + el.getAttribute('width').replace(/[a-z]+/gi, '') + ' '
           + el.getAttribute('height').replace(/[a-z]+/gi, ''));
       }
+      if (el.getAttribute('preserveAspectRatio')) {
+        el.removeAttribute('preserveAspectRatio');
+      }
+      el.setAttribute('preserveAspectRatio', 'xMinYMin meet');
       return new XMLSerializer().serializeToString(svgDoc);
     } catch (e) {
       this.LOG?.error(['exec'], e);
@@ -213,12 +244,19 @@ export class DiscoverySvgComponent {
     }
   }
 
+  private triggerEvent(evt: DiscoveryEvent) {
+    this.discoveryEvent.emit({...evt, source: this.el.id});
+  }
+
   @Method()
-  async export(type: 'png' | 'svg' = 'png') {
+  async export
+  (type: 'png' | 'svg' = 'png') {
     return type === 'svg' ? this.toDisplay : (await html2canvas(this.el)).toDataURL();
   }
 
-  private generateStyle(innerStyle: { [k: string]: string }): string {
+  private
+
+  generateStyle(innerStyle: { [k: string]: string }): string {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
@@ -230,7 +268,7 @@ export class DiscoverySvgComponent {
           {this.parsing
             ? <discovery-spinner>Parsing data...</discovery-spinner>
             : this.toDisplay.length > 0
-              ? this.toDisplay.map(svg => <div class="svg-container" innerHTML={svg}/>)
+              ? this.toDisplay.map(svg => <div class="svg-container" innerHTML={svg} ref={el => this.refs.push(el)}/>)
               : ''
           }</div>
       </Host>
