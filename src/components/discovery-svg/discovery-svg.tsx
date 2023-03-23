@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -177,7 +177,6 @@ export class DiscoverySvgComponent {
       toDisplay: this.toDisplay,
     });
     setTimeout(() => {
-      console.log(this.options);
       this.refs.forEach(svgWrapper => {
         (this.innerOptions.svg?.handlers || []).forEach(h => {
           if (!!h.selector) {
