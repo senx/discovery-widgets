@@ -1,5 +1,7 @@
 # Discovery
 
+[Demos & Full documentation](https://discovery.warp10.io)
+
 Discovery is a dashboard as code tool. It includes dashboards generation (either through WarpScript or in an HTML page), single chart tiles and inputs as web components.
 
 The global idea is to generate a structure which defines a dashboard and its tiles.
