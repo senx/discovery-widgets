@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.1.75
+
+> +  2023/04/20  | v1.1.75 
+> +  2023/04/20  | update README 
+> +  2023/04/20  | Fix modal display order and content parsing. 
+> +  2023/04/20  | Fix modal display order and content parsing. 
+> +  2023/04/20  | Fix modal display order and content parsing. 
+> +  2023/04/18  | Fix data event with buttons 
+> +  2023/03/23  | Update copyright Changelog 
+
 ## v1.1.74
 
 > +  2023/03/23  | v1.1.74 
