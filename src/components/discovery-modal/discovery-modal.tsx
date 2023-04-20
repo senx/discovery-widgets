@@ -59,7 +59,10 @@ export class DiscoveryModalComponent {
     if (!!this.data && typeof this.data === 'string') {
       this.data = new JsonLib().parse(this.data as string);
     }
-    this.LOG?.debug(['dataUpdate'], {data: this.data, newValue, oldValue});
+    this.LOG?.debug(['dataUpdate'], {
+      data: this.data,
+      newValue, oldValue
+    });
     this.parseData();
   }
 
@@ -75,9 +78,6 @@ export class DiscoveryModalComponent {
   }
 
   private parseData() {
-    if(GTSLib.isArray(this.data)) {
-      this.data = this.data[0];
-    }
     if (this.data) {
       if ((this.data as any).macro || (this.data as any).data) {
         this.dashboard = undefined;
