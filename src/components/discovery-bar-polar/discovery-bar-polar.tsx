@@ -329,7 +329,7 @@ export class DiscoveryBarPolarComponent {
       },
       polar: {},
       angleAxis: {
-        startAngle: this.isGTS ? 0 : (360 / Math.max((this.categories || []).length, 1)) * -1.5 + 180,
+        startAngle: !!this.innerOptions.bar?.startAngle? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories || []).length, 1)) * -1.5 + 180,
         type: this.isGTS ? this.innerOptions.timeMode === 'date' ? 'time' : 'value' : 'category',
         data: this.isGTS ? undefined : this.categories,
 

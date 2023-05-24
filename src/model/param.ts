@@ -93,6 +93,7 @@ export class Param {
     horizontal?: boolean,
     stacked?: boolean,
     animate?: boolean,
+    startAngle?: number,
   };
   button?: {
     label: string
