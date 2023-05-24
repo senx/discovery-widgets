@@ -329,7 +329,7 @@ export class DiscoveryBarPolarComponent {
       },
       polar: {},
       angleAxis: {
-        startAngle: !!this.innerOptions.bar?.startAngle? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories || []).length, 1)) * -1.5 + 180,
+        startAngle: !!this.innerOptions.bar?.startAngle ? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories || []).length, 1)) * -1.5 + 180,
         type: this.isGTS ? this.innerOptions.timeMode === 'date' ? 'time' : 'value' : 'category',
         data: this.isGTS ? undefined : this.categories,
 
@@ -341,12 +341,10 @@ export class DiscoveryBarPolarComponent {
         axisLabel: {
           show: !this.innerOptions.hideXAxis,
           color: Utils.getLabelColor(this.el),
-          formatter: !(this.innerOptions.bar || {horizontal: false}).horizontal
-            ? this.innerOptions.timeMode === 'date'
-              ? this.innerOptions.fullDateDisplay ? value =>
-                  GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                    .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-                : undefined
+          formatter: this.innerOptions.timeMode === 'date'
+            ? this.innerOptions.fullDateDisplay ? value =>
+                GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
               : undefined
             : undefined
         },
@@ -358,6 +356,17 @@ export class DiscoveryBarPolarComponent {
         emphasis: {
           focus: 'series'
         },
+        min: !!this.innerOptions.bounds?.minDate !== undefined
+          ? this.innerOptions.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
+            : this.innerOptions.bounds.minDate
+          : undefined,
+        max: !!this.innerOptions.bounds?.maxDate !== undefined
+          ? this.innerOptions.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
+            : this.innerOptions.bounds.maxDate
+          : undefined,
+
       },
       tooltip: {
         trigger: 'axis',
