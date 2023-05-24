@@ -33,7 +33,7 @@ export class DiscoveryTileComponent {
   @Prop() url: string;
   @Prop() chartTitle: string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop({mutable: true, reflect: true}) options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() debug = false;
   @Prop() unit = '';
