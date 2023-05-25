@@ -14,13 +14,26 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,max-classes-per-file
 import {Component, Event, EventEmitter, h, Prop, Watch} from '@stencil/core';
 import {Logger} from '../../../utils/logger';
 import {Param} from '../../../model/param';
 import {GTSLib} from '../../../utils/gts.lib';
 import {Utils} from '../../../utils/utils';
 import {Dataset} from '../../../model/types';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
+class Cell {
+  value: any;
+  type: 'string' | 'number' | 'elapsed' | 'date' | 'duration';
+  unit: string;
+  display: string
+}
 
 @Component({
   tag: 'discovery-pageable',
@@ -42,8 +55,8 @@ export class DiscoveryPageable {
   private LOG: Logger;
   private page = 0;
   private pages: number[] = [];
-  private displayedValues: any[] = [];
-  private sortAsc = false;
+  private displayedValues: Cell[][] = [];
+  private sortAsc = true;
   private filters = {};
   private sortCol = 0;
 
@@ -85,16 +98,25 @@ export class DiscoveryPageable {
     }
     this.elemsCount = this.options.elemsCount || this.elemsCount;
     this.windowed = this.options.windowed || this.windowed;
-    const dataset = (this.data.values || []).filter(d => {
-      let found = Object.keys(this.filters).length === 0;
-      Object.keys(this.filters).forEach(k => found = found || d[k].toString().startsWith(this.filters[k]));
-      return found;
-    });
+    const dataset: Cell[][] = (this.data.values || [])
+      .map(row => row.map((v, i) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
+      .filter(d => {
+        let found = Object.keys(this.filters).length === 0;
+        Object.keys(this.filters).forEach(k => found = found || d[k].display.toLowerCase().startsWith(this.filters[k].toLowerCase()));
+        return found;
+      });
     if (this.sortCol >= 0) {
       dataset.sort((a, b) => {
-        if (a[this.sortCol] < b[this.sortCol]) return this.sortAsc ? 1 : -1;
-        if (a[this.sortCol] > b[this.sortCol]) return this.sortAsc ? -1 : 1;
-        return 0;
+        switch (a[this.sortCol].type) {
+          case 'string':
+            return this.sortAsc
+              ? a[this.sortCol].display.localeCompare(b[this.sortCol].display)
+              : b[this.sortCol].display.localeCompare(a[this.sortCol].display);
+          default:
+            return this.sortAsc
+              ? a[this.sortCol].value - b[this.sortCol].value
+              : b[this.sortCol].value - a[this.sortCol].value;
+        }
       });
     }
     this.displayedValues = dataset.slice(
@@ -112,9 +134,9 @@ export class DiscoveryPageable {
     return GTSLib.formatLabel(name);
   }
 
-  private setSelected(value: any) {
+  private setSelected(value: Cell[]) {
     this.dataPointSelected.emit({
-        date: this.data.isGTS ? value[0] : undefined,
+        date: this.data.isGTS ? value[0].value : undefined,
         name: this.data.name,
         value: value,
         meta: {header: this.data.headers}
@@ -122,9 +144,9 @@ export class DiscoveryPageable {
     );
   }
 
-  private setOver(value: any) {
+  private setOver(value: Cell[]) {
     this.dataPointOver.emit({
-        date: this.data.isGTS ? value[0] : undefined,
+        date: this.data.isGTS ? value[0].value : undefined,
         name: this.data.name,
         value: value,
         meta: {header: this.data.headers}
@@ -134,24 +156,84 @@ export class DiscoveryPageable {
 
   private sort(header) {
     if (this.options?.tabular?.sortable) {
+      this.sortAsc = this.sortCol !== header ? true : !this.sortAsc;
       this.sortCol = header;
-      this.sortAsc = !this.sortAsc;
       this.drawGridData();
     }
   }
 
   private filter(i, e) {
-    this.filters[i] = e.srcElement.value;
+    if (e.srcElement.value !== '') {
+      this.filters[i] = e.srcElement.value;
+    } else {
+      delete this.filters[i];
+    }
     this.drawGridData();
   }
 
-  private formatDate(date: number): string {
-    const opts = this.options;
-    return (opts.timeMode === 'timestamp' || !this.data.isGTS)
-      ? date.toString()
-      : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(date, this.divider, opts.timeZone), 1, opts.timeZone,
-        opts.timeFormat) || '')
-        .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
+  private formatDate(v: any): Cell {
+    if (this.data.isGTS) {
+      return this.formatValue({value: v, type: 'date'});
+    } else {
+      return this.formatValue(v);
+    }
+  }
+
+  private formatValue(v: any): {
+    value: any;
+    type: 'string' | 'number' | 'elapsed' | 'date' | 'duration';
+    unit: string;
+    display: string
+  } {
+    if (typeof v !== 'object') {
+      v = {
+        value: v || '',
+        type: 'string',
+        unit: '',
+        display: v.toString() || ''
+      };
+    } else {
+      v = {
+        type: 'string',
+        unit: '',
+        ...v
+      }
+    }
+    let res = v.value || '';
+    switch (v.type) {
+      case 'elapsed':
+        if (res && !isNaN(parseInt(res, 10))) {
+          res = dayjs().to(dayjs(GTSLib.toISOString(parseInt(res, 10), this.divider, this.options.timeZone,
+            this.options.fullDateDisplay ? this.options.timeFormat : undefined)));
+        } else {
+          res = '';
+        }
+        break;
+      case 'date':
+        if (res && !isNaN(parseInt(res, 10))) {
+          const format = v.format || (this.options.fullDateDisplay ? this.options.timeFormat : undefined);
+          res = GTSLib.toISOString(parseInt(res, 10), this.divider, this.options.timeZone, format)
+            .replace('T', ' ')
+            .replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
+        } else {
+          res = '';
+        }
+        break;
+      case 'duration':
+        const format = v.format || (this.options.fullDateDisplay ? this.options.timeFormat : undefined);
+        if (res && !isNaN(parseInt(res, 10))) {
+          res = dayjs.duration(parseInt(res, 10) / this.divider).format(format);
+        } else {
+          res = '';
+        }
+        break;
+      case 'string':
+      case 'number':
+      default:
+        res = res.toString();
+    }
+    v.display = res.toString();
+    return v;
   }
 
   render() {
@@ -184,10 +266,9 @@ export class DiscoveryPageable {
           <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}
               onMouseOver={() => this.setOver(value)}
               style={this.getRowStyle(i)}
-          >
-            {value.map((v, j) => <td style={this.getCellStyle(i, j)}><span
-              innerHTML={j === 0 ? this.formatDate(v) : v}/></td>)}
-          </tr>
+          >{value.map((v, j) =>
+            <td style={this.getCellStyle(i, j)}><span innerHTML={v.display + (v.unit || '')}/>
+            </td>)}</tr>
         )}
         </tbody>
       </table>
