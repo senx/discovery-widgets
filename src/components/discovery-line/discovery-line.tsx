@@ -840,7 +840,7 @@ export class DiscoveryLineComponent {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp((id || i).toString()).test(s.id.toString()))
+          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
