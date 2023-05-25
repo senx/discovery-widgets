@@ -148,7 +148,8 @@ export class DiscoveryAnnotation {
     if(this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
-        batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(id.toString()).test(s.id.toString()))
+        batch: (this.myChart.getOption().series as any[])
+          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -159,7 +160,8 @@ export class DiscoveryAnnotation {
     if(this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
-        batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(id.toString()).test(s.id.toString()))
+        batch: (this.myChart.getOption().series as any[])
+          .filter((s,i) => new RegExp((id || i).toString()).test(s.id.toString()))
       });
     }
     return Promise.resolve();
