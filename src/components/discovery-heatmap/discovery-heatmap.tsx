@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -113,9 +113,7 @@ export class DiscoveryHeatmap {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).map(s => ({name: s.name})).filter(s => new RegExp(regexp).test(s.name))
     });
     return Promise.resolve();
   }
@@ -124,10 +122,31 @@ export class DiscoveryHeatmap {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => {
-        return {name: s.name}
-      }).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).map(s => ({name: s.name})).filter(s => new RegExp(regexp).test(s.name))
     });
+    return Promise.resolve();
+  }
+
+
+  @Method()
+  async hideById(id: number | string) {
+    if (this.myChart) {
+      this.myChart.dispatchAction({
+        type: 'legendUnSelect',
+        batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(id.toString()).test(s.id.toString()))
+      });
+    }
+    return Promise.resolve();
+  }
+
+  @Method()
+  async showById(id: number | string) {
+    if (this.myChart) {
+      this.myChart.dispatchAction({
+        type: 'legendSelect',
+        batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(id.toString()).test(s.id.toString()))
+      });
+    }
     return Promise.resolve();
   }
 

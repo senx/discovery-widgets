@@ -89,7 +89,7 @@ Type: `Promise<void>`
 
 
 
-### `showById(id: number) => Promise<void>`
+### `showById(id: number | string) => Promise<void>`
 
 
 

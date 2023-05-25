@@ -52,7 +52,7 @@ Type: `Promise<void>`
 
 
 
-### `hideById(id: number) => Promise<void>`
+### `hideById(id: number | string) => Promise<void>`
 
 
 
@@ -102,7 +102,7 @@ Type: `Promise<void>`
 
 
 
-### `showById(id: number) => Promise<void>`
+### `showById(id: number | string) => Promise<void>`
 
 
 

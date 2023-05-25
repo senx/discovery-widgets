@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -158,14 +158,23 @@ export class DiscoveryMapComponent {
 
   @Method()
   async hideById(id: number) {
-    this.hidden[id] = true;
+    Object.keys(this.hidden).forEach(k => {
+      if (new RegExp(id.toString()).test(id.toString())) {
+        this.hidden[k] = true;
+      }
+    });
     this.drawMap(this.result as DataModel || new DataModel(), true);
     return Promise.resolve();
   }
 
   @Method()
-  async showById(id: number) {
-    this.hidden[id] = false;
+  async showById(id: number | string) {
+    Object.keys(this.hidden).forEach(k => {
+      if (new RegExp(id.toString()).test(id.toString())) {
+        this.hidden[k] = false;
+      }
+    });
+    this.drawMap(this.result as DataModel || new DataModel(), true);
     return Promise.resolve();
   }
 
@@ -237,7 +246,7 @@ export class DiscoveryMapComponent {
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
 
     if (this.mapOpts.mapType !== 'NONE') {
-      const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'] ||  MapLib.mapTypes.DEFAULT;
+      const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'] || MapLib.mapTypes.DEFAULT;
       const mapOpts: TileLayerOptions = {
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
         maxZoom: this.mapOpts.maxZoom || 40,
@@ -254,7 +263,7 @@ export class DiscoveryMapComponent {
         this.LOG?.debug(['displayMap'], 'map', map);
         this.tileLayers.push(map.link);
         // eslint-disable-next-line no-underscore-dangle
-        if(!!this.tilesLayer && this.tilesLayer._url !== map.link) {
+        if (!!this.tilesLayer && this.tilesLayer._url !== map.link) {
           this.tileLayerGroup.removeLayer(this.tilesLayer);
           this.tilesLayer = undefined;
         }
@@ -430,7 +439,7 @@ export class DiscoveryMapComponent {
                 }, this.currentZoom || this.mapOpts.startZoom || 10,
                 {animate: false});
             }
-          } else if(this.map && this.bounds) {
+          } else if (this.map && this.bounds) {
             this.LOG?.debug(['displayMap', 'setView'], 'fitBounds', 'this.bounds', this.bounds);
             this.map.fitBounds(this.bounds, {padding: [1, 1], animate: false, duration: 0});
           }
@@ -471,7 +480,7 @@ export class DiscoveryMapComponent {
       zoomPromise = new Promise(resolve => setTimeout(() => this.map.once('moveend zoomend', () => resolve())));
     }
     this.firstDraw = false;
-  //  this.patchMapTileGapBug();
+    //  this.patchMapTileGapBug();
     void Promise.all([zoomPromise, tilesPromise])
       .then(() => setTimeout(() => {
         if (this.initial) {
