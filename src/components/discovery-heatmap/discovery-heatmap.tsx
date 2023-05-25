@@ -170,7 +170,6 @@ export class DiscoveryHeatmap {
   }
 
   private setOpts(notMerge = false) {
-    console.log((this.chartOpts?.series as any[] || []))
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
