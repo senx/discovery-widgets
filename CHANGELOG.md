@@ -1,6 +1,17 @@
 Discovery
 ---
 
+## v1.1.76
+
+> +  2023/05/25  | v1.1.76 
+> +  2023/05/25  | copyright update and deps update 
+> +  2023/05/25  | fix Sortable and filterable tabular component and add unit and custom types 
+> +  2023/05/24  | bounds support 
+> +  2023/05/24  | code cleanup 
+> +  2023/05/24  | expose options 
+> +  2023/05/24  | startAngle support for polar bar chart 
+> +  2023/04/20  | changelog 
+
 ## v1.1.75
 
 > +  2023/04/20  | v1.1.75 
