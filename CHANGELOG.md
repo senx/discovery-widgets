@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.1.80
+
+> +  2023/05/31  | v1.1.80 
+> +  2023/05/31  | [dashboard] [tile] Handle relative links as Warp 10 backend 
+> +  2023/05/31  | [global] Fix ESlint 
+> +  2023/05/31  | [tabular] Do not sort first column by default 
+> +  2023/05/31  | Code cleanup 
+> +  2023/05/31  | Fix bar-polar when no bounds are specified 
+> +  2023/05/26  | changelog 
+
 ## v1.1.79
 
 > +  2023/05/25  | v1.1.79 
