@@ -58,7 +58,7 @@ export class DiscoveryPageable {
   private displayedValues: Cell[][] = [];
   private sortAsc = true;
   private filters = {};
-  private sortCol = 0;
+  private sortCol = -1;
 
   @Watch('data')
   updateData() {
@@ -245,7 +245,7 @@ export class DiscoveryPageable {
         {this.data.headers.map((header, i) =>
           <th
             data-sort={i}
-            class={this.options?.tabular?.sortable && this.sortCol === i ? 'sortable ' + (this.sortAsc ? 'asc' : 'desc') : ''}
+            class={this.getClasses(i)}
             onClick={() => this.sort(i)}
             style={{
               width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
@@ -298,6 +298,22 @@ export class DiscoveryPageable {
       }
     }
     return styles;
+  }
+
+  private getClasses(i: number): string {
+    const c: string[] = [];
+    if (this.options?.tabular?.sortable) {
+      c.push('pointer');
+    }
+    if (this.options?.tabular?.sortable && this.sortCol === i) {
+      c.push('sortable');
+      if (this.sortAsc) {
+        c.push('asc');
+      } else {
+        c.push('desc');
+      }
+    }
+    return c.join(' ');
   }
 
   private getPagination() {
