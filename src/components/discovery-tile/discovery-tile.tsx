@@ -133,6 +133,7 @@ export class DiscoveryTileComponent {
       await this.tileResult.show(regexp);
     }
   }
+
   @Method()
   async showById(id: number) {
     if (this.tileResult) {
@@ -146,6 +147,7 @@ export class DiscoveryTileComponent {
       await this.tileResult.hide(regexp);
     }
   }
+
   @Method()
   async hideById(id: number) {
     if (this.tileResult) {
@@ -213,7 +215,7 @@ export class DiscoveryTileComponent {
   @Method()
   async exec(refresh = false) {
     return new Promise(resolve => {
-      if (this.el?.innerHTML !==  undefined) {
+      if (this.el?.innerHTML !== undefined) {
         if (!refresh) {
           setTimeout(() => this.loaded = false);
         }
@@ -232,6 +234,7 @@ export class DiscoveryTileComponent {
           }
         }
         this.LOG?.debug(['exec'], this.ws, this.type);
+        this.url = Utils.getUrl(this.url);
         if (this.url.toLowerCase().startsWith('http')) {
           setTimeout(() => {
             this.hasError = false;
@@ -245,7 +248,7 @@ export class DiscoveryTileComponent {
           Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
             .then((res: any) => {
               const toRefresh = this.result === res.data;
-              if((this.type || '').startsWith('input')) {
+              if ((this.type || '').startsWith('input')) {
                 this.result = '';
               }
               this.headers = {};
@@ -335,6 +338,10 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
     await this.tileResult.setZoom(dataZoom);
   }
 
+  private handleSelfType(type) {
+    this.selfType.emit(type);
+  }
+
   render() {
     return <div>
       {this.loaded ?
@@ -371,9 +378,5 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
       </div> : ''}
       <pre id="ws"><slot/></pre>
     </div>;
-  }
-
-  private handleSelfType(type) {
-    this.selfType.emit(type);
   }
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ import {cloneDeep} from 'lodash'
 import {DataModel, DiscoveryEvent} from '../model/types';
 
 export class Utils {
-  static clone = (inObject) => {
+
+  static clone(inObject: any): any {
     return cloneDeep(inObject);
   }
 
@@ -130,7 +131,7 @@ export class Utils {
       description: undefined,
       selected: undefined,
       link: undefined,
-      hasEvent:false
+      hasEvent: false
     }
     if (eventHandler && evt.source !== id) {
       let tag = '.*';
@@ -228,5 +229,21 @@ export class Utils {
       throw new Error('Error parsing XML');
     }
     return doc;
+  }
+
+  /**
+   * Compute the backend url if it is a relative one
+   *
+   * @param url
+   */
+  static getUrl(url: string): string {
+    if (!url.toLowerCase().startsWith('http') && !url.toLowerCase().startsWith('ws')) {
+      const {host, pathname, port, protocol, search} = window.location;
+      let urlComputed = protocol + '//' + host + (port !== '' ? ':' + port : '');
+      urlComputed += url.startsWith('/') ? url : pathname + (pathname.endsWith('/') ? '' : '/') + url;
+      return urlComputed + search;
+    } else {
+      return url;
+    }
   }
 }

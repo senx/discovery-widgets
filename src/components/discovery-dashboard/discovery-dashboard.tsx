@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
 import {Utils} from '../../utils/utils';
 import {Param} from '../../model/param';
@@ -238,7 +236,7 @@ export class DiscoveryDashboardComponent {
     if (this.ws && this.ws !== '') {
       this.loaded = false;
       this.done = {};
-      Utils.httpPost(this.url, this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', (this.options as Param).httpHeaders)
+      Utils.httpPost(Utils.getUrl(this.url), this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', (this.options as Param).httpHeaders)
         .then((res: any) => {
           const result = new JsonLib().parse(res.data as string);
           const tmpResult: Dashboard = result.length > 0 ? result[0] : new Dashboard();
