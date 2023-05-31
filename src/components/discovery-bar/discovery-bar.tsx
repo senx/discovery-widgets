@@ -387,7 +387,7 @@ export class DiscoveryBarComponent {
         min:
           !!(this.innerOptions.bar || {horizontal: false}).horizontal
             ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined
-            : !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
+            : this.innerOptions.bounds?.minDate !== undefined
               ? this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
                 : this.innerOptions.bounds.minDate
@@ -395,7 +395,7 @@ export class DiscoveryBarComponent {
         max:
           !!(this.innerOptions.bar || {horizontal: false}).horizontal
             ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined
-            : !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
+            : this.innerOptions.bounds?.maxDate !== undefined
               ? this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
                 : this.innerOptions.bounds.maxDate
@@ -442,14 +442,14 @@ export class DiscoveryBarComponent {
           }
         },
         min: !!(this.innerOptions.bar || {horizontal: false}).horizontal
-          ? !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
+          ? this.innerOptions.bounds?.minDate !== undefined
             ? this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
               : this.innerOptions.bounds.minDate
             : undefined
           : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
         max: !!(this.innerOptions.bar || {horizontal: false}).horizontal
-          ? !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
+          ? this.innerOptions.bounds?.maxDate !== undefined
             ? this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
               : this.innerOptions.bounds.maxDate

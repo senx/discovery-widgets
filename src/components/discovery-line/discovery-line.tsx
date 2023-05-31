@@ -648,12 +648,12 @@ export class DiscoveryLineComponent {
       },
       axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
       scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
-      min: !!this.innerOptions.bounds && this.innerOptions.bounds.minDate !== undefined
+      min: this.innerOptions.bounds?.minDate !== undefined
         ? this.innerOptions.timeMode === 'date'
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
           : this.innerOptions.bounds.minDate
         : undefined,
-      max: !!this.innerOptions.bounds && this.innerOptions.bounds.maxDate !== undefined
+      max: this.innerOptions.bounds?.maxDate !== undefined
         ? this.innerOptions.timeMode === 'date'
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
           : this.innerOptions.bounds.maxDate
