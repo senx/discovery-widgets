@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.1.82
+
+> +  2023/06/02  | v1.1.82 
+> +  2023/06/02  | [tabular] Fix 0 values display. 
+> +  2023/06/02  | [button] Fix var event emission. 
+> +  2023/06/02  | changelog 
+
 ## v1.1.81
 
 > +  2023/06/02  | v1.1.81 
