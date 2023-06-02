@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.1.81
+
+> +  2023/06/02  | v1.1.81 
+> +  2023/06/02  | [profile] Fix value display in tooltip when timeMode is timestamp. 
+> +  2023/06/02  | [bar-polar] add `options.bar.fillGap` in order to close the gap between the start and the end of line or area curves. 
+> +  2023/05/31  | Changelog 
+
 ## v1.1.80
 
 > +  2023/05/31  | v1.1.80 
