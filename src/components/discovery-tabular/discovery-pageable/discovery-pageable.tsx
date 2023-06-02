@@ -187,7 +187,7 @@ export class DiscoveryPageable {
   } {
     if (typeof v !== 'object') {
       v = {
-        value: v || '',
+        value: v !== undefined? v : '',
         type: 'string',
         unit: '',
         display: v.toString() || ''
@@ -199,10 +199,10 @@ export class DiscoveryPageable {
         ...v
       }
     }
-    let res = v.value || '';
+    let res = v.value !== undefined? v.value : '';
     switch (v.type) {
       case 'elapsed':
-        if (res && !isNaN(parseInt(res, 10))) {
+        if (res !== undefined && !isNaN(parseInt(res, 10))) {
           res = dayjs().to(dayjs(GTSLib.toISOString(parseInt(res, 10), this.divider, this.options.timeZone,
             this.options.fullDateDisplay ? this.options.timeFormat : undefined)));
         } else {
@@ -210,7 +210,7 @@ export class DiscoveryPageable {
         }
         break;
       case 'date':
-        if (res && !isNaN(parseInt(res, 10))) {
+        if (res !== undefined && !isNaN(parseInt(res, 10))) {
           const format = v.format || (this.options.fullDateDisplay ? this.options.timeFormat : undefined);
           res = GTSLib.toISOString(parseInt(res, 10), this.divider, this.options.timeZone, format)
             .replace('T', ' ')
@@ -221,7 +221,7 @@ export class DiscoveryPageable {
         break;
       case 'duration':
         const format = v.format || (this.options.fullDateDisplay ? this.options.timeFormat : undefined);
-        if (res && !isNaN(parseInt(res, 10))) {
+        if (res !== undefined && !isNaN(parseInt(res, 10))) {
           res = dayjs.duration(parseInt(res, 10) / this.divider).format(format);
         } else {
           res = '';
@@ -267,8 +267,8 @@ export class DiscoveryPageable {
               onMouseOver={() => this.setOver(value)}
               style={this.getRowStyle(i)}
           >{value.map((v, j) =>
-            <td style={this.getCellStyle(i, j)}><span innerHTML={v.display + (v.unit || '')}/>
-            </td>)}</tr>
+            <td style={this.getCellStyle(i, j)}><span innerHTML={v.display + (v.unit || '')}/></td>
+          )}</tr>
         )}
         </tbody>
       </table>
