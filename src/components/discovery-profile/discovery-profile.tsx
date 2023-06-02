@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-// noinspection ES6UnusedImports
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// noinspection ES6UnusedImports
 import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
 import {ChartType, DataModel, ECharts} from '../../model/types';
 import {Param} from '../../model/param';
@@ -152,11 +152,11 @@ export class DiscoveryProfile {
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -164,11 +164,11 @@ export class DiscoveryProfile {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -441,7 +441,11 @@ export class DiscoveryProfile {
            </div>
            ${params[0].marker}
            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params[0].seriesName}</span>
-           <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${GTSLib.toDuration(params[0].value[3], this.divider)}</span>`;
+           <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${
+              this.innerOptions.timeMode === 'date' || this.innerOptions.timeMode === 'duration'
+                ? GTSLib.toDuration(params[0].value[3], this.divider)
+                : params[0].value[3]
+            }</span>`;
           } else if ('annotation' === this.type) {
             return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
               this.innerOptions.timeMode === 'timestamp'
