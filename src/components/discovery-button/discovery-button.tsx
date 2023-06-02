@@ -165,7 +165,7 @@ export class DiscoveryButtonComponent {
         if (!!result) {
           (result.events || []).forEach(e => {
             this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e});
-            if (!GTSLib.isArray(e.value)) {
+            if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {
               e.value = [e.value];
             }
             this.discoveryEvent.emit({...e, source: this.el.id});
