@@ -268,7 +268,7 @@ export class DiscoveryBarPolarComponent {
         if (type === 'bar' && (this.innerOptions.bar || {stacked: false}).stacked) {
           s.stack = 'a';
         }
-        if (type === 'line') {
+        if (type === 'line' && this.innerOptions.bar?.fillGap) {
           s.data.push(s.data[0])
         }
         series.push(s);
