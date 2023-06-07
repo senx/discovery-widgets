@@ -444,7 +444,7 @@ export class DiscoveryProfile {
            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${
               this.innerOptions.timeMode === 'date' || this.innerOptions.timeMode === 'duration'
                 ? GTSLib.toDuration(params[0].value[3], this.divider)
-                : params[0].value[3]
+                : String(params[0].value[3]) + (this.innerOptions.unit ? ' ' + this.innerOptions.unit : '')
             }</span>`;
           } else if ('annotation' === this.type) {
             return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
