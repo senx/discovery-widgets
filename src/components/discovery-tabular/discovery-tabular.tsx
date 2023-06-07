@@ -143,14 +143,16 @@ export class DiscoveryTabular {
   private parseCustomData(dataModel: DataModel, data: any[]): Dataset[] {
     const flatData: Dataset[] = [];
     data.forEach(d => {
-      const dataSet: Dataset = {
-        name: d.title || '',
-        values: d.rows,
-        headers: d.columns,
-        isGTS: false,
-        params: d.params,
-      };
-      flatData.push(dataSet);
+      if(d !== null && d !== undefined) {
+        const dataSet: Dataset = {
+          name: d?.title || '',
+          values: d?.rows || [],
+          headers: d?.columns || [],
+          isGTS: false,
+          params: d?.params || [],
+        };
+        flatData.push(dataSet);
+      }
     });
     this.LOG?.debug(['parseCustomData', 'flatData'], flatData, dataModel);
     return flatData;

@@ -188,7 +188,7 @@ export class DiscoveryPageable {
     if (typeof v !== 'object') {
       v = {
         value: v !== undefined? v : '',
-        type: 'string',
+        type: typeof v,
         unit: '',
         display: v.toString() || ''
       };
