@@ -30,7 +30,8 @@ export {
   ChartBounds,
   Dashboard,
   DataModel,
-  DiscoveryEvent
+  DiscoveryEvent,
+  CHART_TYPES
 } from './model/types'
 export {ColorLib, Colors, HeatMaps} from './utils/color-lib';
 export {MapLib, MapTypes} from './utils/map-lib';

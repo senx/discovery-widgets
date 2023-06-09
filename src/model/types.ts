@@ -18,26 +18,28 @@
 import * as echarts from 'echarts';
 import {Param} from './param';
 
-export type ChartType =
-  'line' | 'area' | 'scatter' | 'step-area' | 'spline-area' | 'spline' | 'step' | 'step-after' | 'step-before'
-  | 'annotation'
-  | 'bar' | 'bar-polar'
-  | 'display'
-  | 'image'
-  | 'map'
-  | 'gauge' | 'linear-gauge' | 'circle' | 'compass'
-  | 'pie'
-  | 'doughnut'
-  | 'rose'
-  | 'tabular'
-  | 'svg'
-  | 'input:text' | 'input:list' | 'input:secret' | 'input:autocomplete' | 'input:chips' | 'input:chips-autocomplete' | 'input:slider' | 'input:date' | 'input:date-range' | 'input:multi' | 'input:multi-cb'
-  | 'button' | 'button:radio'
-  | 'hidden'
-  | 'calendar' | 'heatmap'
-  | 'profile'
-  | 'dashboard' | 'dashboard:flex' | 'dashboard:scada'
-  ;
+export const CHART_TYPES = [
+  'line', 'area', 'scatter', 'step-area', 'spline-area', 'spline', 'step', 'step-after', 'step-before'
+  , 'annotation'
+  , 'bar', 'bar-polar'
+  , 'display'
+  , 'image'
+  , 'map'
+  , 'gauge', 'linear-gauge', 'circle', 'compass'
+  , 'pie'
+  , 'doughnut'
+  , 'rose'
+  , 'tabular'
+  , 'svg'
+  , 'input:text', 'input:list', 'input:secret', 'input:autocomplete', 'input:chips', 'input:chips-autocomplete', 'input:slider', 'input:date', 'input:date-range', 'input:multi', 'input:multi-cb'
+  , 'button', 'button:radio'
+  , 'hidden'
+  , 'calendar', 'heatmap'
+  , 'profile'
+  , 'dashboard', 'dashboard:flex', 'dashboard:scada'
+] as const;
+
+export type ChartType = typeof CHART_TYPES[number]
 
 export type TimeMode = 'timestamp' | 'date' | 'custom' | 'duration';
 
@@ -63,8 +65,8 @@ export class MapParams {
   track?: boolean;
   step?: number;
   delay?: number;
-  tooltip?:any;
-  iconSize?: number| number[];
+  tooltip?: any;
+  iconSize?: number | number[];
 }
 
 export class Dataset {
