@@ -45,7 +45,7 @@ export class Utils {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
           resolve({data: xmlHttp.responseText, headers: xmlHttp.getAllResponseHeaders()});
         } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
-          reject(xmlHttp.getResponseHeader('X-Warp10-Error-Message'))
+          reject(xmlHttp.getResponseHeader('X-Warp10-Error-Message') || xmlHttp.statusText);
         }
       };
       xmlHttp.open('POST', theUrl, true); // true for asynchronous
