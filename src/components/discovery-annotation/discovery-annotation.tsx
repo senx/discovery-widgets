@@ -257,8 +257,8 @@ export class DiscoveryAnnotation {
           animation: false,
           id: gts.id,
           large: true,
-          clip: true,
-          showAllSymbol: true,
+          clip: false,
+          showAllSymbol: false,
           renderItem: DiscoveryAnnotation.renderItem.bind(this),
           itemStyle: {color},
           encode: {x: 1, y: 0},
@@ -451,7 +451,8 @@ export class DiscoveryAnnotation {
     let initial = false;
     this.myChart = init(this.graph, null, {
       width: this.width,
-      height: this.height
+      height: this.height,
+      renderer: 'canvas'
     });
     this.myChart.on('rendered', () => {
       this.rendering = false;
