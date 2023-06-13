@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.1.83
+
+> +  2023/06/12  | v1.1.83 
+> +  2023/06/12  | [Annotations] Minor improvement 
+> +  2023/06/12  | error header or status text 
+> +  2023/06/09  | Expose chart types 
+> +  2023/06/07  | [Profile] Handle unit in timestamp mode] 
+> +  2023/06/07  | CSS variables extraction 
+> +  2023/06/07  | [tabular] Fix sorting issue on numeric values 
+> +  2023/06/06  | fix error message for warp 10 3.x 
+> +  2023/06/02  | Changelog 
+
 ## v1.1.82
 
 > +  2023/06/02  | v1.1.82 
