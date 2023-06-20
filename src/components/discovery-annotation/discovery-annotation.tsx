@@ -66,6 +66,7 @@ export class DiscoveryAnnotation {
   private focusDate: number;
   private bounds: { min: number; max: number };
   private leftMargin = 0;
+  private MAX_MARGIN = 1024;
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -463,10 +464,12 @@ export class DiscoveryAnnotation {
           found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
           x++;
         }
-        if (this.leftMargin !== x && x < this.innerOptions.leftMargin || 1024) {
+        if (this.leftMargin !== x && x < this.innerOptions.leftMargin || this.MAX_MARGIN) {
           setTimeout(() => {
-            this.leftMarginComputed.emit(x);
-            this.leftMargin = x;
+            if(x !== this.MAX_MARGIN) {
+              this.leftMarginComputed.emit(x);
+              this.leftMargin = x;
+            }
           });
         }
         if (initial) setTimeout(() => this.draw.emit());
