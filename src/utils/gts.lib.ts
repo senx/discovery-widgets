@@ -351,7 +351,7 @@ export class GTSLib {
     return display;
   };
 
-  static toISOString(timestamp: number, divider: number, timeZone: string, timeFormat: string): string {
+  static toISOString(timestamp: number, divider: number, timeZone: string, timeFormat?: string): string {
     const locale = (window.navigator as any).userLanguage || window.navigator.language;
     moment.updateLocale(locale.split('-')[0], {});
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
