@@ -164,12 +164,20 @@ export class DiscoveryDisplayComponent {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
     this.LOG?.debug(['convert'], 'dataModel', dataModel);
-
     let display: any;
     if (!!dataModel.data) {
       display = GTSLib.isArray(dataModel.data) ? dataModel.data[0] : dataModel.data;
     } else {
       display = GTSLib.isArray(dataModel) ? dataModel[0] : dataModel;
+    }
+    display = GTSLib.isArray(display)? display[0]: display;
+    if(GTSLib.isGts(display)) {
+      let v = '';
+      if(display.v && display.v.length >0) {
+        const dataPoint = display.v[display.v.length - 1];
+        v = dataPoint[dataPoint.length - 1];
+      }
+      display = v;
     }
     if (display && display.hasOwnProperty('text')) {
       if (display.hasOwnProperty('url')) {
