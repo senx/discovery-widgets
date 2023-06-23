@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.84
+
+> +  2023/06/23  | v1.1.84 
+> +  2023/06/23  | [Display] Fix unit sizing 
+> +  2023/06/23  | [Display] Add GTS support 
+> +  2023/06/23  | Add optional time format 
+> +  2023/06/20  | [Annotation] fix left margin computation issue when showLegend is set 
+> +  2023/06/13  | changelog 
+
 ## v1.1.83
 
 > +  2023/06/12  | v1.1.83 
