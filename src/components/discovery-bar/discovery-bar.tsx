@@ -227,89 +227,6 @@ export class DiscoveryBarComponent {
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
-    for (let i = 0; i < gtsCount; i++) {
-      const gts = gtsList[i];
-      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        this.isGTS = true;
-        const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
-        hasTimeBounds = true;
-        let type = ((data.params || [])[i] || {type: 'bar'}).type || 'bar';
-        let areaStyle;
-        if (type === 'area') {
-          type = 'line';
-          areaStyle = {
-            opacity: 0.8,
-            color: {
-              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-              colorStops: [
-                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
-              ],
-              global: false // false by default
-            }
-          }
-        }
-        series.push({
-          ...this.getCommonSeriesParam(color),
-          id: gts.id,
-          type, areaStyle,
-          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
-            const ts = this.innerOptions.timeMode === 'date'
-              ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
-              : d[0];
-            if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
-              return [d[d.length - 1], ts];
-            } else {
-              return [ts, d[d.length - 1]]
-            }
-          })
-        } as SeriesOption);
-      } else if (!gts.v) {
-        this.innerOptions.timeMode = 'custom';
-        this.LOG?.debug(['convert', 'gts'], gts);
-        (gts.columns || []).forEach((label, index: number) => {
-          const c = ColorLib.getColor(gts.id || index, this.innerOptions.scheme);
-          const color = ((data.params || [])[index] || {datasetColor: c}).datasetColor || c;
-          let type = ((data.params || [])[index] || {type: 'bar'}).type || 'bar';
-          let areaStyle;
-          if (type === 'area') {
-            type = 'line';
-            areaStyle = {
-              opacity: 0.8,
-              color: {
-                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-                colorStops: [
-                  {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-                  {offset: 1, color: ColorLib.transparentize(color, 0.1)}
-                ],
-                global: false // false by default
-              }
-            }
-          }
-          series.push({
-            ...this.getCommonSeriesParam(color),
-            name: label,
-            type, areaStyle,
-            data: gts.rows.map(r => {
-              if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
-                return [r[index + 1], r[0]];
-              } else {
-                return [r[0], r[index + 1]]
-              }
-            })
-          } as SeriesOption);
-        });
-      }
-    }
-    if (hasTimeBounds) {
-      this.timeBounds.emit({min, max});
-      this.bounds = {min, max};
-    }
-    this.LOG?.debug(['convert', 'series'], series);
     const opts = {
       animation: !!this.innerOptions?.bar?.animate,
       grid: {
@@ -321,6 +238,7 @@ export class DiscoveryBarComponent {
         right: 10,
         containLabel: true
       },
+      visualMap: new Array(gtsCount),
       tooltip: {
         trigger: 'axis',
         transitionDuration: 0,
@@ -474,9 +392,110 @@ export class DiscoveryBarComponent {
           zoomOnMouseWheel: true,
         }
       ],
-      series,
+      series: [],
       ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
+
+    for (let i = 0; i < gtsCount; i++) {
+      const gts = gtsList[i];
+      const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
+      const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      if (!!data.params && !!data.params[i] && (data.params[i].pieces || []).length > 0) {
+        (opts.visualMap as any[])[i] = {
+          show: false,
+          seriesIndex: i,
+          borderColor: color,
+          dimension: !!data.params[i].xpieces
+            ? !(this.innerOptions.bar || {horizontal: false}).horizontal ? 0 : 1
+            : !(this.innerOptions.bar || {horizontal: false}).horizontal ? 1 : 0,
+          pieces: GTSLib.flatDeep((data.params[i].pieces || []).map(t => {
+            const pieceColor = t.color || '#D81B60';
+            return [
+              {color, lte: t.gte},
+              {color: pieceColor, lte: t.lte, gte: t.gte},
+              {color, gte: t.lte},
+            ]
+          }))
+        };
+      }
+      if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
+        this.isGTS = true;
+        min = Math.min(min, ...gts.v.map(v => v[0]));
+        max = Math.max(max, ...gts.v.map(v => v[0]));
+        hasTimeBounds = true;
+        let type = ((data.params || [])[i] || {type: 'bar'}).type || 'bar';
+        let areaStyle;
+        if (type === 'area') {
+          type = 'line';
+          areaStyle = {
+            opacity: 0.8,
+            color: {
+              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+              ],
+              global: false // false by default
+            }
+          }
+        }
+
+        (opts.series as any[]).push({
+          ...this.getCommonSeriesParam(color),
+          id: gts.id,
+          type, areaStyle,
+          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+          data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
+            const ts = this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
+              : d[0];
+            if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
+              return [d[d.length - 1], ts];
+            } else {
+              return [ts, d[d.length - 1]]
+            }
+          })
+        } as SeriesOption);
+      } else if (!gts.v) {
+        this.innerOptions.timeMode = 'custom';
+        this.LOG?.debug(['convert', 'gts'], gts);
+        (gts.columns || []).forEach((label, index: number) => {
+          let type = ((data.params || [])[index] || {type: 'bar'}).type || 'bar';
+          let areaStyle;
+          if (type === 'area') {
+            type = 'line';
+            areaStyle = {
+              opacity: 0.8,
+              color: {
+                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                colorStops: [
+                  {offset: 0, color: ColorLib.transparentize(color, 0.7)},
+                  {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+                ],
+                global: false // false by default
+              }
+            }
+          }
+          (opts.series as any[]).push({
+            ...this.getCommonSeriesParam(color),
+            name: label,
+            type, areaStyle,
+            data: gts.rows.map(r => {
+              if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
+                return [r[index + 1], r[0]];
+              } else {
+                return [r[0], r[index + 1]]
+              }
+            })
+          } as SeriesOption);
+        });
+      }
+    }
+    if (hasTimeBounds) {
+      this.timeBounds.emit({min, max});
+      this.bounds = {min, max};
+    }
+    this.LOG?.debug(['convert', 'series'], series);
     const markArea = [...(this.innerOptions.thresholds || [])
       .map(t => {
         const m = [{itemStyle: {color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0)}}, {}] as any[];
@@ -501,16 +520,16 @@ export class DiscoveryBarComponent {
             },
             label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
             name: t.name || t.value || 0,
-            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
-            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined
+            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
           },
             {
               itemStyle: {
                 color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed'
               },
-              yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
-              xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
+              yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+              xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
             }];
         })];
 
@@ -536,8 +555,8 @@ export class DiscoveryBarComponent {
             name: t.name || t.value || 0,
             label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name},
             lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
-            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
-            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined
+            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
           }
         })];
     if (markLine.length > 0) {
