@@ -477,7 +477,7 @@ export class DiscoveryBarComponent {
       series,
       ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
-    const markArea = (this.innerOptions.thresholds || [])
+    const markArea = [...(this.innerOptions.thresholds || [])
       .map(t => {
         const m = [{itemStyle: {color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0)}}, {}] as any[];
         if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
@@ -490,9 +490,31 @@ export class DiscoveryBarComponent {
           m[1].yAxis = 0;
         }
         return m;
-      });
+      }),
+      ...(this.innerOptions.markers || [])
+        .filter(t => !!t.fill)
+        .map(t => {
+          return [{
+            itemStyle: {
+              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+              borderType: t.type || 'dashed'
+            },
+            label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
+            name: t.name || t.value || 0,
+            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
+            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined
+          },
+            {
+              itemStyle: {
+                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+                borderType: t.type || 'dashed'
+              },
+              yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
+              xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
+            }];
+        })];
 
-    const markLine = (this.innerOptions.thresholds || [])
+    const markLine = [...(this.innerOptions.thresholds || [])
       .map(t => {
         const m = {
           name: t.value || 0,
@@ -506,7 +528,18 @@ export class DiscoveryBarComponent {
           m.yAxis = t.value || 0;
         }
         return m;
-      });
+      }),
+      ...(this.innerOptions.markers || [])
+        .filter(t => !t.fill)
+        .map(t => {
+          return {
+            name: t.name || t.value || 0,
+            label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name},
+            lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
+            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined,
+            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal)? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0): undefined
+          }
+        })];
     if (markLine.length > 0) {
       (opts.series as SeriesOption[]).push({
         name: '',
@@ -654,11 +687,11 @@ export class DiscoveryBarComponent {
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -666,11 +699,11 @@ export class DiscoveryBarComponent {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
