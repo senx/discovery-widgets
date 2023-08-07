@@ -17,7 +17,7 @@ export const config: Config = {
   globalStyle: './src/styles.css',
   outputTargets: [
     {
-      type: 'dist-custom-elements-bundle',
+      type: 'dist-custom-elements',
 
     },
     {

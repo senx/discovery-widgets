@@ -7,6 +7,8 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, Tile } from "./model/types";
 import { Param } from "./model/param";
+export { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, Tile } from "./model/types";
+export { Param } from "./model/param";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
