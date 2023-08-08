@@ -88,6 +88,8 @@ export class Param {
   polygons?: { shape: number[][]; color?: string; name?: string; fill?: boolean }[];
   xCursor?: boolean;
   yCursor?: boolean;
+  dotSize = 5;
+  strokeWidth = 1;
 // components specific params
   bar?: {
     horizontal?: boolean,

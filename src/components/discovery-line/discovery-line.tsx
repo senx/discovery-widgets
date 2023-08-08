@@ -288,19 +288,18 @@ export class DiscoveryLineComponent {
         hasTimeBounds = true;
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
-          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => {
-            return [
-              this.innerOptions.timeMode === 'date'
-                ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
-                : d[0]
-              , d[d.length - 1]
-            ]
-          }),
+          name: ((data.params ?? [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+          data: gts.v.map(d => [
+            this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
+              : d[0]
+            , d[d.length - 1]
+          ]),
           id: gts.id,
           animation: false,
           large: true,
           showSymbol: this.type === 'scatter' || this.innerOptions.showDots || this.innerOptions.showValues,
+          symbolSize: this.innerOptions.dotSize ?? 10,
           smooth: type === 'spline' || type === 'spline-area' ? 0.2 : undefined,
           clip: true,
           step: DiscoveryLineComponent.getStepShape(type),
@@ -321,7 +320,10 @@ export class DiscoveryLineComponent {
             position: 'top',
             textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
           },
-          lineStyle: !opts.visualMap[i] ? {color} : undefined,
+          lineStyle: {
+            color: !opts.visualMap[i] ? color : undefined,
+            width: this.innerOptions.strokeWidth ?? 2
+          },
           itemStyle: type === 'bar' ? {
             opacity: 0.8,
             borderColor: color,
@@ -388,20 +390,16 @@ export class DiscoveryLineComponent {
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const smax = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
         const smin = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
+        const isBubble = smax !== smin;
         const s = {
           type: this.type,
           name: gts.label,
           id: gts.id,
           data: gts.values[0] && gts.values[0].length === 3
-            ? (gts.values || []).map(v => {
-              min = Math.min(min, ...gts.values.map(v => v[0]));
-              max = Math.max(max, ...gts.values.map(v => v[0]));
-              hasTimeBounds = true;
-              return {
-                value: [GTSLib.utcToZonedTime(v[0], 1, this.innerOptions.timeZone), v[1]],
-                symbolSize: 50 * v[2] / (smax - smin)
-              }
-            })
+            ? (gts.values ?? []).map(v => ({
+              value: [GTSLib.utcToZonedTime(v[0], 1, this.innerOptions.timeZone), v[1]],
+              symbolSize: isBubble ? (50 * v[2] / (smax - smin)) || this.innerOptions.dotSize || 10 : this.innerOptions.dotSize || 10
+            }))
             : gts.values,
           animation: false,
           large: true,
@@ -411,9 +409,10 @@ export class DiscoveryLineComponent {
             position: 'top',
             textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
           },
-          itemStyle: {
+          itemStyle: isBubble || this.innerOptions.dotSize > 10 ? {
             opacity: 0.8,
             borderColor: color,
+            borderWidth: this.innerOptions.strokeWidth,
             color: gts.values[0] && gts.values[0].length === 3
               ? {
                 type: 'radial', x: 0.5, y: 0.5, x2: 1, y2: 1,
@@ -423,7 +422,7 @@ export class DiscoveryLineComponent {
                 ]
               }
               : color,
-          }
+          } : {color}
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
@@ -824,11 +823,11 @@ export class DiscoveryLineComponent {
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -836,11 +835,11 @@ export class DiscoveryLineComponent {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
