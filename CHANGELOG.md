@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.86
+
+> +  2023/08/09  | v1.1.86 
+> +  2023/08/09  | [line] [area] [scatter] Fix performances issue 
+> +  2023/08/09  | Changelog 
+
 ## v1.1.85
 
 > +  2023/08/09  | v1.1.85 
