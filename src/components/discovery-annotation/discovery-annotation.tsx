@@ -90,7 +90,6 @@ export class DiscoveryAnnotation {
   @Watch('result')
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
-    this.LOG?.debug(['updateRes'], {chartOpts: this.chartOpts});
     setTimeout(() => {
       if (!!this.myChart) {
         this.myChart.resize({width: this.width, height: this.height});
@@ -222,13 +221,6 @@ export class DiscoveryAnnotation {
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
-    for (let i = 0; i < gtsCount; i++) {
-      const gts = gtsList[i];
-      if (GTSLib.isGts(gts)) {
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
-      }
-    }
     if (max <= 1000 && min >= -1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
       this.innerOptions.timeMode = 'timestamp';
     }
@@ -236,6 +228,19 @@ export class DiscoveryAnnotation {
       const gts = gtsList[i];
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
         this.gtsList.push(gts);
+        const dataSet = [];
+        for (let v = 0; v < (gts.v ?? []).length; v++) {
+          const tuple = gts.v[v];
+          const ts = tuple[0];
+          const val = tuple[tuple.length - 1]
+          if (ts > max) max = ts;
+          if (ts < min) min = ts;
+          let startTS = ts;
+          startTS = this.innerOptions.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
+            : startTS;
+          dataSet.push([catId, startTS, val]);
+        }
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
         const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
         const name = ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts);
@@ -247,14 +252,7 @@ export class DiscoveryAnnotation {
         series.push({
           type: 'custom',
           name,
-          data: gts.v.map(d => {
-              let startTS = +d[0];
-              startTS = this.innerOptions.timeMode === 'date'
-                ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
-                : startTS;
-              return [catId, startTS, d[d.length - 1]]
-            }
-          ),
+          data: dataSet,
           animation: false,
           id: gts.id,
           large: true,
