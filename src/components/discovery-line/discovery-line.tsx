@@ -114,10 +114,7 @@ export class DiscoveryLineComponent {
       this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.LOG?.debug(['componentWillLoad'], {
-      type: this.type,
-      options: this.innerOptions,
-    });
+    this.LOG?.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions,});
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result || new DataModel());
     this.setOpts();
@@ -154,19 +151,14 @@ export class DiscoveryLineComponent {
     let gtsList;
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
-      this.LOG?.debug(['convert', 'isArray']);
       if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
-        this.LOG?.debug(['convert', 'isArray 2']);
         gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
       } else {
-        this.LOG?.debug(['convert', 'isArray 3']);
         gtsList = data.data as any[];
       }
     } else {
-      this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let multiY = false;
     let multiX = false;
@@ -186,7 +178,7 @@ export class DiscoveryLineComponent {
       tooltip: {
         transitionDuration: 0,
         trigger: 'axis',
-        formatter: (params) => {
+        formatter: (params: any[]) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode === 'timestamp'
               ? params[0].value[0]
@@ -254,14 +246,6 @@ export class DiscoveryLineComponent {
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
-
-    for (let i = 0; i < gtsCount; i++) {
-      const gts = gtsList[i];
-      if (GTSLib.isGtsToPlot(gts)) {
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
-      }
-    }
     if (max <= 1000 && min >= -1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
       this.innerOptions.timeMode = 'timestamp';
     }
@@ -286,15 +270,25 @@ export class DiscoveryLineComponent {
           };
         }
         hasTimeBounds = true;
+        const dataSet = [];
+        for (let v = 0; v < (gts.v ?? []).length; v++) {
+          const tuple = gts.v[v];
+          const ts = tuple[0];
+          const val = tuple[tuple.length - 1]
+          if (ts > max) max = ts;
+          if (ts < min) min = ts;
+          dataSet.push([
+            this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(ts, this.divider, this.innerOptions.timeZone)
+              : ts
+            , val
+          ])
+        }
+
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
           name: ((data.params ?? [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          data: gts.v.map(d => [
-            this.innerOptions.timeMode === 'date'
-              ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
-              : d[0]
-            , d[d.length - 1]
-          ]),
+          data: dataSet,
           id: gts.id,
           animation: false,
           large: true,

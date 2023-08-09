@@ -79,14 +79,14 @@ export class DiscoveryTileResultComponent {
     if (newValue !== this.innerType) {
       setTimeout(() => {
         this.innerType = this.type;
-          this.selfType.emit(this.innerType);
+        this.selfType.emit(this.innerType);
       });
     }
   }
 
   @Watch('result')
   updateRes(newValue: string) {
-    this.LOG?.debug(['updateRes'], newValue);
+    this.LOG?.debug(['updateRes'], 'could be huge');
     this.innerResult = GTSLib.getData(newValue);
     this.parseResult();
   }
@@ -123,7 +123,7 @@ export class DiscoveryTileResultComponent {
       return;
     }
     const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '', this.componentId);
-    if(res.hasEvent) {
+    if (res.hasEvent) {
       this.LOG?.debug(['discoveryEventHandler'], {
         type: event.detail.type,
         event: event.detail
@@ -202,8 +202,7 @@ export class DiscoveryTileResultComponent {
     this.innerType = this.type;
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.innerOptions,
-      result: this.result
+      options: this.innerOptions
     });
     let options = new Param();
     this.innerResult = GTSLib.getData(this.result);
@@ -219,8 +218,7 @@ export class DiscoveryTileResultComponent {
     this.selfType.emit(this.innerType);
     this.LOG?.debug(['componentWillLoad 2'], {
       type: this.innerType,
-      options: this.innerOptions,
-      result: this.innerResult
+      options: this.innerOptions
     });
   }
 
@@ -235,7 +233,7 @@ export class DiscoveryTileResultComponent {
     elementResizeEvent.unbind(this.tileElem);
   }
 
-  handleZoom(event: CustomEvent<{ start?: number, end?: number, type?:string }>) {
+  handleZoom(event: CustomEvent<{ start?: number, end?: number, type?: string }>) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'zoom')
       .forEach(e => {
@@ -556,7 +554,7 @@ JSON-> 0 GET`}
   }
 
   @Method()
-  async setZoom(dataZoom: { start?: number, end?: number, type?:string }) {
+  async setZoom(dataZoom: { start?: number, end?: number, type?: string }) {
     if (this.tile) {
       (this.tile).setZoom(dataZoom);
     }
@@ -669,11 +667,7 @@ JSON-> 0 GET`}
       })();
     });
     if (this.LOG) {
-      this.LOG?.debug(['parseResult'], {
-        type: this.innerType,
-        options: this.options,
-        result: this.innerResult
-      });
+      this.LOG?.debug(['parseResult'], {type: this.innerType, options: this.options});
     }
   }
 
