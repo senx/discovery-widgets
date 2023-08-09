@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.85
+
+> +  2023/08/09  | v1.1.85 
+> +  2023/08/08  | [scatter] [line] [area] Line or dot stroke and dot sizes [scatter] Fix same size bubbles 
+> +  2023/08/07  | [Bar] Pieces support 
+> +  2023/08/07  | [Bar] markers support 
+> +  2023/08/07  | deps update 
+> +  2023/06/23  | changelog 
+
 ## v1.1.84
 
 > +  2023/06/23  | v1.1.84 
