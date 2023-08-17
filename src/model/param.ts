@@ -88,6 +88,9 @@ export class Param {
   polygons?: { shape: number[][]; color?: string; name?: string; fill?: boolean }[];
   xCursor?: boolean;
   yCursor?: boolean;
+  poi?: boolean;
+  poiColor: '#D81B60';
+  poiLine: 'dashed';
   dotSize = 5;
   strokeWidth = 1;
 // components specific params

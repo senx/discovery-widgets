@@ -131,7 +131,8 @@ export class Utils {
       description: undefined,
       selected: undefined,
       link: undefined,
-      hasEvent: false
+      hasEvent: false,
+      poi: []
     }
     if (eventHandler && evt.source !== id) {
       let tag = '.*';
@@ -176,10 +177,20 @@ export class Utils {
             break;
           case 'zoom':
             parsed.zoom = evt.value;
+            if(evt.selector) {
+              const v: any = {};
+              v[evt.selector] = evt.value;
+              parsed.vars = v;
+            }
             parsed.hasEvent = true;
             break;
           case 'focus':
             parsed.focus = evt.value;
+            if(evt.selector) {
+              const v: any = {};
+              v[evt.selector] = evt.value;
+              parsed.vars = v;
+            }
             parsed.hasEvent = true;
             break;
           case 'margin':
@@ -188,6 +199,11 @@ export class Utils {
             break;
           case 'bounds':
             parsed.bounds = evt.value;
+            if(evt.selector) {
+              const v: any = {};
+              v[evt.selector] = evt.value;
+              parsed.vars = v;
+            }
             parsed.hasEvent = true;
             break;
           case 'title':
@@ -207,6 +223,15 @@ export class Utils {
           case 'selected':
             parsed.selected = parsed.selected || {};
             parsed.selected[evt.selector] = evt.value;
+            parsed.hasEvent = true;
+            break;
+          case 'poi':
+            parsed.poi = evt.value;
+            if(evt.selector) {
+              const v: any = {};
+              v[evt.selector] = evt.value;
+              parsed.vars = v;
+            }
             parsed.hasEvent = true;
             break;
           default:

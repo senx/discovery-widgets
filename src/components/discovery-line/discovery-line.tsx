@@ -28,6 +28,7 @@ import {CartesianAxisOption} from 'echarts/lib/coord/cartesian/AxisModel';
 import {GridOption} from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
 import _ from 'lodash';
+import {v4} from 'uuid';
 
 @Component({
   tag: 'discovery-line',
@@ -51,6 +52,7 @@ export class DiscoveryLineComponent {
   @Event() leftMarginComputed: EventEmitter<number>;
   @Event() dataPointOver: EventEmitter;
   @Event() dataPointSelected: EventEmitter;
+  @Event() poi: EventEmitter;
   @Event() timeBounds: EventEmitter;
 
   @State() parsing = false;
@@ -68,6 +70,7 @@ export class DiscoveryLineComponent {
   private hasFocus = false;
   private bounds: { min: number; max: number };
   private zoom: { start?: number; end?: number };
+  private pois: any[] = [];
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -168,7 +171,7 @@ export class DiscoveryLineComponent {
         left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
-        top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
+        top: 30,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (!!this.innerOptions.showRangeSelector ? 40 : 0),
         right: 10,
         containLabel: true,
@@ -573,9 +576,9 @@ export class DiscoveryLineComponent {
       }),
       ...(this.innerOptions.markers || [])
         .filter(t => !t.fill)
-        .map(t => {
+        .map((t, i) => {
           return {
-            name: t.name || t.value || 0,
+            name: t.name || t.value || 'mark-' + i,
             label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name},
             lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
             xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
@@ -583,7 +586,7 @@ export class DiscoveryLineComponent {
         })];
     if (markArea.length > 0 || markLine.length > 0) {
       (opts.series as SeriesOption[]).push({
-        name: '',
+        name: 'marks',
         type: 'line',
         symbolSize: 0,
         data: [],
@@ -766,8 +769,36 @@ export class DiscoveryLineComponent {
       this.myChart.on('click', (event: any) => {
         const c = event.data.coord || event.data;
         this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
+        if (this.innerOptions.poi) {
+          if (this.pois.find(p => p.date === c[0])) {
+            this.pois = this.pois.filter(p => p.date !== c[0]);
+          } else {
+            this.pois.push({date: c[0], name: event.seriesName, value: c[1], meta: {}, uid: v4()});
+          }
+          this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.name);
+
+          this.poi.emit(this.pois);
+          (this.chartOpts.series as SeriesOption[]).push({
+            name: 'poi',
+            type: 'line',
+            data: [],
+            markLine: {
+              emphasis: {lineStyle: {width: 1}},
+              symbol: [ 'none', 'pin' ],
+              symbolSize: 20,
+              symbolKeepAspect: true,
+              data: this.pois.map(p => ({
+                name: 'poi-' + p.uid,
+                label: {show: false},
+                lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
+                xAxis: ((p.date / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+              }))
+            }
+          });
+          this.myChart.setOption(this.chartOpts ?? {}, true, false);
+        }
       });
-      this.myChart.setOption(this.chartOpts || {}, true, false);
+      this.myChart.setOption(this.chartOpts ?? {}, true, false);
       initial = true;
     });
   }

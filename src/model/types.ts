@@ -74,7 +74,7 @@ export class Dataset {
   values: any[];
   headers: string[];
   isGTS: boolean;
-  params: any[] | any;
+  params: any;
 }
 
 export class Label {
@@ -112,14 +112,15 @@ export class GTS {
 
 export class DiscoveryEvent {
   tags: string[];
-  type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus' | 'margin' | 'bounds' | 'title' | 'description' | 'selected' | 'link';
+  type: 'popup' | 'xpath' | 'style' | 'data' | 'variable' | 'audio' | 'zoom' | 'focus' | 'margin'
+    | 'bounds' | 'title' | 'description' | 'selected' | 'link' | 'poi';
   value: any;
   selector?: string;
   source: string;
 }
 
 export class DataModel {
-  data: any[] | any | string;
+  data: any;
   params?: Param[];
   globalParams?: Param;
   events?: DiscoveryEvent[];

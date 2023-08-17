@@ -260,6 +260,15 @@ export class DiscoveryTileResultComponent {
       });
   }
 
+  handlePoi(event: CustomEvent) {
+    ((this.innerResult as unknown as DataModel).events || [])
+      .filter(e => e.type === 'poi')
+      .forEach(e => {
+        e.value = event.detail;
+        this.discoveryEvent.emit({...e, source: this.el.id});
+      });
+  }
+
   handleGeoBounds(event: CustomEvent) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'bounds')
@@ -289,6 +298,7 @@ export class DiscoveryTileResultComponent {
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
+          onPoi={event => this.handlePoi(event)}
           ref={el => this.tile = el || this.tile}
           id={this.componentId}
         />;
@@ -644,7 +654,7 @@ JSON-> 0 GET`}
     this.LOG?.debug(['parseEvents'], {discoveryEvents: ((this.innerResult as unknown as DataModel)?.events || [])});
     setTimeout(() => ((this.innerResult as unknown as DataModel)?.events || [])
       .filter(e => e.value !== undefined)
-      .filter(e => e.type !== 'zoom' && e.type !== 'margin')
+      .filter(e => e.type !== 'zoom' && e.type !== 'margin' && e.type !== 'selected')
       .forEach(e => {
         if (this.LOG) {
           this.LOG?.debug(['parseResult', 'emit'], {discoveryEvent: e});

@@ -38,6 +38,7 @@ export class DiscoveryTileComponent {
   @Prop() debug = false;
   @Prop() unit = '';
   @Prop({mutable: true}) autoRefresh = -1;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   @Prop() vars: any | string = '{}';
 
   @Event({bubbles: true}) statusHeaders: EventEmitter<string[]>;
@@ -96,7 +97,7 @@ export class DiscoveryTileComponent {
   }
 
   @Listen('discoveryEvent', {target: 'window'})
-  discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
+  discoveryEvntHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.componentId);
     if (res.vars) {
       this.innerVars = {...(this.innerVars || {}), ...this.innerVars, ...res.vars};
