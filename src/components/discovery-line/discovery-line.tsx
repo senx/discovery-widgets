@@ -180,7 +180,7 @@ export class DiscoveryLineComponent {
         trigger: 'axis',
         formatter: (params: any[]) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            this.innerOptions.timeMode === 'timestamp'
+            this.innerOptions.timeMode !== 'date'
               ? params[0].value[0]
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
@@ -689,7 +689,7 @@ export class DiscoveryLineComponent {
           switch (type) {
             case 'mouseover':
               const c = event.data.coord || event.data;
-              this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
+              this.dataPointOver.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
               break;
             case 'highlight':
               let ts;
