@@ -56,8 +56,22 @@ export class Param {
   responsive?: boolean;
   autoRefresh?: number;
   showControls = false;
-  thresholds?: { color?: string; fill?: boolean, value?: number; name?: string, type?: 'solid' | 'dashed' | 'dotted' }[];
-  markers?: { color?: string; value?: number; start?: number; fill?: boolean; name?: string, type?: 'solid' | 'dashed' | 'dotted', alpha?: number; }[];
+  thresholds?: {
+    color?: string;
+    fill?: boolean,
+    value?: number;
+    name?: string,
+    type?: 'solid' | 'dashed' | 'dotted'
+  }[];
+  markers?: {
+    color?: string;
+    value?: number;
+    start?: number;
+    fill?: boolean;
+    name?: string,
+    type?: 'solid' | 'dashed' | 'dotted',
+    alpha?: number;
+  }[];
   pieces?: { color?: string; lte?: number; gte?: number }[];
   yLabelsMapping?: { [key: number]: string };
   xpieces?: boolean;
@@ -90,7 +104,7 @@ export class Param {
   yCursor?: boolean;
   poi?: boolean;
   poiColor: '#D81B60';
-  poiLine: 'dashed';
+  poiLine: 'solid' | 'dashed' | 'dotted' = 'dotted';
   dotSize = 5;
   strokeWidth = 1;
 // components specific params
