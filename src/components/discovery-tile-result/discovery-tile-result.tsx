@@ -362,6 +362,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           onGeoBounds={event => this.handleGeoBounds(event)}
+          onPoi={event => this.handlePoi(event)}
           debug={this.debug}
           id={this.componentId}
         />;

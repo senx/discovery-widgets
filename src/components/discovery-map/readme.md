@@ -25,6 +25,7 @@
 | `dataPointSelected` |             | `CustomEvent<any>`    |
 | `draw`              |             | `CustomEvent<void>`   |
 | `geoBounds`         |             | `CustomEvent<string>` |
+| `poi`               |             | `CustomEvent<any>`    |
 
 
 ## Methods

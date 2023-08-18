@@ -28,6 +28,7 @@ import {AntPath, antPath} from 'leaflet-ant-path';
 import domtoimage from 'dom-to-image';
 import 'leaflet-edgebuffer';
 import 'leaflet.heat';
+import {v4} from 'uuid';
 
 @Component({
   tag: 'discovery-map',
@@ -48,6 +49,7 @@ export class DiscoveryMapComponent {
   @Event() dataPointOver: EventEmitter;
   @Event() dataPointSelected: EventEmitter;
   @Event() geoBounds: EventEmitter<string>;
+  @Event() poi: EventEmitter;
 
   @State() parsing = false;
   @State() toDisplay: string[] = [];
@@ -77,6 +79,7 @@ export class DiscoveryMapComponent {
   private tileLayerGroup = Leaflet.featureGroup();
   private geoJsonLayer = Leaflet.featureGroup();
   private tilesLayer: Leaflet.TileLayer;
+  private poiLayer: Leaflet.LayerGroup = new Leaflet.LayerGroup();
   private mainLayer: Leaflet.LayerGroup;
   private heatmapLayer = Leaflet.featureGroup();
   private shadowHeatmapLayer = Leaflet.featureGroup();
@@ -88,6 +91,7 @@ export class DiscoveryMapComponent {
   private markerOver = false;
   private markersRef: any;
   private tileLayers: string[] = [];
+  private pois: any[] = [];
 
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
@@ -281,6 +285,7 @@ export class DiscoveryMapComponent {
       this.geoJsonLayer.clearLayers();
       this.heatmapLayer.clearLayers();
       this.shadowHeatmapLayer.clearLayers();
+      this.poiLayer.clearLayers();
     } else {
       this.mainLayer = new Leaflet.LayerGroup([this.tileLayerGroup, this.heatmapLayer, this.geoJsonLayer, this.pathDataLayer, this.positionDataLayer]);
       this.map = Leaflet.map(this.mapElement, {
@@ -480,6 +485,7 @@ export class DiscoveryMapComponent {
       zoomPromise = new Promise(resolve => setTimeout(() => this.map.once('moveend zoomend', () => resolve())));
     }
     this.firstDraw = false;
+    this.poiLayer.addTo(this.map);
     //  this.patchMapTileGapBug();
     void Promise.all([zoomPromise, tilesPromise])
       .then(() => setTimeout(() => {
@@ -491,11 +497,11 @@ export class DiscoveryMapComponent {
   }
 
   private icon(color: string, marker = '', param: Param) {
-    const c = `${color.slice(1)}`;
+    const c = `${ColorLib.sanitizeColor(color).slice(1)}`;
     const m = marker !== '' ? marker : 'circle';
     let iconUrl;
-    let iconSize = [48, 48];
-    let iconAnchor = [24, 24];
+    let iconSize = [20, 20];
+    let iconAnchor = [10, 10];
     if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
       const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || [48, 48];
       iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
@@ -506,14 +512,14 @@ export class DiscoveryMapComponent {
     } else if (marker.startsWith('<svg')) {
       iconUrl = 'data:image/svg+xml;base64,' + window.btoa(marker);
     } else {
-      iconAnchor = [20, 38];
+      iconAnchor = [10, 22];
       const margin = 2;
       if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
-        const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || [40, 40];
+        const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || iconSize;
         iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
         iconAnchor = [iconSize[0] / 2, iconSize[0] - margin];
       }
-      iconUrl = `https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-${m}&iconSize=${iconSize[0] / 2 - margin * 2}&size=${iconSize[0]}&hoffset=${m !== 'circle' ? 0 : 1}&voffset=0&color=fff&background=${c}`;
+      iconUrl = `https://www.mapmarker.io/api/v2/font-awesome/v5/pin?icon=fa-${m}-solid&size=${iconSize[0]}&color=fff&background=${c}`;
     }
     return Leaflet.icon({iconUrl, iconAnchor, iconSize, popupAnchor: this.popupAnchor});
   }
@@ -663,12 +669,37 @@ export class DiscoveryMapComponent {
       marker.bindPopup(content, {autoClose: true});
     }
     marker.on('mouseout', () => this.markerOver = false);
-    marker.on('click', () => this.dataPointSelected.emit({
-      date: ts,
-      name: positionData.key,
-      value,
-      meta: positionData.properties
-    }));
+    marker.on('click', () => {
+      this.dataPointSelected.emit({
+        date: ts,
+        name: positionData.key,
+        value,
+        meta: positionData.properties
+      });
+      if (this.innerOptions.poi) {
+        if (this.pois.find(p => p.lat === marker.getLatLng().lat && p.lng === marker.getLatLng().lng && p.name === positionData.key)) {
+          this.pois = this.pois.filter(p => p.lat !== marker.getLatLng().lat && p.lng !== marker.getLatLng().lng && p.name !== positionData.key);
+        } else {
+          this.pois.push({
+            date: ts,
+            name: positionData.key,
+            value,
+            meta: positionData.properties,
+            uid: v4(),
+            lat: marker.getLatLng().lat,
+            lng: marker.getLatLng().lng,
+          });
+        }
+        this.poiLayer.clearLayers();
+        this.poi.emit(this.pois);
+        this.pois.forEach(p => {
+          const icon = this.icon(this.innerOptions.poiColor, undefined, this.innerOptions);
+          const m = Leaflet.marker([p.lat, p.lng], {icon, riseOnHover: true, opacity: 1});
+          this.poiLayer.addLayer(m);
+        });
+      }
+
+    });
   }
 
   @Method()
@@ -799,28 +830,6 @@ export class DiscoveryMapComponent {
     }
     this.positionDataLayer.addLayer(group);
   }
-
-  private patchMapTileGapBug() {
-    // Workaround for 1px lines appearing in some browsers due to fractional transforms
-    // and resulting anti-aliasing. adapted from @cmulders' solution:
-    // https://github.com/Leaflet/Leaflet/issues/3575#issuecomment-150544739
-    // eslint-disable-next-line no-underscore-dangle
-    const originalInitTile = Leaflet.GridLayer.prototype._initTile;
-    if (originalInitTile.isPatched) {
-      return;
-    }
-    Leaflet.GridLayer.include({
-      _initTile(tile) {
-        originalInitTile.call(this, tile);
-        const tileSize = this.getTileSize();
-        tile.style.width = `${tileSize.x as number + 1.5}px`;
-        tile.style.height = `${tileSize.y as number + 1}px`;
-      }
-    });
-    // eslint-disable-next-line no-underscore-dangle
-    Leaflet.GridLayer.prototype._initTile.isPatched = true;
-  }
-
   render() {
     return <div class="map-container" style={{width: `${this.width}px`, height: `${this.height}px`}}>
       <div ref={(el) => this.mapElement = el}/>

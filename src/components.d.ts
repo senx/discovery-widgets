@@ -869,6 +869,7 @@ declare namespace LocalJSX {
         "onDataPointSelected"?: (event: DiscoveryMapCustomEvent<any>) => void;
         "onDraw"?: (event: DiscoveryMapCustomEvent<void>) => void;
         "onGeoBounds"?: (event: DiscoveryMapCustomEvent<string>) => void;
+        "onPoi"?: (event: DiscoveryMapCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
