@@ -1,6 +1,17 @@
 Discovery
 ---
 
+## v1.1.88
+
+> +  2023/08/18  | v1.1.88 
+> +  2023/08/18  | [map] Add POI support and fix pin icons generation 
+> +  2023/08/18  | [bar] Add POI support 
+> +  2023/08/18  | [annotations] Add POI support and dataPointSelected event fix 
+> +  2023/08/17  | Add forced types for POI lines 
+> +  2023/08/17  | - Add Point of Interest (poi) event. - Inject zoom, focus and poi as var depending upon selector. 
+> +  2023/08/17  | DatapointOver to focus event fix and timestamp display fix in tooltip 
+> +  2023/08/09  | changelog 
+
 ## v1.1.87
 
 > +  2023/08/09  | v1.1.87 
