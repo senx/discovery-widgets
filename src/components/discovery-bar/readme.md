@@ -27,6 +27,7 @@
 | `dataZoom`           |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; type?: string; }>` |
 | `draw`               |             | `CustomEvent<void>`                                                                         |
 | `leftMarginComputed` |             | `CustomEvent<number>`                                                                       |
+| `poi`                |             | `CustomEvent<any>`                                                                          |
 | `timeBounds`         |             | `CustomEvent<any>`                                                                          |
 
 

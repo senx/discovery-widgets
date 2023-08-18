@@ -326,6 +326,7 @@ export class DiscoveryTileResultComponent {
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
+          onPoi={event => this.handlePoi(event)}
           debug={this.debug}
           id={this.componentId}
         />;

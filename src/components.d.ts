@@ -687,6 +687,7 @@ declare namespace LocalJSX {
         "onDataZoom"?: (event: DiscoveryBarCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
         "onDraw"?: (event: DiscoveryBarCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBarCustomEvent<number>) => void;
+        "onPoi"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onTimeBounds"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

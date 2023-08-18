@@ -26,6 +26,7 @@ import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
 import {SeriesOption} from 'echarts/lib/util/types';
 import _ from 'lodash';
+import {v4} from "uuid";
 
 @Component({
   tag: 'discovery-bar',
@@ -49,6 +50,7 @@ export class DiscoveryBarComponent {
   @Event() dataPointOver: EventEmitter;
   @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
+  @Event() poi: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -65,6 +67,7 @@ export class DiscoveryBarComponent {
   private bounds: { min: number; max: number };
   private isGTS = false;
   private zoom: { start?: number; end?: number };
+  private pois: any[] = [];
 
   @Watch('result')
   updateRes() {
@@ -675,6 +678,33 @@ export class DiscoveryBarComponent {
 
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        if (this.innerOptions.poi) {
+          if (this.pois.find(p => p.date === event.value[0])) {
+            this.pois = this.pois.filter(p => p.date !== event.value[0]);
+          } else {
+            this.pois.push({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}, uid: v4()});
+          }
+          this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.name);
+          this.poi.emit(this.pois);
+          (this.chartOpts.series as SeriesOption[]).push({
+            name: 'poi',
+            type: 'line',
+            data: [],
+            markLine: {
+              emphasis: {lineStyle: {width: 1}},
+              symbol: [ 'none', 'pin' ],
+              symbolSize: 20,
+              symbolKeepAspect: true,
+              data: this.pois.map(p => ({
+                name: 'poi-' + p.uid,
+                label: {show: false},
+                lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
+                xAxis: ((p.date / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+              }))
+            }
+          });
+          this.myChart.setOption(this.chartOpts ?? {}, true, false);
+        }
       });
       this.setOpts();
       initial = true;
