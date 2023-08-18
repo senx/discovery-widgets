@@ -25,6 +25,7 @@ import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
 import {SeriesOption} from 'echarts/lib/util/types';
 import _ from 'lodash';
+import {v4} from "uuid";
 
 @Component({
   tag: 'discovery-annotation',
@@ -48,6 +49,7 @@ export class DiscoveryAnnotation {
   @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
   @Event() leftMarginComputed: EventEmitter<number>;
+  @Event() poi: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -67,6 +69,7 @@ export class DiscoveryAnnotation {
   private bounds: { min: number; max: number };
   private leftMargin = 0;
   private MAX_MARGIN = 1024;
+  private pois: any[] = [];
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -493,7 +496,34 @@ export class DiscoveryAnnotation {
     });
     this.myChart.on('click', (event: any) => {
       const c = event.data.coord || event.data;
-      this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
+      this.dataPointSelected.emit({date: c[1], name: event.seriesName, value: c[2], meta: {}});
+      if (this.innerOptions.poi) {
+        if (this.pois.find(p => p.date === c[1])) {
+          this.pois = this.pois.filter(p => p.date !== c[1]);
+        } else {
+          this.pois.push({date: c[1], name: event.seriesName, value: c[2], meta: {}, uid: v4()});
+        }
+        this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.name);
+        this.poi.emit(this.pois);
+        (this.chartOpts.series as SeriesOption[]).push({
+          name: 'poi',
+          type: 'line',
+          data: [],
+          markLine: {
+            emphasis: {lineStyle: {width: 1}},
+            symbol: [ 'none', 'pin' ],
+            symbolSize: 20,
+            symbolKeepAspect: true,
+            data: this.pois.map(p => ({
+              name: 'poi-' + p.uid,
+              label: {show: false},
+              lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
+              xAxis: ((p.date / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+            }))
+          }
+        });
+        this.myChart.setOption(this.chartOpts ?? {}, true, false);
+      }
     });
     this.myChart.on('dataZoom', (event: any) => {
       let start;
