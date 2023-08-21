@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -62,6 +62,14 @@ export class DiscoveryDisplayComponent {
   private fitties: FittyInstance;
   private innerHeight: number;
   private initial = false;
+  private gts: any;
+  private chartOptions: Param = {
+    ...new Param(),
+    hideXAxis: true,
+    hideYAxis: true,
+    bgColor: 'transparent',
+    scheme: 'ATLANTIS'
+  };
 
   @Watch('result')
   updateRes() {
@@ -79,6 +87,7 @@ export class DiscoveryDisplayComponent {
       } else {
         this.innerOptions = {...this.options as Param};
       }
+      this.chartOptions = {...this.chartOptions, fontColor: this.innerOptions.fontColor};
       this.message = this.convert(this.result as DataModel || new DataModel());
       this.flexFont();
       if (this.LOG) {
@@ -125,6 +134,7 @@ export class DiscoveryDisplayComponent {
     } else {
       this.innerOptions = this.options;
     }
+    this.chartOptions = {...this.chartOptions, fontColor: this.innerOptions.fontColor};
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.message = this.convert(this.result || new DataModel());
@@ -163,6 +173,7 @@ export class DiscoveryDisplayComponent {
     if (this.innerOptions.customStyles) {
       this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
     }
+    this.chartOptions = {...this.chartOptions, fontColor: this.innerOptions.fontColor};
     this.LOG?.debug(['convert'], 'dataModel', dataModel);
     let display: any;
     if (!!dataModel.data) {
@@ -170,12 +181,17 @@ export class DiscoveryDisplayComponent {
     } else {
       display = GTSLib.isArray(dataModel) ? dataModel[0] : dataModel;
     }
-    display = GTSLib.isArray(display)? display[0]: display;
-    if(GTSLib.isGts(display)) {
-      let v = '';
-      if(display.v && display.v.length >0) {
+    display = GTSLib.isArray(display) ? display[0] : display;
+    if (GTSLib.isGts(display)) {
+      this.gts = [display];
+      let v: string | number = '';
+      if (display.v && display.v.length > 0) {
         const dataPoint = display.v[display.v.length - 1];
         v = dataPoint[dataPoint.length - 1];
+        if (this.innerOptions.display?.decimals) {
+          const dec = Math.pow(10, this.innerOptions.display?.decimals ?? 2)
+          v = Math.round(parseFloat(v + '') * dec) / dec;
+        }
       }
       display = v;
     }
@@ -238,13 +254,27 @@ export class DiscoveryDisplayComponent {
   render() {
     return <div ref={(el) => this.pngWrapper = el} class="png-wrapper">
       <style>{this.generateStyle(this.innerStyle)}</style>
-      <div style={{color: this.innerOptions.fontColor}} class="display-container">
+      <div style={{color: this.innerOptions.fontColor}}
+           class={'display-container pos-' + this.innerOptions?.display?.labelPosition ?? 'c'}>
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el} class="value">
           <span innerHTML={this.message}/><small>{this.innerOptions.unit || this.unit || ''}</small>
         </div>
       </div>
+      {this.gts && this.innerOptions.display?.showChart
+        ? <div class="chart-wrapper">
+          <div>
+            <discovery-tile-result
+              url=""
+              result={this.gts ?? []}
+              type={this.innerOptions.display?.chartType ?? 'area'}
+              options={this.chartOptions}
+            />
+          </div>
+        </div>
+        : ''
+      }
     </div>
   }
 

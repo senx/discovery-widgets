@@ -32,6 +32,7 @@ import {v4} from 'uuid';
 export class DiscoveryTileComponent {
   @Prop() url: string;
   @Prop() chartTitle: string;
+  @Prop() chartDescription: string;
   @Prop() type: ChartType;
   @Prop({mutable: true, reflect: true}) options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
@@ -361,6 +362,7 @@ and performed ${this.headers['x-warp10-ops']}  WarpLib operations.`;
               width={this.width}
               language={this.language}
               chart-title={this.chartTitle}
+              chart-description={this.chartDescription}
               onSelfType={type => this.handleSelfType(type)}
               vars={JSON.stringify(this.innerVars)}
               ref={(el) => this.tileResult = el}

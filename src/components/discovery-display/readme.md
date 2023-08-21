@@ -57,12 +57,40 @@ Type: `Promise<void>`
 ### Depends on
 
 - [discovery-spinner](../discovery-spinner)
+- [discovery-tile-result](../discovery-tile-result)
 
 ### Graph
 ```mermaid
 graph TD;
   discovery-display --> discovery-spinner
+  discovery-display --> discovery-tile-result
   discovery-tile-result --> discovery-display
+  discovery-line --> discovery-spinner
+  discovery-annotation --> discovery-spinner
+  discovery-bar --> discovery-spinner
+  discovery-bar-polar --> discovery-spinner
+  discovery-image --> discovery-spinner
+  discovery-gauge --> discovery-spinner
+  discovery-linear-gauge --> discovery-spinner
+  discovery-pie --> discovery-spinner
+  discovery-tabular --> discovery-spinner
+  discovery-tabular --> discovery-pageable
+  discovery-svg --> discovery-spinner
+  discovery-input --> discovery-slider
+  discovery-input --> discovery-input-chips
+  discovery-input-chips --> discovery-input-chips-chip
+  discovery-calendar --> discovery-spinner
+  discovery-heatmap --> discovery-spinner
+  discovery-profile --> discovery-spinner
+  discovery-dashboard --> discovery-tile
+  discovery-dashboard --> discovery-tile-result
+  discovery-dashboard --> discovery-modal
+  discovery-dashboard --> discovery-spinner
+  discovery-tile --> discovery-tile-result
+  discovery-tile --> discovery-spinner
+  discovery-modal --> discovery-tile
+  discovery-modal --> discovery-tile-result
+  discovery-modal --> discovery-dashboard
   style discovery-display fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

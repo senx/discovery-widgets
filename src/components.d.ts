@@ -325,6 +325,7 @@ export namespace Components {
     }
     interface DiscoveryTile {
         "autoRefresh": number;
+        "chartDescription": string;
         "chartTitle": string;
         "debug": boolean;
         "exec": (refresh?: boolean) => Promise<unknown>;
@@ -345,6 +346,7 @@ export namespace Components {
         "vars": any | string;
     }
     interface DiscoveryTileResult {
+        "chartDescription": string;
         "chartTitle": string;
         "debug": boolean;
         "export": (type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>;
@@ -958,6 +960,7 @@ declare namespace LocalJSX {
     }
     interface DiscoveryTile {
         "autoRefresh"?: number;
+        "chartDescription"?: string;
         "chartTitle"?: string;
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
@@ -972,6 +975,7 @@ declare namespace LocalJSX {
         "vars"?: any | string;
     }
     interface DiscoveryTileResult {
+        "chartDescription"?: string;
         "chartTitle"?: string;
         "debug"?: boolean;
         "height"?: number;

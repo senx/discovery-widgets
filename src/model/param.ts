@@ -128,6 +128,12 @@ export class Param {
     horizontal: boolean,
     showTicks: false,
   };
+  display?: {
+    showChart?: boolean,
+    chartType?: ChartType,
+    labelPosition?: 'n' | 's' | 'e' | 'w' | 'c' | 'ne' | 'se' | 'nw' | 'sw',
+    decimals?: number
+  };
   input?: {
     showButton?: boolean,
     value?: string | number | number[],

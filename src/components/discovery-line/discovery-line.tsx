@@ -955,8 +955,8 @@ export class DiscoveryLineComponent {
   }
 
   private hideMarkers() {
-    if (!!this.myChart && (this.chartOpts.series as any[]).some(s => !!s.markPoint)) {
-      (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
+    if (!!this.myChart && ((this.chartOpts?.series ?? []) as any[]).some(s => !!s.markPoint)) {
+      ((this.chartOpts?.series ?? []) as any[]).forEach(s => s.markPoint = undefined);
       this.setOpts();
     }
   }

@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -28,7 +28,15 @@
     flex-direction: column;
     align-items: stretch;
 
-    h2 {
+    .tile-title {
+      padding: 5px;
+      margin: 0;
+      flex-shrink: 1;
+      text-align: center;
+      color: var(--warp-view-font-color, $w10-charcoal);
+    }
+
+    .tile-desc {
       padding: 5px;
       margin: 0;
       flex-shrink: 1;

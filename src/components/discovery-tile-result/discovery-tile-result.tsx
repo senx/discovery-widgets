@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ export class DiscoveryTileResultComponent {
   @Prop({mutable: true}) unit = '';
   @Prop() url: string;
   @Prop() chartTitle: string;
+  @Prop() chartDescription: string;
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() vars = '{}';
 
@@ -68,6 +69,7 @@ export class DiscoveryTileResultComponent {
   private wrapper: HTMLDivElement;
   private tileElem: HTMLDivElement;
   private title: HTMLDivElement;
+  private desc: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
   private initial = true
@@ -643,8 +645,10 @@ JSON-> 0 GET`}
              color: this.fontColor,
              height: '100%', width: '100%'
            }}>
-        {this.innerTitle ? <h2
-          ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2> : ''}
+        {this.innerTitle ? <h2 class="tile-title"
+                               ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2> : ''}
+        {this.chartDescription ? <p class="tile-desc"
+                                    ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription || ''}</p> : ''}
         <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
         </div>
@@ -699,5 +703,18 @@ JSON-> 0 GET`}
     }).globalParams || {bgColor, fontColor}) as Param;
     this.bgColor = dm.bgColor || bgColor;
     this.fontColor = dm.fontColor || fontColor;
+
+    if(this.tileElem) {
+      const rs = getComputedStyle(this.tileElem);
+      if('' === rs.getPropertyValue('--warp-view-font-color').trim()) {
+        this.tileElem.style.setProperty('--warp-view-font-color', this.fontColor)
+      }
+      if('' === rs.getPropertyValue('--warp-view-chart-label-color').trim()) {
+        this.tileElem.style.setProperty('--warp-view-chart-label-color', this.fontColor)
+      }
+      if('#8e8e8e' === rs.getPropertyValue('--warp-view-chart-grid-color').trim()) {
+        this.tileElem.style.setProperty('--warp-view-chart-grid-color', this.fontColor)
+      }
+    }
   }
 }

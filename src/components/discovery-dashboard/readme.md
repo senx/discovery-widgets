@@ -93,6 +93,7 @@ graph TD;
   discovery-bar --> discovery-spinner
   discovery-bar-polar --> discovery-spinner
   discovery-display --> discovery-spinner
+  discovery-display --> discovery-tile-result
   discovery-image --> discovery-spinner
   discovery-gauge --> discovery-spinner
   discovery-linear-gauge --> discovery-spinner
