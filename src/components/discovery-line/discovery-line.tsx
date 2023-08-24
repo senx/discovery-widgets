@@ -181,6 +181,12 @@ export class DiscoveryLineComponent {
       tooltip: {
         transitionDuration: 0,
         trigger: 'axis',
+        position: (pos, params, dom, rect, size) => {
+          const obj = {top: 10};
+          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+          console.log({obj})
+          return obj;
+        },
         formatter: (params: any[]) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode !== 'date'
@@ -224,6 +230,7 @@ export class DiscoveryLineComponent {
       dataZoom: [
         {
           type: 'inside',
+          realtime: true,
           filterMode: 'none',
           orient: 'horizontal',
           zoomOnMouseWheel: true,
@@ -235,12 +242,13 @@ export class DiscoveryLineComponent {
           bottom: !!this.innerOptions.showLegend ? 30 : 20,
           filterMode: 'none'
         },
-        {
+   /*     {
           type: 'inside',
+          realtime: true,
           filterMode: 'none',
           orient: 'vertical',
           zoomOnMouseWheel: 'ctrl',
-        }
+        },*/
       ],
       visualMap: new Array(gtsCount),
       series: [],
@@ -784,7 +792,7 @@ export class DiscoveryLineComponent {
             data: [],
             markLine: {
               emphasis: {lineStyle: {width: 1}},
-              symbol: [ 'none', 'pin' ],
+              symbol: ['none', 'pin'],
               symbolSize: 20,
               symbolKeepAspect: true,
               data: this.pois.map(p => ({
