@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.89
+
+> +  2023/08/24  | v1.1.89 
+> +  2023/08/24  | [map] fix long text overflow in tooltips 
+> +  2023/08/24  | overflow fix 
+> +  2023/08/21  | [display] Better GTS handling with skyline and value position 
+> +  2023/08/21  | deps update 
+> +  2023/08/18  | changelog 
+
 ## v1.1.88
 
 > +  2023/08/18  | v1.1.88 
