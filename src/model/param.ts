@@ -107,6 +107,7 @@ export class Param {
   poiLine: 'solid' | 'dashed' | 'dotted' = 'dotted';
   dotSize = 5;
   strokeWidth = 1;
+  stacked?: boolean;
 // components specific params
   bar?: {
     horizontal?: boolean,

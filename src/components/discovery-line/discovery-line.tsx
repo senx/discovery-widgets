@@ -242,13 +242,13 @@ export class DiscoveryLineComponent {
           bottom: !!this.innerOptions.showLegend ? 30 : 20,
           filterMode: 'none'
         },
-   /*     {
+        {
           type: 'inside',
           realtime: true,
           filterMode: 'none',
           orient: 'vertical',
           zoomOnMouseWheel: 'ctrl',
-        },*/
+        }
       ],
       visualMap: new Array(gtsCount),
       series: [],
@@ -307,6 +307,7 @@ export class DiscoveryLineComponent {
           symbolSize: this.innerOptions.dotSize ?? 10,
           smooth: type === 'spline' || type === 'spline-area' ? 0.2 : undefined,
           clip: true,
+          stack: 'scatter' !== type && this.innerOptions?.stacked ? 'total' : undefined,
           step: DiscoveryLineComponent.getStepShape(type),
           areaStyle: type === 'area' || type === 'step-area' || type === 'spline-area' ? {
             opacity: 0.8,

@@ -159,7 +159,7 @@ export class DiscoveryBarComponent {
   private getCommonSeriesParam(color) {
     const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
     return {
-      stack: (this.innerOptions.bar || {stacked: false}).stacked ? 'total' : undefined,
+      stack: this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked ? 'total' : undefined,
       animation: !!this.innerOptions?.bar?.animate,
       large: true,
       clip: false,
