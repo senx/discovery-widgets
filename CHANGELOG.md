@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.1.90
+
+> +  2023/08/25  | v1.1.90 
+> +  2023/08/25  | [bar] Fix horizontal bar chart unit display and date display on xAxis 
+> +  2023/08/25  | [line] [area] Add stack support 
+> +  2023/08/24  | changelog 
+
 ## v1.1.89
 
 > +  2023/08/24  | v1.1.89 
