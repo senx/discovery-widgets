@@ -136,7 +136,8 @@ export class DiscoveryProfile {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name.name))
     });
     return Promise.resolve();
   }
@@ -145,7 +146,8 @@ export class DiscoveryProfile {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
     });
     return Promise.resolve();
   }
@@ -249,7 +251,7 @@ export class DiscoveryProfile {
         hasTimeBounds = true;
         series.push({
           type: 'custom',
-          name,
+          name: gts.id + '#' + name,
           id: gts.id,
           label: {
             show: !!this.innerOptions.showValues,
@@ -293,7 +295,8 @@ export class DiscoveryProfile {
       // custom data
       (data.data || []).forEach(d => {
         const values = d.values || {};
-        Object.keys(values).forEach((key, id) => {
+        for (const key of Object.keys(values)) {
+          const id = Object.keys(values).indexOf(key);
           const c = ColorLib.getColor(id, this.innerOptions.scheme);
           if (this.expanded) {
             linesCount++;
@@ -339,7 +342,7 @@ export class DiscoveryProfile {
             encode: {x: [1, 2], y: 0},
           } as SeriesOption);
           if (this.expanded) catId++;
-        });
+        }
       });
     }
     const markArea = [...(this.innerOptions.thresholds || [])
@@ -430,7 +433,7 @@ export class DiscoveryProfile {
         trigger: 'axis',
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
-        formatter: (params) => {
+        formatter: (params: any[]) => {
           if ('profile' === this.type) {
             return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
             ${this.innerOptions.timeMode === 'timestamp'
@@ -440,7 +443,7 @@ export class DiscoveryProfile {
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
            </div>
            ${params[0].marker}
-           <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params[0].seriesName}</span>
+           <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params[0].seriesName.split('#')[1] ?? params[0].seriesName}</span>
            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${
               this.innerOptions.timeMode === 'date' || this.innerOptions.timeMode === 'duration'
                 ? GTSLib.toDuration(params[0].value[3], this.divider)
@@ -455,7 +458,7 @@ export class DiscoveryProfile {
                   .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
               const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
-              return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+              return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${value[value.length - 1]}</span>`
             }).join('<br>')}`;
           }
@@ -476,7 +479,12 @@ export class DiscoveryProfile {
               ? GTSLib.zonedTimeToUtc(p.value[1], 1, this.innerOptions.timeZone) * this.divider
               : p.value[1];
             if (this.focusDate !== date) {
-              this.dataPointOver.emit({date, name: p.seriesName, value: p.value[3], meta: {}});
+              this.dataPointOver.emit({
+                date,
+                name: p.seriesName.split('#')[1] ?? p.seriesName,
+                value: p.value[3],
+                meta: {}
+              });
               this.focusDate = date;
             }
           }
@@ -606,10 +614,20 @@ export class DiscoveryProfile {
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
     this.el.addEventListener('mouseover', () => this.hasFocus = true);
     this.myChart.on('mouseover', (event: any) => {
-      this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      this.dataPointOver.emit({
+        date: event.value[0],
+        name: event.seriesName.split('#')[1] ?? event.seriesName,
+        value: event.value[1],
+        meta: {}
+      });
     });
     this.myChart.on('click', (event: any) => {
-      this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+      this.dataPointSelected.emit({
+        date: event.value[0],
+        name: event.seriesName.split('#')[1] ?? event.seriesName,
+        value: event.value[1],
+        meta: {}
+      });
     });
     this.el.addEventListener('mouseout', () => {
       this.hasFocus = false;
@@ -644,7 +662,7 @@ export class DiscoveryProfile {
     let dataIndex = 0;
     if (!!regexp) {
       (this.chartOpts.series as any[])
-        .filter(s => new RegExp(regexp).test(s.name))
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name.name))
         .forEach(s => {
           seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
           const data = s.data.filter(d => d[1] === date);
@@ -668,7 +686,9 @@ export class DiscoveryProfile {
         });
       this.myChart.dispatchAction({
         type: 'highlight',
-        seriesName: (this.chartOpts.series as any[]).filter(s => new RegExp(regexp).test(s.name)).map(s => s.name)
+        seriesName: (this.chartOpts.series as any[])
+          .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+          .map(s => s.name.split('#')[1] ?? s.name)
       });
     }
     (this.chartOpts.xAxis as any).axisPointer = {

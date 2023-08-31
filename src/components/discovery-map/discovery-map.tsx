@@ -163,7 +163,7 @@ export class DiscoveryMapComponent {
   @Method()
   async hideById(id: number) {
     Object.keys(this.hidden).forEach(k => {
-      if (new RegExp(id.toString()).test(id.toString())) {
+      if (new RegExp(id.toString()).test(k)) {
         this.hidden[k] = true;
       }
     });
@@ -174,7 +174,7 @@ export class DiscoveryMapComponent {
   @Method()
   async showById(id: number | string) {
     Object.keys(this.hidden).forEach(k => {
-      if (new RegExp(id.toString()).test(id.toString())) {
+      if (new RegExp(id.toString()).test(k)) {
         this.hidden[k] = false;
       }
     });
@@ -224,8 +224,7 @@ export class DiscoveryMapComponent {
     this.LOG?.debug(['drawMap', 'data'], data);
     this.LOG?.debug(['drawMap', 'this.height'], this.height);
     this.LOG?.debug(['drawMap', 'this.options'], {...this.innerOptions});
-    data.data = GTSLib.flatDeep(data.data as any[]);
-    const dataList = data.data as any[];
+    const dataList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     data.params = data.params || [];
     const params = data.params;
     this.mapOpts = this.innerOptions.map || {};
@@ -246,7 +245,7 @@ export class DiscoveryMapComponent {
       gts: dataList,
       params,
       globalParams: this.innerOptions
-    }, [], this.innerOptions.scheme) || [];
+    }, this.hidden, this.innerOptions.scheme) || [];
     this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
 
     if (this.mapOpts.mapType !== 'NONE') {

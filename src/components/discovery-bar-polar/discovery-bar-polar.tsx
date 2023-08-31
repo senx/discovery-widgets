@@ -257,7 +257,7 @@ export class DiscoveryBarPolarComponent {
           ...this.getCommonSeriesParam(color),
           type, areaStyle,
           id: gts.id,
-          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+          name: gts.id + '#' + (((data.params || [])[i] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts)),
           data: sortedGTS.map(d => {
             const ts = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
@@ -394,7 +394,7 @@ export class DiscoveryBarPolarComponent {
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].axisValue, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
-               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value}</span>`
           ).join('<br>')}`;
         },
@@ -458,7 +458,7 @@ export class DiscoveryBarPolarComponent {
           switch (type) {
             case 'mouseover':
               const c = event.data.coord || event.data;
-              this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
+              this.dataPointSelected.emit({date: c[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: c[1], meta: {}})
               break;
             case 'highlight':
               let ts;
@@ -535,7 +535,7 @@ export class DiscoveryBarPolarComponent {
       this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
 
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: event.value[1], meta: {}});
       });
       this.setOpts();
       initial = true;
@@ -551,7 +551,8 @@ export class DiscoveryBarPolarComponent {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
     });
     return Promise.resolve();
   }
@@ -560,7 +561,8 @@ export class DiscoveryBarPolarComponent {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
     });
     return Promise.resolve();
   }

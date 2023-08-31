@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import duration from 'dayjs/plugin/duration';
 import moment from 'moment/min/moment-with-locales';
 import {tz} from 'moment-timezone'
 import {DataModel, GTS} from '../model/types';
+import {v4} from 'uuid';
 
 dayjs.extend(duration)
 
@@ -274,6 +275,16 @@ export class GTSLib {
     gts.isSorted = true;
   }
 
+  static addIdToGTS(data: any) {
+    if(GTSLib.isArray(data)) {
+      return data.map(d => GTSLib.addIdToGTS(d));
+    } else {
+      if(GTSLib.isGts(data)) {
+        data.uid = v4();
+      }
+    }
+  }
+
   static getData(data: any): DataModel {
     if (typeof data === 'string') {
       if (data.startsWith('[') || data.startsWith('{')) {
@@ -293,7 +304,7 @@ export class GTSLib {
       data[0].data = data[0].data || [];
       return data[0] as DataModel;
     } else if (GTSLib.isArray(data)) {
-      return {data: data as GTS[]} as DataModel;
+      return {data: data as any[]} as DataModel;
     } else {
       return {data: new JsonLib().parse(`[${data}]`)};
     }

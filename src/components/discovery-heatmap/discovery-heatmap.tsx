@@ -113,7 +113,8 @@ export class DiscoveryHeatmap {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => ({name: s.name})).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
     });
     return Promise.resolve();
   }
@@ -122,7 +123,8 @@ export class DiscoveryHeatmap {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => ({name: s.name})).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
     });
     return Promise.resolve();
   }
@@ -261,7 +263,7 @@ export class DiscoveryHeatmap {
             : params.value[0]
         }</div>
             ${params.marker}
-            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params.value[1]}</span>
+            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params.value[1].split('#')[1] ?? params.value[1]}}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">
             ${params.value[2]}</span>`
       },
@@ -290,7 +292,7 @@ export class DiscoveryHeatmap {
         axisLabel: {
           color: Utils.getLabelColor(this.el),
           formatter: value => (this.innerOptions.timeMode || 'date') === 'date'
-            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(parseInt(value, 10), this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
               .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
             : value
         },
@@ -330,11 +332,11 @@ export class DiscoveryHeatmap {
         }
       });
       this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointOver.emit({date: event.value[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: event.value[1], meta: {}});
       });
       this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: event.value[1], meta: {}});
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
@@ -349,7 +351,7 @@ export class DiscoveryHeatmap {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
-        (gts.v || []).forEach(v => {
+        for (const v of (gts.v || [])) {
           const val = v[v.length - 1];
           if (val < min) {
             min = val;
@@ -366,7 +368,7 @@ export class DiscoveryHeatmap {
               val
             ]
           );
-        });
+        }
       }
     }
     series = series.sort((a, b) => a[0] - b[0]);
@@ -381,7 +383,7 @@ export class DiscoveryHeatmap {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToAnnotate(gts) && !!gts.v) {
-        (gts.v || []).forEach(v => {
+        for (const v of (gts.v || [])) {
           let val = v[v.length - 1];
           if (typeof val === 'boolean') {
             val = val ? 1 : 0;
@@ -397,7 +399,7 @@ export class DiscoveryHeatmap {
               val
             ]
           );
-        });
+        }
       }
     }
     series = series.sort((a, b) => a[0] - b[0]);

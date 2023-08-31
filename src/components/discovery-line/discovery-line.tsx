@@ -184,7 +184,6 @@ export class DiscoveryLineComponent {
         position: (pos, params, dom, rect, size) => {
           const obj = {top: 10};
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
-          console.log({obj})
           return obj;
         },
         formatter: (params: any[]) => {
@@ -194,7 +193,7 @@ export class DiscoveryLineComponent {
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
-               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
           ).join('<br>')}`;
         },
@@ -226,6 +225,7 @@ export class DiscoveryLineComponent {
       legend: {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
         textStyle: {color: Utils.getLabelColor(this.el)},
+        formatter: n => n.split('#')[1] ?? n
       },
       dataZoom: [
         {
@@ -298,7 +298,7 @@ export class DiscoveryLineComponent {
 
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
-          name: ((data.params ?? [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+          name: gts.id + '#' + (((data.params ?? [])[i] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts)),
           data: dataSet,
           id: gts.id,
           animation: false,
@@ -399,7 +399,7 @@ export class DiscoveryLineComponent {
         const isBubble = smax !== smin;
         const s = {
           type: this.type,
-          name: gts.label,
+          name: gts.id + '#' + gts.label,
           id: gts.id,
           data: gts.values[0] && gts.values[0].length === 3
             ? (gts.values ?? []).map(v => ({
@@ -841,7 +841,8 @@ export class DiscoveryLineComponent {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
     });
     return Promise.resolve();
   }
@@ -850,7 +851,8 @@ export class DiscoveryLineComponent {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
     });
     return Promise.resolve();
   }

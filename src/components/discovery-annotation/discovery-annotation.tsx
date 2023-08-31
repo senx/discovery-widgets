@@ -25,7 +25,7 @@ import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
 import {SeriesOption} from 'echarts/lib/util/types';
 import _ from 'lodash';
-import {v4} from "uuid";
+import {v4} from 'uuid';
 
 @Component({
   tag: 'discovery-annotation',
@@ -132,7 +132,8 @@ export class DiscoveryAnnotation {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
     });
     return Promise.resolve();
   }
@@ -141,18 +142,19 @@ export class DiscoveryAnnotation {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[])
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
     });
     return Promise.resolve();
   }
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -160,11 +162,11 @@ export class DiscoveryAnnotation {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -202,7 +204,7 @@ export class DiscoveryAnnotation {
       this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
     }
     setTimeout(() => {
-      if(this.myChart) {
+      if (this.myChart) {
         this.myChart.setOption(this.chartOpts || {}, notMerge, true);
       }
     });
@@ -254,7 +256,7 @@ export class DiscoveryAnnotation {
         hasTimeBounds = true;
         series.push({
           type: 'custom',
-          name,
+          name: gts.id + '#' + name,
           data: dataSet,
           animation: false,
           id: gts.id,
@@ -277,7 +279,6 @@ export class DiscoveryAnnotation {
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
     this.LOG?.debug(['convert'], {
       expanded: this.expanded,
-      series, categories,
       height: this.height,
       linesCount,
       opts: this.innerOptions
@@ -306,7 +307,7 @@ export class DiscoveryAnnotation {
                 this.innerOptions.timeFormat) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
-            return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName}</span>
+            return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[2]}</span>`
           }).join('<br>')}`;
         },
@@ -386,7 +387,8 @@ export class DiscoveryAnnotation {
       },
       legend: {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
-        textStyle: {color: Utils.getLabelColor(this.el)}
+        textStyle: {color: Utils.getLabelColor(this.el)},
+        formatter: n => n.split('#')[1] ?? n
       },
       dataZoom: [
         this.innerOptions.showRangeSelector ? {
@@ -427,7 +429,12 @@ export class DiscoveryAnnotation {
           switch (type) {
             case 'mouseover':
               const c = event.data.coord || event.data;
-              this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
+              this.dataPointSelected.emit({
+                date: c[0],
+                name: event.seriesName.split('#')[1] ?? event.seriesName,
+                value: c[1],
+                meta: {}
+              })
               break;
             case 'highlight':
               let ts;
@@ -467,7 +474,7 @@ export class DiscoveryAnnotation {
         }
         if (this.leftMargin !== x && x < this.innerOptions.leftMargin || this.MAX_MARGIN) {
           setTimeout(() => {
-            if(x !== this.MAX_MARGIN) {
+            if (x !== this.MAX_MARGIN) {
               this.leftMarginComputed.emit(x);
               this.leftMargin = x;
             }
@@ -488,7 +495,7 @@ export class DiscoveryAnnotation {
           ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
           : ts;
         v = s.data[b.dataIndex][1];
-        series.push(s.name);
+        series.push(s.name.split('#')[1] ?? s.name);
       });
       if (ts !== undefined) {
         this.dataPointOver.emit({date: ts, name: '(' + series.join('|') + ')', value: v, meta: {}});
@@ -496,12 +503,23 @@ export class DiscoveryAnnotation {
     });
     this.myChart.on('click', (event: any) => {
       const c = event.data.coord || event.data;
-      this.dataPointSelected.emit({date: c[1], name: event.seriesName, value: c[2], meta: {}});
+      this.dataPointSelected.emit({
+        date: c[1],
+        name: event.seriesName.split('#')[1] ?? event.seriesName,
+        value: c[2],
+        meta: {}
+      });
       if (this.innerOptions.poi) {
         if (this.pois.find(p => p.date === c[1])) {
           this.pois = this.pois.filter(p => p.date !== c[1]);
         } else {
-          this.pois.push({date: c[1], name: event.seriesName, value: c[2], meta: {}, uid: v4()});
+          this.pois.push({
+            date: c[1],
+            name: event.seriesName.split('#')[1] ?? event.seriesName,
+            value: c[2],
+            meta: {},
+            uid: v4()
+          });
         }
         this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.name);
         this.poi.emit(this.pois);
@@ -511,7 +529,7 @@ export class DiscoveryAnnotation {
           data: [],
           markLine: {
             emphasis: {lineStyle: {width: 1}},
-            symbol: [ 'none', 'pin' ],
+            symbol: ['none', 'pin'],
             symbolSize: 20,
             symbolKeepAspect: true,
             data: this.pois.map(p => ({
@@ -585,7 +603,7 @@ export class DiscoveryAnnotation {
     let dataIndex = 0;
     if (!!regexp) {
       (this.chartOpts.series as any[])
-        .filter(s => new RegExp(regexp).test(s.name))
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
         .forEach(s => {
           seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
           const data = s.data.filter(d => d[1] === date);
@@ -609,7 +627,9 @@ export class DiscoveryAnnotation {
         });
       this.myChart.dispatchAction({
         type: 'highlight',
-        seriesName: (this.chartOpts.series as any[]).filter(s => new RegExp(regexp).test(s.name)).map(s => s.name)
+        seriesName: (this.chartOpts.series as any[])
+          .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+          .map(s => s.name.split('#')[1] ?? s.name)
       });
     }
     (this.chartOpts.xAxis as any).axisPointer = {

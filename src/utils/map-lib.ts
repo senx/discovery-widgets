@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -150,7 +150,7 @@ export class MapLib {
         this.LOG?.debug(['toLeafletMapPaths'], gts, data.params ? data.params[i] : '');
         const params = (data.params || [])[i] || {};
         gts.tooltip = params.map?.tooltip || {};
-        if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[GTSLib.serializeGtsMetadata(gts)] && !params.map?.heatmap) {
+        if (GTSLib.isGtsToPlotOnMap(gts) && !hiddenData[gts.id] && !params.map?.heatmap) {
           const path: any = {};
           path.id = gts.id;
           path.tooltip = gts.tooltip;
@@ -271,7 +271,7 @@ export class MapLib {
     return true;
   }
 
-  static toLeafletMapPositionArray(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: number[], scheme: string) {
+  static toLeafletMapPositionArray(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: { [key: string]: boolean }, scheme: string) {
     const positions = [];
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
@@ -279,7 +279,7 @@ export class MapLib {
       gts.id = gts.id || i;
       const globalParams = (data.params || [])[i] || {};
       gts.tooltip = globalParams.map?.tooltip || {};
-      if (GTSLib.isPositionArray(gts) && (hiddenData || []).filter(id => id === gts.id).length === 0 && !globalParams.map?.heatmap) {
+      if (GTSLib.isPositionArray(gts) && !hiddenData[gts.id] && !globalParams.map?.heatmap) {
         this.LOG?.debug(['toLeafletMapPositionArray'], gts, data.params ? data.params[i] : '');
         const posArray = gts;
         const gtsParam = data.params ? data.params[i] || {} : {};
