@@ -1,6 +1,19 @@
 Discovery
 ---
 
+## v1.1.91
+
+> +  2023/09/01  | v1.1.91 
+> +  2023/09/01  | readmes 
+> +  2023/09/01  | Better indexing 
+> +  2023/09/01  | Better indexing 
+> +  2023/09/01  | Fix zoom reset when data are hidden 
+> +  2023/09/01  | Remove console.log 
+> +  2023/09/01  | Generated readmes 
+> +  2023/09/01  | Fix GTS indexation when there is other types on stack 
+> +  2023/09/01  | Fix show/hide 
+> +  2023/08/25  | changelog 
+
 ## v1.1.90
 
 > +  2023/08/25  | v1.1.90 
