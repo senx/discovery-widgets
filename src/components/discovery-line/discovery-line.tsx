@@ -381,7 +381,6 @@ export class DiscoveryLineComponent {
           }
 
         }
-        console.log({s});
         (opts.series as any[]).push(s);
       } else if (['scatter', 'line'].includes(this.type) && gts.label && gts.values) {
         // Custom data for scatter
