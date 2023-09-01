@@ -133,7 +133,7 @@ export class DiscoveryAnnotation {
     this.myChart.dispatchAction({
       type: 'legendSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -143,7 +143,7 @@ export class DiscoveryAnnotation {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -256,7 +256,7 @@ export class DiscoveryAnnotation {
         hasTimeBounds = true;
         series.push({
           type: 'custom',
-          name: gts.id + '#' + name,
+          name: GTSLib.setName(gts.id, name),
           data: dataSet,
           animation: false,
           id: gts.id,
@@ -307,7 +307,7 @@ export class DiscoveryAnnotation {
                 this.innerOptions.timeFormat) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
-            return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
+            return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[2]}</span>`
           }).join('<br>')}`;
         },
@@ -388,7 +388,7 @@ export class DiscoveryAnnotation {
       legend: {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
         textStyle: {color: Utils.getLabelColor(this.el)},
-        formatter: n => n.split('#')[1] ?? n
+        formatter: n => GTSLib.getName(n)
       },
       dataZoom: [
         this.innerOptions.showRangeSelector ? {
@@ -431,7 +431,7 @@ export class DiscoveryAnnotation {
               const c = event.data.coord || event.data;
               this.dataPointSelected.emit({
                 date: c[0],
-                name: event.seriesName.split('#')[1] ?? event.seriesName,
+                name: GTSLib.getName(event.seriesName),
                 value: c[1],
                 meta: {}
               })
@@ -495,7 +495,7 @@ export class DiscoveryAnnotation {
           ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
           : ts;
         v = s.data[b.dataIndex][1];
-        series.push(s.name.split('#')[1] ?? s.name);
+        series.push(GTSLib.getName(s.name));
       });
       if (ts !== undefined) {
         this.dataPointOver.emit({date: ts, name: '(' + series.join('|') + ')', value: v, meta: {}});
@@ -505,7 +505,7 @@ export class DiscoveryAnnotation {
       const c = event.data.coord || event.data;
       this.dataPointSelected.emit({
         date: c[1],
-        name: event.seriesName.split('#')[1] ?? event.seriesName,
+        name: GTSLib.getName(event.seriesName),
         value: c[2],
         meta: {}
       });
@@ -515,7 +515,7 @@ export class DiscoveryAnnotation {
         } else {
           this.pois.push({
             date: c[1],
-            name: event.seriesName.split('#')[1] ?? event.seriesName,
+            name: GTSLib.getName(event.seriesName),
             value: c[2],
             meta: {},
             uid: v4()
@@ -606,7 +606,7 @@ export class DiscoveryAnnotation {
     let dataIndex = 0;
     if (!!regexp) {
       (this.chartOpts.series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
         .forEach(s => {
           seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
           const data = s.data.filter(d => d[1] === date);
@@ -631,8 +631,8 @@ export class DiscoveryAnnotation {
       this.myChart.dispatchAction({
         type: 'highlight',
         seriesName: (this.chartOpts.series as any[])
-          .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
-          .map(s => s.name.split('#')[1] ?? s.name)
+          .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+          .map(s => GTSLib.getName(s.name))
       });
     }
     (this.chartOpts.xAxis as any).axisPointer = {

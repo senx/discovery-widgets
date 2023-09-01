@@ -261,7 +261,7 @@ export class DiscoveryBarComponent {
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
-               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
+               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
           ).join('<br>')}`;
         },
@@ -276,7 +276,7 @@ export class DiscoveryBarComponent {
       legend: {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
         textStyle: {color: Utils.getLabelColor(this.el)},
-        formatter: n => n.split('#')[1] ?? n
+        formatter: n => GTSLib.getName(n)
       },
       dataZoom: [
         {
@@ -348,7 +348,7 @@ export class DiscoveryBarComponent {
           ...this.getCommonSeriesParam(color),
           id: gts.id,
           type, areaStyle,
-          name: gts.id + '#' + (((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts)),
+          name: GTSLib.setName(gts.id, (((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts))),
           data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
             const ts = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
@@ -590,7 +590,7 @@ export class DiscoveryBarComponent {
           switch (type) {
             case 'mouseover':
               const c = event.data.coord || event.data;
-              this.dataPointSelected.emit({date: c[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: c[1], meta: {}})
+              this.dataPointSelected.emit({date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {}})
               break;
             case 'highlight':
               let ts;
@@ -671,12 +671,23 @@ export class DiscoveryBarComponent {
       this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
 
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({
+          date: event.value[0],
+          name: GTSLib.getName(event.seriesName),
+          value: event.value[1],
+          meta: {}
+        });
         if (this.innerOptions.poi) {
           if (this.pois.find(p => p.date === event.value[0])) {
             this.pois = this.pois.filter(p => p.date !== event.value[0]);
           } else {
-            this.pois.push({date: event.value[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: event.value[1], meta: {}, uid: v4()});
+            this.pois.push({
+              date: event.value[0],
+              name: GTSLib.getName(event.seriesName),
+              value: event.value[1],
+              meta: {},
+              uid: v4()
+            });
           }
           this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.name);
           this.poi.emit(this.pois);
@@ -715,7 +726,7 @@ export class DiscoveryBarComponent {
     this.myChart.dispatchAction({
       type: 'legendSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -725,7 +736,7 @@ export class DiscoveryBarComponent {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -764,7 +775,7 @@ export class DiscoveryBarComponent {
     let dataIndex = 0;
     if (!!regexp) {
       (this.chartOpts.series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
         .forEach(s => {
           const data = s.data.filter(d => d[0] === date);
           if (data && data.length > 0 && data[0]) {

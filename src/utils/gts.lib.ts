@@ -22,7 +22,7 @@ import duration from 'dayjs/plugin/duration';
 // @ts-ignore
 import moment from 'moment/min/moment-with-locales';
 import {tz} from 'moment-timezone'
-import {DataModel, GTS} from '../model/types';
+import {DataModel} from '../model/types';
 import {v4} from 'uuid';
 
 dayjs.extend(duration)
@@ -276,10 +276,10 @@ export class GTSLib {
   }
 
   static addIdToGTS(data: any) {
-    if(GTSLib.isArray(data)) {
+    if (GTSLib.isArray(data)) {
       return data.map(d => GTSLib.addIdToGTS(d));
     } else {
-      if(GTSLib.isGts(data)) {
+      if (GTSLib.isGts(data)) {
         data.uid = v4();
       }
     }
@@ -420,5 +420,16 @@ export class GTSLib {
     const ms = distance / 1000.0;
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     return `${hours}h ${('0' + minutes).slice(-2)}m ${('0' + seconds).slice(-2)}s ${('0' + ms).slice(-2)}ms`;
+  }
+
+  static getName(name: string) {
+    if (/^[0-9]+%%%%.*/.test(name)) {
+      return name.replace(/[0-9]+%%%%/, '');
+    }
+    return name;
+  }
+
+  static setName(id: any, s: string) {
+    return `${id}%%%%${s}`;
   }
 }

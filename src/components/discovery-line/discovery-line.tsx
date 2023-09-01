@@ -186,7 +186,7 @@ export class DiscoveryLineComponent {
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
-               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
+               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
           ).join('<br>')}`;
         },
@@ -218,7 +218,7 @@ export class DiscoveryLineComponent {
       legend: {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
         textStyle: {color: Utils.getLabelColor(this.el)},
-        formatter: n => n.split('#')[1] ?? n
+        formatter: n => GTSLib.getName(n)
       },
       dataZoom: [
         {
@@ -291,7 +291,7 @@ export class DiscoveryLineComponent {
 
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
-          name: gts.id + '#' + (((data.params ?? [])[gts.id] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts)),
+          name: GTSLib.setName(gts.id, (((data.params ?? [])[gts.id] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts))),
           data: dataSet,
           id: gts.id,
           animation: false,
@@ -392,7 +392,7 @@ export class DiscoveryLineComponent {
         const isBubble = smax !== smin;
         const s = {
           type: this.type,
-          name: gts.id + '#' + gts.label,
+          name: GTSLib.setName(gts.id, gts.label),
           id: gts.id,
           data: gts.values[0] && gts.values[0].length === 3
             ? (gts.values ?? []).map(v => ({
@@ -839,7 +839,7 @@ export class DiscoveryLineComponent {
     this.myChart.dispatchAction({
       type: 'legendSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -849,7 +849,7 @@ export class DiscoveryLineComponent {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }

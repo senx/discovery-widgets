@@ -113,8 +113,7 @@ export class DiscoveryHeatmap {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -123,8 +122,7 @@ export class DiscoveryHeatmap {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -263,7 +261,7 @@ export class DiscoveryHeatmap {
             : params.value[0]
         }</div>
             ${params.marker}
-            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params.value[1].split('#')[1] ?? params.value[1]}}</span>
+            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(params.value[1])}}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">
             ${params.value[2]}</span>`
       },
@@ -332,11 +330,11 @@ export class DiscoveryHeatmap {
         }
       });
       this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointOver.emit({date: event.value[0], name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
       });
       this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName.split('#')[1]?? event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({date: event.value[0], name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
