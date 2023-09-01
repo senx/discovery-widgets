@@ -151,17 +151,10 @@ export class DiscoveryLineComponent {
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
-    let gtsList;
-    if (GTSLib.isArray(data.data)) {
-      data.data = GTSLib.flatDeep(data.data as any[]);
-      if (data.data.length > 0 && GTSLib.isGts(data.data[0])) {
-        gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
-      } else {
-        gtsList = data.data as any[];
-      }
-    } else {
-      gtsList = [data.data];
-    }
+    const gtsList = [
+      ...GTSLib.flattenGtsIdArray(GTSLib.flatDeep([data.data] as any[]), 0).res,
+      ...GTSLib.flatDeep([data.data] as any[]).filter(g => g.values && g.label)
+    ];
     const gtsCount = gtsList.length;
     let multiY = false;
     let multiX = false;
@@ -260,18 +253,18 @@ export class DiscoveryLineComponent {
     if (max <= 1000 && min >= -1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
       this.innerOptions.timeMode = 'timestamp';
     }
-    for (let i = 0; i < gtsCount; i++) {
-      const gts = gtsList[i];
+    for (let index = 0; index < gtsCount; index++) {
+      const gts = gtsList[index];
       if (GTSLib.isGtsToPlot(gts)) {
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
-        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-        const type = ((data.params || [])[i] || {type: this.type}).type || this.type;
-        if (!!data.params && !!data.params[i] && (data.params[i].pieces || []).length > 0) {
-          (opts.visualMap as any[])[i] = {
+        const color = ((data.params || [])[gts.id] || {datasetColor: c}).datasetColor || c;
+        const type = ((data.params || [])[gts.id] || {type: this.type}).type || this.type;
+        if (!!data.params && !!data.params[gts.id] && (data.params[gts.id].pieces || []).length > 0) {
+          (opts.visualMap as any[])[gts.id] = {
             show: false,
-            seriesIndex: i,
-            dimension: !!data.params[i].xpieces ? 0 : 1,
-            pieces: GTSLib.flatDeep((data.params[i].pieces || []).map(t => {
+            seriesIndex: gts.id,
+            dimension: !!data.params[gts.id].xpieces ? 0 : 1,
+            pieces: GTSLib.flatDeep((data.params[gts.id].pieces || []).map(t => {
               return [
                 {color, lte: t.gte},
                 {color: t.color || '#D81B60', lte: t.lte, gte: t.gte},
@@ -298,7 +291,7 @@ export class DiscoveryLineComponent {
 
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
-          name: gts.id + '#' + (((data.params ?? [])[i] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts)),
+          name: gts.id + '#' + (((data.params ?? [])[gts.id] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts)),
           data: dataSet,
           id: gts.id,
           animation: false,
@@ -327,7 +320,7 @@ export class DiscoveryLineComponent {
             textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
           },
           lineStyle: {
-            color: !opts.visualMap[i] ? color : undefined,
+            color: !opts.visualMap[gts.id] ? color : undefined,
             width: this.innerOptions.strokeWidth ?? 2
           },
           itemStyle: type === 'bar' ? {
@@ -344,36 +337,36 @@ export class DiscoveryLineComponent {
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
-          if (!!data.params[i] && data.params[i].yAxis !== undefined) {
+          if (!!data.params[gts.id]?.yAxis) {
             multiY = true;
-            if (data.params[i].yAxis > 0) {
-              (s as any).yAxisIndex = data.params[i].yAxis;
-              const y = this.getYAxis(color, data.params[i].unit);
+            if (data.params[gts.id].yAxis > 0) {
+              (s as any).yAxisIndex = data.params[gts.id].yAxis;
+              const y = this.getYAxis(color, data.params[gts.id].unit);
               (y as any).position = 'right';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
-              (opts.yAxis as any)[data.params[i].yAxis] = y;
+              (opts.yAxis as any)[data.params[gts.id].yAxis] = y;
             } else {
-              const y = this.getYAxis(color, data.params[i].unit);
+              const y = this.getYAxis(color, data.params[gts.id].unit);
               (y as any).position = 'left';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[0] = y;
             }
           } else if (multiY) {
-            const y = this.getYAxis(undefined, data.params[i].unit);
+            const y = this.getYAxis(undefined, data.params[gts.id].unit);
             (y as any).position = 'left';
             if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
             (opts.yAxis as any)[0] = y;
           }
 
           // multi X
-          if (!!data.params[i] && data.params[i].xAxis !== undefined) {
+          if (!!data.params[gts.id]?.xAxis) {
             multiX = true;
-            if (data.params[i].xAxis > 0) {
-              (s as any).xAxisIndex = data.params[i].xAxis;
+            if (data.params[gts.id].xAxis > 0) {
+              (s as any).xAxisIndex = data.params[gts.id].xAxis;
               const x = this.getXAxis(color);
               (x as any).position = 'top';
               if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
-              (opts.xAxis as CartesianAxisOption)[data.params[i].xAxis] = x;
+              (opts.xAxis as CartesianAxisOption)[data.params[gts.id].xAxis] = x;
             } else {
               const x = this.getXAxis(color);
               (x as any).position = 'bottom';
@@ -388,12 +381,13 @@ export class DiscoveryLineComponent {
           }
 
         }
+        console.log({s});
         (opts.series as any[]).push(s);
       } else if (['scatter', 'line'].includes(this.type) && gts.label && gts.values) {
         // Custom data for scatter
         this.innerOptions.timeMode = 'custom';
-        const c = ColorLib.getColor(i, this.innerOptions.scheme);
-        const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+        const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
+        const color = ((data.params || [])[gts.id] || {datasetColor: c}).datasetColor || c;
         const smax = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
         const smin = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
         const isBubble = smax !== smin;
@@ -432,37 +426,37 @@ export class DiscoveryLineComponent {
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
-          if (!!data.params[i] && data.params[i].yAxis !== undefined) {
+          if (!!data.params[gts.id] && data.params[gts.id].yAxis !== undefined) {
             multiY = true;
-            if (data.params[i].yAxis > 0) {
-              (s as any).yAxisIndex = data.params[i].yAxis;
-              const y = this.getYAxis(color, data.params[i].unit);
+            if (data.params[gts.id].yAxis > 0) {
+              (s as any).yAxisIndex = data.params[gts.id].yAxis;
+              const y = this.getYAxis(color, data.params[gts.id].unit);
               (y as any).position = 'right';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
-              (opts.yAxis as any)[data.params[i].yAxis] = y;
+              (opts.yAxis as any)[data.params[gts.id].yAxis] = y;
             } else {
-              const y = this.getYAxis(color, data.params[i].unit);
+              const y = this.getYAxis(color, data.params[gts.id].unit);
               (y as any).position = 'left';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[0] = y;
             }
           } else if (multiY) {
-            const y = this.getYAxis(undefined, data.params[i].unit);
+            const y = this.getYAxis(undefined, data.params[gts.id].unit);
             (y as any).position = 'left';
             if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
             (opts.yAxis as any)[0] = y;
           }
 
           // multi X
-          if (!!data.params[i] && data.params[i].xAxis !== undefined) {
+          if (!!data.params[gts.id] && data.params[gts.id].xAxis !== undefined) {
             multiX = true;
-            if (data.data[i].length > 0) {
-              if (data.params[i].xAxis > 0) {
-                (s as any).xAxisIndex = data.params[i].xAxis;
+            if (data.data[gts.id].length > 0) {
+              if (data.params[gts.id].xAxis > 0) {
+                (s as any).xAxisIndex = data.params[gts.id].xAxis;
                 const x = this.getXAxis(color);
                 (x as any).position = 'top';
                 if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
-                (opts.xAxis as CartesianAxisOption)[data.params[i].xAxis] = x;
+                (opts.xAxis as CartesianAxisOption)[data.params[gts.id].xAxis] = x;
               } else {
                 const x = this.getXAxis(color);
                 (x as any).position = 'bottom';
@@ -471,7 +465,7 @@ export class DiscoveryLineComponent {
               }
             }
           } else if (multiX) {
-            if (data.params[i].xAxis > 0) {
+            if (data.params[gts.id].xAxis > 0) {
               const x = this.getXAxis();
               (x as any).position = 'bottom';
               if (!opts.xAxis) opts.xAxis = new Array(data.params.length);
@@ -852,7 +846,7 @@ export class DiscoveryLineComponent {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1]?? s.name))
+        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
     });
     return Promise.resolve();
   }
