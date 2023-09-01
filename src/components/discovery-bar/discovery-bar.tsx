@@ -654,7 +654,11 @@ export class DiscoveryBarComponent {
       this.myChart.on('restore', () => {
         this.dataZoom.emit({type: 'restore', start: 0, end: 100})
       });
-      this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
+      this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({
+        type: 'dataZoom',
+        start: 0,
+        end: 100
+      }));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => {
         this.hasFocus = false;

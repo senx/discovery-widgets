@@ -563,8 +563,11 @@ export class DiscoveryAnnotation {
     });
     this.myChart.on('mouseover', (event: any) => focusHandler('mouseover', event));
     this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
-
-    this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
+    this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({
+      type: 'dataZoom',
+      start: 0,
+      end: 100
+    }));
     this.el.addEventListener('mouseover', () => this.hasFocus = true);
     this.el.addEventListener('mouseout', () => {
       this.hasFocus = false;

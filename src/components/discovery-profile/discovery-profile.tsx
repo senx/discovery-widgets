@@ -611,7 +611,11 @@ export class DiscoveryProfile {
         max: this.innerOptions.bounds?.maxDate || this.bounds?.max
       });
     });
-    this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({type: 'restore'}));
+    this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({
+      type: 'dataZoom',
+      start: 0,
+      end: 100
+    }));
     this.el.addEventListener('mouseover', () => this.hasFocus = true);
     this.myChart.on('mouseover', (event: any) => {
       this.dataPointOver.emit({
