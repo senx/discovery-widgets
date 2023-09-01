@@ -136,8 +136,7 @@ export class DiscoveryProfile {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -146,8 +145,7 @@ export class DiscoveryProfile {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
     });
     return Promise.resolve();
   }
@@ -251,7 +249,7 @@ export class DiscoveryProfile {
         hasTimeBounds = true;
         series.push({
           type: 'custom',
-          name: gts.id + '#' + name,
+          name: GTSLib.setName(gts.id, name),
           id: gts.id,
           label: {
             show: !!this.innerOptions.showValues,
@@ -443,7 +441,7 @@ export class DiscoveryProfile {
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
            </div>
            ${params[0].marker}
-           <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params[0].seriesName.split('#')[1] ?? params[0].seriesName}</span>
+           <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(params[0].seriesName)}</span>
            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${
               this.innerOptions.timeMode === 'date' || this.innerOptions.timeMode === 'duration'
                 ? GTSLib.toDuration(params[0].value[3], this.divider)
@@ -458,7 +456,7 @@ export class DiscoveryProfile {
                   .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
               const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
-              return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${s.seriesName.split('#')[1] ?? s.seriesName}</span>
+              return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${value[value.length - 1]}</span>`
             }).join('<br>')}`;
           }
@@ -481,7 +479,7 @@ export class DiscoveryProfile {
             if (this.focusDate !== date) {
               this.dataPointOver.emit({
                 date,
-                name: p.seriesName.split('#')[1] ?? p.seriesName,
+                name: GTSLib.getName(p.seriesName),
                 value: p.value[3],
                 meta: {}
               });
@@ -547,7 +545,8 @@ export class DiscoveryProfile {
       },
       legend: {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
-        textStyle: {color: Utils.getLabelColor(this.el)}
+        textStyle: {color: Utils.getLabelColor(this.el)},
+        formatter: n => GTSLib.getName(n)
       },
       dataZoom: [
         this.innerOptions.showRangeSelector ? {
@@ -620,7 +619,7 @@ export class DiscoveryProfile {
     this.myChart.on('mouseover', (event: any) => {
       this.dataPointOver.emit({
         date: event.value[0],
-        name: event.seriesName.split('#')[1] ?? event.seriesName,
+        name: GTSLib.getName(event.seriesName),
         value: event.value[1],
         meta: {}
       });
@@ -628,7 +627,7 @@ export class DiscoveryProfile {
     this.myChart.on('click', (event: any) => {
       this.dataPointSelected.emit({
         date: event.value[0],
-        name: event.seriesName.split('#')[1] ?? event.seriesName,
+        name: GTSLib.getName(event.seriesName),
         value: event.value[1],
         meta: {}
       });
@@ -666,7 +665,7 @@ export class DiscoveryProfile {
     let dataIndex = 0;
     if (!!regexp) {
       (this.chartOpts.series as any[])
-        .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name.name))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
         .forEach(s => {
           seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
           const data = s.data.filter(d => d[1] === date);
@@ -691,8 +690,8 @@ export class DiscoveryProfile {
       this.myChart.dispatchAction({
         type: 'highlight',
         seriesName: (this.chartOpts.series as any[])
-          .filter(s => new RegExp(regexp).test(s.name.split('#')[1] ?? s.name))
-          .map(s => s.name.split('#')[1] ?? s.name)
+          .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+          .map(s => GTSLib.getName(s.name))
       });
     }
     (this.chartOpts.xAxis as any).axisPointer = {
