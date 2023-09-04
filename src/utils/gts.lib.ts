@@ -326,13 +326,13 @@ export class GTSLib {
     let display = `<span class="gtsInfo"><span class='gts-classname'>${serializedGTS[0]}</span>`;
     if (serializedGTS.length > 1) {
       display += '<span class=\'gts-separator\'>{</span>';
-      const labels = serializedGTS[1].substr(0, serializedGTS[1].length - 1).split(',');
+      const labels = serializedGTS[1].substring(0, serializedGTS[1].length - 1).split(',');
       if (labels.length > 0) {
         labels.forEach((l, i) => {
           const label = l.split('=');
           if (l.length > 1) {
             display += `<span><span class='gts-labelname'>${label[0]}</span>
-<span class='gts-separator'>=</span><span class='gts-labelvalue'>${label[1]}</span>`;
+<span class='gts-separator'>=</span><span class='gts-labelvalue'>${label.slice(1).join('')}</span>`;
             if (i !== labels.length - 1) {
               display += '<span>, </span>';
             }
@@ -349,7 +349,7 @@ export class GTSLib {
           const label = l.split('=');
           if (l.length > 1) {
             display += `<span><span class='gts-attrname'>${label[0]}</span>
-<span class='gts-separator'>=</span><span class='gts-attrvalue'>${label[1]}</span>`;
+<span class='gts-separator'>=</span><span class='gts-attrvalue'>${label.slice(1).join('')}</span>`;
             if (i !== labels.length - 1) {
               display += '<span>, </span>';
             }
