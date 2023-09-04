@@ -497,7 +497,7 @@ export class DiscoveryBarComponent {
           m[0].xAxis = t.value || 0;
           m[1].xAxis = 0;
           m[0].name = `${t.value || 0}`
-          m[0].label = {color: t.color || '#f44336', position: 'insideTopRight'}
+          m[0].label = {color: t.color || '#f44336', position: 'insideTopRight'};
         } else {
           m[0].yAxis = t.value || 0;
           m[1].yAxis = 0;
@@ -512,7 +512,7 @@ export class DiscoveryBarComponent {
               color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
               borderType: t.type || 'dashed'
             },
-            label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
+            label: {color: t.color || '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name},
             name: t.name || t.value || 0,
             yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
             xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
