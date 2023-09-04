@@ -364,7 +364,7 @@ export class DiscoveryBarComponent {
         this.innerOptions.timeMode = 'custom';
         this.LOG?.debug(['convert', 'gts'], gts);
         (gts.columns ?? []).forEach((label: any, index: number) => {
-          color = (data.params ?? [])[index]?.datasetColor ?? c;
+          color = (data.params ?? [])[index]?.datasetColor ?? ColorLib.getColor(index, this.innerOptions.scheme);
           let type = ((data.params || [])[index] || {type: 'bar'}).type || 'bar';
           let areaStyle;
           if (type === 'area') {
