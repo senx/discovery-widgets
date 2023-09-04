@@ -303,7 +303,7 @@ export class DiscoveryBarComponent {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-      const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      let color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
       if (!!data.params && !!data.params[i] && (data.params[i].pieces || []).length > 0) {
         (opts.visualMap as any[])[i] = {
           show: false,
@@ -363,7 +363,8 @@ export class DiscoveryBarComponent {
       } else if (!gts.v) {
         this.innerOptions.timeMode = 'custom';
         this.LOG?.debug(['convert', 'gts'], gts);
-        (gts.columns || []).forEach((label, index: number) => {
+        (gts.columns ?? []).forEach((label: any, index: number) => {
+          color = (data.params ?? [])[index]?.datasetColor ?? c;
           let type = ((data.params || [])[index] || {type: 'bar'}).type || 'bar';
           let areaStyle;
           if (type === 'area') {
