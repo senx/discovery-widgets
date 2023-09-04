@@ -459,7 +459,7 @@ export class DiscoveryBarComponent {
       axisLabel: {
         show: !this.innerOptions.hideXAxis,
         color: Utils.getLabelColor(this.el),
-        formatter: this.innerOptions?.bar?.horizontal
+        formatter: !this.innerOptions?.bar?.horizontal
           ? this.innerOptions.timeMode === 'date'
             ? this.innerOptions.fullDateDisplay ? value =>
                 GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
