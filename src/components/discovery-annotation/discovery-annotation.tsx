@@ -301,7 +301,7 @@ export class DiscoveryAnnotation {
         transitionDuration: 0,
         formatter: (params) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            this.innerOptions.timeMode === 'timestamp'
+            this.innerOptions.timeMode !== 'date'
               ? params[0].value[1]
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.timeFormat) || '')
