@@ -110,11 +110,11 @@ export class DiscoveryGauge {
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -122,11 +122,11 @@ export class DiscoveryGauge {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -157,7 +157,7 @@ export class DiscoveryGauge {
       series.push(s);
     })
     this.chartOpts.series = series;
-    if ((this.chartOpts?.series as any[] || []).length === 0) {
+    if ((this.chartOpts?.series as any[] ?? []).length === 0) {
       this.chartOpts.title = {
         show: true,
         textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
@@ -240,10 +240,14 @@ export class DiscoveryGauge {
       if (GTSLib.isGts(gts)) {
         let max: number = Number.MIN_VALUE;
         const values = (gts.v || []);
-        const val = values[values.length - 1] || [];
+        const val = values[values.length - 1] ?? [];
         let value = 0;
         if (val.length > 0) {
           value = val[val.length - 1];
+          if (this.innerOptions.gauge?.decimals) {
+            const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+            value = Math.round(parseFloat(value + '') * dec) / dec;
+          }
         }
         if (!!data.params && !!data.params[i] && !!data.params[i].maxValue) {
           max = data.params[i].maxValue;
@@ -277,11 +281,17 @@ export class DiscoveryGauge {
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
+        let value = 0;
         if (gts.hasOwnProperty('value')) {
-          dataStruct.push({key: gts.key || '', value: gts.value || 0, max, min});
+          value = gts.value ?? 0;
         } else {
-          dataStruct.push({key: '', value: gts || 0, max, min});
+          value = gts ?? 0;
         }
+        if (this.innerOptions.gauge?.decimals) {
+          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+          value = Math.round(parseFloat(value + '') * dec) / dec;
+        }
+        dataStruct.push({key: gts.key ?? '', value, max, min});
       }
     }
     const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * (this.type === 'compass' ? 0.8 : 0.8);

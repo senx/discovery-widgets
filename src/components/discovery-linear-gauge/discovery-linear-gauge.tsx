@@ -203,8 +203,8 @@ export class DiscoveryLinearGauge {
     }
     this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
-    let overallMax = this.innerOptions.maxValue || 0;
-    let overallMin = this.innerOptions.minValue || 0;
+    let overallMax = this.innerOptions.maxValue ?? 0;
+    let overallMin = this.innerOptions.minValue ?? 0;
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
@@ -213,14 +213,15 @@ export class DiscoveryLinearGauge {
       const gts = gtsList[i];
       if (GTSLib.isGts(gts)) {
         let max: number = Number.MIN_VALUE;
-        const values = (gts.v || []);
-        const val = values[values.length - 1] || [];
+        const values = gts.v ?? [];
+        const val = values[values.length - 1] ?? [];
         let ts = 0;
         let value = 0;
         if (val.length > 0) {
           value = val[val.length - 1];
           ts = val[0];
         }
+
         if (!!data.params && !!data.params[i] && !!data.params[i].maxValue) {
           max = data.params[i].maxValue;
         } else {
@@ -235,6 +236,12 @@ export class DiscoveryLinearGauge {
           if (overallMin > value) {
             overallMin = value;
           }
+        }
+        if (this.innerOptions.gauge?.decimals) {
+          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+          value = Math.round(parseFloat(value + '') * dec) / dec;
+          max = Math.round(parseFloat(max + '') * dec) / dec;
+          min = Math.round(parseFloat(min + '') * dec) / dec;
         }
         dataStruct.push({
           key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
@@ -258,14 +265,27 @@ export class DiscoveryLinearGauge {
             overallMin = gts.value || Number.MAX_VALUE;
           }
         }
+        let value = 0;
         if (gts.hasOwnProperty('value')) {
-          dataStruct.push({key: gts.key || '', value: gts.value || 0, max, min, color, unit});
+          value = gts.value ?? 0;
         } else {
-          dataStruct.push({key: '', value: gts || 0, max, min, color, unit});
+          value = gts ?? 0;
         }
+        if (this.innerOptions.gauge?.decimals) {
+          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+          value = Math.round(parseFloat(value + '') * dec) / dec;
+          max = Math.round(parseFloat(max + '') * dec) / dec;
+          min = Math.round(parseFloat(min + '') * dec) / dec;
+        }
+        dataStruct.push({key: gts.key ?? '', value, max, min, color});
       }
     }
     this.LOG?.debug(['convert', 'dataStruct'], dataStruct);
+    if (this.innerOptions.gauge?.decimals) {
+      const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+      overallMax = Math.round(parseFloat(overallMax + '') * dec) / dec;
+      overallMin = Math.round(parseFloat(overallMin + '') * dec) / dec;
+    }
     dataStruct.forEach(d => {
       d.max = Math.max(overallMax, d.max);
       d.min = Math.min(overallMin, d.min);
@@ -324,7 +344,7 @@ export class DiscoveryLinearGauge {
         : ''
     }</div>
       <span class="label">${GTSLib.formatLabel(data.key)}</span>
-      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}${data.unit}</span>`
+      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}${data.unit??''}</span>`
   }
 
   hideTooltip() {
@@ -350,7 +370,7 @@ export class DiscoveryLinearGauge {
           }>{this.innerOptions.showLegend && !this.innerOptions.gauge?.horizontal ?
             <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
             <h3
-              class="discovery-legend">{d.value || '0'}{d.unit} {!this.innerOptions.gauge?.horizontal ?
+              class="discovery-legend">{d.value ?? '0'}{d.unit} {!this.innerOptions.gauge?.horizontal ?
               <br/> : ''}
               <span
                 class="small">of {d.value > 0 ? d.max: d.min}{d.unit}</span></h3>

@@ -128,6 +128,7 @@ export class Param {
   gauge?: {
     horizontal: boolean,
     showTicks: false,
+    decimals?: number
   };
   display?: {
     showChart?: boolean,
