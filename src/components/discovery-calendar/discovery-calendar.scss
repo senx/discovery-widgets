@@ -32,9 +32,10 @@
     overflow-y: auto;
     overflow-x: hidden;
     position: absolute;
-    padding-right: 20px;
+    margin-right: 5px;
 
     & > div {
+      width: calc(100% - 20px);
     }
   }
 
