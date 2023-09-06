@@ -138,8 +138,8 @@ export class DiscoveryMapComponent {
 
   @Method()
   async show(regexp: string) {
-    ((this.result as DataModel || new DataModel()).data as any[]).forEach(gts => {
-      const gtsName = (((this.result as DataModel || new DataModel()).params || [])[gts.id] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts);
+    GTSLib.flatDeep(((this.result as DataModel ?? new DataModel()).data as any[])).forEach(gts => {
+      const gtsName = ((this.result as DataModel ?? new DataModel()).params || [])[gts.id]?.key ?? GTSLib.serializeGtsMetadata(gts);
       if (new RegExp(regexp).test(gtsName)) {
         this.hidden[gts.id] = false;
       }
@@ -150,8 +150,8 @@ export class DiscoveryMapComponent {
 
   @Method()
   async hide(regexp: string) {
-    ((this.result as DataModel || new DataModel()).data as any[]).forEach(gts => {
-      const gtsName = (((this.result as DataModel || new DataModel()).params || [])[gts.id] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts);
+    GTSLib.flatDeep(((this.result as DataModel ?? new DataModel()).data as any[])).forEach(gts => {
+      const gtsName = ((this.result as DataModel ?? new DataModel()).params || [])[gts.id]?.key ?? GTSLib.serializeGtsMetadata(gts);
       if (new RegExp(regexp).test(gtsName)) {
         this.hidden[gts.id] = true;
       }
@@ -829,6 +829,7 @@ export class DiscoveryMapComponent {
     }
     this.positionDataLayer.addLayer(group);
   }
+
   render() {
     return <div class="map-container" style={{width: `${this.width}px`, height: `${this.height}px`}}>
       <div ref={(el) => this.mapElement = el}/>
