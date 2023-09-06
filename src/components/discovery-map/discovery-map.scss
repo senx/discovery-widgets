@@ -31,5 +31,8 @@
 
   .leaflet-popup-content-wrapper {
     overflow-wrap: anywhere;
+    img {
+      max-width: 100%;
+    }
   }
 }
