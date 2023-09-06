@@ -40,6 +40,10 @@
       background-color: var(--warp-view-button-bg-color, $w10-blue);
       min-width: var(--warp-view-button-width, auto);
       border-radius: var(--warp-view-button-border-radius, 0.25rem);
+      position: absolute;  
+      top: 50%;  
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 
