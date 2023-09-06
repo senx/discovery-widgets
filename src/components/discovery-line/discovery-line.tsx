@@ -586,7 +586,7 @@ export class DiscoveryLineComponent {
         })];
     if (markArea.length > 0 || markLine.length > 0) {
       (opts.series as SeriesOption[]).push({
-        name: 'marks',
+        name: '',
         type: 'line',
         symbolSize: 0,
         data: [],
@@ -779,11 +779,12 @@ export class DiscoveryLineComponent {
           } else {
             this.pois.push({date: c[0], name: event.seriesName, value: c[1], meta: {}, uid: v4()});
           }
-          this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.name);
+          this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
 
           this.poi.emit(this.pois);
           (this.chartOpts.series as SeriesOption[]).push({
-            name: 'poi',
+            name: '',
+            id: 'poi',
             type: 'line',
             data: [],
             markLine: {
@@ -799,10 +800,10 @@ export class DiscoveryLineComponent {
               }))
             }
           });
-          this.myChart.setOption(this.chartOpts ?? {}, true, false);
+          setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, true, false));
         }
       });
-      this.myChart.setOption(this.chartOpts ?? {}, true, false);
+      setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, true, false));
       initial = true;
     });
   }

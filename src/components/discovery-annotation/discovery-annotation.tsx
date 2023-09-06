@@ -521,10 +521,11 @@ export class DiscoveryAnnotation {
             uid: v4()
           });
         }
-        this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.name);
+        this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
         this.poi.emit(this.pois);
         (this.chartOpts.series as SeriesOption[]).push({
-          name: 'poi',
+          id: 'poi',
+          name: '',
           type: 'line',
           data: [],
           markLine: {
@@ -540,7 +541,7 @@ export class DiscoveryAnnotation {
             }))
           }
         });
-        this.myChart.setOption(this.chartOpts ?? {}, true, false);
+        setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, true, false));
       }
     });
     this.myChart.on('dataZoom', (event: any) => {
