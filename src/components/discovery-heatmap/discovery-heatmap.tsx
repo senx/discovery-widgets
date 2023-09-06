@@ -51,7 +51,7 @@ export class DiscoveryHeatmap {
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
-  private defOptions: Param = new Param();
+  private defOptions: Param = {...new Param(), timeMode: 'date'};
   private LOG: Logger;
   private divider = 1000;
   private myChart: ECharts;
@@ -129,11 +129,11 @@ export class DiscoveryHeatmap {
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -141,11 +141,11 @@ export class DiscoveryHeatmap {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -251,8 +251,8 @@ export class DiscoveryHeatmap {
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
-        formatter: (params) => `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-          (this.innerOptions.timeMode || 'date') === 'date'
+        formatter: (params: any) => `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
+          (this.innerOptions.timeMode ?? 'date') === 'date'
             ? GTSLib.toISOString(
               GTSLib.toTimestamp(params.value[0], this.divider, this.innerOptions.timeZone),
               this.divider, this.innerOptions.timeZone,
@@ -289,8 +289,8 @@ export class DiscoveryHeatmap {
         },
         axisLabel: {
           color: Utils.getLabelColor(this.el),
-          formatter: value => (this.innerOptions.timeMode || 'date') === 'date'
-            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(parseInt(value, 10), this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+          formatter: value => this.innerOptions.timeMode === 'date'
+            ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(parseInt(value, 10), 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
               .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
             : value
         },
@@ -330,11 +330,21 @@ export class DiscoveryHeatmap {
         }
       });
       this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
+        this.dataPointOver.emit({
+          date: event.value[0],
+          name: GTSLib.getName(event.seriesName),
+          value: event.value[1],
+          meta: {}
+        });
       });
       this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({
+          date: event.value[0],
+          name: GTSLib.getName(event.seriesName),
+          value: event.value[1],
+          meta: {}
+        });
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
