@@ -337,16 +337,15 @@ export class DiscoveryLineComponent {
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
-          if (!!data.params[gts.id]?.yAxis) {
+          if (data.params[gts.id]?.yAxis !== undefined) {
             multiY = true;
+            const y: CartesianAxisOption = this.getYAxis(color, data.params[gts.id].unit);
             if (data.params[gts.id].yAxis > 0) {
-              (s as any).yAxisIndex = data.params[gts.id].yAxis;
-              const y = this.getYAxis(color, data.params[gts.id].unit);
-              (y as any).position = 'right';
+              s.yAxisIndex = data.params[gts.id].yAxis;
+              y.position = 'right';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[data.params[gts.id].yAxis] = y;
             } else {
-              const y = this.getYAxis(color, data.params[gts.id].unit);
               (y as any).position = 'left';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[0] = y;
@@ -359,7 +358,7 @@ export class DiscoveryLineComponent {
           }
 
           // multi X
-          if (!!data.params[gts.id]?.xAxis) {
+          if (data.params[gts.id]?.xAxis !== undefined) {
             multiX = true;
             if (data.params[gts.id].xAxis > 0) {
               (s as any).xAxisIndex = data.params[gts.id].xAxis;
@@ -425,17 +424,16 @@ export class DiscoveryLineComponent {
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
-          if (!!data.params[gts.id] && data.params[gts.id].yAxis !== undefined) {
+          if (data.params[gts.id]?.yAxis !== undefined) {
             multiY = true;
+            const y: CartesianAxisOption = this.getYAxis(color, data.params[gts.id].unit);
             if (data.params[gts.id].yAxis > 0) {
-              (s as any).yAxisIndex = data.params[gts.id].yAxis;
-              const y = this.getYAxis(color, data.params[gts.id].unit);
-              (y as any).position = 'right';
+              s.yAxisIndex = data.params[gts.id].yAxis;
+              y.position = 'right';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[data.params[gts.id].yAxis] = y;
             } else {
-              const y = this.getYAxis(color, data.params[gts.id].unit);
-              (y as any).position = 'left';
+              y.position = 'left';
               if (!opts.yAxis) opts.yAxis = new Array(data.params.length);
               (opts.yAxis as any)[0] = y;
             }
@@ -447,7 +445,7 @@ export class DiscoveryLineComponent {
           }
 
           // multi X
-          if (!!data.params[gts.id] && data.params[gts.id].xAxis !== undefined) {
+          if (data.params[gts.id]?.xAxis !== undefined) {
             multiX = true;
             if (data.data[gts.id].length > 0) {
               if (data.params[gts.id].xAxis > 0) {
