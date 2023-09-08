@@ -1,6 +1,28 @@
 Discovery
 ---
 
+## v1.1.92
+
+> +  2023/09/07  | v1.1.92 
+> +  2023/09/06  | [line] [area] [scatter] [annotation] Fixes [#2](https://github.com/senx/discovery-widgets/issues/2), If we use option { 'showLegend' true } and threshold options, there will be a superfluous legend called 'marks' as well as the legend for the data gts. 
+> +  2023/09/06  | generated Readmes 
+> +  2023/09/06  | [map] Fix image size overflow in custom content tooltips 
+> +  2023/09/06  | [map] Fix 'oceans' tile server url 
+> +  2023/09/06  | [map] Fix show/hide 
+> +  2023/09/06  | [line] [area] [scatter] Fix multi axis 
+> +  2023/09/06  | [heatmap] Fix dates on X axis 
+> +  2023/09/05  | [gauge] [linear-gauge] Minor fixes and decimal format support 
+> +  2023/09/05  | [calendar] Fix right margin 
+> +  2023/09/04  | [annotation] Fix tooltip in timestamp mode 
+> +  2023/09/04  | Readmes 
+> +  2023/09/04  | [bar] Fix marker's label position 
+> +  2023/09/04  | [bar] Fix color per dataset when using custom data 
+> +  2023/09/04  | [bar] Fix custom param per dataset when using custom data 
+> +  2023/09/04  | [bar] Fix custom date format on x Axis 
+> +  2023/09/04  | fix '=' in label values causes wrong display. 
+> +  2023/09/01  | changelog 
+> +  2022/11/23  | center button within tile 
+
 ## v1.1.91
 
 > +  2023/09/01  | v1.1.91 
