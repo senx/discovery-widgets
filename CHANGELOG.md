@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.1.93
+
+> +  2023/09/12  | v1.1.93 
+> +  2023/09/12  | [button:radio] Fix vertical and horizontal alignment 
+> +  2023/09/12  | deps update 
+> +  2023/09/08  | changelog 
+> +  2023/09/08  | deps update 
+
 ## v1.1.92
 
 > +  2023/09/07  | v1.1.92 
