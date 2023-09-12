@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -62,7 +62,6 @@ export class DiscoveryButtonComponent {
   private innerVars: any = {};
   private innerResult: DataModel;
 
-
   @Watch('vars')
   varsUpdate(newValue: string, oldValue: string) {
     this.parseResult();
@@ -109,7 +108,6 @@ export class DiscoveryButtonComponent {
     bgColor = dm.bgColor || bgColor;
     return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
   }
-
 
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryButtonComponent, this.debug);
@@ -203,7 +201,9 @@ export class DiscoveryButtonComponent {
           ? <button type="button" class="discovery-btn"
                     innerHTML={this.label}
                     onClick={() => this.handleClick()}/>
-          : <div class="discovery-btn-group">
+          : ''}
+        {this.type === 'button:radio'
+          ? <div class="discovery-btn-group">
             {GTSLib.isArray(this.innerResult?.data)
               ? (this.innerResult?.data || []).map(v =>
                 <button type="button" class={{
@@ -214,7 +214,7 @@ export class DiscoveryButtonComponent {
                         onClick={() => this.toggle(v.value)}
                 />
               ) : ''}
-          </div>}
+          </div> : ''}
       </div>
     ];
   }
