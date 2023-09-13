@@ -772,12 +772,12 @@ export class DiscoveryLineComponent {
       this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
       this.myChart.on('click', (event: any) => {
         const c = event.data.coord || event.data;
-        this.dataPointSelected.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}});
+        this.dataPointSelected.emit({date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {}});
         if (this.innerOptions.poi) {
           if (this.pois.find(p => p.date === c[0])) {
             this.pois = this.pois.filter(p => p.date !== c[0]);
           } else {
-            this.pois.push({date: c[0], name: event.seriesName, value: c[1], meta: {}, uid: v4()});
+            this.pois.push({date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {}, uid: v4()});
           }
           this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
 
