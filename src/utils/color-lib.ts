@@ -152,20 +152,20 @@ export class ColorLib {
   }
 
   static sanitizeColor(color: string) {
-    if (color.startsWith('#')) {
+    if ((color ?? '').startsWith('#')) {
       return color;
-    } else if (color.startsWith('rgb(')) {
+    } else if ((color ?? '').startsWith('rgb(')) {
       const rex = /^rgb\((\d+), ?(\d+), ?(\d+)\)/gi
       const res = rex.exec(color);
       if (!res || res.length < 4) return color;
       return ColorLib.rgb2hex(parseInt(res[1], 10), parseInt(res[2], 10), parseInt(res[3], 10))
-    } else if (color.startsWith('rgba(')) {
+    } else if ((color ?? '').startsWith('rgba(')) {
       const rex = /^rgba\((\d+), ?(\d+), ?(\d+), ?\d\)/gi
       const res = rex.exec(color);
       if (!res || res.length < 4) return color;
       return ColorLib.rgb2hex(res[1], res[2], res[3]);
     } else {
-      return isCssColorName(color) ? cssColorNames[color.toLowerCase()] : color === 'transparent' ? '#ffffffff' : color;
+      return isCssColorName(color ?? '') ? cssColorNames[color.toLowerCase()] : color === 'transparent' ? '#ffffffff' : color;
     }
   }
 
@@ -179,8 +179,8 @@ export class ColorLib {
   }
 
   static transparentize(color, alpha = 0.5): string {
-    color = ColorLib.sanitizeColor(color);
-    return 'rgba(' + ColorLib.hexToRgb(color).concat(alpha).join(',') + ')';
+    color = ColorLib.sanitizeColor(color ?? '');
+    return 'rgba(' + ColorLib.hexToRgb(color ?? '').concat(alpha).join(',') + ')';
   }
 
   static hsvGradientFromRgbColors(c1, c2, steps) {

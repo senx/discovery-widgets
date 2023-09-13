@@ -384,8 +384,8 @@ export class DiscoveryLineComponent {
       } else if (['scatter', 'line'].includes(this.type) && gts.label && gts.values) {
         // Custom data for scatter
         this.innerOptions.timeMode = 'custom';
-        const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
-        const color = ((data.params || [])[gts.id] || {datasetColor: c}).datasetColor || c;
+        const id = gts?.id ?? index;
+        const color = (data.params ?? [])[id]?.datasetColor ?? ColorLib.getColor(id, this.innerOptions.scheme);
         const smax = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
         const smin = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
         const isBubble = smax !== smin;
