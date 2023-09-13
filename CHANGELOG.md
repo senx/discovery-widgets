@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.1.94
+
+> +  2023/09/13  | v1.1.94 
+> +  2023/09/13  | [line] [area] [scatter] Fix custom data handling 
+> +  2023/09/13  | [line] [area] [scatter] Fix POI name 
+> +  2023/09/13  | [linear-gauge] Fix missing unit 
+> +  2023/09/12  | changelog 
+
 ## v1.1.93
 
 > +  2023/09/12  | v1.1.93 
