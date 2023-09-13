@@ -277,7 +277,7 @@ export class DiscoveryLinearGauge {
           max = Math.round(parseFloat(max + '') * dec) / dec;
           min = Math.round(parseFloat(min + '') * dec) / dec;
         }
-        dataStruct.push({key: gts.key ?? '', value, max, min, color});
+        dataStruct.push({key: gts.key ?? '', value, max, min, color, unit});
       }
     }
     this.LOG?.debug(['convert', 'dataStruct'], dataStruct);
