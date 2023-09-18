@@ -669,18 +669,14 @@ export class DiscoveryMapComponent {
     }
     marker.on('mouseout', () => this.markerOver = false);
     marker.on('click', () => {
-      this.dataPointSelected.emit({
-        date: ts,
-        name: positionData.key,
-        value,
-        meta: positionData.properties
-      });
+      const date = ts * (this.innerOptions.timeMode === 'date' ? this.divider : 1);
+      this.dataPointSelected.emit({date, name: positionData.key, value, meta: positionData.properties});
       if (this.innerOptions.poi) {
         if (this.pois.find(p => p.lat === marker.getLatLng().lat && p.lng === marker.getLatLng().lng && p.name === positionData.key)) {
           this.pois = this.pois.filter(p => p.lat !== marker.getLatLng().lat && p.lng !== marker.getLatLng().lng && p.name !== positionData.key);
         } else {
           this.pois.push({
-            date: ts,
+            date,
             name: positionData.key,
             value,
             meta: positionData.properties,

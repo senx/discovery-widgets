@@ -503,23 +503,13 @@ export class DiscoveryAnnotation {
     });
     this.myChart.on('click', (event: any) => {
       const c = event.data.coord || event.data;
-      this.dataPointSelected.emit({
-        date: c[1],
-        name: GTSLib.getName(event.seriesName),
-        value: c[2],
-        meta: {}
-      });
+      const date = c[0] * (this.innerOptions.timeMode === 'date' ? this.divider : 1);
+      this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: c[2], meta: {}});
       if (this.innerOptions.poi) {
         if (this.pois.find(p => p.date === c[1])) {
           this.pois = this.pois.filter(p => p.date !== c[1]);
         } else {
-          this.pois.push({
-            date: c[1],
-            name: GTSLib.getName(event.seriesName),
-            value: c[2],
-            meta: {},
-            uid: v4()
-          });
+          this.pois.push({date, name: GTSLib.getName(event.seriesName), value: c[2], meta: {}, uid: v4()});
         }
         this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
         this.poi.emit(this.pois);
