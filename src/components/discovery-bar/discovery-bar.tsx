@@ -672,12 +672,16 @@ export class DiscoveryBarComponent {
       this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
 
       this.myChart.on('click', (event: any) => {
-        const date = event.value[0] * (this.innerOptions.timeMode === 'date' ? this.divider : 1);
-        this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
+        const date = this.innerOptions.timeMode === 'date'
+          ? GTSLib.zonedTimeToUtc(event.value[0], 1, this.innerOptions.timeZone) * this.divider
+          : event.value[0];
+        if (event.componentType !== 'markLine') {
+          this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
+        }
         if (this.innerOptions.poi) {
           if (this.pois.find(p => p.date === event.value[0])) {
             this.pois = this.pois.filter(p => p.date !== event.value[0]);
-          } else {
+          } else if (event.componentType !== 'markLine') {
             this.pois.push({date, name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}, uid: v4()});
           }
           this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
@@ -696,7 +700,9 @@ export class DiscoveryBarComponent {
                 name: 'poi-' + p.uid,
                 label: {show: false},
                 lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
-                xAxis: ((p.date / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+                xAxis: this.innerOptions.timeMode === 'date'
+                  ? GTSLib.utcToZonedTime(p.date / this.divider, 1, this.innerOptions.timeZone)
+                  : p.date
               }))
             }
           });

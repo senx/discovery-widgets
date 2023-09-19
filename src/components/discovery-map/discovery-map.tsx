@@ -669,7 +669,9 @@ export class DiscoveryMapComponent {
     }
     marker.on('mouseout', () => this.markerOver = false);
     marker.on('click', () => {
-      const date = ts * (this.innerOptions.timeMode === 'date' ? this.divider : 1);
+      const date = this.innerOptions.timeMode === 'date'
+        ? GTSLib.zonedTimeToUtc(ts, 1, this.innerOptions.timeZone) * this.divider
+        : ts;
       this.dataPointSelected.emit({date, name: positionData.key, value, meta: positionData.properties});
       if (this.innerOptions.poi) {
         if (this.pois.find(p => p.lat === marker.getLatLng().lat && p.lng === marker.getLatLng().lng && p.name === positionData.key)) {

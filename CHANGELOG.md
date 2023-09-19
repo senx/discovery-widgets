@@ -4,7 +4,7 @@ Discovery
 ## v1.1.95
 
 > +  2023/09/18  | v1.1.95 
-> +  2023/09/18  | [line] [annotations] [bar] [map] Fix POIs when timeMod is 'date' 
+> +  2023/09/18  | [line] [annotations] [bar] [map] Fix POIs when timeMode is 'date' 
 > +  2023/09/13  | changelog 
 
 ## v1.1.94

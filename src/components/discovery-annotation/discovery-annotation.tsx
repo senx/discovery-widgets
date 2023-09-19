@@ -503,12 +503,16 @@ export class DiscoveryAnnotation {
     });
     this.myChart.on('click', (event: any) => {
       const c = event.data.coord || event.data;
-      const date = c[0] * (this.innerOptions.timeMode === 'date' ? this.divider : 1);
-      this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: c[2], meta: {}});
+      const date = this.innerOptions.timeMode === 'date'
+        ? GTSLib.zonedTimeToUtc(c[0], 1, this.innerOptions.timeZone) * this.divider
+        : c[0];
+      if (event.componentType !== 'markLine') {
+        this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: c[2], meta: {}});
+      }
       if (this.innerOptions.poi) {
         if (this.pois.find(p => p.date === c[1])) {
           this.pois = this.pois.filter(p => p.date !== c[1]);
-        } else {
+        } else if (event.componentType !== 'markLine') {
           this.pois.push({date, name: GTSLib.getName(event.seriesName), value: c[2], meta: {}, uid: v4()});
         }
         this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
@@ -527,7 +531,9 @@ export class DiscoveryAnnotation {
               name: 'poi-' + p.uid,
               label: {show: false},
               lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
-              xAxis: ((p.date / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+              xAxis: this.innerOptions.timeMode === 'date'
+                ? GTSLib.utcToZonedTime(p.date / this.divider, 1, this.innerOptions.timeZone)
+                : p.date
             }))
           }
         });

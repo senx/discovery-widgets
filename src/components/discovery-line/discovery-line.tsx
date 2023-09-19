@@ -772,12 +772,16 @@ export class DiscoveryLineComponent {
       this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
       this.myChart.on('click', (event: any) => {
         const c = event.data.coord || event.data;
-        const date = c[0] * (this.innerOptions.timeMode === 'date' ? this.divider : 1);
-        this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: c[1], meta: {}});
+        const date = this.innerOptions.timeMode === 'date'
+          ? GTSLib.zonedTimeToUtc(c[0], 1, this.innerOptions.timeZone) * this.divider
+          : c[0];
+        if (event.componentType !== 'markLine') {
+          this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: c[1], meta: {}});
+        }
         if (this.innerOptions.poi) {
           if (this.pois.find(p => p.date === date)) {
             this.pois = this.pois.filter(p => p.date !== date);
-          } else {
+          } else if (event.componentType !== 'markLine') {
             this.pois.push({date, name: GTSLib.getName(event.seriesName), value: c[1], meta: {}, uid: v4()});
           }
           this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
@@ -792,12 +796,16 @@ export class DiscoveryLineComponent {
               symbol: ['none', 'pin'],
               symbolSize: 20,
               symbolKeepAspect: true,
-              data: this.pois.map(p => ({
-                name: 'poi-' + p.uid,
-                label: {show: false},
-                lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
-                xAxis: ((p.date / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
-              }))
+              data: this.pois.map(p => {
+                return {
+                  name: 'poi-' + p.uid,
+                  label: {show: false},
+                  lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
+                  xAxis: this.innerOptions.timeMode === 'date'
+                    ? GTSLib.utcToZonedTime(p.date / this.divider, 1, this.innerOptions.timeZone)
+                    : p.date
+                };
+              })
             }
           });
           setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, true, false));
