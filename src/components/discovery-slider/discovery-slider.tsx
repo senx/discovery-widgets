@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2023 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -47,25 +47,26 @@ export class DiscoverySlider {
   private slider: API;
   private divider: number;
   private innerValue: number | number[];
-
+  private defOptions = {...new Param(), input: {min: 0, max: 100, horizontal: true, showTicks: true, step: 1}};
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
+
     if (!!this.options && typeof this.options === 'string') {
       this.innerOptions = JSON.parse(this.options);
     } else {
       this.innerOptions = {...this.options as Param};
     }
-    setTimeout(() => {
-      this.slider.updateOptions(this.getSliderOptions(), false);
-      this.slider.off('change');
-      this.slider.off('slide');
-      this.slider.set(this.innerOptions.input?.value);
-      this.setChangeListener();
+    this.innerOptions = Utils.mergeDeep<Param>({...this.defOptions}, this.innerOptions || {});
+    this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout(async () => {
+      await this.setValue(this.innerValue)
       if (this.LOG) {
         this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
       }
+      return Promise.resolve();
     });
   }
 
@@ -77,10 +78,7 @@ export class DiscoverySlider {
     } else {
       this.innerOptions = this.options;
     }
-    const options = Utils.mergeDeep<Param>({
-      ...new Param(),
-      input: {min: 0, max: 100, horizontal: true, showTicks: true, step: 1}
-    }, this.innerOptions || {});
+    const options = Utils.mergeDeep<Param>({...this.defOptions}, this.innerOptions || {});
     this.innerOptions = {...options};
     this.LOG?.debug(['componentWillLoad'], this.innerOptions);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
@@ -148,26 +146,26 @@ export class DiscoverySlider {
       format,
       start,
       connect,
-      orientation: this.innerOptions.input?.horizontal ? 'horizontal' : 'vertical',
+      orientation: this.innerOptions.input?.horizontal ?? true ? 'horizontal' : 'vertical',
       tooltips: this.innerOptions.timeMode === 'date' ? true : {
         to: v => parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || ''),
         from: v => parseFloat((v).toFixed(4))
       },
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
       range: minmax,
-      pips: this.innerOptions.input?.showTicks ? {
+      pips: this.innerOptions.input?.showTicks ?? true ? {
         mode: 'positions',
         values: [0, 25, 50, 75, 100],
         stepped: true,
         density: 4,
         format,
       } as any : undefined
-    } as any
+    } as any;
   }
 
   private setChangeListener() {
-    const throttledHandler = v => {
-      let r;
+    const throttledHandler = (v: any) => {
+      let r: any;
       if (GTSLib.isArray(v) && v.length > 1) {
         r = this.innerOptions.timeMode === 'date'
           ? [v[0], v[1]]
