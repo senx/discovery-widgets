@@ -64,6 +64,24 @@ export namespace Components {
         "unit": string;
         "width": number;
     }
+    interface DiscoveryBoxplot {
+        "debug": boolean;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "height": number;
+        "hide": (regexp: string) => Promise<void>;
+        "hideById": (id: number | string) => Promise<void>;
+        "options": Param | string;
+        "resize": () => Promise<void>;
+        "result": DataModel | string;
+        "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
+        "setZoom": (dataZoom: { start?: number; end?: number; }) => Promise<void>;
+        "show": (regexp: string) => Promise<void>;
+        "showById": (id: number | string) => Promise<void>;
+        "type": ChartType;
+        "unFocus": () => Promise<void>;
+        "unit": string;
+        "width": number;
+    }
     interface DiscoveryButton {
         "debug": boolean;
         "export": (type?: 'png' | 'svg') => Promise<any>;
@@ -383,6 +401,10 @@ export interface DiscoveryBarPolarCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoveryBarPolarElement;
 }
+export interface DiscoveryBoxplotCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDiscoveryBoxplotElement;
+}
 export interface DiscoveryButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoveryButtonElement;
@@ -489,6 +511,12 @@ declare global {
     var HTMLDiscoveryBarPolarElement: {
         prototype: HTMLDiscoveryBarPolarElement;
         new (): HTMLDiscoveryBarPolarElement;
+    };
+    interface HTMLDiscoveryBoxplotElement extends Components.DiscoveryBoxplot, HTMLStencilElement {
+    }
+    var HTMLDiscoveryBoxplotElement: {
+        prototype: HTMLDiscoveryBoxplotElement;
+        new (): HTMLDiscoveryBoxplotElement;
     };
     interface HTMLDiscoveryButtonElement extends Components.DiscoveryButton, HTMLStencilElement {
     }
@@ -638,6 +666,7 @@ declare global {
         "discovery-annotation": HTMLDiscoveryAnnotationElement;
         "discovery-bar": HTMLDiscoveryBarElement;
         "discovery-bar-polar": HTMLDiscoveryBarPolarElement;
+        "discovery-boxplot": HTMLDiscoveryBoxplotElement;
         "discovery-button": HTMLDiscoveryButtonElement;
         "discovery-calendar": HTMLDiscoveryCalendarElement;
         "discovery-dashboard": HTMLDiscoveryDashboardElement;
@@ -706,6 +735,22 @@ declare namespace LocalJSX {
         "onDraw"?: (event: DiscoveryBarPolarCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBarPolarCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryBarPolarCustomEvent<any>) => void;
+        "options"?: Param | string;
+        "result"?: DataModel | string;
+        "type"?: ChartType;
+        "unit"?: string;
+        "width"?: number;
+    }
+    interface DiscoveryBoxplot {
+        "debug"?: boolean;
+        "height"?: number;
+        "onDataPointOver"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
+        "onDataPointSelected"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
+        "onDataZoom"?: (event: DiscoveryBoxplotCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
+        "onDraw"?: (event: DiscoveryBoxplotCustomEvent<void>) => void;
+        "onLeftMarginComputed"?: (event: DiscoveryBoxplotCustomEvent<number>) => void;
+        "onPoi"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
+        "onTimeBounds"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
@@ -996,6 +1041,7 @@ declare namespace LocalJSX {
         "discovery-annotation": DiscoveryAnnotation;
         "discovery-bar": DiscoveryBar;
         "discovery-bar-polar": DiscoveryBarPolar;
+        "discovery-boxplot": DiscoveryBoxplot;
         "discovery-button": DiscoveryButton;
         "discovery-calendar": DiscoveryCalendar;
         "discovery-dashboard": DiscoveryDashboard;
@@ -1029,6 +1075,7 @@ declare module "@stencil/core" {
             "discovery-annotation": LocalJSX.DiscoveryAnnotation & JSXBase.HTMLAttributes<HTMLDiscoveryAnnotationElement>;
             "discovery-bar": LocalJSX.DiscoveryBar & JSXBase.HTMLAttributes<HTMLDiscoveryBarElement>;
             "discovery-bar-polar": LocalJSX.DiscoveryBarPolar & JSXBase.HTMLAttributes<HTMLDiscoveryBarPolarElement>;
+            "discovery-boxplot": LocalJSX.DiscoveryBoxplot & JSXBase.HTMLAttributes<HTMLDiscoveryBoxplotElement>;
             "discovery-button": LocalJSX.DiscoveryButton & JSXBase.HTMLAttributes<HTMLDiscoveryButtonElement>;
             "discovery-calendar": LocalJSX.DiscoveryCalendar & JSXBase.HTMLAttributes<HTMLDiscoveryCalendarElement>;
             "discovery-dashboard": LocalJSX.DiscoveryDashboard & JSXBase.HTMLAttributes<HTMLDiscoveryDashboardElement>;

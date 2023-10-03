@@ -1,4 +1,4 @@
-# discovery-tabular
+# discovery-bar
 
 
 
@@ -20,12 +20,15 @@
 
 ## Events
 
-| Event               | Description | Type                          |
-| ------------------- | ----------- | ----------------------------- |
-| `dataPointOver`     |             | `CustomEvent<any>`            |
-| `dataPointSelected` |             | `CustomEvent<any>`            |
-| `discoveryEvent`    |             | `CustomEvent<DiscoveryEvent>` |
-| `draw`              |             | `CustomEvent<void>`           |
+| Event                | Description | Type                                                                                        |
+| -------------------- | ----------- | ------------------------------------------------------------------------------------------- |
+| `dataPointOver`      |             | `CustomEvent<any>`                                                                          |
+| `dataPointSelected`  |             | `CustomEvent<any>`                                                                          |
+| `dataZoom`           |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; type?: string; }>` |
+| `draw`               |             | `CustomEvent<void>`                                                                         |
+| `leftMarginComputed` |             | `CustomEvent<number>`                                                                       |
+| `poi`                |             | `CustomEvent<any>`                                                                          |
+| `timeBounds`         |             | `CustomEvent<any>`                                                                          |
 
 
 ## Methods
@@ -40,7 +43,77 @@ Type: `Promise<string>`
 
 
 
+### `hide(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `hideById(id: number | string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resize() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setFocus(regexp: string, ts: number, value?: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setZoom(dataZoom: { start?: number; end?: number; }) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `show(regexp: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `showById(id: number | string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `unFocus() => Promise<void>`
 
 
 
@@ -60,15 +133,13 @@ Type: `Promise<void>`
 ### Depends on
 
 - [discovery-spinner](../discovery-spinner)
-- [discovery-pageable](discovery-pageable)
 
 ### Graph
 ```mermaid
 graph TD;
-  discovery-tabular --> discovery-spinner
-  discovery-tabular --> discovery-pageable
-  discovery-tile-result --> discovery-tabular
-  style discovery-tabular fill:#f9f,stroke:#333,stroke-width:4px
+  discovery-boxplot --> discovery-spinner
+  discovery-tile-result --> discovery-boxplot
+  style discovery-boxplot fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------
