@@ -458,7 +458,7 @@ export class DiscoveryBarPolarComponent {
           switch (type) {
             case 'mouseover':
               const c = event.data.coord || event.data;
-              this.dataPointSelected.emit({date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {}})
+              this.dataPointOver.emit({date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {}})
               break;
             case 'highlight':
               let ts;
@@ -470,7 +470,7 @@ export class DiscoveryBarPolarComponent {
                   : ts;
               });
               if (ts !== undefined) {
-                this.dataPointOver.emit({date: ts, name: '.*', meta: {}});
+                this.dataPointSelected.emit({date: ts, name: '.*', meta: {}});
               }
               break;
             default:
