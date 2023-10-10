@@ -58,6 +58,7 @@ export class DiscoveryInputComponent {
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label = 'Ok';
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   @State() selectedValue: string | string[] | any;
   @State() values = [];
 

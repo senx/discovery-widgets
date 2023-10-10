@@ -32,6 +32,37 @@ dayjs.extend(duration)
 export class GTSLib {
   private static LOG: Logger = new Logger(GTSLib);
 
+
+  public static getMinMax(values: number[]): { minVal: number, maxVal: number } {
+    let minVal = Number.MAX_SAFE_INTEGER;
+    let maxVal = Number.MIN_SAFE_INTEGER;
+    for (let v = 0; v < (values ?? []).length; v++) {
+      const val = values[v];
+      if (val > maxVal) maxVal = val;
+      if (val < minVal) minVal = val;
+    }
+    return {minVal, maxVal};
+  }
+
+  public static getBounds(values: number[][]): { minVal: number, maxVal: number, minTS: number, maxTS: number, rawVals: number[] } {
+    let minVal = Number.MAX_SAFE_INTEGER;
+    let maxVal = Number.MIN_SAFE_INTEGER;
+    let minTS = Number.MAX_SAFE_INTEGER;
+    let maxTS = Number.MIN_SAFE_INTEGER;
+    const rawVals: number[] = [];
+    for (let v = 0; v < (values ?? []).length; v++) {
+      const tuple = values[v];
+      const ts = tuple[0];
+      const val = tuple[tuple.length - 1];
+      if (ts > maxTS) maxTS = ts;
+      if (ts < minTS) minTS = ts;
+      if (val > maxVal) maxVal = val;
+      if (val < minVal) minVal = val;
+      rawVals.push(val);
+    }
+    return {minVal, maxVal, minTS, maxTS, rawVals};
+  }
+
   static cleanArray(actual: any[]) {
     return actual.filter((i) => !!i);
   }

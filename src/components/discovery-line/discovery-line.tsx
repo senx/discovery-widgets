@@ -60,7 +60,6 @@ export class DiscoveryLineComponent {
   @State() innerOptions: Param;
 
   private graph: HTMLDivElement;
-  private wrap: HTMLDivElement;
   private chartOpts: EChartsOption;
   private defOptions: Param = {...new Param(), timeMode: 'date', xCursor: true, yCursor: false};
   private LOG: Logger;
@@ -174,7 +173,7 @@ export class DiscoveryLineComponent {
       tooltip: {
         transitionDuration: 0,
         trigger: 'axis',
-        position: (pos, params, dom, rect, size) => {
+        position: (pos, _params, _dom, _rect, size) => {
           const obj = {top: 10};
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
           return obj;
@@ -386,17 +385,17 @@ export class DiscoveryLineComponent {
         this.innerOptions.timeMode = 'custom';
         const id = gts?.id ?? index;
         const color = (data.params ?? [])[id]?.datasetColor ?? ColorLib.getColor(id, this.innerOptions.scheme);
-        const smax = Math.max(...gts.values.map(l => l[2] || 1)) || 1;
-        const smin = Math.min(...gts.values.map(l => l[2] || 0)) || 0;
-        const isBubble = smax !== smin;
+        const sMax = Math.max(...gts.values.map((l: any[]) => l[2] || 1)) || 1;
+        const sMin = Math.min(...gts.values.map((l: any[]) => l[2] || 0)) || 0;
+        const isBubble = sMax !== sMin;
         const s = {
           type: this.type,
           name: GTSLib.setName(gts.id, gts.label),
           id: gts.id,
           data: gts.values[0] && gts.values[0].length === 3
-            ? (gts.values ?? []).map(v => ({
+            ? (gts.values ?? []).map((v: any[]) => ({
               value: [GTSLib.utcToZonedTime(v[0], 1, this.innerOptions.timeZone), v[1]],
-              symbolSize: isBubble ? (50 * v[2] / (smax - smin)) || this.innerOptions.dotSize || 10 : this.innerOptions.dotSize || 10
+              symbolSize: isBubble ? (50 * v[2] / (sMax - sMin)) || this.innerOptions.dotSize || 10 : this.innerOptions.dotSize || 10
             }))
             : gts.values,
           animation: false,
@@ -486,7 +485,10 @@ export class DiscoveryLineComponent {
             type: 'polygon',
             transition: ['shape'],
             shape: {points: polygon.shape.map(p => api.coord(p))},
-            style: api.style({fill: !!polygon.fill ? ColorLib.transparentize(color) : undefined, stroke: color})
+            style: api.style({
+              fill: !!polygon.fill ? ColorLib.transparentize(color) : undefined,
+              stroke: color
+            })
           };
         },
         clip: true,
@@ -579,7 +581,12 @@ export class DiscoveryLineComponent {
         .map((t, i) => {
           return {
             name: t.name || t.value || 'mark-' + i,
-            label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name},
+            label: {
+              color: t.color || '#D81B60',
+              position: 'insideEndTop',
+              formatter: '{b}',
+              show: !!t.name
+            },
             lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
             xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
           }
@@ -638,7 +645,7 @@ export class DiscoveryLineComponent {
         show: !this.innerOptions.hideXAxis,
         color: color || Utils.getLabelColor(this.el),
         formatter: this.innerOptions.fullDateDisplay
-          ? value => GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+          ? (value: number) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
             .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
           : undefined
       },
@@ -673,7 +680,7 @@ export class DiscoveryLineComponent {
     }
   }
 
-  private zoomHandler(start, end) {
+  private zoomHandler(start: number, end: number) {
     this.dataZoom.emit({
       start,
       end,
@@ -695,8 +702,8 @@ export class DiscoveryLineComponent {
               this.dataPointOver.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
               break;
             case 'highlight':
-              let ts;
-              (event.batch || []).forEach(b => {
+              let ts: number;
+              (event.batch || []).forEach((b: any) => {
                 const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
                 ts = s.data[b.dataIndex][0];
                 ts = this.innerOptions.timeMode === 'date'
@@ -717,7 +724,7 @@ export class DiscoveryLineComponent {
     setTimeout(() => {
       this.parsing = false
       this.rendering = true;
-      this.myChart = init(this.graph, {locale: this.innerOptions.timeZone || 'UTC'});
+      this.myChart = init(this.graph, null, {renderer: 'canvas'});
       let initial = false;
       this.myChart.on('rendered', () => {
         this.rendering = false;
@@ -739,8 +746,8 @@ export class DiscoveryLineComponent {
         });
       });
       this.myChart.on('dataZoom', (event: any) => {
-        let start;
-        let end;
+        let start: number;
+        let end: number;
         if (!!event.batch) {
           const batch = (event.batch || [])[0] || {};
           start = batch.start || batch.startValue;
@@ -782,7 +789,13 @@ export class DiscoveryLineComponent {
           if (this.pois.find(p => p.date === date)) {
             this.pois = this.pois.filter(p => p.date !== date);
           } else if (event.componentType !== 'markLine') {
-            this.pois.push({date, name: GTSLib.getName(event.seriesName), value: c[1], meta: {}, uid: v4()});
+            this.pois.push({
+              date,
+              name: GTSLib.getName(event.seriesName),
+              value: c[1],
+              meta: {},
+              uid: v4()
+            });
           }
           this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
           this.poi.emit(this.pois);
@@ -838,7 +851,10 @@ export class DiscoveryLineComponent {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png'): Promise<string> {
-    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({
+      type,
+      excludeComponents: ['toolbox']
+    }) : undefined);
   }
 
   @Method()
@@ -897,7 +913,7 @@ export class DiscoveryLineComponent {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(s.name))
         .forEach(s => {
-          const data = s.data.filter(d => d[0] === date);
+          const data = s.data.filter((d: number[]) => d[0] === date);
           if (data && data.length > 0 && data[0]) {
             seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
             dataIndex = s.data.indexOf(data[0])
@@ -905,10 +921,7 @@ export class DiscoveryLineComponent {
               symbol: 'circle', data: [{
                 symbolSize: 5,
                 name: s.name,
-                itemStyle: {
-                  color: '#fff',
-                  borderColor: s.lineStyle.color,
-                },
+                itemStyle: {color: '#fff', borderColor: s.lineStyle.color},
                 yAxis: data[0][1],
                 xAxis: date
               }]
@@ -977,8 +990,9 @@ export class DiscoveryLineComponent {
   }
 
   render() {
-    return <div style={{width: '100%', height: '100%'}} ref={(el) => this.wrap = el}>
-      {this.parsing && !!this.innerOptions?.showLoader ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
+    return <div style={{width: '100%', height: '100%'}}>
+      {this.parsing && !!this.innerOptions?.showLoader ?
+        <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el} onMouseOver={() => this.hideMarkers()}></div>
     </div>;
