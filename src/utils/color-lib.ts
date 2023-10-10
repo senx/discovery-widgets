@@ -64,7 +64,7 @@ export enum HeatMaps {
   T_MAX_400_FILM = 'T_MAX_400_FILM',
   MATRIX = 'MATRIX',
   CHALK = 'CHALK',
-  VINTAGE = 'CHALK',
+  VINTAGE = 'VINTAGE',
   DEFAULT = 'DEFAULT',
 }
 
@@ -178,12 +178,19 @@ export class ColorLib {
     ] : null;
   }
 
-  static transparentize(color, alpha = 0.5): string {
+  static transparentize(color: string, alpha = 0.5): string {
     color = ColorLib.sanitizeColor(color ?? '');
     return 'rgba(' + ColorLib.hexToRgb(color ?? '').concat(alpha).join(',') + ')';
   }
 
-  static hsvGradientFromRgbColors(c1, c2, steps) {
+  static hsvGradientFromRgbColors(c1: { r: number; g: number; b: number; h: any; s: any; v: any; }, c2: {
+    r: number;
+    g: number;
+    b: number;
+    h: any;
+    s: any;
+    v: any;
+  }, steps: any) {
     const c1hsv = ColorLib.rgb2hsv(c1.r, c1.g, c1.b);
     const c2hsv = ColorLib.rgb2hsv(c2.r, c2.g, c2.b);
     c1.h = c1hsv[0];
@@ -212,8 +219,8 @@ export class ColorLib {
     const M = Math.max(normR, normG, normB);
     const m = Math.min(normR, normG, normB);
     const d = M - m;
-    let h;
-    let s;
+    let h: number;
+    let s: number;
     const v = M;
     if (d === 0) {
       h = 0;
@@ -263,9 +270,9 @@ export class ColorLib {
   }
 
   private static hsv2rgb(h: any, s: any, v: any) {
-    let r;
-    let g;
-    let b;
+    let r: number;
+    let g: number;
+    let b: number;
     const i = Math.floor(h * 6);
     const f = h * 6 - i;
     const p = v * (1 - s);
@@ -306,8 +313,8 @@ export class ColorLib {
     return [r * 255, g * 255, b * 255];
   }
 
-  static rgb2hex(r, g, b) {
-    const componentToHex = (c) => {
+  static rgb2hex(r: string | number, g: string | number, b: string | number) {
+    const componentToHex = (c: string | number) => {
       // noinspection TypeScriptValidateJSTypes
       const hex = c.toString(16);
       return hex.length === 1 ? `0${hex}` : hex;
