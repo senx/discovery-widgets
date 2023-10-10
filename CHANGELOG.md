@@ -1,10 +1,27 @@
 Discovery
 ---
 
+## v1.1.96
+
+> +  2023/10/10  | v1.1.96 
+> +  2023/10/10  | Add box-plot component 
+> +  2023/10/10  | Fix VINTAGE heat map 
+> +  2023/10/10  | [bar-polar] Fix datapoint events 
+> +  2023/10/10  | [bar] Fix datapoint events 
+> +  2023/10/04  | Typo and promises fixes 
+> +  2023/10/03  | [bar] Fix 'selected' event 
+> +  2023/10/03  | Add boxplot (WIP) 
+> +  2023/09/21  | [input:slider] Fix type (range or single value) change on event 
+> +  2023/09/21  | deps update 
+> +  2023/09/20  | WIP 
+> +  2023/09/19  | generated Readmes 
+> +  2023/09/19  | [line] [area] [annotation] [map] [bar] Fix POI's date when a timezone is set 
+> +  2023/09/18  | changelog 
+
 ## v1.1.95
 
 > +  2023/09/18  | v1.1.95 
-> +  2023/09/18  | [line] [annotations] [bar] [map] Fix POIs when timeMode is 'date' 
+> +  2023/09/18  | [line] [annotations] [bar] [map] Fix POIs when timeMod is 'date' 
 > +  2023/09/13  | changelog 
 
 ## v1.1.94
