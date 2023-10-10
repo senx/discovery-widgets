@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2023 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -19,21 +19,19 @@ import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} 
 import {ChartType, DataModel, ECharts} from '../../model/types';
 import {Param} from '../../model/param';
 import * as echarts from 'echarts';
-import {EChartsOption} from 'echarts';
+import {BoxplotSeriesOption, EChartsOption, SeriesOption} from 'echarts';
 import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
-import {SeriesOption} from 'echarts/lib/util/types';
 import _ from 'lodash';
-import {v4} from 'uuid';
 
 @Component({
-  tag: 'discovery-bar',
-  styleUrl: 'discovery-bar.scss',
+  tag: 'discovery-boxplot',
+  styleUrl: 'discovery-boxplot.scss',
   shadow: true,
 })
-export class DiscoveryBarComponent {
+export class DiscoveryBoxPlotComponent {
   @Prop({mutable: true}) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
@@ -116,7 +114,7 @@ export class DiscoveryBarComponent {
 
   componentWillLoad() {
     this.parsing = true;
-    this.LOG = new Logger(DiscoveryBarComponent, this.debug);
+    this.LOG = new Logger(DiscoveryBoxPlotComponent, this.debug);
     if (typeof this.options === 'string') {
       this.innerOptions = JSON.parse(this.options);
     } else {
@@ -156,17 +154,13 @@ export class DiscoveryBarComponent {
     });
   }
 
-  private getCommonSeriesParam(color) {
-    const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
+  private getCommonSeriesParam(color: string) {
+    const isHorizontal = !!this.innerOptions.box?.horizontal;
     return {
-      stack: this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked ? 'total' : undefined,
-      animation: !!this.innerOptions?.bar?.animate,
-      large: true,
-      clip: false,
       emphasis: {
         focus: 'series',
         itemStyle: {
-          opacity: 1,
+          opacity: 0.8,
           borderColor: color,
           color: ColorLib.transparentize(color, 0.8)
         }
@@ -179,30 +173,24 @@ export class DiscoveryBarComponent {
           color: {
             type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
             colorStops: [
-              {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-              {offset: 1, color: ColorLib.transparentize(color, 0.3)}
+              {offset: 0, color: ColorLib.transparentize(color, 0.3)},
+              {offset: 1, color: ColorLib.transparentize(color, 0.7)}
             ]
           }
         }
       },
-      label: {
-        show: !!this.innerOptions.showValues,
-        position: 'top',
-        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
-      },
-      lineStyle: {color},
       itemStyle: {
         opacity: 0.8,
         borderColor: color,
         color: {
           type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
           colorStops: [
-            {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-            {offset: 1, color: ColorLib.transparentize(color, 0.3)}
+            {offset: 0, color: ColorLib.transparentize(color, 0.3)},
+            {offset: 1, color: ColorLib.transparentize(color, 0.7)}
           ]
         }
       }
-    } as SeriesOption
+    } as any
   }
 
   convert(data: DataModel) {
@@ -210,7 +198,7 @@ export class DiscoveryBarComponent {
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
     this.innerOptions = {...options};
     const series: any[] = [];
-    let gtsList;
+    let gtsList: any[];
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG?.debug(['convert', 'isArray']);
@@ -227,21 +215,20 @@ export class DiscoveryBarComponent {
     }
     this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
-    let min = Number.MAX_SAFE_INTEGER;
-    let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
+    const axisLabels = [];
     const opts = {
-      animation: !!this.innerOptions?.bar?.animate,
+      animation: !!this.innerOptions?.box?.animate,
       grid: {
         left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
-        top: !this.innerOptions?.bar?.horizontal && !!(this.unit || this.innerOptions.unit) ? 30 : 10,
+        top: !this.innerOptions.box?.horizontal && !!(this.unit || this.innerOptions.unit) ? 30 : 10,
         bottom: !!this.innerOptions.showLegend
-          ? this.innerOptions?.bar?.horizontal && !!(this.unit || this.innerOptions.unit)
+          ? this.innerOptions.box?.horizontal && !!(this.unit || this.innerOptions.unit)
             ? 50
             : 30
-          : this.innerOptions?.bar?.horizontal && !!(this.unit || this.innerOptions.unit)
+          : this.innerOptions.box?.horizontal && !!(this.unit || this.innerOptions.unit)
             ? 20
             : 10,
         right: 10,
@@ -249,22 +236,11 @@ export class DiscoveryBarComponent {
       },
       visualMap: new Array(gtsCount),
       tooltip: {
-        trigger: 'axis',
+        trigger: 'item',
         transitionDuration: 0,
         axisPointer: {type: 'shadow'},
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
-        hideDelay: this.innerOptions.tooltipDelay || 100,
-        formatter: (params) => {
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            this.innerOptions.timeMode !== 'date'
-              ? params[0].value[0]
-              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
-               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
-            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
-          ).join('<br>')}`;
-        },
+        hideDelay: this.innerOptions.tooltipDelay || 100
       },
       toolbox: {
         show: this.innerOptions.showControls,
@@ -273,18 +249,7 @@ export class DiscoveryBarComponent {
           restore: {show: true},
         }
       },
-      legend: {
-        bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
-        textStyle: {color: Utils.getLabelColor(this.el)},
-        formatter: n => GTSLib.getName(n)
-      },
       dataZoom: [
-        {
-          type: 'slider',
-          height: '20px',
-          show: !!this.innerOptions.showRangeSelector,
-          bottom: !!this.innerOptions.showLegend ? 30 : 20,
-        },
         {
           type: 'inside',
           orient: 'vertical',
@@ -299,149 +264,90 @@ export class DiscoveryBarComponent {
       series: [],
       ...this.innerOptions?.extra?.chartOpts || {}
     } as EChartsOption;
-
+    let minVal = Number.MAX_SAFE_INTEGER;
+    let maxVal = Number.MIN_SAFE_INTEGER;
+    let minTS = Number.MAX_SAFE_INTEGER;
+    let maxTS = Number.MIN_SAFE_INTEGER;
+    const seriesOpts: BoxplotSeriesOption = {
+      type: 'boxplot',
+      animation: !!this.innerOptions?.box?.animate,
+      label: {
+        show: !!this.innerOptions.showValues,
+        position: 'top',
+        color: Utils.getLabelColor(this.el),
+        fontSize: 14,
+      },
+      data: [],
+      // encode: !!this.innerOptions?.box?.horizontal ? {        x: ['min', 'Q1', 'median', 'Q3', 'max']      } : undefined
+    }
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-      let color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-      if (!!data.params && !!data.params[i] && (data.params[i].pieces || []).length > 0) {
-        (opts.visualMap as any[])[i] = {
-          show: false,
-          seriesIndex: i,
-          borderColor: color,
-          dimension: !!data.params[i].xpieces
-            ? !(this.innerOptions.bar || {horizontal: false}).horizontal ? 0 : 1
-            : !(this.innerOptions.bar || {horizontal: false}).horizontal ? 1 : 0,
-          pieces: GTSLib.flatDeep((data.params[i].pieces || []).map(t => {
-            const pieceColor = t.color || '#D81B60';
-            return [
-              {color, lte: t.gte},
-              {color: pieceColor, lte: t.lte, gte: t.gte},
-              {color, gte: t.lte},
-            ]
-          }))
-        };
-      }
+      const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         this.isGTS = true;
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
+        const bounds = GTSLib.getBounds(gts.v);
+        minVal = Math.min(minVal, bounds.minVal);
+        minTS = Math.min(minTS, bounds.minTS);
+        maxVal = Math.max(maxVal, bounds.maxVal);
+        maxTS = Math.max(maxTS, bounds.maxTS);
         hasTimeBounds = true;
-        let type = ((data.params || [])[i] || {type: 'bar'}).type || 'bar';
-        let areaStyle;
-        if (type === 'area') {
-          type = 'line';
-          areaStyle = {
-            opacity: 0.8,
-            color: {
-              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-              colorStops: [
-                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
-              ],
-              global: false // false by default
-            }
-          }
-        }
-
-        (opts.series as any[]).push({
+        const name = GTSLib.setName(gts.id, (((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts)));
+        axisLabels.push(GTSLib.getName(name));
+        seriesOpts.data.push({
           ...this.getCommonSeriesParam(color),
+          name: GTSLib.getName(name),
           id: gts.id,
-          type, areaStyle,
-          name: GTSLib.setName(gts.id, (((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts))),
-          data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
-            const ts = this.innerOptions.timeMode === 'date'
-              ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
-              : d[0];
-            if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
-              return [d[d.length - 1], ts];
-            } else {
-              return [ts, d[d.length - 1]]
-            }
-          })
-        } as SeriesOption);
-      } else if (!gts.v) {
+          value: [
+            bounds.minVal,
+            this.quantile(bounds.rawVals, 0.25),
+            this.quantile(bounds.rawVals, 0.5),
+            this.quantile(bounds.rawVals, 0.75),
+            bounds.maxVal
+          ]
+        });
+      } else if (!gts.v && gts.label && gts.values) {
         this.innerOptions.timeMode = 'custom';
         this.LOG?.debug(['convert', 'gts'], gts);
-        (gts.columns ?? []).forEach((label: any, index: number) => {
-          color = (data.params ?? [])[index]?.datasetColor ?? ColorLib.getColor(index, this.innerOptions.scheme);
-          let type = ((data.params || [])[index] || {type: 'bar'}).type || 'bar';
-          let areaStyle;
-          if (type === 'area') {
-            type = 'line';
-            areaStyle = {
-              opacity: 0.8,
-              color: {
-                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-                colorStops: [
-                  {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-                  {offset: 1, color: ColorLib.transparentize(color, 0.1)}
-                ],
-                global: false // false by default
-              }
-            }
-          }
-          (opts.series as any[]).push({
-            ...this.getCommonSeriesParam(color),
-            name: label,
-            type, areaStyle,
-            data: gts.rows.map(r => {
-              if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
-                return [r[index + 1], r[0]];
-              } else {
-                return [r[0], r[index + 1]]
-              }
-            })
-          } as SeriesOption);
+        axisLabels.push(gts.label);
+        const bounds = GTSLib.getMinMax(gts.values);
+        seriesOpts.data.push({
+          ...this.getCommonSeriesParam(color),
+          name: gts.label,
+          id: i,
+          value: [
+            bounds.minVal,
+            this.quantile(gts.values, 0.25),
+            this.quantile(gts.values, 0.5),
+            this.quantile(gts.values, 0.75),
+            bounds.maxVal
+          ]
         });
       }
     }
+    (opts.series as any[]).push(seriesOpts);
     opts.yAxis = {
-      name: !this.innerOptions?.bar?.horizontal ? this.unit || this.innerOptions.unit : undefined,
+      name: !this.innerOptions?.box?.horizontal ? this.unit || this.innerOptions.unit : undefined,
+      data: !this.innerOptions?.box?.horizontal ? undefined : axisLabels,
       show: !this.innerOptions.hideYAxis,
       emphasis: {focus: 'series'},
       nameTextStyle: {color: Utils.getLabelColor(this.el)},
-      type: this.innerOptions?.bar?.horizontal
-        ? this.isGTS
-          ? this.innerOptions.timeMode === 'date'
-            ? 'time'
-            : 'category'
-          : 'category'
-        : 'value',
+      type: this.innerOptions?.box?.horizontal ? 'category' : 'value',
       splitLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
-      axisLabel: {
-        color: Utils.getLabelColor(this.el),
-        formatter: this.innerOptions?.bar?.horizontal
-          ? this.innerOptions.timeMode === 'date'
-            ? this.innerOptions.fullDateDisplay ? value =>
-                GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-              : undefined
-            : undefined
-          : undefined
-      },
-      axisTick: {
-        lineStyle: {color: Utils.getGridColor(this.el)}
-      },
-      min: this.innerOptions?.bar?.horizontal
-        ? this.innerOptions.bounds?.minDate !== undefined
-          ? this.innerOptions.timeMode === 'date'
-            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
-            : this.innerOptions.bounds.minDate
-          : undefined
+      axisLabel: {color: Utils.getLabelColor(this.el)},
+      axisTick: {lineStyle: {color: Utils.getGridColor(this.el)}},
+      min: this.innerOptions?.box?.horizontal
+        ? undefined
         : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
-      max: this.innerOptions?.bar?.horizontal
-        ? this.innerOptions.bounds?.maxDate !== undefined
-          ? this.innerOptions.timeMode === 'date'
-            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
-            : this.innerOptions.bounds.maxDate
-          : undefined
+      max: this.innerOptions?.box?.horizontal
+        ? undefined
         : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
     } as any;
 
     opts.xAxis = {
-      name: this.innerOptions?.bar?.horizontal ? this.unit || this.innerOptions.unit : undefined,
+      name: this.innerOptions?.box?.horizontal ? this.unit || this.innerOptions.unit : undefined,
+      data: this.innerOptions?.box?.horizontal ? undefined : axisLabels,
       nameTextStyle: {
         padding: [0, 10, -35, 0],
         align: 'right',
@@ -449,51 +355,29 @@ export class DiscoveryBarComponent {
       },
       show: !this.innerOptions.hideXAxis,
       emphasis: {focus: 'series'},
-      type: this.innerOptions?.bar?.horizontal
-        ? 'value'
-        : this.isGTS
-          ? this.innerOptions.timeMode === 'date'
-            ? 'time'
-            : 'category'
-          : 'category',
+      type: this.innerOptions?.box?.horizontal ? 'value' : 'category',
       axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLabel: {
         show: !this.innerOptions.hideXAxis,
-        color: Utils.getLabelColor(this.el),
-        formatter: !this.innerOptions?.bar?.horizontal
-          ? this.innerOptions.timeMode === 'date'
-            ? this.innerOptions.fullDateDisplay ? value =>
-                GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-              : undefined
-            : undefined
-          : undefined
+        color: Utils.getLabelColor(this.el)
       },
       axisTick: {lineStyle: {color: Utils.getGridColor(this.el)}},
-      min: this.innerOptions?.bar?.horizontal
+      min: this.innerOptions?.box?.horizontal
         ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined
-        : this.innerOptions.bounds?.minDate !== undefined
-          ? this.innerOptions.timeMode === 'date'
-            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
-            : this.innerOptions.bounds.minDate
-          : undefined,
-      max: this.innerOptions?.bar?.horizontal
+        : undefined,
+      max: this.innerOptions?.box?.horizontal
         ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined
-        : this.innerOptions.bounds?.maxDate !== undefined
-          ? this.innerOptions.timeMode === 'date'
-            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
-            : this.innerOptions.bounds.maxDate
-          : undefined,
+        : undefined,
     } as any;
     if (hasTimeBounds) {
-      this.timeBounds.emit({min, max});
-      this.bounds = {min, max};
+      this.timeBounds.emit({min: minTS, max: maxTS});
+      this.bounds = {min: minVal, max: maxVal};
     }
     this.LOG?.debug(['convert', 'series'], series);
     const markArea = [...(this.innerOptions.thresholds || [])
       .map(t => {
         const m = [{itemStyle: {color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0)}}, {}] as any[];
-        if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
+        if (!!this.innerOptions.box?.horizontal) {
           m[0].xAxis = t.value || 0;
           m[1].xAxis = 0;
           m[0].name = `${t.value || 0}`
@@ -514,16 +398,16 @@ export class DiscoveryBarComponent {
             },
             label: {color: t.color || '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name},
             name: t.name || t.value || 0,
-            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
+            yAxis: this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+            xAxis: !this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
           },
             {
               itemStyle: {
                 color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed'
               },
-              yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-              xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+              yAxis: !!this.innerOptions.box?.horizontal ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+              xAxis: !this.innerOptions.box?.horizontal ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
             }];
         })];
 
@@ -534,7 +418,7 @@ export class DiscoveryBarComponent {
           label: {color: t.color || '#f44336', position: 'insideEndTop'},
           lineStyle: {color: t.color || '#f44336', type: 'dashed'}
         } as any;
-        if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
+        if (!!this.innerOptions.box?.horizontal) {
           m.xAxis = t.value || 0;
           m.label.show = false;
         } else {
@@ -547,10 +431,15 @@ export class DiscoveryBarComponent {
         .map(t => {
           return {
             name: t.name || t.value || 0,
-            label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name},
+            label: {
+              color: t.color || '#D81B60',
+              position: 'insideEndTop',
+              formatter: '{b}',
+              show: !!t.name
+            },
             lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
-            yAxis: (!!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-            xAxis: (!(this.innerOptions.bar || {horizontal: false}).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
+            yAxis: !!this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+            xAxis: !this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
           }
         })];
     if (markLine.length > 0) {
@@ -567,10 +456,18 @@ export class DiscoveryBarComponent {
           symbol: ['none', 'none'],
           data: markLine
         }
-      });
+      } as SeriesOption);
     }
     this.parsing = false;
     return opts;
+  }
+
+  private quantile(ascArr: number[], p: number): number {
+    const H = (ascArr.length - 1) * p + 1;
+    const h = Math.floor(H);
+    const v = +ascArr[h - 1];
+    const e = H - h;
+    return e ? v + e * (ascArr[h] - v) : v;
   }
 
   private zoomHandler(start, end) {
@@ -590,12 +487,16 @@ export class DiscoveryBarComponent {
         if (this.hasFocus) {
           switch (type) {
             case 'mouseover':
-              const c = event.data.coord || event.data;
-              this.dataPointOver.emit({date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {}})
+              this.dataPointOver.emit({
+                date: undefined,
+                name: GTSLib.getName(event.data.name),
+                value: {min: event.data.value[1], Q1: event.data.value[2], median: event.data.value[3], Q3: event.data.value[4], max: event.data.value[5]},
+                meta: {}
+              });
               break;
             case 'highlight':
               let ts;
-              (event.batch || []).forEach(b => {
+              (event.batch || []).forEach((b: any) => {
                 const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
                 ts = s.data[b.dataIndex][0];
                 ts = this.innerOptions.timeMode === 'date'
@@ -672,41 +573,13 @@ export class DiscoveryBarComponent {
       this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
 
       this.myChart.on('click', (event: any) => {
-        const date = this.innerOptions.timeMode === 'date'
-          ? GTSLib.zonedTimeToUtc(event.value[0], 1, this.innerOptions.timeZone) * this.divider
-          : event.value[0];
         if (event.componentType !== 'markLine') {
-          this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
-        }
-        if (this.innerOptions.poi) {
-          if (this.pois.find(p => p.date === event.value[0])) {
-            this.pois = this.pois.filter(p => p.date !== event.value[0]);
-          } else if (event.componentType !== 'markLine') {
-            this.pois.push({date, name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}, uid: v4()});
-          }
-          this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
-          this.poi.emit(this.pois);
-          (this.chartOpts.series as SeriesOption[]).push({
-            id: 'poi',
-            name: '',
-            type: 'line',
-            data: [],
-            markLine: {
-              emphasis: {lineStyle: {width: 1}},
-              symbol: ['none', 'pin'],
-              symbolSize: 20,
-              symbolKeepAspect: true,
-              data: this.pois.map(p => ({
-                name: 'poi-' + p.uid,
-                label: {show: false},
-                lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
-                xAxis: this.innerOptions.timeMode === 'date'
-                  ? GTSLib.utcToZonedTime(p.date / this.divider, 1, this.innerOptions.timeZone)
-                  : p.date
-              }))
-            }
+          this.dataPointSelected.emit({
+            date: undefined,
+            name: GTSLib.getName(event.data.name),
+            value: {min: event.data.value[1], Q1: event.data.value[2], median: event.data.value[3], Q3: event.data.value[4], max: event.data.value[5]},
+            meta: {}
           });
-          setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, true, false));
         }
       });
       this.setOpts();
@@ -716,7 +589,10 @@ export class DiscoveryBarComponent {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({
+      type,
+      excludeComponents: ['toolbox']
+    }) : undefined);
   }
 
   @Method()

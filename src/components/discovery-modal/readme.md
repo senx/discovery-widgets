@@ -52,6 +52,7 @@ graph TD;
   discovery-tile-result --> discovery-annotation
   discovery-tile-result --> discovery-bar
   discovery-tile-result --> discovery-bar-polar
+  discovery-tile-result --> discovery-boxplot
   discovery-tile-result --> discovery-display
   discovery-tile-result --> discovery-map
   discovery-tile-result --> discovery-image
@@ -71,6 +72,7 @@ graph TD;
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
   discovery-bar-polar --> discovery-spinner
+  discovery-boxplot --> discovery-spinner
   discovery-display --> discovery-spinner
   discovery-display --> discovery-tile-result
   discovery-image --> discovery-spinner

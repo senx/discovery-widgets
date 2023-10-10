@@ -19,6 +19,7 @@
  - [discovery-annotation](../discovery-annotation)
  - [discovery-bar](../discovery-bar)
  - [discovery-bar-polar](../discovery-bar-polar)
+ - [discovery-boxplot](../discovery-boxplot)
  - [discovery-calendar](../discovery-calendar)
  - [discovery-dashboard](../discovery-dashboard)
  - [discovery-display](../discovery-display)
@@ -39,6 +40,7 @@ graph TD;
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
   discovery-bar-polar --> discovery-spinner
+  discovery-boxplot --> discovery-spinner
   discovery-calendar --> discovery-spinner
   discovery-dashboard --> discovery-spinner
   discovery-display --> discovery-spinner

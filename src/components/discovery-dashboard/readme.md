@@ -92,6 +92,7 @@ graph TD;
   discovery-annotation --> discovery-spinner
   discovery-bar --> discovery-spinner
   discovery-bar-polar --> discovery-spinner
+  discovery-boxplot --> discovery-spinner
   discovery-display --> discovery-spinner
   discovery-display --> discovery-tile-result
   discovery-image --> discovery-spinner

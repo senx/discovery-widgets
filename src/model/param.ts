@@ -111,10 +111,14 @@ export class Param {
 // components specific params
   bar?: {
     horizontal?: boolean,
-    stacked?: boolean,
     animate?: boolean,
+    stacked?: boolean,
     startAngle?: number,
     fillGap?: boolean,
+  };
+  box?: {
+    horizontal?: boolean
+    animate?: boolean,
   };
   button?: {
     label: string
