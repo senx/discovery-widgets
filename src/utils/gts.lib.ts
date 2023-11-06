@@ -104,16 +104,16 @@ export class GTSLib {
     return true;
   }
 
-  static isEmbeddedImage(item) {
+  static isEmbeddedImage(item: string) {
     return !(typeof item !== 'string' || !/^data:image/.test(item));
   }
 
-  static isEmbeddedImageObject(item) {
+  static isEmbeddedImageObject(item: { image: string; caption: null; }) {
     return !((item === null) || (item.image === null) ||
       (item.caption === null) || !GTSLib.isEmbeddedImage(item.image));
   }
 
-  static isPositionArray(item) {
+  static isPositionArray(item: { positions: any; }) {
     if (!item || !item.positions) {
       return false;
     }

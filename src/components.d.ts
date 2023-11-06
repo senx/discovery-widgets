@@ -494,109 +494,358 @@ export interface DiscoveryTileResultCustomEvent<T> extends CustomEvent<T> {
     target: HTMLDiscoveryTileResultElement;
 }
 declare global {
+    interface HTMLDiscoveryAnnotationElementEventMap {
+        "draw": void;
+        "dataZoom": { start?: number, end?: number, min?: number, max?: number, type?: string };
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "timeBounds": any;
+        "leftMarginComputed": number;
+        "poi": any;
+    }
     interface HTMLDiscoveryAnnotationElement extends Components.DiscoveryAnnotation, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryAnnotationElementEventMap>(type: K, listener: (this: HTMLDiscoveryAnnotationElement, ev: DiscoveryAnnotationCustomEvent<HTMLDiscoveryAnnotationElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryAnnotationElementEventMap>(type: K, listener: (this: HTMLDiscoveryAnnotationElement, ev: DiscoveryAnnotationCustomEvent<HTMLDiscoveryAnnotationElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryAnnotationElement: {
         prototype: HTMLDiscoveryAnnotationElement;
         new (): HTMLDiscoveryAnnotationElement;
     };
+    interface HTMLDiscoveryBarElementEventMap {
+        "draw": void;
+        "dataZoom": { start?: number, end?: number, min?: number, max?: number, type?: string };
+        "leftMarginComputed": number;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "timeBounds": any;
+        "poi": any;
+    }
     interface HTMLDiscoveryBarElement extends Components.DiscoveryBar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryBarElementEventMap>(type: K, listener: (this: HTMLDiscoveryBarElement, ev: DiscoveryBarCustomEvent<HTMLDiscoveryBarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryBarElementEventMap>(type: K, listener: (this: HTMLDiscoveryBarElement, ev: DiscoveryBarCustomEvent<HTMLDiscoveryBarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryBarElement: {
         prototype: HTMLDiscoveryBarElement;
         new (): HTMLDiscoveryBarElement;
     };
+    interface HTMLDiscoveryBarPolarElementEventMap {
+        "draw": void;
+        "dataZoom": { start?: number, end?: number, min?: number, max?: number, type?: string };
+        "leftMarginComputed": number;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "timeBounds": any;
+    }
     interface HTMLDiscoveryBarPolarElement extends Components.DiscoveryBarPolar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryBarPolarElementEventMap>(type: K, listener: (this: HTMLDiscoveryBarPolarElement, ev: DiscoveryBarPolarCustomEvent<HTMLDiscoveryBarPolarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryBarPolarElementEventMap>(type: K, listener: (this: HTMLDiscoveryBarPolarElement, ev: DiscoveryBarPolarCustomEvent<HTMLDiscoveryBarPolarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryBarPolarElement: {
         prototype: HTMLDiscoveryBarPolarElement;
         new (): HTMLDiscoveryBarPolarElement;
     };
+    interface HTMLDiscoveryBoxplotElementEventMap {
+        "draw": void;
+        "dataZoom": { start?: number, end?: number, min?: number, max?: number, type?: string };
+        "leftMarginComputed": number;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "timeBounds": any;
+        "poi": any;
+    }
     interface HTMLDiscoveryBoxplotElement extends Components.DiscoveryBoxplot, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryBoxplotElementEventMap>(type: K, listener: (this: HTMLDiscoveryBoxplotElement, ev: DiscoveryBoxplotCustomEvent<HTMLDiscoveryBoxplotElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryBoxplotElementEventMap>(type: K, listener: (this: HTMLDiscoveryBoxplotElement, ev: DiscoveryBoxplotCustomEvent<HTMLDiscoveryBoxplotElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryBoxplotElement: {
         prototype: HTMLDiscoveryBoxplotElement;
         new (): HTMLDiscoveryBoxplotElement;
     };
+    interface HTMLDiscoveryButtonElementEventMap {
+        "draw": void;
+        "execResult": any[];
+        "statusError": any;
+        "discoveryEvent": DiscoveryEvent;
+    }
     interface HTMLDiscoveryButtonElement extends Components.DiscoveryButton, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryButtonElementEventMap>(type: K, listener: (this: HTMLDiscoveryButtonElement, ev: DiscoveryButtonCustomEvent<HTMLDiscoveryButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryButtonElementEventMap>(type: K, listener: (this: HTMLDiscoveryButtonElement, ev: DiscoveryButtonCustomEvent<HTMLDiscoveryButtonElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryButtonElement: {
         prototype: HTMLDiscoveryButtonElement;
         new (): HTMLDiscoveryButtonElement;
     };
+    interface HTMLDiscoveryCalendarElementEventMap {
+        "draw": void;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+    }
     interface HTMLDiscoveryCalendarElement extends Components.DiscoveryCalendar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryCalendarElementEventMap>(type: K, listener: (this: HTMLDiscoveryCalendarElement, ev: DiscoveryCalendarCustomEvent<HTMLDiscoveryCalendarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryCalendarElementEventMap>(type: K, listener: (this: HTMLDiscoveryCalendarElement, ev: DiscoveryCalendarCustomEvent<HTMLDiscoveryCalendarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryCalendarElement: {
         prototype: HTMLDiscoveryCalendarElement;
         new (): HTMLDiscoveryCalendarElement;
     };
+    interface HTMLDiscoveryDashboardElementEventMap {
+        "statusHeaders": string[];
+        "statusError": any;
+        "rendered": void;
+    }
     interface HTMLDiscoveryDashboardElement extends Components.DiscoveryDashboard, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryDashboardElementEventMap>(type: K, listener: (this: HTMLDiscoveryDashboardElement, ev: DiscoveryDashboardCustomEvent<HTMLDiscoveryDashboardElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryDashboardElementEventMap>(type: K, listener: (this: HTMLDiscoveryDashboardElement, ev: DiscoveryDashboardCustomEvent<HTMLDiscoveryDashboardElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryDashboardElement: {
         prototype: HTMLDiscoveryDashboardElement;
         new (): HTMLDiscoveryDashboardElement;
     };
+    interface HTMLDiscoveryDisplayElementEventMap {
+        "draw": void;
+    }
     interface HTMLDiscoveryDisplayElement extends Components.DiscoveryDisplay, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryDisplayElementEventMap>(type: K, listener: (this: HTMLDiscoveryDisplayElement, ev: DiscoveryDisplayCustomEvent<HTMLDiscoveryDisplayElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryDisplayElementEventMap>(type: K, listener: (this: HTMLDiscoveryDisplayElement, ev: DiscoveryDisplayCustomEvent<HTMLDiscoveryDisplayElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryDisplayElement: {
         prototype: HTMLDiscoveryDisplayElement;
         new (): HTMLDiscoveryDisplayElement;
     };
+    interface HTMLDiscoveryGaugeElementEventMap {
+        "draw": void;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+    }
     interface HTMLDiscoveryGaugeElement extends Components.DiscoveryGauge, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryGaugeElementEventMap>(type: K, listener: (this: HTMLDiscoveryGaugeElement, ev: DiscoveryGaugeCustomEvent<HTMLDiscoveryGaugeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryGaugeElementEventMap>(type: K, listener: (this: HTMLDiscoveryGaugeElement, ev: DiscoveryGaugeCustomEvent<HTMLDiscoveryGaugeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryGaugeElement: {
         prototype: HTMLDiscoveryGaugeElement;
         new (): HTMLDiscoveryGaugeElement;
     };
+    interface HTMLDiscoveryHeatmapElementEventMap {
+        "draw": void;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+    }
     interface HTMLDiscoveryHeatmapElement extends Components.DiscoveryHeatmap, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryHeatmapElementEventMap>(type: K, listener: (this: HTMLDiscoveryHeatmapElement, ev: DiscoveryHeatmapCustomEvent<HTMLDiscoveryHeatmapElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryHeatmapElementEventMap>(type: K, listener: (this: HTMLDiscoveryHeatmapElement, ev: DiscoveryHeatmapCustomEvent<HTMLDiscoveryHeatmapElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryHeatmapElement: {
         prototype: HTMLDiscoveryHeatmapElement;
         new (): HTMLDiscoveryHeatmapElement;
     };
+    interface HTMLDiscoveryHiddenElementEventMap {
+        "draw": void;
+    }
     interface HTMLDiscoveryHiddenElement extends Components.DiscoveryHidden, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryHiddenElementEventMap>(type: K, listener: (this: HTMLDiscoveryHiddenElement, ev: DiscoveryHiddenCustomEvent<HTMLDiscoveryHiddenElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryHiddenElementEventMap>(type: K, listener: (this: HTMLDiscoveryHiddenElement, ev: DiscoveryHiddenCustomEvent<HTMLDiscoveryHiddenElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryHiddenElement: {
         prototype: HTMLDiscoveryHiddenElement;
         new (): HTMLDiscoveryHiddenElement;
     };
+    interface HTMLDiscoveryImageElementEventMap {
+        "draw": void;
+    }
     interface HTMLDiscoveryImageElement extends Components.DiscoveryImage, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryImageElementEventMap>(type: K, listener: (this: HTMLDiscoveryImageElement, ev: DiscoveryImageCustomEvent<HTMLDiscoveryImageElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryImageElementEventMap>(type: K, listener: (this: HTMLDiscoveryImageElement, ev: DiscoveryImageCustomEvent<HTMLDiscoveryImageElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryImageElement: {
         prototype: HTMLDiscoveryImageElement;
         new (): HTMLDiscoveryImageElement;
     };
+    interface HTMLDiscoveryInputElementEventMap {
+        "draw": void;
+        "execResult": any[];
+        "statusError": any;
+        "discoveryEvent": DiscoveryEvent;
+    }
     interface HTMLDiscoveryInputElement extends Components.DiscoveryInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryInputElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputElement, ev: DiscoveryInputCustomEvent<HTMLDiscoveryInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryInputElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputElement, ev: DiscoveryInputCustomEvent<HTMLDiscoveryInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryInputElement: {
         prototype: HTMLDiscoveryInputElement;
         new (): HTMLDiscoveryInputElement;
     };
+    interface HTMLDiscoveryInputChipsElementEventMap {
+        "chipClick": any;
+        "chipInput": void;
+        "chipChange": string[];
+        "chipCreate": any;
+    }
     interface HTMLDiscoveryInputChipsElement extends Components.DiscoveryInputChips, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryInputChipsElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputChipsElement, ev: DiscoveryInputChipsCustomEvent<HTMLDiscoveryInputChipsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryInputChipsElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputChipsElement, ev: DiscoveryInputChipsCustomEvent<HTMLDiscoveryInputChipsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryInputChipsElement: {
         prototype: HTMLDiscoveryInputChipsElement;
         new (): HTMLDiscoveryInputChipsElement;
     };
+    interface HTMLDiscoveryInputChipsChipElementEventMap {
+        "removeChip": string;
+    }
     interface HTMLDiscoveryInputChipsChipElement extends Components.DiscoveryInputChipsChip, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryInputChipsChipElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputChipsChipElement, ev: DiscoveryInputChipsChipCustomEvent<HTMLDiscoveryInputChipsChipElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryInputChipsChipElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputChipsChipElement, ev: DiscoveryInputChipsChipCustomEvent<HTMLDiscoveryInputChipsChipElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryInputChipsChipElement: {
         prototype: HTMLDiscoveryInputChipsChipElement;
         new (): HTMLDiscoveryInputChipsChipElement;
     };
+    interface HTMLDiscoveryLineElementEventMap {
+        "draw": void;
+        "dataZoom": { start?: number, end?: number, min?: number, max?: number, type?: string };
+        "leftMarginComputed": number;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "poi": any;
+        "timeBounds": any;
+    }
     interface HTMLDiscoveryLineElement extends Components.DiscoveryLine, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryLineElementEventMap>(type: K, listener: (this: HTMLDiscoveryLineElement, ev: DiscoveryLineCustomEvent<HTMLDiscoveryLineElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryLineElementEventMap>(type: K, listener: (this: HTMLDiscoveryLineElement, ev: DiscoveryLineCustomEvent<HTMLDiscoveryLineElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryLineElement: {
         prototype: HTMLDiscoveryLineElement;
         new (): HTMLDiscoveryLineElement;
     };
+    interface HTMLDiscoveryLinearGaugeElementEventMap {
+        "draw": void;
+        "dataPointOver": any;
+    }
     interface HTMLDiscoveryLinearGaugeElement extends Components.DiscoveryLinearGauge, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryLinearGaugeElementEventMap>(type: K, listener: (this: HTMLDiscoveryLinearGaugeElement, ev: DiscoveryLinearGaugeCustomEvent<HTMLDiscoveryLinearGaugeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryLinearGaugeElementEventMap>(type: K, listener: (this: HTMLDiscoveryLinearGaugeElement, ev: DiscoveryLinearGaugeCustomEvent<HTMLDiscoveryLinearGaugeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryLinearGaugeElement: {
         prototype: HTMLDiscoveryLinearGaugeElement;
         new (): HTMLDiscoveryLinearGaugeElement;
     };
+    interface HTMLDiscoveryMapElementEventMap {
+        "draw": void;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "geoBounds": string;
+        "poi": any;
+    }
     interface HTMLDiscoveryMapElement extends Components.DiscoveryMap, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryMapElementEventMap>(type: K, listener: (this: HTMLDiscoveryMapElement, ev: DiscoveryMapCustomEvent<HTMLDiscoveryMapElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryMapElementEventMap>(type: K, listener: (this: HTMLDiscoveryMapElement, ev: DiscoveryMapCustomEvent<HTMLDiscoveryMapElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryMapElement: {
         prototype: HTMLDiscoveryMapElement;
@@ -608,25 +857,78 @@ declare global {
         prototype: HTMLDiscoveryModalElement;
         new (): HTMLDiscoveryModalElement;
     };
+    interface HTMLDiscoveryPageableElementEventMap {
+        "dataPointOver": any;
+        "dataPointSelected": any;
+    }
     interface HTMLDiscoveryPageableElement extends Components.DiscoveryPageable, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryPageableElementEventMap>(type: K, listener: (this: HTMLDiscoveryPageableElement, ev: DiscoveryPageableCustomEvent<HTMLDiscoveryPageableElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryPageableElementEventMap>(type: K, listener: (this: HTMLDiscoveryPageableElement, ev: DiscoveryPageableCustomEvent<HTMLDiscoveryPageableElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryPageableElement: {
         prototype: HTMLDiscoveryPageableElement;
         new (): HTMLDiscoveryPageableElement;
     };
+    interface HTMLDiscoveryPieElementEventMap {
+        "draw": void;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+    }
     interface HTMLDiscoveryPieElement extends Components.DiscoveryPie, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryPieElementEventMap>(type: K, listener: (this: HTMLDiscoveryPieElement, ev: DiscoveryPieCustomEvent<HTMLDiscoveryPieElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryPieElementEventMap>(type: K, listener: (this: HTMLDiscoveryPieElement, ev: DiscoveryPieCustomEvent<HTMLDiscoveryPieElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryPieElement: {
         prototype: HTMLDiscoveryPieElement;
         new (): HTMLDiscoveryPieElement;
     };
+    interface HTMLDiscoveryProfileElementEventMap {
+        "draw": void;
+        "dataZoom": { start: number, end: number, min: number, max: number };
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "timeBounds": any;
+        "leftMarginComputed": number;
+    }
     interface HTMLDiscoveryProfileElement extends Components.DiscoveryProfile, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryProfileElementEventMap>(type: K, listener: (this: HTMLDiscoveryProfileElement, ev: DiscoveryProfileCustomEvent<HTMLDiscoveryProfileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryProfileElementEventMap>(type: K, listener: (this: HTMLDiscoveryProfileElement, ev: DiscoveryProfileCustomEvent<HTMLDiscoveryProfileElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryProfileElement: {
         prototype: HTMLDiscoveryProfileElement;
         new (): HTMLDiscoveryProfileElement;
     };
+    interface HTMLDiscoverySliderElementEventMap {
+        "valueChanged": number;
+        "startDrag": void;
+    }
     interface HTMLDiscoverySliderElement extends Components.DiscoverySlider, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoverySliderElementEventMap>(type: K, listener: (this: HTMLDiscoverySliderElement, ev: DiscoverySliderCustomEvent<HTMLDiscoverySliderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoverySliderElementEventMap>(type: K, listener: (this: HTMLDiscoverySliderElement, ev: DiscoverySliderCustomEvent<HTMLDiscoverySliderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoverySliderElement: {
         prototype: HTMLDiscoverySliderElement;
@@ -638,25 +940,78 @@ declare global {
         prototype: HTMLDiscoverySpinnerElement;
         new (): HTMLDiscoverySpinnerElement;
     };
+    interface HTMLDiscoverySvgElementEventMap {
+        "draw": void;
+        "discoveryEvent": DiscoveryEvent;
+    }
     interface HTMLDiscoverySvgElement extends Components.DiscoverySvg, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoverySvgElementEventMap>(type: K, listener: (this: HTMLDiscoverySvgElement, ev: DiscoverySvgCustomEvent<HTMLDiscoverySvgElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoverySvgElementEventMap>(type: K, listener: (this: HTMLDiscoverySvgElement, ev: DiscoverySvgCustomEvent<HTMLDiscoverySvgElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoverySvgElement: {
         prototype: HTMLDiscoverySvgElement;
         new (): HTMLDiscoverySvgElement;
     };
+    interface HTMLDiscoveryTabularElementEventMap {
+        "draw": void;
+        "dataPointOver": any;
+        "dataPointSelected": any;
+        "discoveryEvent": DiscoveryEvent;
+    }
     interface HTMLDiscoveryTabularElement extends Components.DiscoveryTabular, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryTabularElementEventMap>(type: K, listener: (this: HTMLDiscoveryTabularElement, ev: DiscoveryTabularCustomEvent<HTMLDiscoveryTabularElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryTabularElementEventMap>(type: K, listener: (this: HTMLDiscoveryTabularElement, ev: DiscoveryTabularCustomEvent<HTMLDiscoveryTabularElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryTabularElement: {
         prototype: HTMLDiscoveryTabularElement;
         new (): HTMLDiscoveryTabularElement;
     };
+    interface HTMLDiscoveryTileElementEventMap {
+        "statusHeaders": string[];
+        "statusError": any;
+        "execResult": string;
+        "selfType": ChartType;
+    }
     interface HTMLDiscoveryTileElement extends Components.DiscoveryTile, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryTileElementEventMap>(type: K, listener: (this: HTMLDiscoveryTileElement, ev: DiscoveryTileCustomEvent<HTMLDiscoveryTileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryTileElementEventMap>(type: K, listener: (this: HTMLDiscoveryTileElement, ev: DiscoveryTileCustomEvent<HTMLDiscoveryTileElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryTileElement: {
         prototype: HTMLDiscoveryTileElement;
         new (): HTMLDiscoveryTileElement;
     };
+    interface HTMLDiscoveryTileResultElementEventMap {
+        "discoveryEvent": DiscoveryEvent;
+        "draw": void;
+        "selfType": ChartType;
+    }
     interface HTMLDiscoveryTileResultElement extends Components.DiscoveryTileResult, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryTileResultElementEventMap>(type: K, listener: (this: HTMLDiscoveryTileResultElement, ev: DiscoveryTileResultCustomEvent<HTMLDiscoveryTileResultElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryTileResultElementEventMap>(type: K, listener: (this: HTMLDiscoveryTileResultElement, ev: DiscoveryTileResultCustomEvent<HTMLDiscoveryTileResultElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryTileResultElement: {
         prototype: HTMLDiscoveryTileResultElement;
