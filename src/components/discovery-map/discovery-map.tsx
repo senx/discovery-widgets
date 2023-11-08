@@ -87,7 +87,7 @@ export class DiscoveryMapComponent {
   private mapOpts: MapParams;
   private initial = true;
   private hidden: { [key: string]: boolean } = {};
-  private poputTimeout;
+  private poputTimeout: any;
   private markerOver = false;
   private markersRef: any;
   private tileLayers: string[] = [];
@@ -350,12 +350,12 @@ export class DiscoveryMapComponent {
       });
 
       // eslint-disable-next-line no-underscore-dangle
-      if (!this.tileLayerGroup.getLayers().find(l => l._url === t.url)) {
+      if (!this.tileLayerGroup.getLayers().find((l: any) => l._url === t.url)) {
         this.tileLayerGroup.addLayer(l);
       }
     });
     if (!isRefresh || optionUpdate) {
-      this.tileLayerGroup.getLayers().forEach(l => {
+      this.tileLayerGroup.getLayers().forEach((l: any) => {
         // eslint-disable-next-line no-underscore-dangle
         if (!this.tileLayers.includes(l._url)) {
           this.tileLayerGroup.removeLayer(l);
@@ -370,14 +370,14 @@ export class DiscoveryMapComponent {
         const color = ColorLib.getColor(i, this.innerOptions.scheme);
         const opts = {
           style: () => ({
-            color: (data.params && data.params[i]) ? data.params[i].datasetColor || color : color,
+            color: (data.params && data.params[i]) ? data.params[i].datasetColor ?? color : color,
             fillColor: (data.params && data.params[i])
-              ? ColorLib.transparentize(data.params[i].fillColor || color)
+              ? ColorLib.transparentize(data.params[i].fillColor ?? color)
               : ColorLib.transparentize(color),
           })
         } as any;
         if (m.geometry.type === 'Point') {
-          opts.pointToLayer = (geoJsonPoint, latlng) => Leaflet.marker(latlng, {
+          opts.pointToLayer = (geoJsonPoint: any, latlng: any) => Leaflet.marker(latlng, {
             icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || {marker: 'circle'}).marker : 'circle', (data.params && data.params[i])),
             riseOnHover: true,
             opacity: 1,
@@ -498,7 +498,7 @@ export class DiscoveryMapComponent {
   private icon(color: string, marker = '', param: Param) {
     const c = `${ColorLib.sanitizeColor(color).slice(1)}`;
     const m = marker !== '' ? marker : 'circle';
-    let iconUrl;
+    let iconUrl: string;
     let iconSize = [20, 20];
     let iconAnchor = [10, 10];
     if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
@@ -523,14 +523,14 @@ export class DiscoveryMapComponent {
     return Leaflet.icon({iconUrl, iconAnchor, iconSize, popupAnchor: this.popupAnchor});
   }
 
-  private getGTSDots(gts, param: Param) {
+  private getGTSDots(gts: any, param: Param) {
     const dots = [];
-    let icon;
-    let size;
+    let icon: any;
+    let size: number;
     switch (gts.render) {
       case 'path': {
         icon = this.icon(gts.color, gts.marker, param);
-        size = (gts.path || []).length;
+        size = (gts.path ?? []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
           if (i < size - 1 || !gts.marker) {
@@ -632,9 +632,8 @@ export class DiscoveryMapComponent {
   private addPopup(positionData: any, value: any, ts: any, marker: any) {
     if (!!positionData) {
       let date = ts;
-      if (ts && (this.innerOptions.timeMode || 'date') === 'date') {
-        date = (GTSLib.toISOString(GTSLib.utcToZonedTime(ts, this.divider, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-          this.innerOptions.timeFormat) || '')
+      if (ts && (this.innerOptions.timeMode ?? 'date') === 'date') {
+        date = (GTSLib.toISOString(ts ?? 0, this.divider, this.innerOptions.timeZone, this.innerOptions.timeFormat) ?? '')
           .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }
       let content = '';
@@ -740,10 +739,10 @@ export class DiscoveryMapComponent {
         group.addLayer(Leaflet.polyline(path || [], {color: positionData.color, opacity: 0.5}));
       }
     }
-    let icon;
-    let result;
-    let inStep;
-    let size;
+    let icon: any;
+    let result: number[];
+    let inStep: number[];
+    let size: number;
     this.LOG?.debug(['updatePositionArray'], positionData);
 
     switch (positionData.render) {
