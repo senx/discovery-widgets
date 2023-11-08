@@ -23,7 +23,7 @@ import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import flatpickr from 'flatpickr';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
-import domtoimage from 'dom-to-image';
+import domToImage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-input',
@@ -115,7 +115,7 @@ export class DiscoveryInputComponent {
     if (this.type === 'input:slider') {
       return await (this.inputField as HTMLDiscoverySliderElement).export(type, bgColor);
     } else {
-      return await domtoimage.toPng(this.type === 'input:multi-cb' ? this.pngWrapper : this.root, {
+      return await domToImage.toPng(this.type === 'input:multi-cb' ? this.pngWrapper : this.root, {
         height: this.height,
         width: this.width,
         bgcolor: bgColor
@@ -177,7 +177,7 @@ export class DiscoveryInputComponent {
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
-        this.flatpickrInstance.config.onChange.push((d, s) => {
+        this.flatpickrInstance.config.onChange.push((d: any[], s: string) => {
           if (this.subType === 'date-range') {
             this.selectedValue = d
               .map(date => date.toISOString())
@@ -199,7 +199,7 @@ export class DiscoveryInputComponent {
           resultItem: {highlight: {render: true}},
           events: {
             input: {
-              selection: (event) => {
+              selection: (event: any) => {
                 const selection = event.detail.selection.value.v;
                 this.autoCompleteJS.input.value = selection;
                 this.selectedValue = selection;
@@ -264,8 +264,8 @@ export class DiscoveryInputComponent {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
-  private handleSelect(e) {
-    this.selectedValue = e.target.value || e.detail;
+  private handleSelect(e: any) {
+    this.selectedValue = e.target.value ?? e.detail;
     if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
       this.selectedValue = e.detail;
     }
@@ -329,7 +329,6 @@ export class DiscoveryInputComponent {
         this.innerOptions.input = this.innerOptions.input || {};
         this.value = this.innerOptions.input.value || data;
         this.selectedValue = this.value;
-        //     void void (this.inputField as HTMLDiscoverySliderElement).setValue(this.value as number | number[]);
         break;
       case 'list':
       case 'multi':
@@ -373,7 +372,7 @@ export class DiscoveryInputComponent {
           this.autoCompleteJS.data = {
             src: this.values,
             keys: 'v',
-            filter: (list) => list.filter(item => {
+            filter: (list: any[]) => list.filter(item => {
               if ('value' in this.inputField) {
                 const inputValue = this.inputField.value.toLowerCase();
                 const itemValue = item.value.v.toLowerCase();
@@ -396,7 +395,7 @@ export class DiscoveryInputComponent {
       undefined).replace('Z', '');
   }
 
-  private selectAll(e) {
+  private selectAll(e: any) {
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
         .filter((o: HTMLInputElement) => !o.checked)
@@ -405,7 +404,7 @@ export class DiscoveryInputComponent {
     }
   }
 
-  private selectNone(e) {
+  private selectNone(e: any) {
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
         .filter((o: HTMLInputElement) => o.checked)
@@ -414,7 +413,7 @@ export class DiscoveryInputComponent {
     }
   }
 
-  private handleFilter(e) {
+  private handleFilter(e: any) {
     e.stopPropagation();
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       this.values = this.values.map(v => ({

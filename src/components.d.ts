@@ -84,7 +84,7 @@ export namespace Components {
     }
     interface DiscoveryButton {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
@@ -128,7 +128,7 @@ export namespace Components {
     }
     interface DiscoveryDisplay {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -189,7 +189,7 @@ export namespace Components {
     }
     interface DiscoveryInput {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -227,7 +227,7 @@ export namespace Components {
     }
     interface DiscoveryLinearGauge {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -243,7 +243,7 @@ export namespace Components {
     }
     interface DiscoveryMap {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<any>;
+        "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number) => Promise<void>;
@@ -308,7 +308,7 @@ export namespace Components {
     }
     interface DiscoverySlider {
         "debug": boolean;
-        "export": (type: 'png' | 'svg', bgColor: string) => Promise<any>;
+        "export": (type: 'png' | 'svg', bgColor: string) => Promise<string>;
         "options": Param | string;
         "progress": boolean;
         "setValue": (value: number | number[]) => Promise<void>;

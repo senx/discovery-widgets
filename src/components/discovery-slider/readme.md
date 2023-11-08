@@ -24,13 +24,13 @@
 
 ## Methods
 
-### `export(type: 'png' | 'svg', bgColor: string) => Promise<any>`
+### `export(type: 'png' | 'svg', bgColor: string) => Promise<string>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<string>`
 
 
 

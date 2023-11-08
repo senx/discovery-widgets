@@ -22,7 +22,7 @@ import {API} from 'nouislider/src/nouislider';
 import {GTSLib} from '../../utils/gts.lib';
 import {Param} from '../../model/param';
 import {Utils} from '../../utils/utils';
-import domtoimage from 'dom-to-image';
+import domToImage from 'dom-to-image';
 
 @Component({
   tag: 'discovery-slider',
@@ -52,7 +52,6 @@ export class DiscoverySlider {
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-
     if (!!this.options && typeof this.options === 'string') {
       this.innerOptions = JSON.parse(this.options);
     } else {
@@ -106,7 +105,7 @@ export class DiscoverySlider {
     const dims = Utils.getContentBounds(this.sliderDiv);
     const width = dims.w - 15;
     const height = dims.h;
-    return await domtoimage.toPng(this.sliderDiv, {height, width, bgcolor: bgColor});
+    return await domToImage.toPng(this.sliderDiv, {height, width, bgcolor: bgColor});
   }
 
   render() {
@@ -124,12 +123,12 @@ export class DiscoverySlider {
     }
     const start = this.innerValue;
     const range = minmax.max - minmax.min;
-    const pips = this.innerOptions.input?.step || Math.round(range / (this.innerOptions.input?.stepCount || range));
+    const pips = this.innerOptions.input?.step ?? Math.round(range / (this.innerOptions.input?.stepCount ?? range));
     const format = {
-      to: v => this.innerOptions.timeMode === 'date'
-        ? (GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone, this.innerOptions.timeFormat) || '')
+      to: (v: number) => this.innerOptions.timeMode === 'date'
+        ? (GTSLib.toISOString(v, this.divider, this.innerOptions.timeZone, this.innerOptions.timeFormat) ?? '')
           .replace('T', '<br />').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-        : parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || '')
+        : parseFloat(v.toFixed(4)).toString() + (this.innerOptions.unit ?? '')
       ,
       from: Number
     };
@@ -148,8 +147,8 @@ export class DiscoverySlider {
       connect,
       orientation: this.innerOptions.input?.horizontal ?? true ? 'horizontal' : 'vertical',
       tooltips: this.innerOptions.timeMode === 'date' ? true : {
-        to: v => parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || ''),
-        from: v => parseFloat((v).toFixed(4))
+        to: (v: any) => parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || ''),
+        from: (v: any) => parseFloat((v).toFixed(4))
       },
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
       range: minmax,
@@ -178,8 +177,7 @@ export class DiscoverySlider {
       this.valueChanged.emit(r);
     };
     const handler = Utils.throttle(throttledHandler, 200);
-    this.slider.on(this.innerOptions.input?.immediate ? 'slide' : 'change', (values, handle, unencoded) => {
-      handler(unencoded || [0]);
-    });
+    this.slider
+      .on(this.innerOptions.input?.immediate ? 'slide' : 'change', values => handler(values ?? [0]));
   }
 }
