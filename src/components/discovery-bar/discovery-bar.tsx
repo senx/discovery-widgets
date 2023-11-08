@@ -767,7 +767,7 @@ export class DiscoveryBarComponent {
   async setFocus(regexp: string, ts: number, value?: number) {
     if (!this.myChart || this.hasFocus) return;
     const date = this.innerOptions.timeMode === 'date'
-      ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
+      ? GTSLib.utcToZonedTime(ts ?? 0, this.divider, this.innerOptions.timeZone)
       : ts ?? 0;
     let seriesIndex = 0;
     let dataIndex = 0;

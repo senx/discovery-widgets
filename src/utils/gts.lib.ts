@@ -67,7 +67,7 @@ export class GTSLib {
     return actual.filter((i) => !!i);
   }
 
-  static isArray(value) {
+  static isArray(value: any) {
     return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
       && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
   }
@@ -89,8 +89,8 @@ export class GTSLib {
     return (elapsed / 60000000000).toFixed(3) + ' m ';
   }
 
-  static isValidResponse(data) {
-    let response;
+  static isValidResponse(data: string) {
+    let response: any;
     try {
       response = new JsonLib().parse(data);
     } catch (e) {
@@ -134,7 +134,7 @@ export class GTSLib {
     return true;
   }
 
-  static isPositionsArrayWithValues(item) {
+  static isPositionsArrayWithValues(item: any) {
     if ((item === null) || (item.positions === null)) {
       return false;
     }
