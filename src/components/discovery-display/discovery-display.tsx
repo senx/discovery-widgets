@@ -184,8 +184,8 @@ export class DiscoveryDisplayComponent {
     display = GTSLib.isArray(display) ? display[0] : display;
     if (GTSLib.isGts(display)) {
       this.gts = [display];
-      let v: string | number = '';
-      if (display.v && display.v.length > 0) {
+      let v: string | number = this.innerOptions.display?.value ?? '';
+      if (this.innerOptions.display?.value === undefined && display.v && display.v.length > 0) {
         const dataPoint = display.v[display.v.length - 1];
         v = dataPoint[dataPoint.length - 1];
         if (this.innerOptions.display?.decimals) {

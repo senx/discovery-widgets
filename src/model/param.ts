@@ -138,7 +138,8 @@ export class Param {
     showChart?: boolean,
     chartType?: ChartType,
     labelPosition?: 'n' | 's' | 'e' | 'w' | 'c' | 'ne' | 'se' | 'nw' | 'sw',
-    decimals?: number
+    decimals?: number,
+    value?: string | number
   };
   input?: {
     showButton?: boolean,
