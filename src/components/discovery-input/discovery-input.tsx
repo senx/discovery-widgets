@@ -531,7 +531,7 @@ export class DiscoveryInputComponent {
         <div class={'discovery-input-wrapper type-' + this.subType}>
           {this.getInput()} {this.innerOptions.input?.showButton}
           {this.innerOptions.input?.showButton && this.type !== 'input:multi-cb' ?
-            <div class="discovery-input-btn-wrapper">
+            <div class={'discovery-input-btn-wrapper ' + this.subType}>
               <button
                 class="discovery-btn"
                 disabled={this.disabled}

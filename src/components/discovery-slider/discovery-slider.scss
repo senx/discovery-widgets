@@ -31,6 +31,22 @@
     margin-top: 40px;
     margin-bottom: 40px;
 
+    .noUi-pips.noUi-pips-horizontal {
+      .noUi-value {
+        padding-top: 5px;
+
+        &:nth-child(2) {
+          transform: translate(0, 50%);
+          margin-left: -10px;
+        }
+
+        &:last-child {
+          transform: translate(-100%, 50%);
+          margin-left: 10px;
+        }
+      }
+    }
+
     &.discovery-date {
       margin: 60px 40px 70px;
     }

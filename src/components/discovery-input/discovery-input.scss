@@ -150,4 +150,8 @@
       color: var(--warp-view-button-secondary-label-color, $w10-white);
     }
   }
+
+  .discovery-input-btn-wrapper.slider {
+    margin-top: 24px;
+  }
 }
