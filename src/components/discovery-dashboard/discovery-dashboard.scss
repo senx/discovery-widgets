@@ -66,6 +66,7 @@
 
         &.hidden {
           opacity: 0;
+          visibility: hidden;
         }
 
         & > div {
