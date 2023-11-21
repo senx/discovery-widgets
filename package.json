@@ -50,7 +50,7 @@
     "dom-to-image": "^2.6.0",
     "echarts": "^5.4.3",
     "element-resize-event": "^3.0.6",
-    "fitty": "^2.3.7",
+    "fitty": "^2.4.2",
     "flatpickr": "^4.6.13",
     "html2canvas": "^1.4.1",
     "is-css-color-name": "^0.1.3",
