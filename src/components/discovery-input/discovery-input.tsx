@@ -22,6 +22,7 @@ import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import flatpickr from 'flatpickr';
+import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domToImage from 'dom-to-image';
 
@@ -66,11 +67,12 @@ export class DiscoveryInputComponent {
   private innerOptions: Param = new Param();
   private LOG: Logger;
   private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
+  private inputField2: HTMLInputElement;
   private disabled = false;
   private min = 0;
   private max = 100;
   private root: HTMLDivElement;
-  private flatpickrInstance: any;
+  private flatpickrInstance: flatpickr.Instance;
   private autoCompleteJS: any;
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
@@ -165,9 +167,13 @@ export class DiscoveryInputComponent {
           static: true,
           enableSeconds: true,
           time_24hr: true,
+          plugins: [],
           formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * divider, divider, 'AUTO',
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
         } as any;
+        if (this.subType === 'date-range') {
+          opts.plugins = [rangePlugin({input: this.inputField2})];
+        }
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
           opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
@@ -245,7 +251,7 @@ export class DiscoveryInputComponent {
         if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
           return;
         }
-        if(e.selector) {
+        if (e.selector) {
           if (!e.value) {
             e.value = {};
           }
@@ -307,7 +313,8 @@ export class DiscoveryInputComponent {
         }
         this.selectedValue = this.value;
         if (this.flatpickrInstance) {
-          this.flatpickrInstance.setDate(this.formatDateTime(`${this.value}`));
+          this.flatpickrInstance.set('plugins', []);
+          this.flatpickrInstance.setDate(this.formatDateTime(`${this.value}`), true);
         }
         break;
       case 'date-range':
@@ -316,13 +323,13 @@ export class DiscoveryInputComponent {
         }
         this.selectedValue = this.value;
         if (this.flatpickrInstance) {
-          this.flatpickrInstance.config.mode = 'range';
+          // this.flatpickrInstance.config.mode = 'range';
           this.flatpickrInstance.setDate(
             [
               this.formatDateTime(`${this.value[0]}`),
               this.formatDateTime(`${this.value[1]}`)
-            ]
-          )
+            ], true
+          );
         }
         break;
       case 'slider':
@@ -452,9 +459,12 @@ export class DiscoveryInputComponent {
                       ref={el => this.inputField = el}
         />;
       case 'date-range':
-        return <input type="text" class="discovery-input"
-                      ref={el => this.inputField = el}
-        />;
+        return <div class="range">
+          <span>from</span>
+          <input type="text" class="discovery-input" ref={el => this.inputField = el}/>
+          <span>to</span>
+          <input type="text" class="discovery-input" ref={el => this.inputField2 = el}/>
+        </div>;
       case 'autocomplete':
         return <input type="text" class="discovery-input" value={this.value as string}
                       ref={el => this.inputField = el}

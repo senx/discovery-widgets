@@ -154,4 +154,38 @@
   .discovery-input-btn-wrapper.slider {
     margin-top: 24px;
   }
+
+  .range {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    margin: .25rem .125rem;
+    font-size: var(--warp-view-input-font-size, 1rem);
+    border-radius: var(--warp-view-input-border-radius, 0.25rem);
+    border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
+    color: var(--warp-view-input-label-color, $w10-charcoal);
+    background-color: var(--warp-view-input-bg-color, $w10-white);
+
+    .flatpickr-wrapper {
+      margin: 0;
+    }
+
+    width: 100%;
+    padding: 1px 5px;
+
+    span {
+      padding-left: .25rem;
+      padding-right: .25rem;
+      font-size: var(--warp-view-input-font-size, 1rem);
+      height: auto;
+
+    }
+
+    .discovery-input, .discovery-input:focus {
+      border: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
 }
