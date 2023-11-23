@@ -84,7 +84,7 @@ export class DiscoverySlider {
   }
 
   componentDidLoad() {
-    this.innerValue = this.innerValue || this.innerOptions.input?.value as number | number[] || this.innerOptions.input?.min || 0;
+    this.innerValue = this.innerValue ?? this.innerOptions.input?.value as number | number[] ?? this.innerOptions.input?.min ?? 0;
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
     this.setChangeListener();
   }
