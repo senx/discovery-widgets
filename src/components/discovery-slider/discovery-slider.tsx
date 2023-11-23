@@ -167,17 +167,22 @@ export class DiscoverySlider {
       let r: any;
       if (GTSLib.isArray(v) && v.length > 1) {
         r = this.innerOptions.timeMode === 'date'
-          ? [v[0], v[1]]
+          ? [this.parseDate(v[0]), this.parseDate(v[1])]
           : [Number(v[0]), Number(v[1])];
       } else {
         r = this.innerOptions.timeMode === 'date'
-          ? GTSLib.zonedTimeToUtc(v[0], this.divider, this.innerOptions.timeZone) * this.divider
+          ? this.parseDate(v[0])
           : Number(v[0]);
       }
+      console.log({r, v})
       this.valueChanged.emit(r);
     };
     const handler = Utils.throttle(throttledHandler, 200);
     this.slider
       .on(this.innerOptions.input?.immediate ? 'slide' : 'change', values => handler(values ?? [0]));
+  }
+
+  private parseDate(d: string): number {
+    return GTSLib.toTimestamp(d.replace('<br />', 'T'), this.divider, this.innerOptions.timeZone);
   }
 }
