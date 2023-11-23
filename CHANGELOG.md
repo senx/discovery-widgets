@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.1.98
+
+> +  2023/11/23  | changelog 
+> +  2023/11/23  | [slider] Fix timestamp event emission 
+> +  2023/11/23  | wip 
+> +  2023/11/23  | readmes 
+> +  2023/11/21  | deps update 
+> +  2023/11/21  | [date-range] Enhancements of the date picker 
+> +  2023/11/17  | [slider] fix cursor depending on grab state 
+> +  2023/11/17  | [slider] fix first and last pips position to avoid being outside the tile 
+> +  2023/11/17  | [hidden] fix the overlay effect 
+
 ## v1.1.97
 
 > +  2023/11/15  | v1.1.97 
