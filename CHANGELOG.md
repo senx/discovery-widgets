@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.1.97
+
+> +  2023/11/15  | v1.1.97 
+> +  2023/11/15  | deps update 
+> +  2023/11/15  | [display] ability to display an arbitrary value if data are GTS 
+> +  2023/11/15  | readmes 
+> +  2023/11/08  | code cleanup 
+> +  2023/11/08  | [map] fix timeZone in tooltips 
+> +  2023/11/08  | [slider] fix value parsing 
+> +  2023/11/06  | Deps update 
+> +  2023/10/10  | changelog 
+
 ## v1.1.96
 
 > +  2023/10/10  | v1.1.96 
