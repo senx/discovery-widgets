@@ -174,7 +174,6 @@ export class DiscoverySlider {
           ? this.parseDate(v[0])
           : Number(v[0]);
       }
-      console.log({r, v})
       this.valueChanged.emit(r);
     };
     const handler = Utils.throttle(throttledHandler, 200);

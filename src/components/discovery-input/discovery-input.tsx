@@ -229,7 +229,6 @@ export class DiscoveryInputComponent {
       innerResult: this.innerResult,
       result: this.result
     });
-
     this.draw.emit();
   }
 
@@ -255,7 +254,6 @@ export class DiscoveryInputComponent {
           if (!e.value) {
             e.value = {};
           }
-
           e.value[e.selector] = this.selectedValue;
         } else {
           e.value = this.selectedValue;
@@ -271,7 +269,6 @@ export class DiscoveryInputComponent {
   }
 
   private handleSelect(e: any) {
-    console.log('handleSelect', e)
     this.selectedValue = e.target.value ?? e.detail;
     if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
       this.selectedValue = e.detail;
