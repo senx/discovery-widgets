@@ -168,7 +168,7 @@ export class DiscoveryInputComponent {
           enableSeconds: true,
           time_24hr: true,
           plugins: [],
-          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * divider, divider, 'AUTO',
+          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * divider, divider, this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
         } as any;
         if (this.subType === 'date-range') {
@@ -321,7 +321,6 @@ export class DiscoveryInputComponent {
         }
         this.selectedValue = this.value;
         if (this.flatpickrInstance) {
-          // this.flatpickrInstance.config.mode = 'range';
           this.flatpickrInstance.setDate(
             [
               this.formatDateTime(`${this.value[0]}`),
@@ -331,9 +330,11 @@ export class DiscoveryInputComponent {
         }
         break;
       case 'slider':
-        this.innerOptions.input = this.innerOptions.input || {};
-        this.value = this.innerOptions.input.value || data;
+        this.innerOptions.input = this.innerOptions.input ?? {};
+        this.innerOptions.input.value = this.innerOptions.input.value ?? data;
+        this.value = this.innerOptions.input.value;
         this.selectedValue = this.value;
+        this.innerOptions = {...this.innerOptions};
         break;
       case 'list':
       case 'multi':
