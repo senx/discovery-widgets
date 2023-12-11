@@ -38,21 +38,66 @@ export class Utils {
     }
   }
 
-  static httpPost(theUrl, payload, headers: { [key: string]: string; }) {
+  static httpPost(theUrl: string, payload: string, headers: { [key: string]: string; }): Promise<{
+    data: any,
+    headers: { [key: string]: string; },
+    status: {
+      ops: number,
+      elapsed: number,
+      fetched: number
+    }
+  }> {
     return new Promise((resolve, reject) => {
       const xmlHttp = new XMLHttpRequest();
+      const resHeaders = {};
       xmlHttp.onreadystatechange = () => {
+        xmlHttp.getAllResponseHeaders().split('\n').forEach(header => {
+          if (header.trim() !== '') {
+            const h = header.split(':');
+            resHeaders[h[0].trim()] = h[1].trim().replace('\r', '');
+          }
+        });
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-          resolve({data: xmlHttp.responseText, headers: xmlHttp.getAllResponseHeaders()});
+          resolve({
+            data: xmlHttp.responseText,
+            headers: resHeaders,
+            status: {
+              ops: parseInt(resHeaders['x-warp10-ops'], 10),
+              elapsed: parseInt(resHeaders['x-warp10-elapsed'], 10),
+              fetched: parseInt(resHeaders['x-warp10-fetched'], 10),
+            },
+          });
         } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
-          reject(xmlHttp.getResponseHeader('X-Warp10-Error-Message') || xmlHttp.statusText);
+          reject({
+            statusText: xmlHttp.statusText,
+            status: xmlHttp.status,
+            url: theUrl,
+            headers: resHeaders,
+            message: `line #${resHeaders['x-warp10-error-line']}: ${resHeaders['x-warp10-error-message']}`,
+            detail: {
+              mess: resHeaders['x-warp10-error-message'],
+              line: resHeaders['x-warp10-error-line'],
+            },
+          });
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 0) {
+          reject({
+            statusText: theUrl + ' is unreachable',
+            status: 404,
+            url: theUrl,
+            headers: resHeaders,
+            message: theUrl + ' is unreachable',
+            detail: {
+              mess: theUrl + ' is unreachable',
+              line: -1
+            },
+          });
         }
       };
       xmlHttp.open('POST', theUrl, true); // true for asynchronous
       xmlHttp.setRequestHeader('Content-Type', 'text/plain; charset=utf-8');
       Object.keys(headers || {})
         .filter(h => h.toLowerCase() !== 'accept' && h.toLowerCase() !== 'content-type')
-        .forEach(h => xmlHttp.setRequestHeader(h, headers[h]));
+        .forEach(h => xmlHttp.setRequestHeader(h, headers[h]))
       xmlHttp.send(payload);
     });
   }
@@ -177,7 +222,7 @@ export class Utils {
             break;
           case 'zoom':
             parsed.zoom = evt.value;
-            if(evt.selector) {
+            if (evt.selector) {
               const v: any = {};
               v[evt.selector] = evt.value;
               parsed.vars = v;
@@ -186,7 +231,7 @@ export class Utils {
             break;
           case 'focus':
             parsed.focus = evt.value;
-            if(evt.selector) {
+            if (evt.selector) {
               const v: any = {};
               v[evt.selector] = evt.value;
               parsed.vars = v;
@@ -199,7 +244,7 @@ export class Utils {
             break;
           case 'bounds':
             parsed.bounds = evt.value;
-            if(evt.selector) {
+            if (evt.selector) {
               const v: any = {};
               v[evt.selector] = evt.value;
               parsed.vars = v;
@@ -227,7 +272,7 @@ export class Utils {
             break;
           case 'poi':
             parsed.poi = evt.value;
-            if(evt.selector) {
+            if (evt.selector) {
               const v: any = {};
               v[evt.selector] = evt.value;
               parsed.vars = v;

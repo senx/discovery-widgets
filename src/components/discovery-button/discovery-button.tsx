@@ -156,7 +156,7 @@ export class DiscoveryButtonComponent {
       this.type,
       this.language);
     Utils.httpPost(this.url, ws, (this.options as Param).httpHeaders)
-      .then((res: any) => {
+      .then(res => {
         this.LOG?.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);
         this.LOG?.debug(['handleClick', 'getData'], result);
