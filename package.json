@@ -1,6 +1,6 @@
 {
   "name": "@senx/discovery-widgets",
-  "version": "1.1.98",
+  "version": "1.1.99",
   "description": "Discovery Widgets Elements",
   "keywords": [
     "web",
@@ -32,7 +32,7 @@
   "scripts": {
     "dist": "stencil build",
     "cl": "node changelog.js > CHANGELOG.md",
-    "build": "npx browserslist@latest --update-db && stencil build --docs --prod",
+    "build": "npx update-browserslist-db@latest && stencil build --docs --prod",
     "build:dev": "stencil build --docs --dev --watch --serve --no-open",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
