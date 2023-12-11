@@ -69,6 +69,7 @@ export class DiscoverySlider {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoverySlider, this.debug);
     this.LOG?.debug(['componentWillLoad'], this.options);
@@ -83,6 +84,8 @@ export class DiscoverySlider {
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
   }
 
+
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.innerValue = this.innerValue ?? this.innerOptions.input?.value as number | number[] ?? this.innerOptions.input?.min ?? 0;
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
@@ -167,12 +170,12 @@ export class DiscoverySlider {
       let r: any;
       if (GTSLib.isArray(v) && v.length > 1) {
         r = this.innerOptions.timeMode === 'date'
-          ? [this.parseDate(v[0]), this.parseDate(v[1])]
-          : [Number(v[0]), Number(v[1])];
+          ? [this.parseDate(v[0].replace(this.innerOptions?.unit ?? '', '')), this.parseDate(v[1].replace(this.innerOptions?.unit ?? '', ''))]
+          : [Number(v[0].replace(this.innerOptions?.unit ?? '', '')), Number(v[1].replace(this.innerOptions?.unit ?? '', ''))];
       } else {
         r = this.innerOptions.timeMode === 'date'
-          ? this.parseDate(v[0])
-          : Number(v[0]);
+          ? this.parseDate(v[0].replace(this.innerOptions?.unit ?? '', ''))
+          : Number(v[0].replace(this.innerOptions?.unit ?? '', ''));
       }
       this.valueChanged.emit(r);
     };
