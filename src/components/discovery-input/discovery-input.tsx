@@ -168,7 +168,7 @@ export class DiscoveryInputComponent {
           enableSeconds: true,
           time_24hr: true,
           plugins: [],
-          formatDate: (d: Date) => GTSLib.toISOString(d.valueOf() * divider, divider, this.innerOptions.timeZone,
+          formatDate: (d: Date) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(d.valueOf(), 1) * divider, divider, this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
         } as any;
         if (this.subType === 'date-range') {
@@ -185,11 +185,9 @@ export class DiscoveryInputComponent {
         this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
         this.flatpickrInstance.config.onChange.push((d: any[], s: string) => {
           if (this.subType === 'date-range') {
-            this.selectedValue = d
-              .map(date => date.toISOString())
-              .map(date => GTSLib.toTimestamp(date, divider, this.innerOptions.timeZone));
+            this.selectedValue = d.map(date => GTSLib.zonedTimeToUtc(date.valueOf(), 1) * divider);
           } else {
-            this.selectedValue = GTSLib.toTimestamp(s, divider, this.innerOptions.timeZone);
+            this.selectedValue = GTSLib.zonedTimeToUtc(GTSLib.toTimestamp(s, divider, this.innerOptions.timeZone), 1);
           }
           if (!this.innerOptions.input?.showButton) {
             this.handleClick();
