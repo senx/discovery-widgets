@@ -1,6 +1,22 @@
 Discovery
 ---
 
+## v1.1.100
+
+> +  2023/12/15  | v1.1.100 
+> +  2023/12/15  | readmes 
+> +  2023/12/15  | [date] [date-range] Fix UTC time issue 
+
+## v1.1.99
+
+> +  2023/12/11  | v1.1.99 
+> +  2023/12/11  | [Slider] Fix emitted value when unit is used 
+> +  2023/12/11  | Add HTTP status to response 
+> +  2023/12/11  | Deps update 
+> +  2023/11/24  | [input:date-range] Fix initial timezone 
+> +  2023/11/24  | lints 
+> +  2023/11/23  | changelog 
+
 ## v1.1.98
 
 > +  2023/11/23  | changelog 
