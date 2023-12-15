@@ -183,11 +183,11 @@ export class DiscoveryInputComponent {
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
-        this.flatpickrInstance.config.onChange.push((d: any[], s: string) => {
+        this.flatpickrInstance.config.onClose.push(() => {
           if (this.subType === 'date-range') {
-            this.selectedValue = d.map(date => GTSLib.zonedTimeToUtc(date.valueOf(), 1) * divider);
+            this.selectedValue = this.flatpickrInstance.selectedDates.map(date => GTSLib.zonedTimeToUtc(date.valueOf(), 1) * divider);
           } else {
-            this.selectedValue = GTSLib.zonedTimeToUtc(GTSLib.toTimestamp(s, divider, this.innerOptions.timeZone), 1);
+            this.selectedValue = GTSLib.zonedTimeToUtc(this.flatpickrInstance.selectedDates[0].valueOf(), 1) * divider;
           }
           if (!this.innerOptions.input?.showButton) {
             this.handleClick();

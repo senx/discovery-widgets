@@ -68,6 +68,10 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
+
+    .numInputWrapper span.arrowUp, .numInputWrapper span.arrowDown {
+      height: 50%;
+    }
   }
 
   .discovery-input-wrapper {
