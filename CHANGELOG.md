@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.101
+
+> +  2023/12/15  | v1.1.101 
+> +  2023/12/15  | [input:date] [input:date-range] Fix date/time selection, fire event when the calendar popup is closed 
+> +  2023/12/15  | changelog 
+
 ## v1.1.100
 
 > +  2023/12/15  | v1.1.100 
