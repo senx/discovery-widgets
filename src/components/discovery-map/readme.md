@@ -13,7 +13,7 @@
 | `height`  | `height`  |             | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `undefined`   |
 | `options` | `options` |             | `Param \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `new Param()` |
 | `result`  | `result`  |             | `DataModel \| string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `undefined`   |
-| `type`    | `type`    |             | `"line" \| "area" \| "scatter" \| "step-area" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "bar-polar" \| "display" \| "image" \| "map" \| "gauge" \| "linear-gauge" \| "circle" \| "compass" \| "pie" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "input:text" \| "input:list" \| "input:secret" \| "input:autocomplete" \| "input:chips" \| "input:chips-autocomplete" \| "input:slider" \| "input:date" \| "input:date-range" \| "input:multi" \| "input:multi-cb" \| "button" \| "button:radio" \| "hidden" \| "calendar" \| "heatmap" \| "profile" \| "boxplot" \| "dashboard" \| "dashboard:flex" \| "dashboard:scada"` | `undefined`   |
+| `type`    | `type`    |             | `"map" \| "line" \| "area" \| "scatter" \| "step-area" \| "spline-area" \| "spline" \| "step" \| "step-after" \| "step-before" \| "annotation" \| "bar" \| "bar-polar" \| "display" \| "image" \| "gauge" \| "linear-gauge" \| "circle" \| "compass" \| "pie" \| "doughnut" \| "rose" \| "tabular" \| "svg" \| "input:text" \| "input:list" \| "input:secret" \| "input:autocomplete" \| "input:chips" \| "input:chips-autocomplete" \| "input:slider" \| "input:date" \| "input:date-range" \| "input:multi" \| "input:multi-cb" \| "button" \| "button:radio" \| "hidden" \| "calendar" \| "heatmap" \| "profile" \| "boxplot" \| "dashboard" \| "dashboard:flex" \| "dashboard:scada"` | `undefined`   |
 | `width`   | `width`   |             | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `undefined`   |
 
 
@@ -34,6 +34,12 @@
 
 
 
+#### Parameters
+
+| Name   | Type             | Description |
+| ------ | ---------------- | ----------- |
+| `type` | `"svg" \| "png"` |             |
+
 #### Returns
 
 Type: `Promise<string>`
@@ -44,6 +50,12 @@ Type: `Promise<string>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -53,6 +65,12 @@ Type: `Promise<void>`
 ### `hideById(id: number) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name | Type     | Description |
+| ---- | -------- | ----------- |
+| `id` | `number` |             |
 
 #### Returns
 
@@ -74,6 +92,13 @@ Type: `Promise<void>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+| `ts`     | `number` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -84,6 +109,12 @@ Type: `Promise<void>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -93,6 +124,12 @@ Type: `Promise<void>`
 ### `showById(id: number | string) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name | Type               | Description |
+| ---- | ------------------ | ----------- |
+| `id` | `string \| number` |             |
 
 #### Returns
 

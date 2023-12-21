@@ -77,25 +77,26 @@ export class MapLib {
       attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
     },
     TONER: {
-      link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
-      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
- <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
-  <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
+      link: 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
+      attribution: `&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>
+      &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> 
+      &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> 
+      &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
       subdomains: 'abcd'
     },
     TONER_LITE: {
-      link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
-      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
- <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
-  <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
-      subdomains: 'abcd',
+      link: 'https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.png',
+      attribution: `&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> 
+&copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> 
+&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> 
+&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
     },
     TERRAIN: {
-      link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png',
-      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
- <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
- <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
-      subdomains: 'abcd',
+      link: 'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png',
+      attribution: `&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> 
+ &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> 
+ &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> 
+ &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
     },
     ESRI: {
       link: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
@@ -120,11 +121,11 @@ export class MapLib {
       attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
     },
     WATERCOLOR: {
-      link: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
-      attribution: `Map tiles by <a href="https://stamen.com">Stamen Design</a>,
- <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy;
-  <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`,
-      subdomains: 'abcd',
+      link: 'https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg',
+      attribution: `&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> 
+&copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> 
+&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> 
+&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`
     },
     CARTODB: {
       link: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
@@ -140,7 +141,9 @@ export class MapLib {
     },
   };
 
-  static toLeafletMapPaths(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: { [key: string]: boolean }, scheme: string) {
+  static toLeafletMapPaths(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: {
+    [key: string]: boolean
+  }, scheme: string) {
     const paths = [];
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {
@@ -271,7 +274,9 @@ export class MapLib {
     return true;
   }
 
-  static toLeafletMapPositionArray(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: { [key: string]: boolean }, scheme: string) {
+  static toLeafletMapPositionArray(data: { gts: any[]; params: any[]; globalParams: Param }, hiddenData: {
+    [key: string]: boolean
+  }, scheme: string) {
     const positions = [];
     const size = (data.gts || []).length;
     for (let i = 0; i < size; i++) {

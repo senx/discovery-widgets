@@ -47,6 +47,13 @@ Type: `Promise<Dashboard>`
 
 
 
+#### Parameters
+
+| Name     | Type      | Description |
+| -------- | --------- | ----------- |
+| `save`   | `boolean` |             |
+| `output` | `string`  |             |
+
 #### Returns
 
 Type: `Promise<any>`

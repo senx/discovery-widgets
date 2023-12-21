@@ -37,6 +37,12 @@
 
 
 
+#### Parameters
+
+| Name      | Type      | Description |
+| --------- | --------- | ----------- |
+| `refresh` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<unknown>`
@@ -46,6 +52,12 @@ Type: `Promise<unknown>`
 ### `export(type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>`
 
 
+
+#### Parameters
+
+| Name   | Type             | Description |
+| ------ | ---------------- | ----------- |
+| `type` | `"svg" \| "png"` |             |
 
 #### Returns
 
@@ -57,6 +69,12 @@ Type: `Promise<{ dataUrl: string; bgColor: string; }>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -66,6 +84,12 @@ Type: `Promise<void>`
 ### `hideById(id: number) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name | Type     | Description |
+| ---- | -------- | ----------- |
+| `id` | `number` |             |
 
 #### Returns
 
@@ -87,6 +111,14 @@ Type: `Promise<void>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+| `ts`     | `number` |             |
+| `value`  | `number` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -96,6 +128,12 @@ Type: `Promise<void>`
 ### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name       | Type                              | Description |
+| ---------- | --------------------------------- | ----------- |
+| `dataZoom` | `{ start: number; end: number; }` |             |
 
 #### Returns
 
@@ -107,6 +145,12 @@ Type: `Promise<void>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -116,6 +160,12 @@ Type: `Promise<void>`
 ### `showById(id: number) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name | Type     | Description |
+| ---- | -------- | ----------- |
+| `id` | `number` |             |
 
 #### Returns
 

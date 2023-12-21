@@ -36,6 +36,12 @@
 
 
 
+#### Parameters
+
+| Name   | Type             | Description |
+| ------ | ---------------- | ----------- |
+| `type` | `"svg" \| "png"` |             |
+
 #### Returns
 
 Type: `Promise<string>`
@@ -46,6 +52,12 @@ Type: `Promise<string>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -55,6 +67,12 @@ Type: `Promise<void>`
 ### `hideById(id: number | string) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name | Type               | Description |
+| ---- | ------------------ | ----------- |
+| `id` | `string \| number` |             |
 
 #### Returns
 
@@ -76,6 +94,13 @@ Type: `Promise<void>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+| `ts`     | `number` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -85,6 +110,12 @@ Type: `Promise<void>`
 ### `setZoom(dataZoom: { start: number; end: number; }) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name       | Type                              | Description |
+| ---------- | --------------------------------- | ----------- |
+| `dataZoom` | `{ start: number; end: number; }` |             |
 
 #### Returns
 
@@ -96,6 +127,12 @@ Type: `Promise<void>`
 
 
 
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `regexp` | `string` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -105,6 +142,12 @@ Type: `Promise<void>`
 ### `showById(id: number | string) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name | Type               | Description |
+| ---- | ------------------ | ----------- |
+| `id` | `string \| number` |             |
 
 #### Returns
 

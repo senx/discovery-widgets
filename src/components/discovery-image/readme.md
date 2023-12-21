@@ -31,6 +31,12 @@
 
 
 
+#### Parameters
+
+| Name   | Type             | Description |
+| ------ | ---------------- | ----------- |
+| `type` | `"svg" \| "png"` |             |
+
 #### Returns
 
 Type: `Promise<string[]>`

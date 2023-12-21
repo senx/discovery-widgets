@@ -28,6 +28,13 @@
 
 
 
+#### Parameters
+
+| Name      | Type             | Description |
+| --------- | ---------------- | ----------- |
+| `type`    | `"svg" \| "png"` |             |
+| `bgColor` | `string`         |             |
+
 #### Returns
 
 Type: `Promise<string>`
@@ -37,6 +44,12 @@ Type: `Promise<string>`
 ### `setValue(value: number | number[]) => Promise<void>`
 
 
+
+#### Parameters
+
+| Name    | Type                 | Description |
+| ------- | -------------------- | ----------- |
+| `value` | `number \| number[]` |             |
 
 #### Returns
 
