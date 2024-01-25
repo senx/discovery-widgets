@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.1.102
+
+> +  2024/01/25  | v1.1.102 
+> +  2024/01/25  | Deps update 
+> +  2024/01/25  | Add stackStrategy 
+> +  2023/12/22  | deps update and small fixes 
+> +  2023/12/21  | [map] fix some tile server urls 
+> +  2023/12/21  | deps update 
+> +  2023/12/15  | changelog 
+
 ## v1.1.101
 
 > +  2023/12/15  | v1.1.101 
