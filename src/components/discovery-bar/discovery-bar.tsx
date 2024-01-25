@@ -160,6 +160,7 @@ export class DiscoveryBarComponent {
     const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
     return {
       stack: this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked ? 'total' : undefined,
+      stackStrategy:this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked ? 'all' : undefined,
       animation: !!this.innerOptions?.bar?.animate,
       large: true,
       clip: false,

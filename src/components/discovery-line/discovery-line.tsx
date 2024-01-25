@@ -300,6 +300,7 @@ export class DiscoveryLineComponent {
           smooth: type === 'spline' || type === 'spline-area' ? 0.2 : undefined,
           clip: true,
           stack: 'scatter' !== type && this.innerOptions?.stacked ? 'total' : undefined,
+          stackStrategy: 'scatter' !== type && this.innerOptions?.stacked ? 'all' : undefined,
           step: DiscoveryLineComponent.getStepShape(type),
           areaStyle: type === 'area' || type === 'step-area' || type === 'spline-area' ? {
             opacity: 0.8,
