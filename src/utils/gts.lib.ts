@@ -241,7 +241,7 @@ export class GTSLib {
       .replace(/'/g, '&#39;');
   }
 
-  static serializeGtsMetadata(gts) {
+  static serializeGtsMetadata(gts: any) {
     const serializedLabels = [];
     const serializedAttributes = [];
     if (gts.l) {
@@ -258,11 +258,11 @@ export class GTSLib {
     return `${this.sanitizeNames(gts.c)}{${serializedLabels.join(',')}${serializedAttributes.length > 0 ? ',' : ''}${serializedAttributes.join(',')}}`;
   }
 
-  static isGts(item) {
+  static isGts(item: any) {
     return !!item && (item.c === '' || !!item.c) && !!item.v && GTSLib.isArray(item.v);
   }
 
-  static isGtsToPlot(gts) {
+  static isGtsToPlot(gts: any) {
     if (!GTSLib.isGts(gts)) {
       return false;
     }
@@ -275,14 +275,14 @@ export class GTSLib {
     });
   }
 
-  static isGtsToPlotOnMap(gts) {
+  static isGtsToPlotOnMap(gts: any) {
     if (!GTSLib.isGts(gts) || gts.v.length === 0) {
       return false;
     }
     return (gts.v || []).some(v => v.length >= 3);
   }
 
-  static isGtsToAnnotate(gts) {
+  static isGtsToAnnotate(gts: any) {
     if (!GTSLib.isGts(gts) || gts.v.length === 0) {
       return false;
     }
@@ -298,7 +298,7 @@ export class GTSLib {
     });
   }
 
-  static gtsSort(gts) {
+  static gtsSort(gts: any) {
     if (gts.isSorted) {
       return;
     }
