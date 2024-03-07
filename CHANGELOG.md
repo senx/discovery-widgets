@@ -1,6 +1,19 @@
 Discovery
 ---
 
+## v1.1.104
+
+> +  2024/03/07  | v1.1.104 
+> +  2024/03/07  | [map] fix width in tile 
+> +  2024/03/07  | Update copyrights 
+> +  2024/03/07  | Introduce css vars for status and error 
+> +  2024/03/07  | [display] Fix tile size when responsive is set to true 
+> +  2024/03/07  | [bar] [bar-polar] Fix ability to stack or not individual dataset 
+> +  2024/03/07  | [line] Fix ability to stack or not individual dataset 
+> +  2024/03/07  | [line] [area] [bar] [bar-polar] Add ability to stack or not individual dataset 
+> +  2024/03/07  | deps update 
+> +  2024/02/22  | changelog 
+
 ## v1.1.103
 
 > +  2024/02/22  | v1.1.103 
