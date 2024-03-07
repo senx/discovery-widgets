@@ -288,8 +288,8 @@ export class DiscoveryLineComponent {
           ])
         }
 
-        const isStacked = data.params[gts.id].stacked !== undefined
-          ? data.params[gts.id].stacked
+        const isStacked = (data.params ?? [])[gts.id]?.stacked !== undefined
+          ? (data.params ?? [])[gts.id]?.stacked
           : this.innerOptions?.stacked;
 
         const s = {
