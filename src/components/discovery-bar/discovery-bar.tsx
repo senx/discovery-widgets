@@ -159,8 +159,8 @@ export class DiscoveryBarComponent {
 
   private getCommonSeriesParam(color: string, params: Param) {
     const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
-    const isStacked = params.stacked !== undefined
-      ? params.stacked
+    const isStacked = params?.stacked !== undefined
+      ? params?.stacked
       : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
 
     return {
@@ -351,10 +351,10 @@ export class DiscoveryBarComponent {
         }
 
         (opts.series as any[]).push({
-          ...this.getCommonSeriesParam(color, data.params[i]),
+          ...this.getCommonSeriesParam(color, (data.params ?? [])[i]),
           id: gts.id,
           type, areaStyle,
-          name: GTSLib.setName(gts.id, (((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts))),
+          name: GTSLib.setName(gts.id, (((data.params ?? [])[i] || {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts))),
           data: gts.v
             .sort((a: number[], b: number[]) => a[0] < b[0] ? -1 : 1)
             .map((d: number[]) => {

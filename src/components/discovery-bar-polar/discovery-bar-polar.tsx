@@ -237,7 +237,7 @@ export class DiscoveryBarPolarComponent {
         max = Math.max(max, ...gts.v.map(v => v[0]));
         hasTimeBounds = true;
         let type = ((data.params || [])[i] || {type: 'bar'}).type || 'bar';
-        let areaStyle;
+        let areaStyle: any;
         if (type === 'area') {
           type = 'line';
           areaStyle = {
@@ -252,7 +252,7 @@ export class DiscoveryBarPolarComponent {
             }
           }
         }
-        const sortedGTS = gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1);
+        const sortedGTS = gts.v.sort((a: number[], b: number[]) => a[0] < b[0] ? -1 : 1);
         const s = {
           ...this.getCommonSeriesParam(color),
           type, areaStyle,
@@ -265,7 +265,10 @@ export class DiscoveryBarPolarComponent {
             return [d[d.length - 1], ts];
           })
         } as SeriesOption;
-        if (type === 'bar' && (this.innerOptions.bar || {stacked: false}).stacked) {
+        const isStacked = (data.params || [])[i]?.stacked !== undefined
+          ? (data.params || [])[i]?.stacked
+          : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
+        if (type === 'bar' && isStacked) {
           s.stack = 'a';
           s.stackStrategy = 'all';
         }
@@ -277,7 +280,7 @@ export class DiscoveryBarPolarComponent {
         this.innerOptions.timeMode = 'custom';
         this.LOG?.debug(['convert', 'gts'], gts);
         this.categories = gts.columns;
-        (gts.rows || []).forEach((row, index) => {
+        (gts.rows || []).forEach((row: any[], index: number) => {
           const c = ColorLib.getColor(gts.id || index, this.innerOptions.scheme);
           const color = ((data.params || [])[index] || {datasetColor: c}).datasetColor || c;
           let type = ((data.params || [])[index] || {type: 'bar'}).type || 'bar';
@@ -302,8 +305,8 @@ export class DiscoveryBarPolarComponent {
             name: row[0],
             data: row.splice(1)
           } as SeriesOption;
-          const isStacked = (data.params || [])[index].stacked !== undefined
-            ? (data.params || [])[index].stacked
+          const isStacked = (data.params || [])[index]?.stacked !== undefined
+            ? (data.params || [])[index]?.stacked
             : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
           if (type === 'bar' && isStacked) {
             s.stack = 'a';
