@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -224,6 +224,7 @@ export class DiscoveryTileResultComponent {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.parseResult();
     elementResizeEvent.unbind(this.tileElem);
@@ -717,15 +718,15 @@ JSON-> 0 GET`}
     this.bgColor = dm.bgColor || bgColor;
     this.fontColor = dm.fontColor || fontColor;
 
-    if(this.tileElem) {
+    if (this.tileElem) {
       const rs = getComputedStyle(this.tileElem);
-      if('' === rs.getPropertyValue('--warp-view-font-color').trim()) {
+      if ('' === rs.getPropertyValue('--warp-view-font-color').trim()) {
         this.tileElem.style.setProperty('--warp-view-font-color', this.fontColor)
       }
-      if('' === rs.getPropertyValue('--warp-view-chart-label-color').trim()) {
+      if ('' === rs.getPropertyValue('--warp-view-chart-label-color').trim()) {
         this.tileElem.style.setProperty('--warp-view-chart-label-color', this.fontColor)
       }
-      if('#8e8e8e' === rs.getPropertyValue('--warp-view-chart-grid-color').trim()) {
+      if ('#8e8e8e' === rs.getPropertyValue('--warp-view-chart-grid-color').trim()) {
         this.tileElem.style.setProperty('--warp-view-chart-grid-color', this.fontColor)
       }
     }
