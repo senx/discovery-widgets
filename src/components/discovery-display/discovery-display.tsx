@@ -232,7 +232,7 @@ export class DiscoveryDisplayComponent {
         if (this.fitties) {
           this.fitties.unsubscribe();
         }
-        if (!!this.innerOptions.responsive) {
+        if (this.innerOptions.responsive) {
           this.fitties = fitty(this.wrapper, {maxSize: height * 0.80, minSize: 14});
           this.fitties.element.addEventListener('fit', () => {
             if (this.initial) {
@@ -256,6 +256,7 @@ export class DiscoveryDisplayComponent {
       <style>{this.generateStyle(this.innerStyle)}</style>
       <div style={{color: this.innerOptions.fontColor}}
            class={'display-container pos-' + this.innerOptions?.display?.labelPosition ?? 'c'}>
+
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el} class="value">

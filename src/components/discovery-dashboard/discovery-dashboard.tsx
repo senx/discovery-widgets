@@ -387,7 +387,7 @@ export class DiscoveryDashboardComponent {
   }
 
   private getRowSpan(id: number, span: number): string {
-    return !!this.renderedTiles[id]?.options?.responsive ? `span ${span}` : `${span}`;
+    return !!this.renderedTiles[id]?.options?.responsive ? `span ${span - 1}` : `${span}`;
   }
 
   private setActualType(id: number, type: CustomEvent<ChartType>) {
