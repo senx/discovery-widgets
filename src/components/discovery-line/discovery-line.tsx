@@ -288,6 +288,10 @@ export class DiscoveryLineComponent {
           ])
         }
 
+        const isStacked = data.params[gts.id].stacked !== undefined
+          ? data.params[gts.id].stacked
+          : this.innerOptions?.stacked;
+
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
           name: GTSLib.setName(gts.id, (((data.params ?? [])[gts.id] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts))),
@@ -299,8 +303,8 @@ export class DiscoveryLineComponent {
           symbolSize: this.innerOptions.dotSize ?? 10,
           smooth: type === 'spline' || type === 'spline-area' ? 0.2 : undefined,
           clip: true,
-          stack: 'scatter' !== type && this.innerOptions?.stacked ? 'total' : undefined,
-          stackStrategy: 'scatter' !== type && this.innerOptions?.stacked ? 'all' : undefined,
+          stack: 'scatter' !== type && isStacked ? 'total' : undefined,
+          stackStrategy: 'scatter' !== type && isStacked ? 'all' : undefined,
           step: DiscoveryLineComponent.getStepShape(type),
           areaStyle: type === 'area' || type === 'step-area' || type === 'spline-area' ? {
             opacity: 0.8,

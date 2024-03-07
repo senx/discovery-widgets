@@ -302,7 +302,10 @@ export class DiscoveryBarPolarComponent {
             name: row[0],
             data: row.splice(1)
           } as SeriesOption;
-          if (type === 'bar' && (this.innerOptions.bar || {stacked: false}).stacked) {
+          const isStacked = (data.params || [])[index].stacked !== undefined
+            ? (data.params || [])[index].stacked
+            : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
+          if (type === 'bar' && isStacked) {
             s.stack = 'a';
             s.stackStrategy = 'all';
           }
@@ -541,7 +544,12 @@ export class DiscoveryBarPolarComponent {
       this.myChart.on('highlight', (event: any) => focusHandler('highlight', event));
 
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: GTSLib.getName(event.seriesName), value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({
+          date: event.value[0],
+          name: GTSLib.getName(event.seriesName),
+          value: event.value[1],
+          meta: {}
+        });
       });
       this.setOpts();
       initial = true;
@@ -573,11 +581,11 @@ export class DiscoveryBarPolarComponent {
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();
@@ -585,11 +593,11 @@ export class DiscoveryBarPolarComponent {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
       });
     }
     return Promise.resolve();

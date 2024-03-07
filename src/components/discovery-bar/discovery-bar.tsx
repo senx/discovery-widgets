@@ -114,6 +114,7 @@ export class DiscoveryBarComponent {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryBarComponent, this.debug);
@@ -156,11 +157,15 @@ export class DiscoveryBarComponent {
     });
   }
 
-  private getCommonSeriesParam(color) {
+  private getCommonSeriesParam(color: string, params: Param) {
     const isHorizontal = !!this.innerOptions.bar && !!this.innerOptions.bar.horizontal;
+    const isStacked = params.stacked !== undefined
+      ? params.stacked
+      : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
+
     return {
-      stack: this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked ? 'total' : undefined,
-      stackStrategy:this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked ? 'all' : undefined,
+      stack: isStacked ? 'total' : undefined,
+      stackStrategy: isStacked ? 'all' : undefined,
       animation: !!this.innerOptions?.bar?.animate,
       large: true,
       clip: false,
@@ -346,20 +351,22 @@ export class DiscoveryBarComponent {
         }
 
         (opts.series as any[]).push({
-          ...this.getCommonSeriesParam(color),
+          ...this.getCommonSeriesParam(color, data.params[i]),
           id: gts.id,
           type, areaStyle,
           name: GTSLib.setName(gts.id, (((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts))),
-          data: gts.v.sort((a, b) => a[0] < b[0] ? -1 : 1).map(d => {
-            const ts = this.innerOptions.timeMode === 'date'
-              ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
-              : d[0];
-            if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
-              return [d[d.length - 1], ts];
-            } else {
-              return [ts, d[d.length - 1]]
-            }
-          })
+          data: gts.v
+            .sort((a: number[], b: number[]) => a[0] < b[0] ? -1 : 1)
+            .map((d: number[]) => {
+              const ts = this.innerOptions.timeMode === 'date'
+                ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
+                : d[0];
+              if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
+                return [d[d.length - 1], ts];
+              } else {
+                return [ts, d[d.length - 1]]
+              }
+            })
         } as SeriesOption);
       } else if (!gts.v) {
         this.innerOptions.timeMode = 'custom';
@@ -383,15 +390,13 @@ export class DiscoveryBarComponent {
             }
           }
           (opts.series as any[]).push({
-            ...this.getCommonSeriesParam(color),
+            ...this.getCommonSeriesParam(color, (data.params || [])[index]),
             name: label,
             type, areaStyle,
-            data: gts.rows.map(r => {
-              if (!!(this.innerOptions.bar || {horizontal: false}).horizontal) {
-                return [r[index + 1], r[0]];
-              } else {
-                return [r[0], r[index + 1]]
-              }
+            data: gts.rows.map((r: any[]) => {
+              return !!(this.innerOptions.bar || {horizontal: false}).horizontal
+                ? [r[index + 1], r[0]]
+                : [r[0], r[index + 1]];
             })
           } as SeriesOption);
         });
