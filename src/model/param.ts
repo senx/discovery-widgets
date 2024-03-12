@@ -17,6 +17,7 @@
 // noinspection JSUnusedGlobalSymbols
 
 import {ChartType, DiscoveryEvent, MapParams, TimeMode, TimeUnit} from './types';
+import {HeatMaps} from "../utils/color-lib";
 
 export class Param {
   skippedVars?: string[];
@@ -132,7 +133,10 @@ export class Param {
   gauge?: {
     horizontal: boolean,
     showTicks: false,
-    decimals?: number
+    decimals?: number,
+    color?: any[][] | HeatMaps,
+    pointer?: boolean,
+    width?: number
   };
   display?: {
     showChart?: boolean,

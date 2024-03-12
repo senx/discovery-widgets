@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import * as echarts from 'echarts';
 import {EChartsOption} from 'echarts';
 import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
-import {ColorLib} from '../../utils/color-lib';
+import {ColorLib, HeatMaps} from '../../utils/color-lib';
 import {Utils} from '../../utils/utils';
 import {SeriesOption} from 'echarts/lib/util/types';
 
@@ -54,7 +54,6 @@ export class DiscoveryGauge {
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
-  private divider = 1000;
   private myChart: ECharts;
 
   @Watch('result')
@@ -132,6 +131,7 @@ export class DiscoveryGauge {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryGauge, this.debug);
@@ -140,7 +140,6 @@ export class DiscoveryGauge {
     } else {
       this.innerOptions = this.options;
     }
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     this.setOpts();
     this.LOG?.debug(['componentWillLoad'], {
@@ -178,7 +177,7 @@ export class DiscoveryGauge {
     });
   }
 
-  private getCommonSeriesParam(color) {
+  private getCommonSeriesParam(color: string) {
     return {
       type: 'gauge',
       animation: true,
@@ -302,8 +301,17 @@ export class DiscoveryGauge {
       }
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      let axisLineColor: any[][] | HeatMaps;
+      if ((data.params || [])[i]?.gauge?.color || this.innerOptions.gauge?.color) {
+        if (GTSLib.isArray((data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color)) {
+          axisLineColor = (data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color;
+        } else if (ColorLib.heatMaps[((data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color).toString()]) {
+          const heatMap = ColorLib.heatMaps[((data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color).toString()];
+          axisLineColor = heatMap.map((c: string, i: number) => [(i + 1) / heatMap.length, c]);
+        }
+      }
       const unit = ((data.params || [])[i] || {}).unit || this.innerOptions.unit || this.unit || '';
-      const angles = DiscoveryGauge.getAngles(this.type)
+      const angles = DiscoveryGauge.getAngles(this.type);
       series.push({
         ...this.getCommonSeriesParam(color),
         name: d.key,
@@ -322,12 +330,19 @@ export class DiscoveryGauge {
           offsetCenter: this.type === 'compass' ? [0, '110%'] : [0, 10],
           color: Utils.getLabelColor(this.el)
         },
-        axisLine: this.type === 'compass' ? {
-          lineStyle: {
-            color: [[1, Utils.getGridColor(this.el)]],
-            width: 1
-          }
-        } : {roundCap: false, lineStyle: {width: 20}},
+        axisLine: this.type === 'compass'
+          ? {lineStyle: {color: [[1, Utils.getGridColor(this.el)]], width: 1}}
+          : axisLineColor
+            ? {
+              lineStyle: {
+                color: axisLineColor,
+                width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20
+              }
+            }
+            : {
+              roundCap: false,
+              lineStyle: {width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20}
+            },
         axisTick: this.type === 'compass' ? {
           distance: 0,
           length: 10,
@@ -340,22 +355,35 @@ export class DiscoveryGauge {
         axisLabel: this.type === 'compass' ? {
           color: Utils.getLabelColor(this.el),
           distance: 0,
-          formatter: value => value === d.max ? '' : `${value}`
+          formatter: (value: any) => value === d.max ? '' : `${value}`
         } : {show: false},
         progress: this.type === 'compass'
           ? {show: false}
-          : {show: true, roundCap: false, width: 20},
+          : {
+            show: !((data.params || [])[i]?.gauge?.pointer || this.innerOptions?.gauge?.pointer),
+            roundCap: false,
+            width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20
+          },
         data: [{value: d.value, name: d.key}],
         anchor: this.type === 'compass' ? {
           show: true,
           size: 10,
           itemStyle: {borderColor: color, borderWidth: 10}
         } : {show: false},
-        pointer: this.type === 'compass' ? {
-          offsetCenter: [0, '40%'],
-          length: '140%',
-          itemStyle: {color}
-        } : {show: false},
+        pointer: this.type === 'compass'
+          ? {
+            offsetCenter: [0, '40%'],
+            length: '140%',
+            itemStyle: {color}
+          }
+          : {
+            show: (data.params || [])[i]?.gauge?.pointer || this.innerOptions?.gauge?.pointer,
+            icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+            length: '12%',
+            width: 20,
+            offsetCenter: [0, `-${radius - 10}%`],
+            itemStyle: {color: 'auto'}
+          },
         radius: `${radius}%`,
         detail: {
           formatter: '{value}' + unit,
@@ -391,6 +419,7 @@ export class DiscoveryGauge {
     }
   };
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     setTimeout(() => {
       this.parsing = false;
