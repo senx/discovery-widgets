@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.1.105
+
+> +  2024/03/15  | v1.1.105 
+> +  2024/03/15  | [input:date] [input:date-range] Fix calendar z-index and date alignment 
+> +  2024/03/15  | [input:list] Fix height 
+> +  2024/03/12  | [gauge] add color map and pointer support 
+> +  2024/03/12  | deps update 
+> +  2024/03/12  | css fix 
+> +  2024/03/07  | changelog 
+
 ## v1.1.104
 
 > +  2024/03/07  | v1.1.104 
