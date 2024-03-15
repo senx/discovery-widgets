@@ -41,6 +41,7 @@
   select.discovery-input {
     margin: .25rem .125rem;
     display: inline-block;
+    position: relative;
     font-size: var(--warp-view-input-font-size, 1rem);
     border-radius: var(--warp-view-input-border-radius, 0.25rem);
     border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
@@ -163,7 +164,7 @@
 
   .range {
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
     align-items: center;
     flex-direction: row;
     margin: .25rem .125rem;
@@ -172,6 +173,7 @@
     border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
     color: var(--warp-view-input-label-color, $w10-charcoal);
     background-color: var(--warp-view-input-bg-color, $w10-white);
+    height: 34px;
 
     .flatpickr-wrapper {
       margin: 0;
@@ -192,6 +194,8 @@
       border: none !important;
       margin: 0 !important;
       padding: 0 !important;
+      max-height: 25px;
+      cursor: pointer;
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -69,8 +69,7 @@ export class DiscoveryInputComponent {
   private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
   private inputField2: HTMLInputElement;
   private disabled = false;
-  private min = 0;
-  private max = 100;
+
   private root: HTMLDivElement;
   private flatpickrInstance: flatpickr.Instance;
   private autoCompleteJS: any;
@@ -125,6 +124,7 @@ export class DiscoveryInputComponent {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryInputComponent, this.debug);
     this.parsing = true;
@@ -155,6 +155,7 @@ export class DiscoveryInputComponent {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     switch (this.subType) {
       case 'date':
@@ -162,7 +163,7 @@ export class DiscoveryInputComponent {
         const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
         const opts = {
           enableTime: true,
-          appendTo: this.root,
+      //    appendTo: this.root,
           positionElement: this.inputField,
           static: true,
           enableSeconds: true,
@@ -288,8 +289,6 @@ export class DiscoveryInputComponent {
 
   private parseResult() {
     const data = this.innerResult.data || '';
-    this.min = (this.innerOptions.input || {min: 0}).min || 0;
-    this.max = (this.innerOptions.input || {max: 100}).max || 100;
     this.LOG.debug(['parseResult', 'innerOptions'], this.innerOptions);
     switch (this.subType) {
       case 'text':
