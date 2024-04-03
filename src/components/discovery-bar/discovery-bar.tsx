@@ -260,7 +260,7 @@ export class DiscoveryBarComponent {
         axisPointer: {type: 'shadow'},
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
-        formatter: (params) => {
+        formatter: (params: any[]) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode !== 'date'
               ? params[0].value[0]
@@ -418,9 +418,10 @@ export class DiscoveryBarComponent {
       axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
       axisLabel: {
         color: Utils.getLabelColor(this.el),
+        show: !this.innerOptions.hideYAxis,
         formatter: this.innerOptions?.bar?.horizontal
           ? this.innerOptions.timeMode === 'date'
-            ? this.innerOptions.fullDateDisplay ? value =>
+            ? this.innerOptions.fullDateDisplay ? (value: number) =>
                 GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
                   .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
               : undefined
@@ -468,7 +469,7 @@ export class DiscoveryBarComponent {
         color: Utils.getLabelColor(this.el),
         formatter: !this.innerOptions?.bar?.horizontal
           ? this.innerOptions.timeMode === 'date'
-            ? this.innerOptions.fullDateDisplay ? value =>
+            ? this.innerOptions.fullDateDisplay ? (value: number) =>
                 GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
                   .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
               : undefined
