@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, ECharts} from '../../model/types';
-import {Param} from '../../model/param';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, ECharts } from '../../model/types';
+import { Param } from '../../model/param';
 import * as echarts from 'echarts';
-import {EChartsOption, SeriesOption} from 'echarts';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
-import {ColorLib} from '../../utils/color-lib';
+import { EChartsOption, SeriesOption } from 'echarts';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
+import { ColorLib } from '../../utils/color-lib';
 
 @Component({
   tag: 'discovery-calendar',
@@ -63,7 +63,7 @@ export class DiscoveryCalendar {
       this.chartOpts = this.convert(GTSLib.getData(this.result));
       setTimeout(() => {
         this.myChart.setOption(this.chartOpts || {}, true, false);
-        this.myChart.resize({height: this.height});
+        this.myChart.resize({ height: this.height });
         this.setOpts(true);
       });
     }
@@ -74,7 +74,7 @@ export class DiscoveryCalendar {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
     setTimeout(() => {
       this.myChart.setOption(this.chartOpts || {}, true, false);
-      this.myChart.resize({height: this.height});
+      this.myChart.resize({ height: this.height });
       this.setOpts(true);
     });
   }
@@ -86,18 +86,18 @@ export class DiscoveryCalendar {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
       } else {
-        this.innerOptions = {...this.options as Param};
+        this.innerOptions = { ...this.options as Param };
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
           this.myChart.setOption(this.chartOpts || {}, true, false);
-          this.myChart.resize({height: this.height});
+          this.myChart.resize({ height: this.height });
           this.setOpts(true);
         });
       }
       if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       }
     }
   }
@@ -114,7 +114,7 @@ export class DiscoveryCalendar {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
@@ -123,18 +123,18 @@ export class DiscoveryCalendar {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -142,11 +142,11 @@ export class DiscoveryCalendar {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -167,14 +167,14 @@ export class DiscoveryCalendar {
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
-      chartOpts: this.chartOpts
+      chartOpts: this.chartOpts,
     });
   }
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     const series: any[] = [];
     const calendar: any[] = [];
     const titles: any[] = [];
@@ -194,11 +194,12 @@ export class DiscoveryCalendar {
       this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], { options: this.innerOptions, gtsList });
     const gtsCount = gtsList.length;
     let cal = 0;
     let seriesIndex = 0;
     for (let i = 0; i < gtsCount; i++) {
+      const datasetNoAlpha = (data.params ?? [])[i]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
       const gts = gtsList[i];
       let min = Number.MAX_SAFE_INTEGER;
       let max = Number.MIN_SAFE_INTEGER;
@@ -206,20 +207,20 @@ export class DiscoveryCalendar {
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         // add title
         titles.push({
-          text: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+          text: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
           left: 'center',
           textStyle: {
             height: 20, fontSize: 12,
-            color: Utils.getLabelColor(this.el)
+            color: Utils.getLabelColor(this.el),
           },
           top: this.CAL_SIZE * cal + seriesIndex * 20,
         });
         // Find min/max
-        (gts.v || []).forEach(v => {
+        (gts.v || []).forEach((v: any[]) => {
           const value = v[v.length - 1];
           const d = GTSLib.toISOString(v[0], this.divider, this.innerOptions.timeZone, undefined);
           const y = d.split('-')[0];
-          dataStruct[y] = dataStruct[y] || {}
+          dataStruct[y] = dataStruct[y] || {};
           // Aggregation
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           dataStruct[y][d] = dataStruct[y][d] + value || value;
@@ -231,7 +232,7 @@ export class DiscoveryCalendar {
           visualMap.push({
             min, max, show: false,
             seriesIndex: cal,
-            color: ColorLib.getHeatMap(((data.params || [])[i] || {}).scheme || this.innerOptions.scheme)
+            color: ColorLib.getHeatMap(((data.params || [])[i] || {}).scheme || this.innerOptions.scheme),
           });
           calendar.push({
             top: this.CAL_SIZE * cal + (seriesIndex + 1) * 20 + 20,
@@ -240,26 +241,26 @@ export class DiscoveryCalendar {
             itemStyle: {
               color: 'transparent',
               borderWidth: 1,
-              borderColor: ColorLib.transparentize(Utils.getGridColor(this.el), 0.5)
+              borderColor: ColorLib.transparentize(Utils.getGridColor(this.el), datasetNoAlpha ? 1 : 0.5),
             },
-            splitLine: {lineStyle: {width: 2, color: Utils.getGridColor(this.el)}},
+            splitLine: { lineStyle: { width: 2, color: Utils.getGridColor(this.el) } },
             dayLabel: {
               firstDay: this.innerOptions.calendar?.firstDay || 0,
               nameMap: this.innerOptions.calendar?.dayLabel,
-              color: Utils.getLabelColor(this.el)
+              color: Utils.getLabelColor(this.el),
             },
             monthLabel: {
               nameMap: this.innerOptions.calendar?.monthLabel,
-              color: Utils.getLabelColor(this.el)
+              color: Utils.getLabelColor(this.el),
             },
-            yearLabel: {color: Utils.getLabelColor(this.el)}
+            yearLabel: { color: Utils.getLabelColor(this.el) },
           });
           series.push({
             type: 'heatmap',
             coordinateSystem: 'calendar',
-            name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+            name: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
             calendarIndex: cal,
-            data: Object.keys(dataStruct[currentRange]).map(d => [d, dataStruct[currentRange][d]])
+            data: Object.keys(dataStruct[currentRange]).map(d => [d, dataStruct[currentRange][d]]),
           } as SeriesOption);
           cal++;
         });
@@ -267,66 +268,69 @@ export class DiscoveryCalendar {
       }
     }
     this.height = this.CAL_SIZE * cal + titles.length * 20 + 40;
-    this.LOG?.debug(['convert', 'series'], {series, calendar, visualMap, titles});
+    this.LOG?.debug(['convert', 'series'], { series, calendar, visualMap, titles });
     return {
       title: titles,
       grid: {
         left: 10, top: 10, bottom: 10, right: 10,
-        containLabel: true
+        containLabel: true,
       },
       tooltip: {
         trigger: 'item',
         axisPointer: {
-          type: 'shadow'
+          type: 'shadow',
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
-        formatter: (params) => {
+        formatter: (params: any) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             GTSLib.toISOString(
               GTSLib.toTimestamp(params.value[0], this.divider, this.innerOptions.timeZone),
               this.divider, this.innerOptions.timeZone,
-              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined
+              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined,
             ).replace('T', ' ').replace('Z', '')}</div>
             ${params.marker}
             <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${params.seriesName}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">
             ${params.value[1]}</span>`;
-        }
+        },
       },
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
-        }
+          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
+        },
       },
-      legend: {bottom: 10, left: 'center', show: false},
+      legend: { bottom: 10, left: 'center', show: false },
       visualMap,
       series,
       calendar,
-      ...this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
   }
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({
+      type,
+      excludeComponents: ['toolbox'],
+    }) : undefined);
   }
 
   private setOpts(notMerge = false) {
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
-        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
         text: this.innerOptions.noDataLabel || '',
         left: 'center',
-        top: 'center'
+        top: 'center',
       };
-      this.chartOpts.xAxis = {show: false};
-      this.chartOpts.yAxis = {show: false};
-      this.chartOpts.tooltip = {show: false};
+      this.chartOpts.xAxis = { show: false };
+      this.chartOpts.yAxis = { show: false };
+      this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
@@ -342,7 +346,7 @@ export class DiscoveryCalendar {
       let initial = false;
       this.myChart = echarts.init(this.graph, null, {
         width: this.width,
-        height: this.height ? this.height - 10 : undefined
+        height: this.height ? this.height - 10 : undefined,
       });
       this.myChart.on('rendered', () => {
         this.rendering = false;
@@ -352,11 +356,11 @@ export class DiscoveryCalendar {
         }
       });
       this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointOver.emit({ date: event.value[0], name: event.seriesName, value: event.value[1], meta: {} });
       });
       this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({ date: event.value[0], name: event.seriesName, value: event.value[1], meta: {} });
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
@@ -367,7 +371,7 @@ export class DiscoveryCalendar {
     return <div class="calendar-wrapper">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el}/>
-    </div>
+      <div ref={(el) => this.graph = el} />
+    </div>;
   }
 }

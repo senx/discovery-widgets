@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, ECharts} from '../../model/types';
-import {Param} from '../../model/param';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, ECharts } from '../../model/types';
+import { Param } from '../../model/param';
 import * as echarts from 'echarts';
-import {EChartsOption} from 'echarts';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
-import {ColorLib} from '../../utils/color-lib';
-import {SeriesOption} from 'echarts/lib/util/types';
+import { EChartsOption } from 'echarts';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
+import { ColorLib } from '../../utils/color-lib';
+import { SeriesOption } from 'echarts/lib/util/types';
 
 @Component({
   tag: 'discovery-pie',
@@ -78,14 +78,14 @@ export class DiscoveryPieComponent {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
       } else {
-        this.innerOptions = {...this.options as Param};
+        this.innerOptions = { ...this.options as Param };
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
       if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       }
     }
   }
@@ -102,7 +102,7 @@ export class DiscoveryPieComponent {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
@@ -111,18 +111,18 @@ export class DiscoveryPieComponent {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -130,16 +130,17 @@ export class DiscoveryPieComponent {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryPieComponent, this.debug);
@@ -162,16 +163,16 @@ export class DiscoveryPieComponent {
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
-        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
         text: this.innerOptions.noDataLabel || '',
         left: 'center',
-        top: 'center'
+        top: 'center',
       };
-      this.chartOpts.xAxis = {show: false};
-      this.chartOpts.yAxis = {show: false};
-      this.chartOpts.tooltip = {show: false};
+      this.chartOpts.xAxis = { show: false };
+      this.chartOpts.yAxis = { show: false };
+      this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
@@ -191,23 +192,24 @@ export class DiscoveryPieComponent {
       label: {
         position: 'outside',
         overflow: 'none',
-        color: Utils.getLabelColor(this.el)
+        color: Utils.getLabelColor(this.el),
       },
       emphasis: {
         itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
-        }
-      }
-    } as SeriesOption
+          shadowColor: 'rgba(0, 0, 0, 0.5)',
+        },
+      },
+    } as SeriesOption;
   }
 
   private getCommonDataParam(color: any) {
+    const datasetNoAlpha = this.innerOptions.datasetNoAlpha;
     return {
-      lineStyle: {color},
+      lineStyle: { color },
       labelLine: {
-        color: Utils.getGridColor(this.el)
+        color: Utils.getGridColor(this.el),
       },
       itemStyle: {
         opacity: 0.8,
@@ -215,21 +217,21 @@ export class DiscoveryPieComponent {
         color: {
           type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
           colorStops: [
-            {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-            {offset: 1, color: ColorLib.transparentize(color, 0.3)}
+            { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+            { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.3) },
           ],
-          global: false // false by default
-        }
-      }
+          global: false, // false by default
+        },
+      },
     };
   }
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     const series: any[] = [];
-    let gtsList;
+    let gtsList: any[];
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG?.debug(['convert', 'isArray']);
@@ -244,13 +246,13 @@ export class DiscoveryPieComponent {
       this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], { options: this.innerOptions, gtsList });
     const gtsCount = gtsList.length;
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-      const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
       if (GTSLib.isGtsToPlot(gts)) {
         const values = (gts.v || []);
         const val = values[values.length - 1] || [];
@@ -261,45 +263,45 @@ export class DiscoveryPieComponent {
         dataStruct.push({
           ...this.getCommonDataParam(color),
           id: gts.id,
-          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          value
+          name: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
+          value,
         });
       } else if (!GTSLib.isGts(gts)) {
         if (gts.hasOwnProperty('key')) {
           dataStruct.push({
             ...this.getCommonDataParam(color),
             name: gts.key || '',
-            value: gts.value || Number.MIN_VALUE
+            value: gts.value || Number.MIN_VALUE,
           });
         } else {
           Object.keys(gts).forEach((k, j) => {
             const schemeColor = ColorLib.getColor(j, this.innerOptions.scheme);
-            const datasetColor = ((data.params || [])[i] || {datasetColor: schemeColor}).datasetColor || schemeColor;
+            const datasetColor = ((data.params || [])[i] || { datasetColor: schemeColor }).datasetColor || schemeColor;
             dataStruct.push({
               ...this.getCommonDataParam(datasetColor),
               name: k,
-              value: gts[k]
+              value: gts[k],
             });
           });
         }
       }
     }
-    if(dataStruct.length > 0) {
+    if (dataStruct.length > 0) {
       series.push({
         ...this.getCommonSeriesParam(),
-        data: dataStruct
+        data: dataStruct,
       } as SeriesOption);
     }
     this.LOG?.debug(['convert', 'series'], series);
     return {
       grid: {
         left: 0, top: 0, bottom: 0, right: 0,
-        containLabel: true
+        containLabel: true,
       },
       tooltip: {
         trigger: 'item',
         axisPointer: {
-          type: 'shadow'
+          type: 'shadow',
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
@@ -307,22 +309,25 @@ export class DiscoveryPieComponent {
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
-        }
+          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
+        },
       },
       legend: {
         bottom: 10,
         left: 'center',
-        show: false
+        show: false,
       },
       series,
-      ...this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
   }
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({
+      type,
+      excludeComponents: ['toolbox'],
+    }) : undefined);
   }
 
   componentDidLoad() {
@@ -333,7 +338,7 @@ export class DiscoveryPieComponent {
       let initial = false;
       this.myChart = echarts.init(this.graph, null, {
         width: this.width,
-        height: this.height ? this.height - 10 : undefined
+        height: this.height ? this.height - 10 : undefined,
       });
       this.myChart.on('rendered', () => {
         this.rendering = false;
@@ -343,11 +348,11 @@ export class DiscoveryPieComponent {
         }
       });
       this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointOver.emit({ date: event.value[0], name: event.seriesName, value: event.value[1], meta: {} });
       });
       this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({ date: event.value[0], name: event.seriesName, value: event.value[1], meta: {} });
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
       initial = true;
@@ -355,10 +360,10 @@ export class DiscoveryPieComponent {
   }
 
   render() {
-    return <div style={{width: '100%', height: '100%'}}>
+    return <div style={{ width: '100%', height: '100%' }}>
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el}/>
-    </div>
+      <div ref={(el) => this.graph = el} />
+    </div>;
   }
 }

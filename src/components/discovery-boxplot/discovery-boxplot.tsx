@@ -1,5 +1,5 @@
 /*
- *   Copyright 2023 SenX S.A.S.
+ *   Copyright 2023-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, ECharts} from '../../model/types';
-import {Param} from '../../model/param';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, ECharts } from '../../model/types';
+import { Param } from '../../model/param';
 import * as echarts from 'echarts';
-import {BoxplotSeriesOption, EChartsOption, SeriesOption} from 'echarts';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
-import {ColorLib} from '../../utils/color-lib';
+import { BoxplotSeriesOption, EChartsOption, SeriesOption } from 'echarts';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
+import { ColorLib } from '../../utils/color-lib';
 import _ from 'lodash';
 
 @Component({
@@ -32,11 +32,11 @@ import _ from 'lodash';
   shadow: true,
 })
 export class DiscoveryBoxPlotComponent {
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop({ mutable: true }) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
+  @Prop() options: Param | string = { ...new Param(), timeMode: 'date' };
   @Prop() width: number;
-  @Prop({mutable: true}) height: number;
+  @Prop({ mutable: true }) height: number;
   @Prop() debug = false;
   @Prop() unit: string;
 
@@ -56,7 +56,7 @@ export class DiscoveryBoxPlotComponent {
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
-  private defOptions: Param = {...new Param(), timeMode: 'date'};
+  private defOptions: Param = { ...new Param(), timeMode: 'date' };
   private LOG: Logger;
   private divider = 1000;
   private myChart: ECharts;
@@ -80,14 +80,14 @@ export class DiscoveryBoxPlotComponent {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
       } else {
-        this.innerOptions = {...this.options as Param};
+        this.innerOptions = { ...this.options as Param };
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
       if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       }
     }
   }
@@ -106,7 +106,7 @@ export class DiscoveryBoxPlotComponent {
       dataZoom.start = dataZoom.start || 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
-        this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 0});
+        this.myChart.dispatchAction({ type: 'dataZoom', ...dataZoom, dataZoomIndex: 0 });
       }
     }
     return Promise.resolve();
@@ -126,26 +126,26 @@ export class DiscoveryBoxPlotComponent {
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
-      chartOpts: this.chartOpts
+      chartOpts: this.chartOpts,
     });
     this.LOG?.debug(['componentWillLoad'], this.el.parentElement.parentElement);
-    this.setOpts()
+    this.setOpts();
   }
 
   private setOpts(notMerge = false) {
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
-        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
         text: this.innerOptions.noDataLabel || '',
         left: 'center',
-        top: 'center'
+        top: 'center',
       };
-      this.chartOpts.xAxis = {show: false};
-      this.chartOpts.yAxis = {show: false};
-      this.chartOpts.tooltip = {show: false};
+      this.chartOpts.xAxis = { show: false };
+      this.chartOpts.yAxis = { show: false };
+      this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
@@ -156,28 +156,29 @@ export class DiscoveryBoxPlotComponent {
 
   private getCommonSeriesParam(color: string) {
     const isHorizontal = !!this.innerOptions.box?.horizontal;
+    const datasetNoAlpha = this.innerOptions.datasetNoAlpha;
     return {
       emphasis: {
         focus: 'series',
         itemStyle: {
           opacity: 0.8,
           borderColor: color,
-          color: ColorLib.transparentize(color, 0.8)
-        }
+          color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.8),
+        },
       },
       blur: {
-        lineStyle: {color},
+        lineStyle: { color },
         itemStyle: {
           opacity: 0.8,
           borderColor: color,
           color: {
             type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
             colorStops: [
-              {offset: 0, color: ColorLib.transparentize(color, 0.3)},
-              {offset: 1, color: ColorLib.transparentize(color, 0.7)}
-            ]
-          }
-        }
+              { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.3) },
+              { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+            ],
+          },
+        },
       },
       itemStyle: {
         opacity: 0.8,
@@ -185,18 +186,18 @@ export class DiscoveryBoxPlotComponent {
         color: {
           type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
           colorStops: [
-            {offset: 0, color: ColorLib.transparentize(color, 0.3)},
-            {offset: 1, color: ColorLib.transparentize(color, 0.7)}
-          ]
-        }
-      }
-    } as any
+            { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.3) },
+            { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+          ],
+        },
+      },
+    } as any;
   }
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     const series: any[] = [];
     let gtsList: any[];
     if (GTSLib.isArray(data.data)) {
@@ -213,7 +214,7 @@ export class DiscoveryBoxPlotComponent {
       this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], { options: this.innerOptions, gtsList });
     const gtsCount = gtsList.length;
     let hasTimeBounds = false;
     const axisLabels = [];
@@ -232,22 +233,22 @@ export class DiscoveryBoxPlotComponent {
             ? 20
             : 10,
         right: 10,
-        containLabel: true
+        containLabel: true,
       },
       visualMap: new Array(gtsCount),
       tooltip: {
         trigger: 'item',
         transitionDuration: 0,
-        axisPointer: {type: 'shadow'},
+        axisPointer: { type: 'shadow' },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
-        hideDelay: this.innerOptions.tooltipDelay || 100
+        hideDelay: this.innerOptions.tooltipDelay || 100,
       },
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
-          restore: {show: true},
-        }
+          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
+          restore: { show: true },
+        },
       },
       dataZoom: [
         {
@@ -259,10 +260,10 @@ export class DiscoveryBoxPlotComponent {
           type: 'inside',
           orient: 'horizontal',
           zoomOnMouseWheel: true,
-        }
+        },
       ],
       series: [],
-      ...this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
     let minVal = Number.MAX_SAFE_INTEGER;
     let maxVal = Number.MIN_SAFE_INTEGER;
@@ -279,11 +280,11 @@ export class DiscoveryBoxPlotComponent {
       },
       data: [],
       // encode: !!this.innerOptions?.box?.horizontal ? {        x: ['min', 'Q1', 'median', 'Q3', 'max']      } : undefined
-    }
+    };
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-      const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         this.isGTS = true;
         const bounds = GTSLib.getBounds(gts.v);
@@ -292,7 +293,7 @@ export class DiscoveryBoxPlotComponent {
         maxVal = Math.max(maxVal, bounds.maxVal);
         maxTS = Math.max(maxTS, bounds.maxTS);
         hasTimeBounds = true;
-        const name = GTSLib.setName(gts.id, (((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts)));
+        const name = GTSLib.setName(gts.id, (((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts)));
         axisLabels.push(GTSLib.getName(name));
         seriesOpts.data.push({
           ...this.getCommonSeriesParam(color),
@@ -303,8 +304,8 @@ export class DiscoveryBoxPlotComponent {
             this.quantile(bounds.rawVals, 0.25),
             this.quantile(bounds.rawVals, 0.5),
             this.quantile(bounds.rawVals, 0.75),
-            bounds.maxVal
-          ]
+            bounds.maxVal,
+          ],
         });
       } else if (!gts.v && gts.label && gts.values) {
         this.innerOptions.timeMode = 'custom';
@@ -320,8 +321,8 @@ export class DiscoveryBoxPlotComponent {
             this.quantile(gts.values, 0.25),
             this.quantile(gts.values, 0.5),
             this.quantile(gts.values, 0.75),
-            bounds.maxVal
-          ]
+            bounds.maxVal,
+          ],
         });
       }
     }
@@ -330,13 +331,13 @@ export class DiscoveryBoxPlotComponent {
       name: !this.innerOptions?.box?.horizontal ? this.unit || this.innerOptions.unit : undefined,
       data: !this.innerOptions?.box?.horizontal ? undefined : axisLabels,
       show: !this.innerOptions.hideYAxis,
-      emphasis: {focus: 'series'},
-      nameTextStyle: {color: Utils.getLabelColor(this.el)},
+      emphasis: { focus: 'series' },
+      nameTextStyle: { color: Utils.getLabelColor(this.el) },
       type: this.innerOptions?.box?.horizontal ? 'category' : 'value',
-      splitLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
-      axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
-      axisLabel: {color: Utils.getLabelColor(this.el)},
-      axisTick: {lineStyle: {color: Utils.getGridColor(this.el)}},
+      splitLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
+      axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
+      axisLabel: { color: Utils.getLabelColor(this.el) },
+      axisTick: { lineStyle: { color: Utils.getGridColor(this.el) } },
       min: this.innerOptions?.box?.horizontal
         ? undefined
         : this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
@@ -351,17 +352,17 @@ export class DiscoveryBoxPlotComponent {
       nameTextStyle: {
         padding: [0, 10, -35, 0],
         align: 'right',
-        verticalAlign: 'bottom'
+        verticalAlign: 'bottom',
       },
       show: !this.innerOptions.hideXAxis,
-      emphasis: {focus: 'series'},
+      emphasis: { focus: 'series' },
       type: this.innerOptions?.box?.horizontal ? 'value' : 'category',
-      axisLine: {lineStyle: {color: Utils.getGridColor(this.el)}},
+      axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLabel: {
         show: !this.innerOptions.hideXAxis,
-        color: Utils.getLabelColor(this.el)
+        color: Utils.getLabelColor(this.el),
       },
-      axisTick: {lineStyle: {color: Utils.getGridColor(this.el)}},
+      axisTick: { lineStyle: { color: Utils.getGridColor(this.el) } },
       min: this.innerOptions?.box?.horizontal
         ? this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined
         : undefined,
@@ -370,18 +371,18 @@ export class DiscoveryBoxPlotComponent {
         : undefined,
     } as any;
     if (hasTimeBounds) {
-      this.timeBounds.emit({min: minTS, max: maxTS});
-      this.bounds = {min: minVal, max: maxVal};
+      this.timeBounds.emit({ min: minTS, max: maxTS });
+      this.bounds = { min: minVal, max: maxVal };
     }
     this.LOG?.debug(['convert', 'series'], series);
     const markArea = [...(this.innerOptions.thresholds || [])
       .map(t => {
-        const m = [{itemStyle: {color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0)}}, {}] as any[];
+        const m = [{ itemStyle: { color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0) } }, {}] as any[];
         if (!!this.innerOptions.box?.horizontal) {
           m[0].xAxis = t.value || 0;
           m[1].xAxis = 0;
-          m[0].name = `${t.value || 0}`
-          m[0].label = {color: t.color || '#f44336', position: 'insideTopRight'};
+          m[0].name = `${t.value || 0}`;
+          m[0].label = { color: t.color || '#f44336', position: 'insideTopRight' };
         } else {
           m[0].yAxis = t.value || 0;
           m[1].yAxis = 0;
@@ -394,17 +395,17 @@ export class DiscoveryBoxPlotComponent {
           return [{
             itemStyle: {
               color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-              borderType: t.type || 'dashed'
+              borderType: t.type || 'dashed',
             },
-            label: {color: t.color || '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name},
+            label: { color: t.color || '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name },
             name: t.name || t.value || 0,
             yAxis: this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-            xAxis: !this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
+            xAxis: !this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
           },
             {
               itemStyle: {
                 color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-                borderType: t.type || 'dashed'
+                borderType: t.type || 'dashed',
               },
               yAxis: !!this.innerOptions.box?.horizontal ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
               xAxis: !this.innerOptions.box?.horizontal ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
@@ -415,8 +416,8 @@ export class DiscoveryBoxPlotComponent {
       .map(t => {
         const m = {
           name: t.value || 0,
-          label: {color: t.color || '#f44336', position: 'insideEndTop'},
-          lineStyle: {color: t.color || '#f44336', type: 'dashed'}
+          label: { color: t.color || '#f44336', position: 'insideEndTop' },
+          lineStyle: { color: t.color || '#f44336', type: 'dashed' },
         } as any;
         if (!!this.innerOptions.box?.horizontal) {
           m.xAxis = t.value || 0;
@@ -435,12 +436,12 @@ export class DiscoveryBoxPlotComponent {
               color: t.color || '#D81B60',
               position: 'insideEndTop',
               formatter: '{b}',
-              show: !!t.name
+              show: !!t.name,
             },
-            lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
+            lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
             yAxis: !!this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-            xAxis: !this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined
-          }
+            xAxis: !this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+          };
         })];
     if (markLine.length > 0) {
       (opts.series as SeriesOption[]).push({
@@ -449,13 +450,13 @@ export class DiscoveryBoxPlotComponent {
         symbolSize: 0,
         data: [],
         markArea: {
-          data: markArea
+          data: markArea,
         },
         markLine: {
-          emphasis: {lineStyle: {width: 1}},
+          emphasis: { lineStyle: { width: 1 } },
           symbol: ['none', 'none'],
-          data: markLine
-        }
+          data: markLine,
+        },
       } as SeriesOption);
     }
     this.parsing = false;
@@ -475,13 +476,13 @@ export class DiscoveryBoxPlotComponent {
       start,
       end,
       min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-      max: this.innerOptions.bounds?.maxDate || this.bounds?.max
+      max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
     });
   }
 
   componentDidLoad() {
     const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
-      16, {leading: true, trailing: true});
+      16, { leading: true, trailing: true });
 
     const focusHandler = _.throttle((type: string, event: any) => {
         if (this.hasFocus) {
@@ -490,8 +491,14 @@ export class DiscoveryBoxPlotComponent {
               this.dataPointOver.emit({
                 date: undefined,
                 name: GTSLib.getName(event.data.name),
-                value: {min: event.data.value[1], Q1: event.data.value[2], median: event.data.value[3], Q3: event.data.value[4], max: event.data.value[5]},
-                meta: {}
+                value: {
+                  min: event.data.value[1],
+                  Q1: event.data.value[2],
+                  median: event.data.value[3],
+                  Q3: event.data.value[4],
+                  max: event.data.value[5],
+                },
+                meta: {},
               });
               break;
             case 'highlight':
@@ -504,7 +511,7 @@ export class DiscoveryBoxPlotComponent {
                   : ts;
               });
               if (ts !== undefined) {
-                this.dataPointSelected.emit({date: ts, name: '.*', meta: {}});
+                this.dataPointSelected.emit({ date: ts, name: '.*', meta: {} });
               }
               break;
             default:
@@ -512,7 +519,7 @@ export class DiscoveryBoxPlotComponent {
           }
         }
       },
-      100, {leading: true, trailing: true});
+      100, { leading: true, trailing: true });
 
     setTimeout(() => {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
@@ -526,7 +533,7 @@ export class DiscoveryBoxPlotComponent {
         let x = 0;
         setTimeout(() => {
           while (!found && x < 1024) {
-            found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
+            found = this.myChart.containPixel({ gridIndex: 0 }, [x, this.myChart.getHeight() / 2]);
             x++;
           }
           if (this.leftMargin !== x && x < 1024) {
@@ -550,16 +557,16 @@ export class DiscoveryBoxPlotComponent {
         } else if (event.start !== undefined && event.end !== undefined) {
           start = event.start;
           end = event.end;
-          zoomHandler(start, end)
+          zoomHandler(start, end);
         }
       });
       this.myChart.on('restore', () => {
-        this.dataZoom.emit({type: 'restore', start: 0, end: 100})
+        this.dataZoom.emit({ type: 'restore', start: 0, end: 100 });
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({
         type: 'dataZoom',
         start: 0,
-        end: 100
+        end: 100,
       }));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => {
@@ -577,8 +584,14 @@ export class DiscoveryBoxPlotComponent {
           this.dataPointSelected.emit({
             date: undefined,
             name: GTSLib.getName(event.data.name),
-            value: {min: event.data.value[1], Q1: event.data.value[2], median: event.data.value[3], Q3: event.data.value[4], max: event.data.value[5]},
-            meta: {}
+            value: {
+              min: event.data.value[1],
+              Q1: event.data.value[2],
+              median: event.data.value[3],
+              Q3: event.data.value[4],
+              max: event.data.value[5],
+            },
+            meta: {},
           });
         }
       });
@@ -591,7 +604,7 @@ export class DiscoveryBoxPlotComponent {
   async export(type: 'png' | 'svg' = 'png') {
     return Promise.resolve(this.myChart ? this.myChart.getDataURL({
       type,
-      excludeComponents: ['toolbox']
+      excludeComponents: ['toolbox'],
     }) : undefined);
   }
 
@@ -600,7 +613,7 @@ export class DiscoveryBoxPlotComponent {
     this.myChart.dispatchAction({
       type: 'legendSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name))),
     });
     return Promise.resolve();
   }
@@ -610,7 +623,7 @@ export class DiscoveryBoxPlotComponent {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name))),
     });
     return Promise.resolve();
   }
@@ -621,7 +634,7 @@ export class DiscoveryBoxPlotComponent {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -633,7 +646,7 @@ export class DiscoveryBoxPlotComponent {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -660,26 +673,26 @@ export class DiscoveryBoxPlotComponent {
     }
     if (GTSLib.isArray(this.chartOpts.xAxis)) {
       (this.chartOpts.xAxis as any[])
-        .forEach(a => a.axisPointer = {...a.axisPointer || {}, value: date, status: 'show'});
+        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: date, status: 'show' });
     } else {
       (this.chartOpts.xAxis as any).axisPointer = {
         ...(this.chartOpts.xAxis as any).axisPointer || {},
         value: date,
-        status: 'show'
+        status: 'show',
       };
     }
     if (GTSLib.isArray(this.chartOpts.yAxis)) {
       (this.chartOpts.yAxis as any[])
-        .forEach(a => a.axisPointer = {...a.axisPointer || {}, value: value || 0, status: 'show'});
+        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: value || 0, status: 'show' });
     } else {
       (this.chartOpts.yAxis as any).axisPointer = {
         ...(this.chartOpts.yAxis as any).axisPointer || {},
         value: value ?? 0,
-        status: 'show'
+        status: 'show',
       };
     }
     (this.chartOpts.tooltip as any).show = true;
-    this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
+    this.myChart.dispatchAction({ type: 'showTip', seriesIndex, dataIndex });
     this.setOpts();
     return Promise.resolve();
   }
@@ -690,24 +703,24 @@ export class DiscoveryBoxPlotComponent {
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     (this.chartOpts.xAxis as any).axisPointer = {
       ...(this.chartOpts.xAxis as any).axisPointer || {},
-      status: 'hide'
+      status: 'hide',
     };
     (this.chartOpts.yAxis as any).axisPointer = {
       ...(this.chartOpts.yAxis as any).axisPointer || {},
-      status: 'hide'
+      status: 'hide',
     };
-    this.myChart.dispatchAction({type: 'hideTip'});
+    this.myChart.dispatchAction({ type: 'hideTip' });
     this.setOpts();
     return Promise.resolve();
   }
 
 
   render() {
-    return <div style={{width: '100%', height: '100%'}}>
+    return <div style={{ width: '100%', height: '100%' }}>
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el}/>
-    </div>
+      <div ref={(el) => this.graph = el} />
+    </div>;
   }
 
 }

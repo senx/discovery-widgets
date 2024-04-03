@@ -15,20 +15,20 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, init} from 'echarts';
-import {GTSLib} from '../../utils/gts.lib';
-import {SeriesOption} from 'echarts/lib/util/types';
-import {ColorLib} from '../../utils/color-lib';
-import {Utils} from '../../utils/utils';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {ChartType, DataModel, ECharts} from '../../model/types';
-import {CartesianAxisOption} from 'echarts/lib/coord/cartesian/AxisModel';
-import {GridOption} from 'echarts/lib/coord/cartesian/GridModel';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, init } from 'echarts';
+import { GTSLib } from '../../utils/gts.lib';
+import { SeriesOption } from 'echarts/lib/util/types';
+import { ColorLib } from '../../utils/color-lib';
+import { Utils } from '../../utils/utils';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { ChartType, DataModel, ECharts } from '../../model/types';
+import { CartesianAxisOption } from 'echarts/lib/coord/cartesian/AxisModel';
+import { GridOption } from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
 import _ from 'lodash';
-import {v4} from 'uuid';
+import { v4 } from 'uuid';
 
 @Component({
   tag: 'discovery-line',
@@ -37,9 +37,9 @@ import {v4} from 'uuid';
 })
 export class DiscoveryLineComponent {
 
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop({ mutable: true }) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
+  @Prop() options: Param | string = { ...new Param(), timeMode: 'date' };
   @State() @Prop() width: number;
   @State() @Prop() height: number;
   @Prop() debug = false;
@@ -61,7 +61,7 @@ export class DiscoveryLineComponent {
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
-  private defOptions: Param = {...new Param(), timeMode: 'date', xCursor: true, yCursor: false};
+  private defOptions: Param = { ...new Param(), timeMode: 'date', xCursor: true, yCursor: false };
   private LOG: Logger;
   private divider = 1000;
   private myChart: ECharts;
@@ -95,14 +95,14 @@ export class DiscoveryLineComponent {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
       } else {
-        this.innerOptions = {...this.options as Param};
+        this.innerOptions = { ...this.options as Param };
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
       if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       }
     }
   }
@@ -116,7 +116,7 @@ export class DiscoveryLineComponent {
       this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.LOG?.debug(['componentWillLoad'], {type: this.type, options: this.innerOptions,});
+    this.LOG?.debug(['componentWillLoad'], { type: this.type, options: this.innerOptions });
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result || new DataModel());
     this.setOpts();
@@ -126,17 +126,17 @@ export class DiscoveryLineComponent {
     if ((this.chartOpts.series as SeriesOption[]).length === 0) {
       this.chartOpts.title = {
         show: true,
-        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
         text: this.innerOptions.noDataLabel || '',
         left: 'center',
-        top: 'center'
+        top: 'center',
       };
-      this.chartOpts.xAxis = {show: false};
-      this.chartOpts.yAxis = {show: false};
-      this.chartOpts.dataZoom = {show: false};
-      this.chartOpts.tooltip = {show: false};
+      this.chartOpts.xAxis = { show: false };
+      this.chartOpts.yAxis = { show: false };
+      this.chartOpts.dataZoom = { show: false };
+      this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
@@ -148,11 +148,11 @@ export class DiscoveryLineComponent {
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     const gtsList = [
       ...GTSLib.flattenGtsIdArray(GTSLib.flatDeep([data.data] as any[]), 0).res,
-      ...GTSLib.flatDeep([data.data] as any[]).filter(g => g.values && g.label)
+      ...GTSLib.flatDeep([data.data] as any[]).filter(g => g.values && g.label),
     ];
     const gtsCount = gtsList.length;
     let multiY = false;
@@ -174,7 +174,7 @@ export class DiscoveryLineComponent {
         transitionDuration: 0,
         trigger: 'axis',
         position: (pos, _params, _dom, _rect, size) => {
-          const obj = {top: 10};
+          const obj = { top: 10 };
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
           return obj;
         },
@@ -186,7 +186,7 @@ export class DiscoveryLineComponent {
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
-            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`
+            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
           ).join('<br>')}`;
         },
         axisPointer: {
@@ -196,13 +196,13 @@ export class DiscoveryLineComponent {
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
             ? undefined
             : {
-              color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
+              color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
             },
           crossStyle: !!this.innerOptions.yCursor
             ? {
-              color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red')
+              color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
             }
-            : undefined
+            : undefined,
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
@@ -210,14 +210,14 @@ export class DiscoveryLineComponent {
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']},
-          restore: {show: true},
-        }
+          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
+          restore: { show: true },
+        },
       },
       legend: {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
-        textStyle: {color: Utils.getLabelColor(this.el)},
-        formatter: n => GTSLib.getName(n)
+        textStyle: { color: Utils.getLabelColor(this.el) },
+        formatter: n => GTSLib.getName(n),
       },
       dataZoom: [
         {
@@ -232,7 +232,7 @@ export class DiscoveryLineComponent {
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
           bottom: !!this.innerOptions.showLegend ? 30 : 20,
-          filterMode: 'none'
+          filterMode: 'none',
         },
         {
           type: 'inside',
@@ -240,11 +240,11 @@ export class DiscoveryLineComponent {
           filterMode: 'none',
           orient: 'vertical',
           zoomOnMouseWheel: 'ctrl',
-        }
+        },
       ],
       visualMap: new Array(gtsCount),
       series: [],
-      ...this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {},
     };
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
@@ -254,10 +254,11 @@ export class DiscoveryLineComponent {
     }
     for (let index = 0; index < gtsCount; index++) {
       const gts = gtsList[index];
+      const datasetNoAlpha = (data.params ?? [])[index]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
       if (GTSLib.isGtsToPlot(gts)) {
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
-        const color = ((data.params || [])[gts.id] || {datasetColor: c}).datasetColor || c;
-        const type = ((data.params || [])[gts.id] || {type: this.type}).type || this.type;
+        const color = ((data.params || [])[gts.id] || { datasetColor: c }).datasetColor || c;
+        const type = ((data.params || [])[gts.id] || { type: this.type }).type || this.type;
         if (!!data.params && !!data.params[gts.id] && (data.params[gts.id].pieces || []).length > 0) {
           (opts.visualMap as any[])[gts.id] = {
             show: false,
@@ -265,11 +266,11 @@ export class DiscoveryLineComponent {
             dimension: !!data.params[gts.id].xpieces ? 0 : 1,
             pieces: GTSLib.flatDeep((data.params[gts.id].pieces || []).map(t => {
               return [
-                {color, lte: t.gte},
-                {color: t.color || '#D81B60', lte: t.lte, gte: t.gte},
-                {color, gte: t.lte},
-              ]
-            }))
+                { color, lte: t.gte },
+                { color: t.color || '#D81B60', lte: t.lte, gte: t.gte },
+                { color, gte: t.lte },
+              ];
+            })),
           };
         }
         hasTimeBounds = true;
@@ -277,15 +278,15 @@ export class DiscoveryLineComponent {
         for (let v = 0; v < (gts.v ?? []).length; v++) {
           const tuple = gts.v[v];
           const ts = tuple[0];
-          const val = tuple[tuple.length - 1]
+          const val = tuple[tuple.length - 1];
           if (ts > max) max = ts;
           if (ts < min) min = ts;
           dataSet.push([
             this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(ts, this.divider, this.innerOptions.timeZone)
               : ts
-            , val
-          ])
+            , val,
+          ]);
         }
 
         const isStacked = (data.params ?? [])[gts.id]?.stacked !== undefined
@@ -294,7 +295,7 @@ export class DiscoveryLineComponent {
 
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
-          name: GTSLib.setName(gts.id, (((data.params ?? [])[gts.id] ?? {key: undefined}).key ?? GTSLib.serializeGtsMetadata(gts))),
+          name: GTSLib.setName(gts.id, (((data.params ?? [])[gts.id] ?? { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts))),
           data: dataSet,
           id: gts.id,
           animation: false,
@@ -311,21 +312,21 @@ export class DiscoveryLineComponent {
             color: {
               type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
               colorStops: [
-                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-                {offset: 1, color: ColorLib.transparentize(color, 0.1)}
+                { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+                { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.1) },
               ],
-              global: false // false by default
-            }
+              global: false, // false by default
+            },
           } : undefined,
           showAllSymbol: false,
           label: {
             show: !!this.innerOptions.showValues,
             position: 'top',
-            textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
+            textStyle: { color: Utils.getLabelColor(this.el), fontSize: 14 },
           },
           lineStyle: {
             color: !opts.visualMap[gts.id] ? color : undefined,
-            width: this.innerOptions.strokeWidth ?? 2
+            width: this.innerOptions.strokeWidth ?? 2,
           },
           itemStyle: type === 'bar' ? {
             opacity: 0.8,
@@ -333,11 +334,11 @@ export class DiscoveryLineComponent {
             color: {
               type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
               colorStops: [
-                {offset: 0, color: ColorLib.transparentize(color, 0.7)},
-                {offset: 1, color: ColorLib.transparentize(color, 0.3)}
-              ]
-            }
-          } : {color}
+                { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+                { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.3) },
+              ],
+            },
+          } : { color },
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
@@ -400,7 +401,7 @@ export class DiscoveryLineComponent {
           data: gts.values[0] && gts.values[0].length === 3
             ? (gts.values ?? []).map((v: any[]) => ({
               value: [GTSLib.utcToZonedTime(v[0], 1, this.innerOptions.timeZone), v[1]],
-              symbolSize: isBubble ? (50 * v[2] / (sMax - sMin)) || this.innerOptions.dotSize || 10 : this.innerOptions.dotSize || 10
+              symbolSize: isBubble ? (50 * v[2] / (sMax - sMin)) || this.innerOptions.dotSize || 10 : this.innerOptions.dotSize || 10,
             }))
             : gts.values,
           animation: false,
@@ -409,7 +410,7 @@ export class DiscoveryLineComponent {
           label: {
             show: !!this.innerOptions.showValues,
             position: 'top',
-            textStyle: {color: Utils.getLabelColor(this.el), fontSize: 14},
+            textStyle: { color: Utils.getLabelColor(this.el), fontSize: 14 },
           },
           itemStyle: isBubble || this.innerOptions.dotSize > 10 ? {
             opacity: 0.8,
@@ -419,12 +420,12 @@ export class DiscoveryLineComponent {
               ? {
                 type: 'radial', x: 0.5, y: 0.5, x2: 1, y2: 1,
                 colorStops: [
-                  {offset: 0, color: ColorLib.transparentize(color, 0.3)},
-                  {offset: 1, color: ColorLib.transparentize(color, 0.7)}
-                ]
+                  { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.3) },
+                  { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+                ],
               }
               : color,
-          } : {color}
+          } : { color },
         } as SeriesOption;
         if (!!data.params) {
           // multi Y
@@ -489,21 +490,21 @@ export class DiscoveryLineComponent {
           return {
             type: 'polygon',
             transition: ['shape'],
-            shape: {points: polygon.shape.map(p => api.coord(p))},
+            shape: { points: polygon.shape.map(p => api.coord(p)) },
             style: api.style({
               fill: !!polygon.fill ? ColorLib.transparentize(color) : undefined,
-              stroke: color
-            })
+              stroke: color,
+            }),
           };
         },
         clip: true,
-        data: polygon.shape
+        data: polygon.shape,
       };
       (opts.series as any[]).push(s);
     });
     if (hasTimeBounds) {
-      this.timeBounds.emit({min, max});
-      this.bounds = {min, max};
+      this.timeBounds.emit({ min, max });
+      this.bounds = { min, max };
     }
     // multi Y
     if (!multiY) {
@@ -537,7 +538,7 @@ export class DiscoveryLineComponent {
       });
       (opts.grid as GridOption).top = Math.max(30, 30 * i);
     }
-    this.LOG?.debug(['convert', 'opts'], {opts});
+    this.LOG?.debug(['convert', 'opts'], { opts });
     const markArea = [...(this.innerOptions.thresholds || [])
       .filter(t => !!t.fill)
       .map(t => {
@@ -547,8 +548,8 @@ export class DiscoveryLineComponent {
             borderType: t.type || 'dashed',
             name: t.name || t.value || 0,
           },
-          yAxis: t.value || 0
-        }, {yAxis: 0}];
+          yAxis: t.value || 0,
+        }, { yAxis: 0 }];
       }),
       ...(this.innerOptions.markers || [])
         .filter(t => !!t.fill)
@@ -556,30 +557,30 @@ export class DiscoveryLineComponent {
           return [{
             itemStyle: {
               color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-              borderType: t.type || 'dashed'
+              borderType: t.type || 'dashed',
             },
-            label: {color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name},
+            label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
             name: t.name || t.value || 0,
-            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
           },
             {
               itemStyle: {
                 color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-                borderType: t.type || 'dashed'
+                borderType: t.type || 'dashed',
               },
-              xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
+              xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
             }];
-        })
+        }),
     ];
 
     const markLine = [
       ...(this.innerOptions.thresholds || []).map(t => {
         return {
           name: t.name || t.value || 0,
-          label: {color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}'},
-          lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
-          yAxis: t.value || 0
-        }
+          label: { color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}' },
+          lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
+          yAxis: t.value || 0,
+        };
       }),
       ...(this.innerOptions.markers || [])
         .filter(t => !t.fill)
@@ -590,11 +591,11 @@ export class DiscoveryLineComponent {
               color: t.color || '#D81B60',
               position: 'insideEndTop',
               formatter: '{b}',
-              show: !!t.name
+              show: !!t.name,
             },
-            lineStyle: {color: t.color || '#D81B60', type: t.type || 'dashed'},
-            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0)
-          }
+            lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
+            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+          };
         })];
     if (markArea.length > 0 || markLine.length > 0) {
       (opts.series as SeriesOption[]).push({
@@ -602,12 +603,12 @@ export class DiscoveryLineComponent {
         type: 'line',
         symbolSize: 0,
         data: [],
-        markArea: {data: markArea},
+        markArea: { data: markArea },
         markLine: {
-          emphasis: {lineStyle: {width: 1}},
+          emphasis: { lineStyle: { width: 1 } },
           symbol: ['none', 'none'],
-          data: markLine
-        }
+          data: markLine,
+        },
       });
     }
     return opts;
@@ -615,7 +616,7 @@ export class DiscoveryLineComponent {
 
   private getYAxis(color?: string, unit?: string): CartesianAxisOption {
     if (!!(unit || this.unit || this.innerOptions.unit) && !!this.myChart) {
-      const opts = {...this.chartOpts};
+      const opts = { ...this.chartOpts };
       if (opts.grid) {
         if ('top' in opts.grid) {
           opts.grid.top = 30;
@@ -627,16 +628,16 @@ export class DiscoveryLineComponent {
       type: this.innerOptions.yLabelsMapping ? 'category' : 'value',
       name: unit || this.unit || this.innerOptions.unit,
       show: !this.innerOptions.hideYAxis,
-      nameTextStyle: {color: color || Utils.getLabelColor(this.el)},
-      splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
-      axisLine: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
-      axisLabel: {color: color || Utils.getLabelColor(this.el), show: !this.innerOptions.hideYAxis,},
-      axisTick: {show: true, lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      nameTextStyle: { color: color || Utils.getLabelColor(this.el) },
+      splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
+      axisLine: { show: true, lineStyle: { color: color || Utils.getGridColor(this.el) } },
+      axisLabel: { color: color || Utils.getLabelColor(this.el), show: !this.innerOptions.hideYAxis },
+      axisTick: { show: true, lineStyle: { color: color || Utils.getGridColor(this.el) } },
       data: this.innerOptions.yLabelsMapping ? Object.keys(this.innerOptions.yLabelsMapping).map(k => this.innerOptions.yLabelsMapping[k]) : undefined,
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
       min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
       max: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
-    }
+    };
   }
 
   private getXAxis(color?: string): CartesianAxisOption {
@@ -644,17 +645,17 @@ export class DiscoveryLineComponent {
       type: this.innerOptions.timeMode === 'date' ? 'time' : 'value',
       show: !this.innerOptions.hideXAxis,
       splitNumber: this.innerOptions.timeMode === 'date' ? undefined : Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 200) - 1, 1),
-      splitLine: {show: false, lineStyle: {color: Utils.getGridColor(this.el)}},
-      axisLine: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
+      axisLine: { lineStyle: { color: color || Utils.getGridColor(this.el) } },
       axisLabel: {
         show: !this.innerOptions.hideXAxis,
         color: color || Utils.getLabelColor(this.el),
         formatter: this.innerOptions.fullDateDisplay
           ? (value: number) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
             .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-          : undefined
+          : undefined,
       },
-      axisTick: {lineStyle: {color: color || Utils.getGridColor(this.el)}},
+      axisTick: { lineStyle: { color: color || Utils.getGridColor(this.el) } },
       scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
       min: this.innerOptions.bounds?.minDate !== undefined
         ? this.innerOptions.timeMode === 'date'
@@ -666,7 +667,7 @@ export class DiscoveryLineComponent {
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
           : this.innerOptions.bounds.maxDate
         : undefined,
-    }
+    };
   }
 
   static getStepShape(type: ChartType) {
@@ -690,21 +691,21 @@ export class DiscoveryLineComponent {
       start,
       end,
       min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-      max: this.innerOptions.bounds?.maxDate || this.bounds?.max
+      max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
     });
   }
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
-      16, {leading: true, trailing: true});
+      16, { leading: true, trailing: true });
 
     const focusHandler = _.throttle((type: string, event: any) => {
         if (this.hasFocus) {
           switch (type) {
             case 'mouseover':
               const c = event.data.coord || event.data;
-              this.dataPointOver.emit({date: c[0], name: event.seriesName, value: c[1], meta: {}})
+              this.dataPointOver.emit({ date: c[0], name: event.seriesName, value: c[1], meta: {} });
               break;
             case 'highlight':
               let ts: number;
@@ -716,7 +717,7 @@ export class DiscoveryLineComponent {
                   : ts;
               });
               if (ts !== undefined) {
-                this.dataPointOver.emit({date: ts, name: '.*', meta: {}});
+                this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
               }
               break;
             default:
@@ -724,12 +725,12 @@ export class DiscoveryLineComponent {
           }
         }
       },
-      100, {leading: true, trailing: true});
+      100, { leading: true, trailing: true });
 
     setTimeout(() => {
-      this.parsing = false
+      this.parsing = false;
       this.rendering = true;
-      this.myChart = init(this.graph, null, {renderer: 'canvas'});
+      this.myChart = init(this.graph, null, { renderer: 'canvas' });
       let initial = false;
       this.myChart.on('rendered', () => {
         this.rendering = false;
@@ -737,7 +738,7 @@ export class DiscoveryLineComponent {
         let x = 0;
         setTimeout(() => {
           while (!found && x < 1024) {
-            found = this.myChart.containPixel({gridIndex: 0}, [x, this.myChart.getHeight() / 2]);
+            found = this.myChart.containPixel({ gridIndex: 0 }, [x, this.myChart.getHeight() / 2]);
             x++;
           }
           if (this.leftMargin !== x && x < 1024) {
@@ -761,16 +762,16 @@ export class DiscoveryLineComponent {
         } else if (event.start !== undefined && event.end !== undefined) {
           start = event.start;
           end = event.end;
-          zoomHandler(start, end)
+          zoomHandler(start, end);
         }
       });
       this.myChart.on('restore', () => {
-        this.dataZoom.emit({type: 'restore', start: 0, end: 100})
+        this.dataZoom.emit({ type: 'restore', start: 0, end: 100 });
       });
       this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({
         type: 'dataZoom',
         start: 0,
-        end: 100
+        end: 100,
       }));
       this.el.addEventListener('mouseover', () => this.hasFocus = true);
       this.el.addEventListener('mouseout', () => {
@@ -788,7 +789,7 @@ export class DiscoveryLineComponent {
           ? GTSLib.zonedTimeToUtc(c[0], 1, this.innerOptions.timeZone) * this.divider
           : c[0];
         if (event.componentType !== 'markLine') {
-          this.dataPointSelected.emit({date, name: GTSLib.getName(event.seriesName), value: c[1], meta: {}});
+          this.dataPointSelected.emit({ date, name: GTSLib.getName(event.seriesName), value: c[1], meta: {} });
         }
         if (this.innerOptions.poi) {
           if (this.pois.find(p => p.date === date)) {
@@ -799,7 +800,7 @@ export class DiscoveryLineComponent {
               name: GTSLib.getName(event.seriesName),
               value: c[1],
               meta: {},
-              uid: v4()
+              uid: v4(),
             });
           }
           this.chartOpts.series = (this.chartOpts.series as SeriesOption[]).filter(s => 'poi' !== s.id);
@@ -810,21 +811,21 @@ export class DiscoveryLineComponent {
             type: 'line',
             data: [],
             markLine: {
-              emphasis: {lineStyle: {width: 1}},
+              emphasis: { lineStyle: { width: 1 } },
               symbol: ['none', 'pin'],
               symbolSize: 20,
               symbolKeepAspect: true,
               data: this.pois.map(p => {
                 return {
                   name: 'poi-' + p.uid,
-                  label: {show: false},
-                  lineStyle: {color: this.innerOptions.poiColor, type: this.innerOptions.poiLine},
+                  label: { show: false },
+                  lineStyle: { color: this.innerOptions.poiColor, type: this.innerOptions.poiLine },
                   xAxis: this.innerOptions.timeMode === 'date'
                     ? GTSLib.utcToZonedTime(p.date / this.divider, 1, this.innerOptions.timeZone)
-                    : p.date
+                    : p.date,
                 };
-              })
-            }
+              }),
+            },
           });
           setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, true, false));
         }
@@ -848,7 +849,7 @@ export class DiscoveryLineComponent {
       dataZoom.start = dataZoom.start || 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
-        this.myChart.dispatchAction({type: 'dataZoom', ...dataZoom, dataZoomIndex: 0});
+        this.myChart.dispatchAction({ type: 'dataZoom', ...dataZoom, dataZoomIndex: 0 });
       }
     }
     return Promise.resolve();
@@ -858,7 +859,7 @@ export class DiscoveryLineComponent {
   async export(type: 'png' | 'svg' = 'png'): Promise<string> {
     return Promise.resolve(this.myChart ? this.myChart.getDataURL({
       type,
-      excludeComponents: ['toolbox']
+      excludeComponents: ['toolbox'],
     }) : undefined);
   }
 
@@ -867,7 +868,7 @@ export class DiscoveryLineComponent {
     this.myChart.dispatchAction({
       type: 'legendSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name))),
     });
     return Promise.resolve();
   }
@@ -877,7 +878,7 @@ export class DiscoveryLineComponent {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
       batch: (this.myChart.getOption().series as any[])
-        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+        .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name))),
     });
     return Promise.resolve();
   }
@@ -888,7 +889,7 @@ export class DiscoveryLineComponent {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -900,7 +901,7 @@ export class DiscoveryLineComponent {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -921,41 +922,41 @@ export class DiscoveryLineComponent {
           const data = s.data.filter((d: number[]) => d[0] === date);
           if (data && data.length > 0 && data[0]) {
             seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
-            dataIndex = s.data.indexOf(data[0])
+            dataIndex = s.data.indexOf(data[0]);
             s.markPoint = {
               symbol: 'circle', data: [{
                 symbolSize: 5,
                 name: s.name,
-                itemStyle: {color: '#fff', borderColor: s.lineStyle.color},
+                itemStyle: { color: '#fff', borderColor: s.lineStyle.color },
                 yAxis: data[0][1],
-                xAxis: date
-              }]
+                xAxis: date,
+              }],
             };
           }
         });
     }
     if (GTSLib.isArray(this.chartOpts.xAxis)) {
       (this.chartOpts.xAxis as any[])
-        .forEach(a => a.axisPointer = {...a.axisPointer || {}, value: date, status: 'show'});
+        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: date, status: 'show' });
     } else {
       (this.chartOpts.xAxis as any).axisPointer = {
         ...(this.chartOpts.xAxis as any).axisPointer || {},
         value: date,
-        status: 'show'
+        status: 'show',
       };
     }
     if (GTSLib.isArray(this.chartOpts.yAxis)) {
       (this.chartOpts.yAxis as any[])
-        .forEach(a => a.axisPointer = {...a.axisPointer || {}, value: value || 0, status: 'show'});
+        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: value || 0, status: 'show' });
     } else {
       (this.chartOpts.yAxis as any).axisPointer = {
         ...(this.chartOpts.yAxis as any).axisPointer || {},
         value: value || 0,
-        status: 'show'
+        status: 'show',
       };
     }
     (this.chartOpts.tooltip as any).show = true;
-    this.myChart.dispatchAction({type: 'showTip', seriesIndex, dataIndex});
+    this.myChart.dispatchAction({ type: 'showTip', seriesIndex, dataIndex });
     this.setOpts();
     return Promise.resolve();
   }
@@ -966,23 +967,23 @@ export class DiscoveryLineComponent {
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     if (GTSLib.isArray(this.chartOpts.xAxis)) {
       (this.chartOpts.xAxis as any[])
-        .forEach(a => a.axisPointer = {...a.axisPointer || {}, status: 'hide'});
+        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, status: 'hide' });
     } else {
       (this.chartOpts.xAxis as any).axisPointer = {
         ...(this.chartOpts.xAxis as any).axisPointer || {},
-        status: 'hide'
+        status: 'hide',
       };
     }
     if (GTSLib.isArray(this.chartOpts.yAxis)) {
       (this.chartOpts.yAxis as any[])
-        .forEach(a => a.axisPointer = {...a.axisPointer || {}, status: 'hide'});
+        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, status: 'hide' });
     } else {
       (this.chartOpts.yAxis as any).axisPointer = {
         ...(this.chartOpts.yAxis as any).axisPointer || {},
-        status: 'hide'
+        status: 'hide',
       };
     }
-    this.myChart.dispatchAction({type: 'hideTip'});
+    this.myChart.dispatchAction({ type: 'hideTip' });
     this.setOpts();
     return Promise.resolve();
   }
@@ -995,7 +996,7 @@ export class DiscoveryLineComponent {
   }
 
   render() {
-    return <div style={{width: '100%', height: '100%'}}>
+    return <div style={{ width: '100%', height: '100%' }}>
       {this.parsing && !!this.innerOptions?.showLoader ?
         <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}

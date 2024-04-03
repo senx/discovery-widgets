@@ -15,16 +15,16 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, ECharts} from '../../model/types';
-import {Param} from '../../model/param';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, ECharts } from '../../model/types';
+import { Param } from '../../model/param';
 import * as echarts from 'echarts';
-import {EChartsOption} from 'echarts';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {ColorLib, HeatMaps} from '../../utils/color-lib';
-import {Utils} from '../../utils/utils';
-import {SeriesOption} from 'echarts/lib/util/types';
+import { EChartsOption } from 'echarts';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { ColorLib, HeatMaps } from '../../utils/color-lib';
+import { Utils } from '../../utils/utils';
+import { SeriesOption } from 'echarts/lib/util/types';
 
 @Component({
   tag: 'discovery-gauge',
@@ -34,7 +34,7 @@ import {SeriesOption} from 'echarts/lib/util/types';
 export class DiscoveryGauge {
   @Prop() result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop({ mutable: true }) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug = false;
@@ -69,14 +69,14 @@ export class DiscoveryGauge {
       if (!!this.options && typeof this.options === 'string') {
         this.innerOptions = JSON.parse(this.options);
       } else {
-        this.innerOptions = {...this.options as Param};
+        this.innerOptions = { ...this.options as Param };
       }
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
       if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       }
     }
   }
@@ -93,7 +93,7 @@ export class DiscoveryGauge {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
@@ -102,7 +102,7 @@ export class DiscoveryGauge {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
@@ -113,7 +113,7 @@ export class DiscoveryGauge {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -125,7 +125,7 @@ export class DiscoveryGauge {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -145,7 +145,7 @@ export class DiscoveryGauge {
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
-      chartOpts: this.chartOpts
+      chartOpts: this.chartOpts,
     });
   }
 
@@ -154,21 +154,21 @@ export class DiscoveryGauge {
     (this.chartOpts?.series as SeriesOption[]).forEach(s => {
       s.detail.fontSize = this.autoFontSize((this.chartOpts.series as SeriesOption[]).length);
       series.push(s);
-    })
+    });
     this.chartOpts.series = series;
     if ((this.chartOpts?.series as any[] ?? []).length === 0) {
       this.chartOpts.title = {
         show: true,
-        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
         text: this.innerOptions.noDataLabel || '',
         left: 'center',
-        top: 'center'
+        top: 'center',
       };
-      this.chartOpts.xAxis = {show: false};
-      this.chartOpts.yAxis = {show: false};
-      this.chartOpts.tooltip = {show: false};
+      this.chartOpts.xAxis = { show: false };
+      this.chartOpts.yAxis = { show: false };
+      this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
@@ -178,6 +178,7 @@ export class DiscoveryGauge {
   }
 
   private getCommonSeriesParam(color: string) {
+    const datasetNoAlpha = this.innerOptions.datasetNoAlpha;
     return {
       type: 'gauge',
       animation: true,
@@ -185,14 +186,14 @@ export class DiscoveryGauge {
       clip: false,
       startAngle: 180,
       endAngle: 0,
-      lineStyle: {color},
+      lineStyle: { color },
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
-        }
+          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
+        },
       },
-      splitLine: {show: false},
+      splitLine: { show: false },
       splitNumber: 4, // The number of split segments on the axis
       itemStyle: {
         opacity: 0.8,
@@ -200,19 +201,19 @@ export class DiscoveryGauge {
         color: {
           type: 'linear', x: 0, y: 0, x2: 1, y2: 1,
           colorStops: [
-            {offset: 0, color},
-            {offset: 1, color: ColorLib.transparentize(color, 0.4)}
+            { offset: 0, color },
+            { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.4) },
           ],
-          global: false // false by default
-        }
-      }
-    } as SeriesOption
+          global: false, // false by default
+        },
+      },
+    } as SeriesOption;
   }
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     const series: any[] = [];
     // noinspection JSUnusedAssignment
     let gtsList = [];
@@ -230,7 +231,7 @@ export class DiscoveryGauge {
       this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], { options: this.innerOptions, gtsList });
     const gtsCount = gtsList.length;
     let overallMax = this.innerOptions.maxValue || Number.MIN_VALUE;
     const dataStruct = [];
@@ -244,7 +245,7 @@ export class DiscoveryGauge {
         if (val.length > 0) {
           value = val[val.length - 1];
           if (this.innerOptions.gauge?.decimals) {
-            const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+            const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
             value = Math.round(parseFloat(value + '') * dec) / dec;
           }
         }
@@ -261,11 +262,11 @@ export class DiscoveryGauge {
         }
         dataStruct.push({
           id: gts.id,
-          name: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
+          name: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
+          key: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
           value,
           max,
-          min
+          min,
         });
       } else {
         // custom data format
@@ -287,10 +288,10 @@ export class DiscoveryGauge {
           value = gts ?? 0;
         }
         if (this.innerOptions.gauge?.decimals) {
-          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
           value = Math.round(parseFloat(value + '') * dec) / dec;
         }
-        dataStruct.push({key: gts.key ?? '', value, max, min});
+        dataStruct.push({ key: gts.key ?? '', value, max, min });
       }
     }
     const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * (this.type === 'compass' ? 0.8 : 0.8);
@@ -300,7 +301,7 @@ export class DiscoveryGauge {
         floor++;
       }
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
-      const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
+      const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
       let axisLineColor: any[][] | HeatMaps;
       if ((data.params || [])[i]?.gauge?.color || this.innerOptions.gauge?.color) {
         if (GTSLib.isArray((data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color)) {
@@ -323,58 +324,58 @@ export class DiscoveryGauge {
         tooltip: {
           backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
           hideDelay: this.innerOptions.tooltipDelay || 100,
-          formatter: '{a} <br/>{b} : {c}%'
+          formatter: '{a} <br/>{b} : {c}%',
         },
         title: {
           fontSize: 12,
           offsetCenter: this.type === 'compass' ? [0, '110%'] : [0, 10],
-          color: Utils.getLabelColor(this.el)
+          color: Utils.getLabelColor(this.el),
         },
         axisLine: this.type === 'compass'
-          ? {lineStyle: {color: [[1, Utils.getGridColor(this.el)]], width: 1}}
+          ? { lineStyle: { color: [[1, Utils.getGridColor(this.el)]], width: 1 } }
           : axisLineColor
             ? {
               lineStyle: {
                 color: axisLineColor,
-                width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20
-              }
+                width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20,
+              },
             }
             : {
               roundCap: false,
-              lineStyle: {width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20}
+              lineStyle: { width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20 },
             },
         axisTick: this.type === 'compass' ? {
           distance: 0,
           length: 10,
-          lineStyle: {color: Utils.getGridColor(this.el)}
+          lineStyle: { color: Utils.getGridColor(this.el) },
         } : {
           distance: 0,
           splitNumber: 4,
-          lineStyle: {width: 1, color: Utils.getGridColor(this.el)}
+          lineStyle: { width: 1, color: Utils.getGridColor(this.el) },
         },
         axisLabel: this.type === 'compass' ? {
           color: Utils.getLabelColor(this.el),
           distance: 0,
-          formatter: (value: any) => value === d.max ? '' : `${value}`
-        } : {show: false},
+          formatter: (value: any) => value === d.max ? '' : `${value}`,
+        } : { show: false },
         progress: this.type === 'compass'
-          ? {show: false}
+          ? { show: false }
           : {
             show: !((data.params || [])[i]?.gauge?.pointer || this.innerOptions?.gauge?.pointer),
             roundCap: false,
-            width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20
+            width: (data.params || [])[i]?.gauge?.width ?? this.innerOptions?.gauge?.width ?? 20,
           },
-        data: [{value: d.value, name: d.key}],
+        data: [{ value: d.value, name: d.key }],
         anchor: this.type === 'compass' ? {
           show: true,
           size: 10,
-          itemStyle: {borderColor: color, borderWidth: 10}
-        } : {show: false},
+          itemStyle: { borderColor: color, borderWidth: 10 },
+        } : { show: false },
         pointer: this.type === 'compass'
           ? {
             offsetCenter: [0, '40%'],
             length: '140%',
-            itemStyle: {color}
+            itemStyle: { color },
           }
           : {
             show: (data.params || [])[i]?.gauge?.pointer || this.innerOptions?.gauge?.pointer,
@@ -382,31 +383,31 @@ export class DiscoveryGauge {
             length: '12%',
             width: 20,
             offsetCenter: [0, `-${radius - 10}%`],
-            itemStyle: {color: 'auto'}
+            itemStyle: { color: 'auto' },
           },
         radius: `${radius}%`,
         detail: {
           formatter: '{value}' + unit,
           fontSize: 12,
           offsetCenter: [0, this.type === 'gauge' ? '-20%' : this.type === 'compass' ? 40 : 0],
-          color: Utils.getLabelColor(this.el)
+          color: Utils.getLabelColor(this.el),
         },
         center: [
           (gtsCount === 1 ? '50' : i % 2 === 0 ? '25' : '75') + '%',
           `${(gtsCount === 1
             ? (this.type === 'gauge' ? '65' : '50')
-            : (radius * (floor - 1) - radius / 2 + (floor > 2 ? 15 : 5)))}%`
-        ]
+            : (radius * (floor - 1) - radius / 2 + (floor > 2 ? 15 : 5)))}%`,
+        ],
       });
     });
     return {
       grid: {
         left: 10, top: 10, bottom: 10, right: 10,
-        containLabel: true
+        containLabel: true,
       },
-      legend: {show: false},
+      legend: { show: false },
       series,
-      ...this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
   }
 
@@ -427,7 +428,7 @@ export class DiscoveryGauge {
       let initial = false;
       this.myChart = echarts.init(this.graph, null, {
         width: undefined,
-        height: this.height
+        height: this.height,
       });
       this.myChart.on('rendered', () => {
         this.rendering = false;
@@ -437,11 +438,11 @@ export class DiscoveryGauge {
         }
       });
       this.myChart.on('mouseover', (event: any) => {
-        this.dataPointOver.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointOver.emit({ date: event.value[0], name: event.seriesName, value: event.value[1], meta: {} });
       });
       this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
       this.myChart.on('click', (event: any) => {
-        this.dataPointSelected.emit({date: event.value[0], name: event.seriesName, value: event.value[1], meta: {}});
+        this.dataPointSelected.emit({ date: event.value[0], name: event.seriesName, value: event.value[1], meta: {} });
       });
       this.setOpts();
       initial = true;
@@ -450,29 +451,32 @@ export class DiscoveryGauge {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({
+      type,
+      excludeComponents: ['toolbox'],
+    }) : undefined);
   }
 
   render() {
-    return <div style={{width: '100%', height: '100%'}}>
-      <div ref={(el) => this.graph = el}/>
+    return <div style={{ width: '100%', height: '100%' }}>
+      <div ref={(el) => this.graph = el} />
       {this.parsing ? <div class="discovery-chart-spinner">
         <discovery-spinner>Parsing data...</discovery-spinner>
       </div> : ''}
       {this.rendering ? <div class="discovery-chart-spinner">
         <discovery-spinner>Rendering data...</discovery-spinner>
       </div> : ''}
-    </div>
+    </div>;
   }
 
   private static getAngles(type: ChartType) {
     switch (type) {
       case 'compass':
-        return {s: 90, e: -270};
+        return { s: 90, e: -270 };
       case 'gauge':
-        return {s: 180, e: 0};
+        return { s: 180, e: 0 };
       default:
-        return {s: 270, e: -90};
+        return { s: 270, e: -90 };
     }
   }
 }
