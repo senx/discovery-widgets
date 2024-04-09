@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.106
+
+> +  2024/04/09  | v1.1.106 
+> +  2024/04/03  | readmes update 
+> +  2024/04/03  | [bar] [bar-polar] [boxplot] [calendar] [gauge] [area] [pie] [profile] Add new option `datasetNoAlpha` to disable alpha/gradient on datasets colors 
+> +  2024/04/03  | [bar] Fix gap in margin when axis are hidden 
+> +  2024/04/03  | Deps update 
+> +  2024/03/15  | changelog 
+
 ## v1.1.105
 
 > +  2024/03/15  | v1.1.105 
