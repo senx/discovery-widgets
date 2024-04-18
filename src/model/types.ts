@@ -135,7 +135,7 @@ export class DataModel {
 
 export class Dashboard {
     title: string;
-    type: 'dashboard' | 'scada' = 'dashboard';
+    type: 'dashboard' | 'scada' | 'flex' = 'dashboard';
     description: string;
     tiles: Tile[] | string = [];
     vars: { [key: string]: any; } = {};
