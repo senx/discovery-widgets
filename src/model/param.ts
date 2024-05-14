@@ -62,6 +62,7 @@ export class Param {
     color?: string;
     fill?: boolean,
     value?: number;
+    from?: number;
     name?: string,
     type?: 'solid' | 'dashed' | 'dotted'
   }[];

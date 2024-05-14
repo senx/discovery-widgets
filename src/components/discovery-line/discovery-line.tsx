@@ -179,15 +179,14 @@ export class DiscoveryLineComponent {
           return obj;
         },
         formatter: (params: any[]) => {
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            this.innerOptions.timeMode !== 'date'
-              ? params[0].value[0]
-              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
+            ? params[0].value[0]
+            : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+              .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
-          ).join('<br>')}`;
+              ).join('<br>')}`;
         },
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
@@ -549,28 +548,35 @@ export class DiscoveryLineComponent {
             name: t.name || t.value || 0,
           },
           yAxis: t.value || 0,
-        }, { yAxis: 0 }];
-      }),
-      ...(this.innerOptions.markers || [])
-        .filter(t => !!t.fill)
-        .map(t => {
-          return [{
-            itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-              borderType: t.type || 'dashed',
-            },
-            label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
+        }, {
+          itemStyle: t.from ? {
+            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+            borderType: t.type || 'dashed',
             name: t.name || t.value || 0,
-            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+          } : undefined,
+          yAxis: t.from || 0
+        }];
+      }),
+    ...(this.innerOptions.markers || [])
+      .filter(t => !!t.fill)
+      .map(t => {
+        return [{
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+            borderType: t.type || 'dashed',
           },
-            {
-              itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-                borderType: t.type || 'dashed',
-              },
-              xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
-            }];
-        }),
+          label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
+          name: t.name || t.value || 0,
+          xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+        },
+        {
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+            borderType: t.type || 'dashed',
+          },
+          xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+        }];
+      }),
     ];
 
     const markLine = [
@@ -701,30 +707,30 @@ export class DiscoveryLineComponent {
       16, { leading: true, trailing: true });
 
     const focusHandler = _.throttle((type: string, event: any) => {
-        if (this.hasFocus) {
-          switch (type) {
-            case 'mouseover':
-              const c = event.data.coord || event.data;
-              this.dataPointOver.emit({ date: c[0], name: event.seriesName, value: c[1], meta: {} });
-              break;
-            case 'highlight':
-              let ts: number;
-              (event.batch || []).forEach((b: any) => {
-                const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
-                ts = s.data[b.dataIndex][0];
-                ts = this.innerOptions.timeMode === 'date'
-                  ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
-                  : ts;
-              });
-              if (ts !== undefined) {
-                this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
-              }
-              break;
-            default:
-              break;
-          }
+      if (this.hasFocus) {
+        switch (type) {
+          case 'mouseover':
+            const c = event.data.coord || event.data;
+            this.dataPointOver.emit({ date: c[0], name: event.seriesName, value: c[1], meta: {} });
+            break;
+          case 'highlight':
+            let ts: number;
+            (event.batch || []).forEach((b: any) => {
+              const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+              ts = s.data[b.dataIndex][0];
+              ts = this.innerOptions.timeMode === 'date'
+                ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+                : ts;
+            });
+            if (ts !== undefined) {
+              this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
+            }
+            break;
+          default:
+            break;
         }
-      },
+      }
+    },
       100, { leading: true, trailing: true });
 
     setTimeout(() => {

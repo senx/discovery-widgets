@@ -175,7 +175,7 @@ export class DiscoveryBarComponent {
         itemStyle: {
           opacity: 1,
           borderColor: color,
-          color: ColorLib.transparentize(color, datasetNoAlpha ? 1 :0.8),
+          color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.8),
         },
       },
       blur: {
@@ -186,8 +186,8 @@ export class DiscoveryBarComponent {
           color: {
             type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
             colorStops: [
-              { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 :0.7) },
-              { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 :0.3) },
+              { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+              { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.3) },
             ],
           },
         },
@@ -204,8 +204,8 @@ export class DiscoveryBarComponent {
         color: {
           type: 'linear', x: isHorizontal ? 1 : 0, y: 0, x2: 0, y2: isHorizontal ? 0 : 1,
           colorStops: [
-            { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 :0.7) },
-            { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 :0.3) },
+            { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+            { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.3) },
           ],
         },
       },
@@ -262,15 +262,14 @@ export class DiscoveryBarComponent {
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
         formatter: (params: any[]) => {
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
-            this.innerOptions.timeMode !== 'date'
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
               ? params[0].value[0]
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
                 this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
-          ).join('<br>')}`;
+                ).join('<br>')}`;
         },
       },
       toolbox: {
@@ -344,8 +343,8 @@ export class DiscoveryBarComponent {
             color: {
               type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
               colorStops: [
-                { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 :0.7) },
-                { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 :0.1) },
+                { offset: 0, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.7) },
+                { offset: 1, color: ColorLib.transparentize(color, datasetNoAlpha ? 1 : 0.1) },
               ],
               global: false, // false by default
             },
@@ -425,8 +424,8 @@ export class DiscoveryBarComponent {
         formatter: this.innerOptions?.bar?.horizontal
           ? this.innerOptions.timeMode === 'date'
             ? this.innerOptions.fullDateDisplay ? (value: number) =>
-                GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
               : undefined
             : undefined
           : undefined,
@@ -473,8 +472,8 @@ export class DiscoveryBarComponent {
         formatter: !this.innerOptions?.bar?.horizontal
           ? this.innerOptions.timeMode === 'date'
             ? this.innerOptions.fullDateDisplay ? (value: number) =>
-                GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
               : undefined
             : undefined
           : undefined,
@@ -505,37 +504,43 @@ export class DiscoveryBarComponent {
         const m = [{ itemStyle: { color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0) } }, {}] as any[];
         if (!!(this.innerOptions.bar || { horizontal: false }).horizontal) {
           m[0].xAxis = t.value || 0;
-          m[1].xAxis = 0;
+          m[1] = {
+            itemStyle: t.from ? { color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0) } : undefined,
+            xAxis: t.from || 0
+          }
           m[0].name = `${t.value || 0}`;
           m[0].label = { color: t.color || '#f44336', position: 'insideTopRight' };
         } else {
           m[0].yAxis = t.value || 0;
-          m[1].yAxis = 0;
+          m[1] = {
+            itemStyle: t.from ? { color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0) } : undefined,
+            yAxis: t.from || 0
+          }
         }
         return m;
       }),
-      ...(this.innerOptions.markers || [])
-        .filter(t => !!t.fill)
-        .map(t => {
-          return [{
-            itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-              borderType: t.type || 'dashed',
-            },
-            label: { color: t.color || '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name },
-            name: t.name || t.value || 0,
-            yAxis: (!!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-            xAxis: (!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+    ...(this.innerOptions.markers || [])
+      .filter(t => !!t.fill)
+      .map(t => {
+        return [{
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+            borderType: t.type || 'dashed',
           },
-            {
-              itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-                borderType: t.type || 'dashed',
-              },
-              yAxis: (!!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-              xAxis: (!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-            }];
-        })];
+          label: { color: t.color || '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name },
+          name: t.name || t.value || 0,
+          yAxis: (!!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+          xAxis: (!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+        },
+        {
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+            borderType: t.type || 'dashed',
+          },
+          yAxis: (!!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+          xAxis: (!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+        }];
+      })];
 
     const markLine = [...(this.innerOptions.thresholds || [])
       .map(t => {
@@ -552,17 +557,17 @@ export class DiscoveryBarComponent {
         }
         return m;
       }),
-      ...(this.innerOptions.markers || [])
-        .filter(t => !t.fill)
-        .map(t => {
-          return {
-            name: t.name || t.value || 0,
-            label: { color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name },
-            lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
-            yAxis: (!!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-            xAxis: (!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
-          };
-        })];
+    ...(this.innerOptions.markers || [])
+      .filter(t => !t.fill)
+      .map(t => {
+        return {
+          name: t.name || t.value || 0,
+          label: { color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name },
+          lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
+          yAxis: (!!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+          xAxis: (!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+        };
+      })];
     if (markLine.length > 0) {
       (opts.series as SeriesOption[]).push({
         name: '',
@@ -597,30 +602,30 @@ export class DiscoveryBarComponent {
       16, { leading: true, trailing: true });
 
     const focusHandler = _.throttle((type: string, event: any) => {
-        if (this.hasFocus) {
-          switch (type) {
-            case 'mouseover':
-              const c = event.data.coord || event.data;
-              this.dataPointOver.emit({ date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {} });
-              break;
-            case 'highlight':
-              let ts;
-              (event.batch || []).forEach(b => {
-                const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
-                ts = s.data[b.dataIndex][0];
-                ts = this.innerOptions.timeMode === 'date'
-                  ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
-                  : ts;
-              });
-              if (ts !== undefined) {
-                this.dataPointSelected.emit({ date: ts, name: '.*', meta: {} });
-              }
-              break;
-            default:
-              break;
-          }
+      if (this.hasFocus) {
+        switch (type) {
+          case 'mouseover':
+            const c = event.data.coord || event.data;
+            this.dataPointOver.emit({ date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {} });
+            break;
+          case 'highlight':
+            let ts;
+            (event.batch || []).forEach(b => {
+              const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+              ts = s.data[b.dataIndex][0];
+              ts = this.innerOptions.timeMode === 'date'
+                ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+                : ts;
+            });
+            if (ts !== undefined) {
+              this.dataPointSelected.emit({ date: ts, name: '.*', meta: {} });
+            }
+            break;
+          default:
+            break;
         }
-      },
+      }
+    },
       100, { leading: true, trailing: true });
 
     setTimeout(() => {
