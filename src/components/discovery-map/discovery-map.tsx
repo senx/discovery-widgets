@@ -639,7 +639,8 @@ export class DiscoveryMapComponent {
       }
       let content = '';
       content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value === 0 ? 0 : value || 'na'}</p>`;
-      Object.keys(positionData.properties || []).forEach(k => content += `<b>${k}</b>: ${positionData.properties[k]}<br />`);
+      Object.keys(positionData.properties || [])
+        .forEach(k => content += `<b>${k}</b>: ${decodeURIComponent(positionData.properties[k])}<br />`);
 
       if (!!positionData.tooltip[ts]) {
         content += positionData.tooltip[ts];
