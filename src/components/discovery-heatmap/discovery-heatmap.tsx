@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import {ColorLib} from '../../utils/color-lib';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-heatmap',
@@ -79,14 +80,14 @@ export class DiscoveryHeatmap {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = {...this.options as Param};
-      }
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
@@ -95,9 +96,7 @@ export class DiscoveryHeatmap {
           this.setOpts(true);
         });
       }
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-      }
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
   }
 

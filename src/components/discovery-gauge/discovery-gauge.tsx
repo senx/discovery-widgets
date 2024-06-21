@@ -25,6 +25,7 @@ import { GTSLib } from '../../utils/gts.lib';
 import { ColorLib, HeatMaps } from '../../utils/color-lib';
 import { Utils } from '../../utils/utils';
 import { SeriesOption } from 'echarts/lib/util/types';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-gauge',
@@ -63,21 +64,19 @@ export class DiscoveryGauge {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = { ...this.options as Param };
-      }
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-      }
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
   }
 

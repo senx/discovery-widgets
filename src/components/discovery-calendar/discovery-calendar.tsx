@@ -24,6 +24,7 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import { ColorLib } from '../../utils/color-lib';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-calendar',
@@ -80,14 +81,14 @@ export class DiscoveryCalendar {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = { ...this.options as Param };
-      }
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
@@ -96,9 +97,7 @@ export class DiscoveryCalendar {
           this.setOpts(true);
         });
       }
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-      }
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
   }
 

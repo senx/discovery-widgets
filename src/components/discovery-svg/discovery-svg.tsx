@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import html2canvas from 'html2canvas';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-svg',
@@ -71,13 +72,16 @@ export class DiscoverySvgComponent {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
       setTimeout(() => this.parseResult());
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-      }
+      this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
     }
   }
 

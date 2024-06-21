@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023 SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, DiscoveryEvent} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
+import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
 import domtoimage from 'dom-to-image';
-import {LangUtils} from '../../utils/lang-utils';
+import { LangUtils } from '../../utils/lang-utils';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-button',
@@ -30,9 +31,9 @@ import {LangUtils} from '../../utils/lang-utils';
   shadow: true,
 })
 export class DiscoveryButtonComponent {
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop({ mutable: true }) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop({ mutable: true }) options: Param | string = new Param();
   @Prop() width: number;
   @Prop() height: number;
   @Prop() debug = false;
@@ -63,14 +64,16 @@ export class DiscoveryButtonComponent {
   private innerResult: DataModel;
 
   @Watch('vars')
-  varsUpdate(newValue: string, oldValue: string) {
-    this.parseResult();
-    if (this.LOG) {
-      this.LOG?.debug(['varsUpdate'], {
-        vars: this.vars,
-        newValue, oldValue
-      });
+  varsUpdate(newValue: any, oldValue: any) {
+    let vars = this.vars;
+    if (!!this.vars && typeof this.vars === 'string') {
+      vars = JSON.parse(this.vars);
     }
+    if (!isEqual(vars, this.innerVars)) {
+      this.innerVars = vars;
+      this.parseResult();
+    }
+    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
   }
 
   @Watch('result')
@@ -80,14 +83,14 @@ export class DiscoveryButtonComponent {
     }
   }
 
-  @Listen('discoveryEvent', {target: 'window'})
+  @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.el.id);
     if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+      this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
     }
     if (res.vars) {
-      this.innerVars = {...this.innerVars, ...res.vars};
+      this.innerVars = { ...this.innerVars, ...res.vars };
     }
   }
 
@@ -101,12 +104,12 @@ export class DiscoveryButtonComponent {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.options as Param) || { bgColor }).bgColor || bgColor;
     const dm: Param = ((this.innerResult || {
-      globalParams: {bgColor}
-    }).globalParams || {bgColor}) as Param;
+      globalParams: { bgColor },
+    }).globalParams || { bgColor }) as Param;
     bgColor = dm.bgColor || bgColor;
-    return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
+    return await domtoimage.toPng(this.root, { height: this.height, width: this.width, bgcolor: bgColor });
   }
 
   componentWillLoad() {
@@ -125,17 +128,17 @@ export class DiscoveryButtonComponent {
 
   private parseResult() {
     this.innerResult = GTSLib.getData(this.result);
-    const btnLabel = ((this.options as Param).button || {label: 'Ok'}).label;
+    const btnLabel = ((this.options as Param).button || { label: 'Ok' }).label;
     const dm = (this.innerResult || {
       globalParams: {
-        button: {label: btnLabel}
-      }
-    }).globalParams || {button: {label: btnLabel}};
+        button: { label: btnLabel },
+      },
+    }).globalParams || { button: { label: btnLabel } };
 
     this.label = dm.button.label;
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
-    this.options = {...options};
+    this.options = { ...options };
 
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
@@ -143,7 +146,7 @@ export class DiscoveryButtonComponent {
       this.innerVars = this.vars;
     }
     if (this.options.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.options.customStyles || {}};
+      this.innerStyle = { ...this.innerStyle, ...this.options.customStyles || {} };
     }
     setTimeout(() => this.active = (this.innerResult?.data || []).find(v => v.active)?.value);
   }
@@ -162,11 +165,11 @@ export class DiscoveryButtonComponent {
         this.LOG?.debug(['handleClick', 'getData'], result);
         if (!!result) {
           (result.events || []).forEach(e => {
-            this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e});
+            this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e });
             if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {
               e.value = [e.value];
             }
-            this.discoveryEvent.emit({...e, source: this.el.id});
+            this.discoveryEvent.emit({ ...e, source: this.el.id });
           });
         }
         this.execResult.emit(res.data);
@@ -180,12 +183,12 @@ export class DiscoveryButtonComponent {
   private toggle(value: string) {
     this.active = value;
     (this.innerResult.events || []).forEach(e => {
-      this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e});
+      this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e });
       if (!e.value) {
         e.value = {};
       }
       e.value[e.selector] = value;
-      this.discoveryEvent.emit({...e, source: this.el.id});
+      this.discoveryEvent.emit({ ...e, source: this.el.id });
     });
   }
 
@@ -200,7 +203,7 @@ export class DiscoveryButtonComponent {
         {this.type === 'button'
           ? <button type="button" class="discovery-btn"
                     innerHTML={this.label}
-                    onClick={() => this.handleClick()}/>
+                    onClick={() => this.handleClick()} />
           : ''}
         {this.type === 'button:radio'
           ? <div class="discovery-btn-group">
@@ -208,14 +211,14 @@ export class DiscoveryButtonComponent {
               ? (this.innerResult?.data || []).map(v =>
                 <button type="button" class={{
                   'discovery-btn': true,
-                  'active': v.value === this.active
+                  'active': v.value === this.active,
                 }}
                         innerHTML={v.label}
                         onClick={() => this.toggle(v.value)}
-                />
+                />,
               ) : ''}
           </div> : ''}
-      </div>
+      </div>,
     ];
   }
 }

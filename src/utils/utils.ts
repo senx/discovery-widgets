@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ export class Utils {
     return cloneDeep(inObject);
   }
 
-  static throttle(func, delay, ctx?) {
-    let isRunning;
-    return (...args) => {
+  static throttle(func: any, delay: number, ctx?: any) {
+    let isRunning: boolean;
+    return (...args: any[]) => {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const context = ctx || this;        // store the context of the object that owns this function
       if (!isRunning) {

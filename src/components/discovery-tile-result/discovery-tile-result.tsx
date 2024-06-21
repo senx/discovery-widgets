@@ -15,15 +15,16 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, DiscoveryEvent} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {Utils} from '../../utils/utils';
-import {GTSLib} from '../../utils/gts.lib';
+import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { Utils } from '../../utils/utils';
+import { GTSLib } from '../../utils/gts.lib';
 import elementResizeEvent from 'element-resize-event';
-import {PluginManager} from '../../utils/PluginManager';
-import {v4} from 'uuid';
+import { PluginManager } from '../../utils/PluginManager';
+import { v4 } from 'uuid';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-tile-result',
@@ -33,14 +34,14 @@ import {v4} from 'uuid';
 export class DiscoveryTileResultComponent {
   @Element() el: HTMLElement;
 
-  @Prop({mutable: true}) result: DataModel | string;
-  @Prop({mutable: true}) type: ChartType;
+  @Prop({ mutable: true }) result: DataModel | string;
+  @Prop({ mutable: true }) type: ChartType;
   @Prop() start: number;
   @Prop() options: Param | string = new Param();
-  @Prop({mutable: true}) width: number;
-  @Prop({mutable: true}) height: number;
+  @Prop({ mutable: true }) width: number;
+  @Prop({ mutable: true }) height: number;
   @Prop() debug = false;
-  @Prop({mutable: true}) unit = '';
+  @Prop({ mutable: true }) unit = '';
   @Prop() url: string;
   @Prop() chartTitle: string;
   @Prop() chartDescription: string;
@@ -72,7 +73,6 @@ export class DiscoveryTileResultComponent {
   private desc: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
-  private initial = true
   private innerVars = {};
   private componentId: string;
 
@@ -97,29 +97,30 @@ export class DiscoveryTileResultComponent {
   optionsUpdate(newValue: string, oldValue: string) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     if (!!this.options && typeof this.options === 'string') {
-      this.innerOptions = JSON.parse(this.options);
-    } else {
-      this.innerOptions = {...this.options as Param};
+      const opts = JSON.parse(this.options);
+      if (!isEqual(opts, this.innerOptions)) {
+        this.innerOptions = opts;
+      }
+    } else if (!isEqual(this.options as Param, this.innerOptions)) {
+      this.innerOptions = { ...this.options as Param };
     }
     if (this.LOG) {
-      this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
   }
 
   @Watch('vars')
-  varsUpdate(newValue: string, oldValue: string) {
+  varsUpdate(newValue: any, oldValue: any) {
     if (!!this.vars && typeof this.vars === 'string') {
-      this.innerVars = JSON.parse(this.vars);
+      const vars = JSON.parse(this.vars);
+      if (!isEqual(vars, this.innerVars)) {
+        this.innerVars = vars;
+      }
     }
-    if (this.LOG) {
-      this.LOG?.debug(['varsUpdate'], {
-        vars: this.vars,
-        newValue, oldValue
-      });
-    }
+    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
   }
 
-  @Listen('discoveryEvent', {target: 'window'})
+  @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     if (!this.innerOptions?.eventHandler) {
       return;
@@ -128,14 +129,14 @@ export class DiscoveryTileResultComponent {
     if (res.hasEvent) {
       this.LOG?.debug(['discoveryEventHandler'], {
         type: event.detail.type,
-        event: event.detail
+        event: event.detail,
       });
       if (res.data) {
         this.innerResult = res.data;
         this.parseResult();
       }
       if (res.style) {
-        this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+        this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
       }
       if (res.zoom) {
         void this.setZoom(res.zoom).then(() => {
@@ -154,7 +155,7 @@ export class DiscoveryTileResultComponent {
         }
       }
       if (res.margin) {
-        this.innerOptions = {...this.innerOptions, leftMargin: res.margin};
+        this.innerOptions = { ...this.innerOptions, leftMargin: res.margin };
       }
       if (res.bounds) {
         this.innerOptions = {
@@ -162,65 +163,65 @@ export class DiscoveryTileResultComponent {
           bounds: {
             ...this.innerOptions.bounds,
             minDate: res.bounds.min,
-            maxDate: res.bounds.max
-          }
+            maxDate: res.bounds.max,
+          },
         };
       }
     }
   }
 
-  @Listen('draw', {capture: false})
-  @Listen('rendered', {capture: false})
+  @Listen('draw', { capture: false })
+  @Listen('rendered', { capture: false })
   onDrawHandler() {
     if (!!this.tile) {
       if (!!this.tile.resize) {
         (this.tile).resize();
       }
-      this.initial = false;
     }
   }
 
-  @Listen('leftMarginComputed', {capture: false})
+  @Listen('leftMarginComputed', { capture: false })
   onLeftMarginComputed(event: CustomEvent) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'margin')
       .forEach(e => {
-        this.discoveryEvent.emit({source: this.componentId, type: 'margin', tags: e.tags, value: event.detail})
-      })
+        this.discoveryEvent.emit({ source: this.componentId, type: 'margin', tags: e.tags, value: event.detail });
+      });
   }
 
-  @Listen('timeBounds', {capture: false})
+  @Listen('timeBounds', { capture: false })
   onTimeBounds(event: CustomEvent) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'bounds')
       .forEach(e => {
-        this.discoveryEvent.emit({source: this.componentId, type: 'bounds', tags: e.tags, value: event.detail})
-      })
+        this.discoveryEvent.emit({ source: this.componentId, type: 'bounds', tags: e.tags, value: event.detail });
+      });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryTileResultComponent, this.debug);
     this.componentId = this.el.id || v4();
     this.innerType = this.type;
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.innerOptions
+      options: this.innerOptions,
     });
     let options = new Param();
     this.innerResult = GTSLib.getData(this.result);
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
-      options = {...options, ...JSON.parse(this.options)};
+      options = { ...options, ...JSON.parse(this.options) };
     } else {
-      options = {...options, ...(this.options as Param || {})};
+      options = { ...options, ...(this.options as Param || {}) };
     }
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams || {});
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     this.innerVars = JSON.parse(this.vars || '{}');
     this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
     this.selfType.emit(this.innerType);
     this.LOG?.debug(['componentWillLoad 2'], {
       type: this.innerType,
-      options: this.innerOptions
+      options: this.innerOptions,
     });
   }
 
@@ -241,7 +242,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'zoom')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit({...e, source: this.el.id});
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
       });
   }
 
@@ -250,7 +251,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'focus')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit({...e, source: this.el.id});
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
       });
   }
 
@@ -259,7 +260,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'selected')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit({...e, source: this.el.id});
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
       });
   }
 
@@ -268,7 +269,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'poi')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit({...e, source: this.el.id});
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
       });
   }
 
@@ -277,7 +278,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'bounds')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit({...e, source: this.el.id});
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
       });
   }
 
@@ -643,7 +644,7 @@ JSON-> 0 GET`}
     /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['export']) {
       const dataUrl = await (this.tile).export(type);
-      return {dataUrl, bgColor: Utils.getCSSColor(this.tileElem, '--warp-view-tile-background', '#fff')}
+      return { dataUrl, bgColor: Utils.getCSSColor(this.tileElem, '--warp-view-tile-background', '#fff') };
     } else {
       return undefined;
     }
@@ -657,30 +658,30 @@ JSON-> 0 GET`}
            style={{
              background: this.bgColor,
              color: this.fontColor,
-             height: '100%', width: '100%'
+             height: '100%', width: '100%',
            }}>
-        {this.innerTitle ? <h2 class="tile-title"
-                               ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2> : ''}
-        {this.chartDescription ? <p class="tile-desc"
-                                    ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription || ''}</p> : ''}
+        {this.innerTitle && this.innerTitle !== '' ? <h2 class="tile-title"
+                                                         ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2> : ''}
+        {this.chartDescription && this.chartDescription !== '' ? <p class="tile-desc"
+                                                                    ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription || ''}</p> : ''}
         <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
         </div>
-      </div>
+      </div>,
     ];
   }
 
   @Method()
   async parseEvents() {
-    this.LOG?.debug(['parseEvents'], {discoveryEvents: ((this.innerResult as unknown as DataModel)?.events || [])});
+    this.LOG?.debug(['parseEvents'], { discoveryEvents: ((this.innerResult as unknown as DataModel)?.events || []) });
     setTimeout(() => ((this.innerResult as unknown as DataModel)?.events || [])
       .filter(e => e.value !== undefined)
       .filter(e => e.type !== 'zoom' && e.type !== 'margin' && e.type !== 'selected')
       .forEach(e => {
         if (this.LOG) {
-          this.LOG?.debug(['parseResult', 'emit'], {discoveryEvent: e});
+          this.LOG?.debug(['parseResult', 'emit'], { discoveryEvent: e });
         }
-        this.discoveryEvent.emit({...e, source: this.el.id});
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
       }));
     return Promise.resolve();
   }
@@ -688,8 +689,8 @@ JSON-> 0 GET`}
   private parseResult() {
     setTimeout(() => {
       void (async () => {
-        this.unit = (this.options as Param).unit || this.unit
-        this.innerOptions = {...this.innerOptions, ...(this.innerResult as unknown as DataModel)?.globalParams || {}};
+        this.unit = (this.options as Param).unit || this.unit;
+        this.innerOptions = { ...this.innerOptions, ...(this.innerResult as unknown as DataModel)?.globalParams || {} };
         this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
         this.selfType.emit(this.innerType);
         this.innerTitle = this.innerOptions?.title || this.chartTitle || '';
@@ -698,36 +699,36 @@ JSON-> 0 GET`}
       })();
     });
     if (this.LOG) {
-      this.LOG?.debug(['parseResult'], {type: this.innerType, options: this.options});
+      this.LOG?.debug(['parseResult'], { type: this.innerType, options: this.options });
     }
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
-    this.innerStyles = {...this.innerStyles, ...styles, ...this.innerOptions.customStyles || {}};
+    this.innerStyles = { ...this.innerStyles, ...styles, ...this.innerOptions.customStyles || {} };
     return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 
   private handleCSSColors() {
     let fontColor = Utils.getCSSColor(this.tileElem, '--warp-view-font-color', '#404040');
-    fontColor = ((this.innerOptions) || {fontColor}).fontColor || fontColor;
+    fontColor = ((this.innerOptions) || { fontColor }).fontColor || fontColor;
     let bgColor = Utils.getCSSColor(this.tileElem, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions) || { bgColor }).bgColor || bgColor;
     const dm: Param = (((this.innerResult as unknown as DataModel) || {
-      globalParams: {bgColor, fontColor}
-    }).globalParams || {bgColor, fontColor}) as Param;
+      globalParams: { bgColor, fontColor },
+    }).globalParams || { bgColor, fontColor }) as Param;
     this.bgColor = dm.bgColor || bgColor;
     this.fontColor = dm.fontColor || fontColor;
 
     if (this.tileElem) {
       const rs = getComputedStyle(this.tileElem);
       if ('' === rs.getPropertyValue('--warp-view-font-color').trim()) {
-        this.tileElem.style.setProperty('--warp-view-font-color', this.fontColor)
+        this.tileElem.style.setProperty('--warp-view-font-color', this.fontColor);
       }
       if ('' === rs.getPropertyValue('--warp-view-chart-label-color').trim()) {
-        this.tileElem.style.setProperty('--warp-view-chart-label-color', this.fontColor)
+        this.tileElem.style.setProperty('--warp-view-chart-label-color', this.fontColor);
       }
       if ('#8e8e8e' === rs.getPropertyValue('--warp-view-chart-grid-color').trim()) {
-        this.tileElem.style.setProperty('--warp-view-chart-grid-color', this.fontColor)
+        this.tileElem.style.setProperty('--warp-view-chart-grid-color', this.fontColor);
       }
     }
   }

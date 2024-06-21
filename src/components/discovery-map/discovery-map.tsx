@@ -29,6 +29,7 @@ import domtoimage from 'dom-to-image';
 import 'leaflet-edgebuffer';
 import 'leaflet.heat';
 import {v4} from 'uuid';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-map',
@@ -103,18 +104,16 @@ export class DiscoveryMapComponent {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = {...this.options as Param};
-      }
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
       setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true, true));
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-      }
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
   }
 

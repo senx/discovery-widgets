@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {Utils} from '../../utils/utils';
-import {ChartType, DiscoveryEvent} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {LangUtils} from '../../utils/lang-utils';
-import {v4} from 'uuid';
+import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
+import { Utils } from '../../utils/utils';
+import { ChartType, DiscoveryEvent } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { LangUtils } from '../../utils/lang-utils';
+import { v4 } from 'uuid';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-tile',
@@ -34,17 +35,17 @@ export class DiscoveryTileComponent {
   @Prop() chartTitle: string;
   @Prop() chartDescription: string;
   @Prop() type: ChartType;
-  @Prop({mutable: true, reflect: true}) options: Param | string = new Param();
+  @Prop({ mutable: true, reflect: true }) options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() debug = false;
   @Prop() unit = '';
-  @Prop({mutable: true}) autoRefresh = -1;
+  @Prop({ mutable: true }) autoRefresh = -1;
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   @Prop() vars: any | string = '{}';
 
-  @Event({bubbles: true}) statusHeaders: EventEmitter<string[]>;
-  @Event({bubbles: true}) statusError: EventEmitter;
-  @Event({bubbles: true}) execResult: EventEmitter<string>;
+  @Event({ bubbles: true }) statusHeaders: EventEmitter<string[]>;
+  @Event({ bubbles: true }) statusError: EventEmitter;
+  @Event({ bubbles: true }) execResult: EventEmitter<string>;
   @Event() selfType: EventEmitter<ChartType>;
 
   @Element() el: HTMLElement;
@@ -63,47 +64,53 @@ export class DiscoveryTileComponent {
   private LOG: Logger;
   private ws: string;
   private timer: any;
-  private innerVars = {}
+  private innerVars = {};
+  private innerOptions: Param = new Param();
   private tileResult: HTMLDiscoveryTileResultElement;
   private socket: WebSocket;
   private componentId: string;
+  private firstExec = false;
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
-    if (!!this.options && typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+  optionsUpdate(newValue: any, oldValue: any) {
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
     }
-    if (this.LOG) {
-      this.LOG?.debug(['optionsUpdate'], {
-        options: this.options,
-        newValue, oldValue
-      });
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
   }
 
   @Watch('vars')
   async varsUpdate(newValue: string, oldValue: string) {
+    let vars = this.vars;
     if (!!this.vars && typeof this.vars === 'string') {
-      this.innerVars = JSON.parse(this.vars);
+      vars = JSON.parse(this.vars);
+    }
+    if (!isEqual(vars, this.innerVars)) {
+      this.innerVars = vars;
       await this.exec(true);
     }
     if (this.LOG) {
-      this.LOG?.debug(['varsUpdate'], {vars: this.vars, newValue, oldValue});
+      this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
     }
   }
 
-  @Listen('discoveryEvent', {target: 'window'})
+  @Listen('discoveryEvent', { target: 'window' })
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.componentId);
+    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.componentId);
     if (res.vars) {
-      this.innerVars = {...(this.innerVars || {}), ...res.vars};
-      if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
+      this.innerVars = { ...(this.innerVars || {}), ...res.vars };
+      if (!(this.innerOptions.mutedVars || []).includes(event.detail.selector)) {
         await this.exec(true);
       }
     }
     if (res.selected) {
-      this.innerVars = {...(this.innerVars || {}), ...res.selected};
-      if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
+      this.innerVars = { ...(this.innerVars || {}), ...res.selected };
+      if (!(this.innerOptions.mutedVars || []).includes(event.detail.selector)) {
         await this.exec(true);
       }
     }
@@ -174,7 +181,9 @@ export class DiscoveryTileComponent {
       innerVars: this.innerVars,
     });
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
+    } else {
+      this.innerOptions = { ...(this.options as any) ?? new Param() };
     }
     this.innerVars = JSON.parse(this.vars || '{}');
     const dims = Utils.getContentBounds(this.el.parentElement);
@@ -183,7 +192,9 @@ export class DiscoveryTileComponent {
   }
 
   async componentDidLoad() {
-    await this.exec();
+    if (!this.firstExec) {
+      await this.exec();
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -311,7 +322,7 @@ export class DiscoveryTileComponent {
                 this.LOG?.debug(['exec', 'result'], this.result);
                 this.execResult.emit(this.result);
               }
-            }
+            };
             this.socket.send(`<% ${this.ws} %> ${((this.options as Param).autoRefresh || 1000)} EVERY`);
             resolve(true);
           };
@@ -334,13 +345,13 @@ export class DiscoveryTileComponent {
       {this.loaded ?
         this.hasError
           ? <div class="discovery-tile-error">{this.errorMessage}</div>
-          : <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}}>
+          : <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
             <discovery-tile-result
               url={this.url}
               start={this.start}
               result={this.result}
               type={this.type}
-              options={this.options}
+              options={this.innerOptions}
               unit={this.unit}
               debug={this.debug}
               height={this.height}
@@ -364,7 +375,7 @@ export class DiscoveryTileComponent {
       {this.showLoader ? <div class="discovery-tile-spinner">
         <discovery-spinner>Requesting data...</discovery-spinner>
       </div> : ''}
-      <pre id="ws"><slot/></pre>
+      <pre id="ws"><slot /></pre>
     </div>;
   }
 }

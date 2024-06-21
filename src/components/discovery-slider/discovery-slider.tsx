@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023 SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import {GTSLib} from '../../utils/gts.lib';
 import {Param} from '../../model/param';
 import {Utils} from '../../utils/utils';
 import domToImage from 'dom-to-image';
+import { isEqual } from 'lodash';
+import { DataModel } from '../../model/types';
 
 @Component({
   tag: 'discovery-slider',
@@ -50,23 +52,25 @@ export class DiscoverySlider {
   private defOptions = {...new Param(), input: {min: 0, max: 100, horizontal: true, showTicks: true, step: 1}};
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (!!this.options && typeof this.options === 'string') {
-      this.innerOptions = JSON.parse(this.options);
-    } else {
-      this.innerOptions = {...this.options as Param};
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
     }
-    this.innerOptions = Utils.mergeDeep<Param>({...this.defOptions}, this.innerOptions || {});
-    this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    setTimeout(async () => {
-      await this.setValue(this.innerValue)
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-      }
-      return Promise.resolve();
-    });
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
+      this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      setTimeout(async () => {
+        await this.setValue(this.innerValue)
+        if (this.LOG) {
+          this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+        }
+        return Promise.resolve();
+      });
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols

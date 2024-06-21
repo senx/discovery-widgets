@@ -27,7 +27,7 @@ import { ChartType, DataModel, ECharts } from '../../model/types';
 import { CartesianAxisOption } from 'echarts/lib/coord/cartesian/AxisModel';
 import { GridOption } from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
-import _ from 'lodash';
+import _, { isEqual } from 'lodash';
 import { v4 } from 'uuid';
 
 @Component({
@@ -89,21 +89,19 @@ export class DiscoveryLineComponent {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = { ...this.options as Param };
-      }
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-      }
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
   }
 
@@ -186,7 +184,7 @@ export class DiscoveryLineComponent {
               .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
-              ).join('<br>')}`;
+          ).join('<br>')}`;
         },
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
@@ -554,29 +552,29 @@ export class DiscoveryLineComponent {
             borderType: t.type || 'dashed',
             name: t.name || t.value || 0,
           } : undefined,
-          yAxis: t.from || 0
+          yAxis: t.from || 0,
         }];
       }),
-    ...(this.innerOptions.markers || [])
-      .filter(t => !!t.fill)
-      .map(t => {
-        return [{
-          itemStyle: {
-            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-            borderType: t.type || 'dashed',
+      ...(this.innerOptions.markers || [])
+        .filter(t => !!t.fill)
+        .map(t => {
+          return [{
+            itemStyle: {
+              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+              borderType: t.type || 'dashed',
+            },
+            label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
+            name: t.name || t.value || 0,
+            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
           },
-          label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
-          name: t.name || t.value || 0,
-          xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
-        },
-        {
-          itemStyle: {
-            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
-            borderType: t.type || 'dashed',
-          },
-          xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
-        }];
-      }),
+            {
+              itemStyle: {
+                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+                borderType: t.type || 'dashed',
+              },
+              xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+            }];
+        }),
     ];
 
     const markLine = [
@@ -707,30 +705,30 @@ export class DiscoveryLineComponent {
       16, { leading: true, trailing: true });
 
     const focusHandler = _.throttle((type: string, event: any) => {
-      if (this.hasFocus) {
-        switch (type) {
-          case 'mouseover':
-            const c = event.data.coord || event.data;
-            this.dataPointOver.emit({ date: c[0], name: event.seriesName, value: c[1], meta: {} });
-            break;
-          case 'highlight':
-            let ts: number;
-            (event.batch || []).forEach((b: any) => {
-              const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
-              ts = s.data[b.dataIndex][0];
-              ts = this.innerOptions.timeMode === 'date'
-                ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
-                : ts;
-            });
-            if (ts !== undefined) {
-              this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
-            }
-            break;
-          default:
-            break;
+        if (this.hasFocus) {
+          switch (type) {
+            case 'mouseover':
+              const c = event.data.coord || event.data;
+              this.dataPointOver.emit({ date: c[0], name: event.seriesName, value: c[1], meta: {} });
+              break;
+            case 'highlight':
+              let ts: number;
+              (event.batch || []).forEach((b: any) => {
+                const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+                ts = s.data[b.dataIndex][0];
+                ts = this.innerOptions.timeMode === 'date'
+                  ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+                  : ts;
+              });
+              if (ts !== undefined) {
+                this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
+              }
+              break;
+            default:
+              break;
+          }
         }
-      }
-    },
+      },
       100, { leading: true, trailing: true });
 
     setTimeout(() => {

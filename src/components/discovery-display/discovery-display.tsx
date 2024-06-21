@@ -25,6 +25,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {Utils} from '../../utils/utils';
 import domtoimage from 'dom-to-image';
+import { isEqual } from 'lodash';
 
 dayjs.extend(relativeTime)
 
@@ -79,20 +80,18 @@ export class DiscoveryDisplayComponent {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      if (!!this.options && typeof this.options === 'string') {
-        this.innerOptions = JSON.parse(this.options);
-      } else {
-        this.innerOptions = {...this.options as Param};
-      }
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!isEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
       this.chartOptions = {...this.chartOptions, fontColor: this.innerOptions.fontColor};
       this.message = this.convert(this.result as DataModel || new DataModel());
       this.flexFont();
-      if (this.LOG) {
-        this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-      }
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOptions);
     }
   }
 

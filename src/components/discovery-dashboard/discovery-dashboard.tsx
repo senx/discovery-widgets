@@ -13,16 +13,17 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {Utils} from '../../utils/utils';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {ChartType, Dashboard, DataModel, DiscoveryEvent, Tile} from '../../model/types';
-import {JsonLib} from '../../utils/jsonLib';
-import {v4, v4 as uuidv4} from 'uuid';
-import {PdfLib} from '../../utils/pdfLib';
-import {LangUtils} from '../../utils/lang-utils';
+import { Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch } from '@stencil/core';
+import { Utils } from '../../utils/utils';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { ChartType, Dashboard, DataModel, DiscoveryEvent, Tile } from '../../model/types';
+import { JsonLib } from '../../utils/jsonLib';
+import { v4, v4 as uuidv4 } from 'uuid';
+import { PdfLib } from '../../utils/pdfLib';
+import { LangUtils } from '../../utils/lang-utils';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-dashboard',
@@ -32,11 +33,11 @@ import {LangUtils} from '../../utils/lang-utils';
 export class DiscoveryDashboardComponent {
   @Prop() url: string;
   @Prop() dashboardTitle: string;
-  @Prop({mutable: true}) data: Dashboard | string;
+  @Prop({ mutable: true }) data: Dashboard | string;
   @Prop() warpscript: string;
-  @Prop({mutable: true}) options: Param | string = new Param();
+  @Prop({ mutable: true }) options: Param | string = new Param();
   @Prop() debug = false;
-  @Prop({mutable: true}) autoRefresh = -1;
+  @Prop({ mutable: true }) autoRefresh = -1;
   @Prop() cellHeight = 220;
   @Prop() cols = 12;
   @Prop() type: 'scada' | 'dashboard' | 'flex' = 'dashboard';
@@ -72,45 +73,42 @@ export class DiscoveryDashboardComponent {
   private renderedTiles: Tile[];
   private done: any = {};
   private dash: HTMLDivElement;
-  private innerVars = {}
+  private innerVars = {};
   private componentId: string;
   private eventState: any = {};
   private refreshTimer;
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
-    if (!!this.options && typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+  optionsUpdate(newValue: any, oldValue: any) {
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
     }
-    this.LOG?.debug(['optionsUpdate'], {
-      options: this.options,
-      newValue, oldValue
-    });
+    if (!isEqual(opts, this.options)) {
+      this.options = { ...opts };
+      this.LOG?.debug(['optionsUpdate'], { options: this.options, newValue, oldValue });
+    }
   }
 
   @Watch('data')
   dataUpdate(newValue: string, oldValue: string) {
-    this.LOG?.debug(['optionsUpdate'], {
-      options: this.options,
-      newValue, oldValue
-    });
+    this.LOG?.debug(['dataUpdate'], { newValue, oldValue });
     this.parseResult();
   }
 
-
   @Watch('vars')
   varsUpdate(newValue: string, oldValue: string) {
+    let vars = this.vars;
     if (!!this.vars && typeof this.vars === 'string') {
-      this.innerVars = JSON.parse(this.vars);
+      vars = JSON.parse(this.vars);
+    }
+    if (!isEqual(vars, this.innerVars)) {
+      this.innerVars = vars;
       this.exec();
-    } else {
-      this.innerVars = this.vars || {};
     }
     if (this.LOG) {
-      this.LOG?.debug(['varsUpdate'], {
-        vars: this.vars,
-        newValue, oldValue
-      });
+      this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
     }
   }
 
@@ -122,12 +120,12 @@ export class DiscoveryDashboardComponent {
     if (this.LOG) {
       this.LOG?.debug(['warpscriptUpdate'], {
         ws: this.ws,
-        newValue, oldValue
+        newValue, oldValue,
       });
     }
   }
 
-  @Listen('discoveryEvent', {target: 'window'})
+  @Listen('discoveryEvent', { target: 'window' })
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     this.eventState = Utils.mergeDeep(this.eventState, Utils.parseEventData(event.detail, 'tag=.*,type=.*', this.componentId));
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.componentId);
@@ -136,7 +134,7 @@ export class DiscoveryDashboardComponent {
       await this.modal.open();
     }
     if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+      this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
     }
     if (res.audio) {
       this.audioFile = res.audio;
@@ -155,7 +153,7 @@ export class DiscoveryDashboardComponent {
       }
     }
     if (res.vars) {
-      this.innerVars = {...(this.innerVars || {}), ...res.vars};
+      this.innerVars = { ...(this.innerVars || {}), ...res.vars };
       if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
         this.exec();
       }
@@ -172,7 +170,7 @@ export class DiscoveryDashboardComponent {
     if (this.options === 'undefined') {
       this.options = new Param();
     }
-    this.LOG?.debug(['componentWillLoad'], {url: this.url, options: this.options});
+    this.LOG?.debug(['componentWillLoad'], { url: this.url, options: this.options });
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
@@ -205,7 +203,7 @@ export class DiscoveryDashboardComponent {
 
   @Method()
   async getVars(): Promise<any> {
-    return Promise.resolve({...this.innerVars, ...(this.eventState?.vars || {})});
+    return Promise.resolve({ ...this.innerVars, ...(this.eventState?.vars || {}) });
   }
 
   @Method()
@@ -227,7 +225,7 @@ export class DiscoveryDashboardComponent {
     result.cols = result.cols || this.cols || 12;
     result.bgColor = Utils.getCSSColor(this.el, '--warp-view-dashboard-background', '#fff');
     result.fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000');
-    return {...new Dashboard(), ...result};
+    return { ...new Dashboard(), ...result };
   }
 
   exec() {
@@ -239,7 +237,7 @@ export class DiscoveryDashboardComponent {
         .then((res: any) => {
           const result = new JsonLib().parse(res.data as string);
           const tmpResult: Dashboard = result.length > 0 ? result[0] : new Dashboard();
-          this.options = {...this.options as Param, ...tmpResult.options};
+          this.options = { ...this.options as Param, ...tmpResult.options };
           this.headers = res.headers;
           this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
           this.statusHeaders.emit(this.headers);
@@ -265,7 +263,7 @@ export class DiscoveryDashboardComponent {
               'dashboard', 'warpscript');
             Utils.httpPost(this.url, ws, this.options.httpHeaders).then((t: any) => {
               this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
-              this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
+              this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
               this.processResult(tmpResult);
             }).catch(e => {
               this.LOG?.error(['exec'], e);
@@ -293,12 +291,12 @@ export class DiscoveryDashboardComponent {
     } else {
       tmpResult = GTSLib.isArray(this.data) ? this.data[0] : this.data;
     }
-    this.options = {...this.options as Param, ...tmpResult.options};
+    this.options = { ...this.options as Param, ...tmpResult.options };
     this.innerType = tmpResult.type || this.type || 'dashboard';
     this.loaded = true;
     if (typeof tmpResult.tiles === 'string') {
       this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
-      this.processMacroTiles(tmpResult)
+      this.processMacroTiles(tmpResult);
     } else {
       this.renderedTiles = tmpResult.tiles || [];
     }
@@ -312,7 +310,7 @@ export class DiscoveryDashboardComponent {
     if (typeof tmpResult.tiles === 'string') {
       Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', (this.options as Param).httpHeaders).then((t: any) => {
         this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
-        this.renderedTiles = new JsonLib().parse(t.data as string)[0] || []
+        this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
         this.processResult(tmpResult);
         if ((this.options as Param).autoRefresh || 0 > 0 && !!this.data) {
           this.refreshTimer = setTimeout(() => this.processMacroTiles(tmpResult), (this.options as Param).autoRefresh * 1000);
@@ -351,13 +349,13 @@ export class DiscoveryDashboardComponent {
       tmpResult.tiles = tmpResult.tiles || [];
     }
     this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
-    tmpResult.vars = {...tmpResult.vars || {}, ...this.innerVars};
+    tmpResult.vars = { ...tmpResult.vars || {}, ...this.innerVars };
     tmpResult.cols = tmpResult.cols || this.cols || 12;
-    this.result = {...tmpResult};
+    this.result = { ...tmpResult };
     this.title = this.dashboardTitle || this.result.title;
     this.description = this.result.description;
     this.tiles = [];
-    for (let i = 0; i < {tiles: {}, ...this.result}.tiles.length; i++) {
+    for (let i = 0; i < { tiles: {}, ...this.result }.tiles.length; i++) {
       this.done[i] = 0;
     }
   }
@@ -366,12 +364,13 @@ export class DiscoveryDashboardComponent {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
-    return {...new Param(), ...options as Param, ...options2}
+    let opts = { ...options as Param };
+    return { ...new Param(), ...opts, eventHandler: undefined, ...options2 };
   }
 
   static mergeVars(vars: any[] | string[]) {
     let myVars: any = {};
-    vars.map((v: any) => typeof v === 'string' ? JSON.parse(v) : v).forEach(v => myVars = {...myVars, ...v});
+    vars.map((v: any) => typeof v === 'string' ? JSON.parse(v) : v).forEach(v => myVars = { ...myVars, ...v });
     return myVars;
   }
 
@@ -393,7 +392,7 @@ export class DiscoveryDashboardComponent {
   private setActualType(id: number, type: CustomEvent<ChartType>) {
     type.stopPropagation();
     this.types[id] = type.detail;
-    this.types = {...this.types};
+    this.types = { ...this.types };
   }
 
   private getRendering() {
@@ -402,7 +401,7 @@ export class DiscoveryDashboardComponent {
         return <div class="discovery-scada-main">
           <h1>{this.title}</h1>
           <p>{this.description}</p>
-          <div class="discovery-scada-wrapper" style={{height: `${this.scadaHeight}px`}}>
+          <div class="discovery-scada-wrapper" style={{ height: `${this.scadaHeight}px` }}>
             {(this.renderedTiles || []).map((t, i) =>
               <div class={'discovery-scada-tile ' + this.getType(i, t.type)}
                    style={{
@@ -410,7 +409,7 @@ export class DiscoveryDashboardComponent {
                      width: `${t.w}px`,
                      height: `${t.h}px`,
                      top: `${t.y}px`,
-                     zIndex: `${(t.z || 0)}`
+                     zIndex: `${(t.z || 0)}`,
                    }}
               >
                 <div>
@@ -450,7 +449,7 @@ export class DiscoveryDashboardComponent {
             <div class="discovery-dashboard-wrapper" style={{
               width: '100%',
               gridAutoRows: `minmax(${(this.result?.cellHeight || this.cellHeight)}px, auto)`,
-              gridTemplateColumns: `repeat(${this.result.cols}, 1fr)`
+              gridTemplateColumns: `repeat(${this.result.cols}, 1fr)`,
             }}>
               {(this.renderedTiles || []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
@@ -459,7 +458,7 @@ export class DiscoveryDashboardComponent {
                        gridRow: `${(t.y + 1)} / ${(t.y + t.h + 1)}`,
                        height: `${((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
                        minHeight: '100%',
-                       gridRowEnd: this.getRowSpan(i, t.y + t.h + 1)
+                       gridRowEnd: this.getRowSpan(i, t.y + t.h + 1),
                      }}
                 >
                   <div>
@@ -502,7 +501,7 @@ export class DiscoveryDashboardComponent {
                      style={{
                        height: `${((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
                        minHeight: '100%',
-                       maxWidth: `calc(100% / ${this.result.cols} * ${t.w} - var(--warp-view-dashboard-gap, 10px) * 2)`
+                       maxWidth: `calc(100% / ${this.result.cols} * ${t.w} - var(--warp-view-dashboard-gap, 10px) * 2)`,
                      }}
                 >
                   <div>
@@ -547,19 +546,19 @@ export class DiscoveryDashboardComponent {
         data={this.modalContent}
         options={this.options}
         url={this.url}
-        debug={this.debug}/>
+        debug={this.debug} />
       {this.loaded
         ? [<style>{this.generateStyle(this.innerStyle)}</style>,
           <div ref={el => this.dash = el}>{this.getRendering()}</div>, this.audioFile ?
-            <audio src={this.audioFile} autoPlay id="song"/> : '']
+            <audio src={this.audioFile} autoPlay id="song" /> : '']
         : <discovery-spinner>Requesting data...</discovery-spinner>
       }
-      <pre id="ws"><slot/></pre>
+      <pre id="ws"><slot /></pre>
     </Host>;
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
-    this.innerStyles = {...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {}};
+    this.innerStyles = { ...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {} };
     return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 
