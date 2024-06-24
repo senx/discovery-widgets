@@ -227,7 +227,7 @@ export class DiscoveryTileComponent {
         this.ws = LangUtils.prepare(
           Utils.unsescape(this.el.innerHTML),
           this.innerVars || {},
-          (this.options as Param)?.skippedVars || [],
+          (this.innerOptions as Param)?.skippedVars || [],
           this.type,
           this.language);
         if (!!window) {

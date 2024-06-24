@@ -27,7 +27,7 @@ import { ChartType, DataModel, ECharts } from '../../model/types';
 import { CartesianAxisOption } from 'echarts/lib/coord/cartesian/AxisModel';
 import { GridOption } from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
-import _, { isEqual } from 'lodash';
+import { isEqual, throttle } from 'lodash';
 import { v4 } from 'uuid';
 
 @Component({
@@ -105,6 +105,7 @@ export class DiscoveryLineComponent {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLineComponent, this.debug);
@@ -167,25 +168,26 @@ export class DiscoveryLineComponent {
         containLabel: true,
       },
       responsive: true,
-      throttle: 70,
+      throttle: 40,
       tooltip: {
         transitionDuration: 0,
         trigger: 'axis',
+        animation: false,
+        snap: false,
         position: (pos, _params, _dom, _rect, size) => {
           const obj = { top: 10 };
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
           return obj;
         },
-        formatter: (params: any[]) => {
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
+        formatter: (params: any[]) =>
+          `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
             ? params[0].value[0]
             : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
               this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
               .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
-          ).join('<br>')}`;
-        },
+          ).join('<br>')}`,
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
           axis: !!this.innerOptions.yCursor ? 'y' : 'x',
@@ -202,7 +204,7 @@ export class DiscoveryLineComponent {
             : undefined,
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
-        hideDelay: this.innerOptions.tooltipDelay || 100,
+        hideDelay: this.innerOptions.tooltipDelay ?? 100,
       },
       toolbox: {
         show: this.innerOptions.showControls,
@@ -701,10 +703,10 @@ export class DiscoveryLineComponent {
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
-    const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
+    const zoomHandler = throttle((start: number, end: number) => this.zoomHandler(start, end),
       16, { leading: true, trailing: true });
 
-    const focusHandler = _.throttle((type: string, event: any) => {
+    const focusHandler = throttle((type: string, event: any) => {
         if (this.hasFocus) {
           switch (type) {
             case 'mouseover':
@@ -729,7 +731,7 @@ export class DiscoveryLineComponent {
           }
         }
       },
-      100, { leading: true, trailing: true });
+      200, { leading: true, trailing: true });
 
     setTimeout(() => {
       this.parsing = false;
