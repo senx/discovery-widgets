@@ -105,6 +105,7 @@ export class Param {
   polygons?: { shape: number[][]; color?: string; name?: string; fill?: boolean }[];
   xCursor?: boolean;
   yCursor?: boolean;
+  yAxisFocus?: boolean;
   poi?: boolean;
   poiColor: '#D81B60';
   poiLine: 'solid' | 'dashed' | 'dotted' = 'dotted';

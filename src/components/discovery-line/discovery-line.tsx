@@ -190,7 +190,7 @@ export class DiscoveryLineComponent {
           ).join('<br>')}`,
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
-          axis: !!this.innerOptions.yCursor ? 'y' : 'x',
+          axis: !!this.innerOptions.yAxisFocus ? 'y' : 'x',
           animation: false,
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
             ? undefined

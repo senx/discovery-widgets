@@ -382,6 +382,7 @@ export class DiscoveryBarPolarComponent {
         transitionDuration: 0,
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
+          axis: !!this.innerOptions.yAxisFocus ? 'y' : 'x',
           animation: false,
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
             ? undefined
