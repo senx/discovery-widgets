@@ -263,13 +263,8 @@ export class DiscoveryLineComponent {
             show: false,
             seriesIndex: gts.id,
             dimension: !!data.params[gts.id].xpieces ? 0 : 1,
-            pieces: GTSLib.flatDeep((data.params[gts.id].pieces || []).map(t => {
-              return [
-                { color, lte: t.gte },
-                { color: t.color || '#D81B60', lte: t.lte, gte: t.gte },
-                { color, gte: t.lte },
-              ];
-            })),
+            pieces: data.params[gts.id].pieces.map(p => ({ color: p.color || '#D81B60', lte: p.lte, gte: p.gte })),
+            outOfRange: { color },
           };
         }
         hasTimeBounds = true;

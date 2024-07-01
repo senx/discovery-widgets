@@ -316,14 +316,8 @@ export class DiscoveryBarComponent {
           dimension: !!data.params[i].xpieces
             ? !(this.innerOptions.bar || { horizontal: false }).horizontal ? 0 : 1
             : !(this.innerOptions.bar || { horizontal: false }).horizontal ? 1 : 0,
-          pieces: GTSLib.flatDeep((data.params[i].pieces || []).map(t => {
-            const pieceColor = t.color || '#D81B60';
-            return [
-              { color, lte: t.gte },
-              { color: pieceColor, lte: t.lte, gte: t.gte },
-              { color, gte: t.lte },
-            ];
-          })),
+          pieces: data.params[gts.id].pieces.map(p => ({ color: p.color || '#D81B60', lte: p.lte, gte: p.gte })),
+          outOfRange: { color },
         };
       }
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
