@@ -81,7 +81,7 @@ export class DiscoveryTileComponent {
     if (!isEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-    }
+    }console.log("optionsUpdate", this.type, this.innerOptions);
   }
 
   @Watch('vars')
@@ -189,6 +189,9 @@ export class DiscoveryTileComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
+
+
+    console.log("componentWillLoad", this.type, this.innerOptions);
   }
 
   async componentDidLoad() {
@@ -245,12 +248,12 @@ export class DiscoveryTileComponent {
             this.hasError = false;
             this.errorMessage = '';
             this.statusMessage = undefined;
-            if ((this.options as Param).showLoader) {
+            if (this.innerOptions.showLoader) {
               this.showLoader = true;
             }
           });
 
-          Utils.httpPost(this.url, this.ws, (this.options as Param).httpHeaders)
+          Utils.httpPost(this.url, this.ws, this.innerOptions.httpHeaders)
             .then((res: any) => {
               const toRefresh = this.result === res.data;
               if ((this.type || '').startsWith('input')) {
@@ -260,12 +263,12 @@ export class DiscoveryTileComponent {
               this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
               this.LOG?.debug(['exec', 'headers'], this.headers);
               this.statusHeaders.emit(this.headers);
-              if ((this.options as Param).showStatus) {
+              if (this.innerOptions.showStatus) {
                 this.statusMessage = this.headers.statusText;
               }
               this.start = new Date().getTime();
-              if (this.autoRefresh !== (this.options as Param).autoRefresh) {
-                this.autoRefresh = (this.options as Param).autoRefresh;
+              if (this.autoRefresh !== this.innerOptions.autoRefresh) {
+                this.autoRefresh = this.innerOptions.autoRefresh;
                 if (this.timer) {
                   window.clearInterval(this.timer);
                 }
@@ -292,7 +295,7 @@ export class DiscoveryTileComponent {
               setTimeout(() => {
                 this.loaded = true;
                 this.showLoader = false;
-                this.hasError = (this.options as Param).showErrors;
+                this.hasError = this.innerOptions.showErrors;
                 this.errorMessage = e.message || e.statusText;
               });
               this.LOG?.error(['exec'], e);
@@ -312,7 +315,7 @@ export class DiscoveryTileComponent {
                 this.showLoader = false;
               });
               if (res.startsWith('["Exception at \'EVERY')) {
-                this.hasError = (this.options as Param).showErrors;
+                this.hasError = this.innerOptions.showErrors;
                 this.errorMessage = JSON.parse(res)[0] || 'Error';
                 this.statusError.emit(this.errorMessage);
               } else {
@@ -323,7 +326,7 @@ export class DiscoveryTileComponent {
                 this.execResult.emit(this.result);
               }
             };
-            this.socket.send(`<% ${this.ws} %> ${((this.options as Param).autoRefresh || 1000)} EVERY`);
+            this.socket.send(`<% ${this.ws} %> ${(this.innerOptions.autoRefresh || 1000)} EVERY`);
             resolve(true);
           };
         }
