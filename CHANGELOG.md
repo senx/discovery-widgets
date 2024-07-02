@@ -1,6 +1,31 @@
 Discovery
 ---
 
+## v1.1.110
+
+> +  2024/07/02  | v1.1.110 
+> +  2024/07/02  | [line] [area] [scatter] Fix polygon position when timeunit is in ns 
+> +  2024/07/01  | Fix yCursor behaviour and introduce yAxisFocus oin order to allow y aligned points in tooltips 
+> +  2024/07/01  | Fix options inheritance 
+> +  2024/07/01  | [line] [bar] Fix multiple pieces 
+
+## v1.1.109
+
+> +  2024/06/24  | v1.1.109 
+> +  2024/06/24  | enhance performances 
+> +  2024/06/21  | Fix options inheritance issue causing tiles inheriting of enclosing dashboard event handler 
+> +  2024/06/19  | Fix charset encoding in map tooltip 
+> +  2024/06/19  | Deps update 
+
+## v1.1.108
+
+> +  2024/05/17  | v1.1.108 
+> +  2024/05/17  | Deps update 
+> +  2024/05/14  | [bar] [line] [area] scatter] add a lower value to thresholds 
+> +  2024/04/18  | version bump 
+> +  2024/04/18  | fix type 
+> +  2024/04/09  | Changelog 
+
 ## v1.1.106
 
 > +  2024/04/09  | v1.1.106 
