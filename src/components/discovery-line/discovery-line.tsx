@@ -248,9 +248,6 @@ export class DiscoveryLineComponent {
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
-    if (max <= 1000 && min >= -1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
-      this.innerOptions.timeMode = 'timestamp';
-    }
     for (let index = 0; index < gtsCount; index++) {
       const gts = gtsList[index];
       const datasetNoAlpha = (data.params ?? [])[index]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
@@ -473,6 +470,7 @@ export class DiscoveryLineComponent {
         (opts.series as any[]).push(s);
       }
     }
+
     (this.innerOptions.polygons || []).forEach((polygon, i) => {
       const s: SeriesOption = {
         type: 'custom', renderItem: (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) => {
@@ -484,7 +482,10 @@ export class DiscoveryLineComponent {
           return {
             type: 'polygon',
             transition: ['shape'],
-            shape: { points: polygon.shape.map(p => api.coord(p)) },
+            shape: { points: polygon.shape.map(p => api.coord([
+                this.innerOptions.timeMode === 'date'
+                  ? GTSLib.utcToZonedTime( p[0], this.divider, this.innerOptions.timeZone)
+                  :  p[0], p[1]])) },
             style: api.style({
               fill: !!polygon.fill ? ColorLib.transparentize(color) : undefined,
               stroke: color,

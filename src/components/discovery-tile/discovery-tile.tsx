@@ -189,9 +189,6 @@ export class DiscoveryTileComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
-
-
-    console.log("componentWillLoad", this.type, this.innerOptions);
   }
 
   async componentDidLoad() {
