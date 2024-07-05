@@ -260,7 +260,15 @@ export class DiscoveryLineComponent {
             show: false,
             seriesIndex: gts.id,
             dimension: !!data.params[gts.id].xpieces ? 0 : 1,
-            pieces: data.params[gts.id].pieces.map(p => ({ color: p.color || '#D81B60', lte: p.lte, gte: p.gte })),
+            pieces: data.params[gts.id].pieces.map(p => ({
+              color: p.color || '#D81B60',
+              lte: data.params[gts.id].xpieces
+                ? this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(p.lte, this.divider, this.innerOptions.timeZone) : p.lte
+                : p.lte,
+              gte: data.params[gts.id].xpieces
+                ? this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(p.gte, this.divider, this.innerOptions.timeZone) : p.gte
+                : p.gte,
+            })),
             outOfRange: { color },
           };
         }
@@ -482,10 +490,12 @@ export class DiscoveryLineComponent {
           return {
             type: 'polygon',
             transition: ['shape'],
-            shape: { points: polygon.shape.map(p => api.coord([
+            shape: {
+              points: polygon.shape.map(p => api.coord([
                 this.innerOptions.timeMode === 'date'
-                  ? GTSLib.utcToZonedTime( p[0], this.divider, this.innerOptions.timeZone)
-                  :  p[0], p[1]])) },
+                  ? GTSLib.utcToZonedTime(p[0], this.divider, this.innerOptions.timeZone)
+                  : p[0], p[1]])),
+            },
             style: api.style({
               fill: !!polygon.fill ? ColorLib.transparentize(color) : undefined,
               stroke: color,
