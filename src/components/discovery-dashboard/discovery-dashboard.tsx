@@ -399,8 +399,8 @@ export class DiscoveryDashboardComponent {
     switch (this.innerType) {
       case 'scada':
         return <div class="discovery-scada-main">
-          <h1>{this.title}</h1>
-          <p>{this.description}</p>
+          {this.title && this.title !== '' ? <h1>{this.title}</h1> : ''}
+          {this.description && this.description !== '' ? <p>{this.description}</p> : ''}
           <div class="discovery-scada-wrapper" style={{ height: `${this.scadaHeight}px` }}>
             {(this.renderedTiles || []).map((t, i) =>
               <div class={'discovery-scada-tile ' + this.getType(i, t.type)}
@@ -444,8 +444,8 @@ export class DiscoveryDashboardComponent {
       case 'dashboard':
         return this.result ?
           <div class="discovery-dashboard-main">
-            <h1>{this.title}</h1>
-            <p>{this.description}</p>
+            {this.title && this.title !== '' ? <h1>{this.title}</h1> : ''}
+            {this.description && this.description !== '' ? <p>{this.description}</p> : ''}
             <div class="discovery-dashboard-wrapper" style={{
               width: '100%',
               gridAutoRows: `minmax(${(this.result?.cellHeight || this.cellHeight)}px, auto)`,
@@ -493,8 +493,8 @@ export class DiscoveryDashboardComponent {
       case 'flex':
         return this.result ?
           <div class="discovery-flex-main">
-            <h1>{this.title}</h1>
-            <p>{this.description}</p>
+            {this.title && this.title !== '' ? <h1>{this.title}</h1> : ''}
+            {this.description && this.description !== '' ? <p>{this.description}</p> : ''}
             <div class="discovery-flex-wrapper">
               {(this.renderedTiles || []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
