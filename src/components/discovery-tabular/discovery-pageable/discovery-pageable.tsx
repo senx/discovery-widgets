@@ -93,10 +93,10 @@ export class DiscoveryPageable {
     const options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {});
     this.options = {...options};
     this.pages = [];
+    this.elemsCount = this.options.elemsCount || this.elemsCount;
     for (let i = 0; i < (this.data.values || []).length / this.elemsCount; i++) {
       this.pages.push(i);
     }
-    this.elemsCount = this.options.elemsCount || this.elemsCount;
     this.windowed = this.options.windowed || this.windowed;
     const dataset: Cell[][] = (this.data.values || [])
       .map(row => row.map((v, i) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
