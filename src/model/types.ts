@@ -18,7 +18,7 @@
 import * as echarts from 'echarts';
 import {Param} from './param';
 
-export const CHART_TYPES = [
+export let CHART_TYPES = [
     'line', 'area', 'scatter', 'step-area', 'spline-area', 'spline', 'step', 'step-after', 'step-before'
     , 'annotation'
     , 'bar', 'bar-polar'
@@ -38,7 +38,7 @@ export const CHART_TYPES = [
     , 'profile'
     , 'boxplot'
     , 'dashboard', 'dashboard:flex', 'dashboard:scada'
-] as const;
+] as string[];
 
 export type ChartType = typeof CHART_TYPES[number]
 
@@ -76,6 +76,9 @@ export class Dataset {
     headers: string[];
     isGTS: boolean;
     params: any;
+    c?: string;
+    l?: any;
+    a?: any;
 }
 
 export class Label {

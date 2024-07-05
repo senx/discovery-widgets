@@ -18,6 +18,7 @@
 
 import {Logger} from './logger';
 import {PluginDef} from '../model/PluginDef';
+import { CHART_TYPES } from '../model/types';
 
 export class PluginManager {
   LOG: Logger;
@@ -45,6 +46,7 @@ export class PluginManager {
 
   register(plugin: PluginDef) {
     this.registry[plugin.type] = plugin;
+    CHART_TYPES.push(plugin.type);
     this.LOG?.info(['Registration', plugin.name], `${plugin.toString()}`);
     this.LOG?.debug(['Registration of', plugin.name], this.registry);
   }
