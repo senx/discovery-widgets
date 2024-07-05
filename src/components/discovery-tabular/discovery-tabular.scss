@@ -13,6 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+@import "../../scss/vars";
 
 :host {
 
@@ -31,6 +32,28 @@
       right: 0;
       bottom: 0;
       top: 0;
+    }
+
+    .tabular-action-button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 99999;
+
+      button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $w10-lightgrey;
+        }
+      }
+
+
+      .tabular-export-csv {
+
+      }
     }
   }
 }

@@ -15,13 +15,14 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, Dataset, DiscoveryEvent} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, Dataset, DiscoveryEvent } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
 import html2canvas from 'html2canvas';
+import streamSaver from 'streamsaver';
 
 @Component({
   tag: 'discovery-tabular',
@@ -29,11 +30,11 @@ import html2canvas from 'html2canvas';
   shadow: true,
 })
 export class DiscoveryTabular {
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop({ mutable: true }) result: DataModel | string;
   @Prop() type: ChartType;
-  @Prop({mutable: true}) options: Param | string = {...new Param(), timeMode: 'date'};
-  @Prop({mutable: true}) width: number;
-  @Prop({mutable: true}) height: number;
+  @Prop({ mutable: true }) options: Param | string = { ...new Param(), timeMode: 'date' };
+  @Prop({ mutable: true }) width: number;
+  @Prop({ mutable: true }) height: number;
   @Prop() debug = false;
   @Prop() unit: string;
 
@@ -89,7 +90,7 @@ export class DiscoveryTabular {
     }
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.tabularData = this.convert(this.result || new DataModel())
+    this.tabularData = this.convert(this.result || new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -119,9 +120,9 @@ export class DiscoveryTabular {
   }
 
   private convert(data: DataModel): Dataset[] {
-    let options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {});
+    let options = Utils.mergeDeep<Param>({ ...new Param(), timeMode: 'date' }, this.options || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.options = {...options};
+    this.options = { ...options };
     this.params = data.params || [];
     let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {
@@ -142,7 +143,7 @@ export class DiscoveryTabular {
   private parseCustomData(dataModel: DataModel, data: any[]): Dataset[] {
     const flatData: Dataset[] = [];
     data.forEach(d => {
-      if(d !== null && d !== undefined) {
+      if (d !== null && d !== undefined) {
         const dataSet: Dataset = {
           name: d?.title || '',
           values: d?.rows || [],
@@ -166,13 +167,16 @@ export class DiscoveryTabular {
         values: [],
         headers: [],
         isGTS: false,
-        params: this.params
+        params: this.params,
       };
       if (GTSLib.isGts(d)) {
         this.LOG?.debug(['parseData', 'isGts'], d);
-        dataSet.name = ((dataModel.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(d);
+        dataSet.name = ((dataModel.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(d);
         dataSet.values = d.v; // .map(v => [this.formatDate(v[0])].concat(v.slice(1, v.length)));
         dataSet.isGTS = true;
+        dataSet.c = d.c;
+        dataSet.l = d.l;
+        dataSet.a = d.a;
       } else {
         this.LOG?.debug(['parseData', 'is not a Gts'], d);
         dataSet.values = GTSLib.isArray(d) ? d : [d];
@@ -198,9 +202,64 @@ export class DiscoveryTabular {
     return flatData;
   }
 
+  private addCSVHeader(headers: string[], k: string) {
+    if (!headers.includes(k)) {
+      headers.push(k);
+    }
+  }
+
+  private csvExport() {
+    const headers: string[] = [];
+    const csv: any[] = [];
+    this.tabularData.forEach(t => {
+      if (t.isGTS) {
+        this.addCSVHeader(headers, 'ClassName');
+        Object.keys(t.l || {}).forEach(l => this.addCSVHeader(headers, l));
+        Object.keys(t.a || {}).forEach(a => this.addCSVHeader(headers, a));
+        (t.headers || []).forEach(h => this.addCSVHeader(headers, h));
+        for (let v of t.values) {
+          const line = { ClassName: t.c };
+          Object.keys(t.l || {}).forEach(l => line[l] = t.l[l]);
+          Object.keys(t.a || {}).forEach(a => line[a] = t.l[a]);
+          (t.headers || []).forEach((h, i) => line[h] = v[i]);
+          csv.push(line);
+        }
+      } else {
+        (t.headers || []).forEach(h => this.addCSVHeader(headers, h));
+        for (let v of t.values) {
+          const line = {};
+          (t.headers || []).forEach((h, i) => line[h] = v[i]);
+          csv.push(line);
+        }
+      }
+    });
+    const csvTxt = headers.join(';') + '\n' +
+      csv.map(line => headers.map(h => line[h] ?? '').join(';')).join('\n');
+    const uInt8 = new TextEncoder().encode(csvTxt);
+    const fileStream = streamSaver.createWriteStream(((this.options as Param).title ?? 'export') + '.csv', {
+      size: uInt8.byteLength, // (optional filesize) Will show progress
+      writableStrategy: undefined, // (optional)
+      readableStrategy: undefined,  // (optional)
+    });
+    const writer = fileStream.getWriter();
+    writer.write(uInt8);
+    writer.close();
+  }
+
   render() {
     this.draw.emit();
     return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el}>
+      {(this.options as Param).showControls ? <div class="tabular-action-button">
+          <button class="tabular-export-csv" title="CSV Export" onClick={event => this.csvExport()}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+              <path
+                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+            </svg>
+          </button>
+        </div>
+        : ''}
       <div class="tabular-wrapper-inner">
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
@@ -213,6 +272,6 @@ export class DiscoveryTabular {
                               debug={this.debug}
           />)}
       </div>
-    </div>
+    </div>;
   }
 }
