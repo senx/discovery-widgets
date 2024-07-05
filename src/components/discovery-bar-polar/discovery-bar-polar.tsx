@@ -341,7 +341,6 @@ export class DiscoveryBarPolarComponent {
         startAngle: !!this.innerOptions.bar?.startAngle ? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories || []).length, 1)) * -1.5 + 180,
         type: this.isGTS ? this.innerOptions.timeMode === 'date' ? 'time' : 'value' : 'category',
         data: this.isGTS ? undefined : this.categories,
-
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el),
@@ -382,7 +381,7 @@ export class DiscoveryBarPolarComponent {
         transitionDuration: 0,
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
-          axis: !!this.innerOptions.yAxisFocus ? 'y' : 'x',
+          axis: !!this.innerOptions.yAxisFocus ? 'angle' : 'radius',
           animation: false,
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
             ? undefined
@@ -397,7 +396,7 @@ export class DiscoveryBarPolarComponent {
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
-        formatter: (params) => {
+        formatter: (params: any[]) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode !== 'date'
               ? params[0].axisValue
