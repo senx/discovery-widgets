@@ -7,15 +7,16 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                  | Default                                |
-| --------- | --------- | ----------- | --------------------- | -------------------------------------- |
-| `debug`   | `debug`   |             | `boolean`             | `false`                                |
-| `height`  | `height`  |             | `number`              | `undefined`                            |
-| `options` | `options` |             | `Param \| string`     | `{ ...new Param(), timeMode: 'date' }` |
-| `result`  | `result`  |             | `DataModel \| string` | `undefined`                            |
-| `type`    | `type`    |             | `string`              | `undefined`                            |
-| `unit`    | `unit`    |             | `string`              | `''`                                   |
-| `width`   | `width`   |             | `number`              | `undefined`                            |
+| Property      | Attribute      | Description | Type                  | Default                                |
+| ------------- | -------------- | ----------- | --------------------- | -------------------------------------- |
+| `componentId` | `component-id` |             | `string`              | `''`                                   |
+| `debug`       | `debug`        |             | `boolean`             | `false`                                |
+| `height`      | `height`       |             | `number`              | `undefined`                            |
+| `options`     | `options`      |             | `Param \| string`     | `{ ...new Param(), timeMode: 'date' }` |
+| `result`      | `result`       |             | `DataModel \| string` | `undefined`                            |
+| `type`        | `type`         |             | `string`              | `undefined`                            |
+| `unit`        | `unit`         |             | `string`              | `''`                                   |
+| `width`       | `width`        |             | `number`              | `undefined`                            |
 
 
 ## Events

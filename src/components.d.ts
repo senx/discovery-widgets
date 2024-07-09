@@ -208,6 +208,7 @@ export namespace Components {
         "label": string;
     }
     interface DiscoveryLine {
+        "componentId": string;
         "debug": boolean;
         "export": (type?: 'png' | 'svg') => Promise<string>;
         "height": number;
@@ -1237,6 +1238,7 @@ declare namespace LocalJSX {
         "onRemoveChip"?: (event: DiscoveryInputChipsChipCustomEvent<string>) => void;
     }
     interface DiscoveryLine {
+        "componentId"?: string;
         "debug"?: boolean;
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryLineCustomEvent<any>) => void;

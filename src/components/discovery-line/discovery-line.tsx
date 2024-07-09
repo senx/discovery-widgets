@@ -44,6 +44,7 @@ export class DiscoveryLineComponent {
   @State() @Prop() height: number;
   @Prop() debug = false;
   @Prop() unit = '';
+  @Prop() componentId = '';
 
   @Element() el: HTMLElement;
 
@@ -74,7 +75,8 @@ export class DiscoveryLineComponent {
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
-      this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+      this.type = newValue;
+      this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
       this.setOpts();
     }
   }
@@ -83,6 +85,8 @@ export class DiscoveryLineComponent {
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
+      const options = Utils.mergeDeep<Param>(this.innerOptions, this.result.globalParams ?? {});
+      this.innerOptions = { ...options };
       this.chartOpts = this.convert(this.result || new DataModel());
       this.setOpts(true);
     }
@@ -109,14 +113,13 @@ export class DiscoveryLineComponent {
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLineComponent, this.debug);
+    this.result = GTSLib.getData(this.result);
     if (typeof this.options === 'string') {
       this.innerOptions = JSON.parse(this.options);
     } else {
       this.innerOptions = this.options;
     }
-    this.result = GTSLib.getData(this.result);
     this.LOG?.debug(['componentWillLoad'], { type: this.type, options: this.innerOptions });
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.chartOpts = this.convert(this.result || new DataModel());
     this.setOpts();
   }
@@ -137,18 +140,14 @@ export class DiscoveryLineComponent {
     } else {
       this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
     }
-    setTimeout(() => {
-      if (this.myChart) {
-        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
-      }
-    });
+    if (this.myChart) {
+      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, notMerge, true));
+    }
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = { ...options };
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     const gtsList = [
       ...GTSLib.flattenGtsIdArray(GTSLib.flatDeep([data.data] as any[]), 0).res,
       ...GTSLib.flatDeep([data.data] as any[]).filter(g => g.values && g.label),

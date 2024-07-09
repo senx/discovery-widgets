@@ -24,7 +24,7 @@ import { GTSLib } from '../../utils/gts.lib';
 import elementResizeEvent from 'element-resize-event';
 import { PluginManager } from '../../utils/PluginManager';
 import { v4 } from 'uuid';
-import { isEqual } from 'lodash';
+import _, { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-tile-result',
@@ -56,6 +56,7 @@ export class DiscoveryTileResultComponent {
   @State() innerStyle: { [k: string]: string; };
   @State() innerType: ChartType;
   @State() innerTitle: string;
+  @State() ready: boolean = false;
 
   @Event({
     eventName: 'discoveryEvent',
@@ -207,22 +208,16 @@ export class DiscoveryTileResultComponent {
       type: this.type,
       options: this.innerOptions,
     });
-    let options = new Param();
     this.innerResult = GTSLib.getData(this.result);
-    if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
-      options = { ...options, ...JSON.parse(this.options) };
-    } else {
-      options = { ...options, ...(this.options as Param || {}) };
-    }
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams || {});
-    this.innerOptions = { ...options };
-    this.innerVars = JSON.parse(this.vars || '{}');
-    this.innerType = this.innerResult.globalParams?.type || this.innerOptions.type || this.innerType;
+
+    this.innerVars = JSON.parse(this.vars ?? '{}');
+    this.innerType = this.innerResult.globalParams?.type ?? this.innerOptions.type ?? this.innerType;
     this.selfType.emit(this.innerType);
     this.LOG?.debug(['componentWillLoad 2'], {
       type: this.innerType,
       options: this.innerOptions,
     });
+    this.ready = true;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -304,7 +299,7 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           onPoi={event => this.handlePoi(event)}
           ref={el => this.tile = el || this.tile}
-          id={this.componentId}
+          componentId={this.componentId}
         />;
       case 'annotation':
         return <discovery-annotation
@@ -664,9 +659,9 @@ JSON-> 0 GET`}
                                                          ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2> : ''}
         {this.chartDescription && this.chartDescription !== '' ? <p class="tile-desc"
                                                                     ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription || ''}</p> : ''}
-        <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
+        {this.ready ? <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
-        </div>
+        </div> : ''}
       </div>,
     ];
   }
@@ -687,13 +682,20 @@ JSON-> 0 GET`}
   }
 
   private parseResult() {
+    let options = new Param();
+    if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
+      options = { ...options, ...JSON.parse(this.options) };
+    } else {
+      options = { ...options, ...(this.options as Param || {}) };
+    }
+    options = Utils.mergeDeep<Param>(options ?? {} as Param, (this.innerResult as unknown as DataModel)?.globalParams ?? {});
     setTimeout(() => {
       void (async () => {
-        this.unit = (this.options as Param).unit || this.unit;
-        this.innerOptions = { ...this.innerOptions, ...(this.innerResult as unknown as DataModel)?.globalParams || {} };
-        this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type || this.innerType;
+        this.unit =  (this.options as Param).unit ?? this.unit;
+        this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type ?? this.innerType;
+        this.innerOptions = options;
         this.selfType.emit(this.innerType);
-        this.innerTitle = this.innerOptions?.title || this.chartTitle || '';
+        this.innerTitle = this.componentId; //this.innerOptions?.title ?? this.chartTitle ?? '';
         this.handleCSSColors();
         await this.parseEvents();
       })();

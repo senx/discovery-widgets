@@ -23,7 +23,7 @@ import { JsonLib } from '../../utils/jsonLib';
 import { v4, v4 as uuidv4 } from 'uuid';
 import { PdfLib } from '../../utils/pdfLib';
 import { LangUtils } from '../../utils/lang-utils';
-import { isEqual } from 'lodash';
+import _, { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-dashboard',
@@ -291,7 +291,7 @@ export class DiscoveryDashboardComponent {
     } else {
       tmpResult = GTSLib.isArray(this.data) ? this.data[0] : this.data;
     }
-    this.options = { ...this.options as Param, ...tmpResult.options };
+    this.options = { ...this.options as Param, ...tmpResult?.options ?? {} };
     this.innerType = tmpResult.type || this.type || 'dashboard';
     this.loaded = true;
     if (typeof tmpResult.tiles === 'string') {
@@ -343,10 +343,10 @@ export class DiscoveryDashboardComponent {
       }
     }
 
-    if (GTSLib.isArray(tmpResult.tiles)) {
-      tmpResult.tiles = [...(tmpResult.tiles as Tile[]) || []];
+    if (!GTSLib.isArray(tmpResult.tiles)) {
+      tmpResult.tiles = [...(tmpResult.tiles as Tile[]) ?? []];
     } else {
-      tmpResult.tiles = tmpResult.tiles || [];
+      tmpResult.tiles = tmpResult.tiles ?? [];
     }
     this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
     tmpResult.vars = { ...tmpResult.vars || {}, ...this.innerVars };
@@ -365,7 +365,7 @@ export class DiscoveryDashboardComponent {
       options = JSON.parse(options);
     }
     let opts = { ...options as Param };
-    return { ...new Param(), ...opts, eventHandler: undefined, ...options2 };
+    return _.merge(new Param(), opts, {eventHandler: undefined}, options2);
   }
 
   static mergeVars(vars: any[] | string[]) {

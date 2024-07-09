@@ -145,8 +145,8 @@ export class DiscoveryButtonComponent {
     } else if (!!this.vars) {
       this.innerVars = this.vars;
     }
-    if (this.options.customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...this.options.customStyles || {} };
+    if ((this.options as Param).customStyles) {
+      this.innerStyle = { ...this.innerStyle, ...(this.options as Param).customStyles || {} };
     }
     setTimeout(() => this.active = (this.innerResult?.data || []).find(v => v.active)?.value);
   }

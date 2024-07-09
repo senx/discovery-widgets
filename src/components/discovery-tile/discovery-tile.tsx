@@ -81,7 +81,7 @@ export class DiscoveryTileComponent {
     if (!isEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-    }console.log("optionsUpdate", this.type, this.innerOptions);
+    }
   }
 
   @Watch('vars')
@@ -253,7 +253,7 @@ export class DiscoveryTileComponent {
           Utils.httpPost(this.url, this.ws, this.innerOptions.httpHeaders)
             .then((res: any) => {
               const toRefresh = this.result === res.data;
-              if ((this.type || '').startsWith('input')) {
+              if ((this.type ?? '').startsWith('input')) {
                 this.result = '';
               }
               this.headers = res.headers;
@@ -263,7 +263,7 @@ export class DiscoveryTileComponent {
               if (this.innerOptions.showStatus) {
                 this.statusMessage = this.headers.statusText;
               }
-              this.start = new Date().getTime();
+              this.start = window.performance.now();
               if (this.autoRefresh !== this.innerOptions.autoRefresh) {
                 this.autoRefresh = this.innerOptions.autoRefresh;
                 if (this.timer) {

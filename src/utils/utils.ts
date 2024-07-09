@@ -14,10 +14,10 @@
  *   limitations under the License.
  */
 
-import {GTSLib} from './gts.lib';
-import {Param} from '../model/param';
-import {cloneDeep} from 'lodash'
-import {DataModel, DiscoveryEvent} from '../model/types';
+import { GTSLib } from './gts.lib';
+import { Param } from '../model/param';
+import { merge, cloneDeep } from 'lodash';
+import { DataModel, DiscoveryEvent } from '../model/types';
 
 export class Utils {
 
@@ -32,10 +32,10 @@ export class Utils {
       const context = ctx || this;        // store the context of the object that owns this function
       if (!isRunning) {
         isRunning = true;
-        func.apply(context, args) // execute the function with the context of the object that owns it
+        func.apply(context, args); // execute the function with the context of the object that owns it
         setTimeout(() => isRunning = false, delay);
       }
-    }
+    };
   }
 
   static httpPost(theUrl: string, payload: string, headers: { [key: string]: string; }): Promise<{
@@ -88,7 +88,7 @@ export class Utils {
             message: theUrl + ' is unreachable',
             detail: {
               mess: theUrl + ' is unreachable',
-              line: -1
+              line: -1,
             },
           });
         }
@@ -97,7 +97,7 @@ export class Utils {
       xmlHttp.setRequestHeader('Content-Type', 'text/plain; charset=utf-8');
       Object.keys(headers || {})
         .filter(h => h.toLowerCase() !== 'accept' && h.toLowerCase() !== 'content-type')
-        .forEach(h => xmlHttp.setRequestHeader(h, headers[h]))
+        .forEach(h => xmlHttp.setRequestHeader(h, headers[h]));
       xmlHttp.send(payload);
     });
   }
@@ -106,26 +106,16 @@ export class Utils {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
-    return {...new Param(), ...options as Param, ...options2}
+    return { ...new Param(), ...options as Param, ...options2 };
   }
 
   static sanitize(data: string | DataModel) {
     if (typeof data === 'string') return '["' + data + '"]';
-    else return data
+    else return data;
   }
 
-  static mergeDeep<T>(base: T, ext: any) {
-    const obj = {...base};
-    const extended = {...ext} as T;
-    for (const prop in extended || {}) {
-      // If property is an object, merge properties
-      if (Object.prototype.toString.call(extended[prop]) === '[object Object]') {
-        obj[prop] = Utils.mergeDeep<T>(obj[prop], extended[prop]);
-      } else {
-        obj[prop] = extended[prop];
-      }
-    }
-    return obj;
+  static mergeDeep<T>(base: T, ext: any): T {
+    return merge(base, ext);
   }
 
   static getLabelColor(el: HTMLElement) {
@@ -148,8 +138,8 @@ export class Utils {
         - parseInt(getComputedStyle(el, null).getPropertyValue('padding-bottom'), 10),
       w: el.clientWidth
         - parseInt(getComputedStyle(el, null).getPropertyValue('padding-left'), 10)
-        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-right'), 10)
-    }
+        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-right'), 10),
+    };
   }
 
   static unsescape(str: string) {
@@ -177,8 +167,8 @@ export class Utils {
       selected: undefined,
       link: undefined,
       hasEvent: false,
-      poi: []
-    }
+      poi: [],
+    };
     if (eventHandler && evt.source !== id) {
       let tag = '.*';
       let type = '.*';
@@ -205,7 +195,7 @@ export class Utils {
             parsed.hasEvent = true;
             break;
           case 'xpath':
-            parsed.xpath = {selector: evt.selector, value: evt.value};
+            parsed.xpath = { selector: evt.selector, value: evt.value };
             parsed.hasEvent = true;
             break;
           case 'popup':
@@ -261,8 +251,8 @@ export class Utils {
             break;
           case 'link':
             parsed.link = typeof evt.value === 'string'
-              ? {link: evt.value, target: 'self'}
-              : {...evt.value};
+              ? { link: evt.value, target: 'self' }
+              : { ...evt.value };
             parsed.hasEvent = true;
             break;
           case 'selected':
@@ -308,7 +298,7 @@ export class Utils {
    */
   static getUrl(url: string): string {
     if (!url.toLowerCase().startsWith('http') && !url.toLowerCase().startsWith('ws')) {
-      const {host, pathname, port, protocol, search} = window.location;
+      const { host, pathname, port, protocol, search } = window.location;
       let urlComputed = protocol + '//' + host + (port !== '' ? ':' + port : '');
       urlComputed += url.startsWith('/') ? url : pathname + (pathname.endsWith('/') ? '' : '/') + url;
       return urlComputed + search;
