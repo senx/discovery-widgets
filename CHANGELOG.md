@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.1.111
+
+> +  2024/07/05  | v1.1.111 
+> +  2024/07/05  | [dashboard] Fix title and description size when not present 
+> +  2024/07/05  | [tabular] Fix elems count 
+> +  2024/07/05  | [tabular] Add CSV export 
+> +  2024/07/05  | Readmes update 
+> +  2024/07/05  | [PluginManager] Add plugins types to charts list 
+> +  2024/07/05  | [line] [area] Fix xpieces when timeUnit is in ns 
+> +  2024/07/05  | [bar-polar] Broken 
+> +  2024/07/02  | changelog 
+
 ## v1.1.110
 
 > +  2024/07/02  | v1.1.110 
