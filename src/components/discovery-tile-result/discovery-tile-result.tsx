@@ -24,7 +24,7 @@ import { GTSLib } from '../../utils/gts.lib';
 import elementResizeEvent from 'element-resize-event';
 import { PluginManager } from '../../utils/PluginManager';
 import { v4 } from 'uuid';
-import _, { isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-tile-result',
@@ -299,7 +299,7 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           onPoi={event => this.handlePoi(event)}
           ref={el => this.tile = el || this.tile}
-          componentId={this.componentId}
+          id={this.componentId}
         />;
       case 'annotation':
         return <discovery-annotation
@@ -691,7 +691,7 @@ JSON-> 0 GET`}
     options = Utils.mergeDeep<Param>(options ?? {} as Param, (this.innerResult as unknown as DataModel)?.globalParams ?? {});
     setTimeout(() => {
       void (async () => {
-        this.unit =  (this.options as Param).unit ?? this.unit;
+        this.unit = (this.options as Param).unit ?? this.unit;
         this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type ?? this.innerType;
         this.innerOptions = options;
         this.selfType.emit(this.innerType);

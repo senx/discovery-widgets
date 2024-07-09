@@ -44,7 +44,6 @@ export class DiscoveryLineComponent {
   @State() @Prop() height: number;
   @Prop() debug = false;
   @Prop() unit = '';
-  @Prop() componentId = '';
 
   @Element() el: HTMLElement;
 
