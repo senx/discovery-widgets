@@ -292,13 +292,13 @@ export class DiscoveryDashboardComponent {
       tmpResult = GTSLib.isArray(this.data) ? this.data[0] : this.data;
     }
     this.options = { ...this.options as Param, ...tmpResult?.options ?? {} };
-    this.innerType = tmpResult.type || this.type || 'dashboard';
+    this.innerType = tmpResult?.type || this.type || 'dashboard';
     this.loaded = true;
-    if (typeof tmpResult.tiles === 'string') {
-      this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
+    if (typeof tmpResult?.tiles === 'string') {
+      this.LOG?.debug(['exec', 'macroTiles'], tmpResult?.tiles);
       this.processMacroTiles(tmpResult);
     } else {
-      this.renderedTiles = tmpResult.tiles || [];
+      this.renderedTiles = tmpResult?.tiles ?? [];
     }
     this.processResult(tmpResult);
   }

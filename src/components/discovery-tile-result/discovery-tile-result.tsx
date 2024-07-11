@@ -695,7 +695,7 @@ JSON-> 0 GET`}
         this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type ?? this.innerType;
         this.innerOptions = options;
         this.selfType.emit(this.innerType);
-        this.innerTitle = this.componentId; //this.innerOptions?.title ?? this.chartTitle ?? '';
+        this.innerTitle = this.innerOptions?.title ?? this.chartTitle ?? '';
         this.handleCSSColors();
         await this.parseEvents();
       })();
