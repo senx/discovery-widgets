@@ -323,6 +323,7 @@ export class DiscoveryDashboardComponent {
   }
 
   private processResult(tmpResult: Dashboard) {
+    tmpResult = tmpResult ?? new Dashboard();
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
     } else {
@@ -343,8 +344,8 @@ export class DiscoveryDashboardComponent {
       }
     }
 
-    if (!GTSLib.isArray(tmpResult.tiles)) {
-      tmpResult.tiles = [...(tmpResult.tiles as Tile[]) ?? []];
+    if (!GTSLib.isArray(tmpResult?.tiles)) {
+      tmpResult.tiles = [...(tmpResult?.tiles as Tile[]) ?? []];
     } else {
       tmpResult.tiles = tmpResult.tiles ?? [];
     }
