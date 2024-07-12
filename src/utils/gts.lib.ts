@@ -14,18 +14,18 @@
  *   limitations under the License.
  */
 
-import {Logger} from './logger';
-import {JsonLib} from './jsonLib';
+import { Logger } from './logger';
+import { JsonLib } from './jsonLib';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import moment from 'moment/min/moment-with-locales';
-import {tz} from 'moment-timezone'
-import {DataModel} from '../model/types';
-import {v4} from 'uuid';
+import { tz } from 'moment-timezone';
+import { DataModel } from '../model/types';
+import { v4 } from 'uuid';
 
-dayjs.extend(duration)
+dayjs.extend(duration);
 
 
 // @dynamic
@@ -41,10 +41,16 @@ export class GTSLib {
       if (val > maxVal) maxVal = val;
       if (val < minVal) minVal = val;
     }
-    return {minVal, maxVal};
+    return { minVal, maxVal };
   }
 
-  public static getBounds(values: number[][]): { minVal: number, maxVal: number, minTS: number, maxTS: number, rawVals: number[] } {
+  public static getBounds(values: number[][]): {
+    minVal: number,
+    maxVal: number,
+    minTS: number,
+    maxTS: number,
+    rawVals: number[]
+  } {
     let minVal = Number.MAX_SAFE_INTEGER;
     let maxVal = Number.MIN_SAFE_INTEGER;
     let minTS = Number.MAX_SAFE_INTEGER;
@@ -60,7 +66,7 @@ export class GTSLib {
       if (val < minVal) minVal = val;
       rawVals.push(val);
     }
-    return {minVal, maxVal, minTS, maxTS, rawVals};
+    return { minVal, maxVal, minTS, maxTS, rawVals };
   }
 
   static cleanArray(actual: any[]) {
@@ -171,7 +177,7 @@ export class GTSLib {
   }
 
   static gtsFromJSON(json, id) {
-    return {gts: {c: json.c, l: json.l, a: json.a, v: json.v, id}};
+    return { gts: { c: json.c, l: json.l, a: json.a, v: json.v, id } };
   }
 
   static gtsFromJSONList(jsonList, prefixId) {
@@ -194,10 +200,10 @@ export class GTSLib {
         gtsList.push(GTSLib.gtsFromJSON(gts, id));
       }
       if (GTSLib.isEmbeddedImage(gts)) {
-        gtsList.push({image: gts, caption: 'Image', id});
+        gtsList.push({ image: gts, caption: 'Image', id });
       }
       if (GTSLib.isEmbeddedImageObject(gts)) {
-        gtsList.push({image: gts.image, caption: gts.caption, id});
+        gtsList.push({ image: gts.image, caption: gts.caption, id });
       }
     });
     return {
@@ -228,7 +234,7 @@ export class GTSLib {
         r++;
       }
     });
-    return {res, r};
+    return { res, r };
   }
 
   static sanitizeNames(input: string): string {
@@ -321,9 +327,9 @@ export class GTSLib {
       if (data.startsWith('[') || data.startsWith('{')) {
         return GTSLib.getData(new JsonLib().parse(data));
       } else {
-        return {data: new JsonLib().parse(`[${data}]`)};
+        return { data: new JsonLib().parse(`[${data}]`) };
       }
-    } else if (data && (data.hasOwnProperty('data') || data.hasOwnProperty('events'))) {
+    } else if (data && (data.data || data.events)) {
       if ('' !== data.data) {
         data.data = data.data || [];
       }
@@ -331,13 +337,13 @@ export class GTSLib {
         data.data = [data.data];
       }
       return data as DataModel;
-    } else if (GTSLib.isArray(data) && data.length > 0 && (data[0].data !== undefined || data[0].events)) {
-      data[0].data = data[0].data || [];
+    } else if (GTSLib.isArray(data) && data.length > 0 && (data[0]?.data !== undefined || data[0]?.events)) {
+      data[0].data = data[0].data ?? [];
       return data[0] as DataModel;
     } else if (GTSLib.isArray(data)) {
-      return {data: data as any[]} as DataModel;
+      return { data: data as any[] } as DataModel;
     } else {
-      return {data: new JsonLib().parse(`[${data}]`)};
+      return { data: new JsonLib().parse(`[${data}]`) };
     }
   }
 

@@ -23,8 +23,6 @@ import {GTSLib} from '../../utils/gts.lib';
 import {Param} from '../../model/param';
 import {Utils} from '../../utils/utils';
 import domToImage from 'dom-to-image';
-import { isEqual } from 'lodash';
-import { DataModel } from '../../model/types';
 
 @Component({
   tag: 'discovery-slider',
@@ -58,7 +56,7 @@ export class DiscoverySlider {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
       // eslint-disable-next-line @typescript-eslint/no-misused-promises

@@ -24,7 +24,6 @@ import { GTSLib } from '../../utils/gts.lib';
 import elementResizeEvent from 'element-resize-event';
 import { PluginManager } from '../../utils/PluginManager';
 import { v4 } from 'uuid';
-import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-tile-result',
@@ -95,18 +94,15 @@ export class DiscoveryTileResultComponent {
   }
 
   @Watch('options')
-  optionsUpdate(newValue: string, oldValue: string) {
+  optionsUpdate(newValue: any, oldValue: string) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
-    if (!!this.options && typeof this.options === 'string') {
-      const opts = JSON.parse(this.options);
-      if (!isEqual(opts, this.innerOptions)) {
-        this.innerOptions = opts;
-      }
-    } else if (!isEqual(this.options as Param, this.innerOptions)) {
-      this.innerOptions = { ...this.options as Param };
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
     }
-    if (this.LOG) {
-      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
+      this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
   }
 
@@ -114,7 +110,7 @@ export class DiscoveryTileResultComponent {
   varsUpdate(newValue: any, oldValue: any) {
     if (!!this.vars && typeof this.vars === 'string') {
       const vars = JSON.parse(this.vars);
-      if (!isEqual(vars, this.innerVars)) {
+      if (!Utils.deepEqual(vars, this.innerVars)) {
         this.innerVars = vars;
       }
     }
@@ -208,7 +204,7 @@ export class DiscoveryTileResultComponent {
       type: this.type,
       options: this.innerOptions,
     });
-    this.innerResult = GTSLib.getData(this.result);
+    this.innerResult = GTSLib.getData(this.result ?? '[]');
 
     this.innerVars = JSON.parse(this.vars ?? '{}');
     this.innerType = this.innerResult.globalParams?.type ?? this.innerOptions.type ?? this.innerType;

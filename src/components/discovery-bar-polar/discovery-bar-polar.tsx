@@ -25,7 +25,7 @@ import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import { ColorLib } from '../../utils/color-lib';
 import { SeriesOption } from 'echarts/lib/util/types';
-import _, { isEqual } from 'lodash';
+import _ from 'lodash';
 
 @Component({
   tag: 'discovery-bar-polar',
@@ -80,7 +80,7 @@ export class DiscoveryBarPolarComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());

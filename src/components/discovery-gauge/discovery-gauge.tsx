@@ -25,7 +25,6 @@ import { GTSLib } from '../../utils/gts.lib';
 import { ColorLib, HeatMaps } from '../../utils/color-lib';
 import { Utils } from '../../utils/utils';
 import { SeriesOption } from 'echarts/lib/util/types';
-import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-gauge',
@@ -70,7 +69,7 @@ export class DiscoveryGauge {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());

@@ -21,7 +21,6 @@ import {Param} from '../../model/param';
 import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
-import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-hidden',
@@ -65,7 +64,7 @@ export class DiscoveryHidden {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
     }

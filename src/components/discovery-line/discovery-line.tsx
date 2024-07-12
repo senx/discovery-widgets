@@ -27,7 +27,7 @@ import { ChartType, DataModel, ECharts } from '../../model/types';
 import { CartesianAxisOption } from 'echarts/lib/coord/cartesian/AxisModel';
 import { GridOption } from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
-import { isEqual, throttle } from 'lodash';
+import { throttle } from 'lodash';
 import { v4 } from 'uuid';
 
 @Component({
@@ -98,7 +98,7 @@ export class DiscoveryLineComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());

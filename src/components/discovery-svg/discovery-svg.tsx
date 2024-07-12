@@ -22,7 +22,6 @@ import {Logger} from '../../utils/logger';
 import {GTSLib} from '../../utils/gts.lib';
 import {Utils} from '../../utils/utils';
 import html2canvas from 'html2canvas';
-import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-svg',
@@ -78,7 +77,7 @@ export class DiscoverySvgComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       setTimeout(() => this.parseResult());
       this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});

@@ -24,7 +24,6 @@ import {GTSLib} from '../../utils/gts.lib';
 import {ColorLib} from '../../utils/color-lib';
 import {Utils} from '../../utils/utils';
 import domtoimage from 'dom-to-image';
-import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-linear-gauge',
@@ -76,7 +75,7 @@ export class DiscoveryLinearGauge {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       opts.gauge = { horizontal: true, ...this.innerOptions.gauge };
       this.innerOptions = { ...opts };
       this.isVertical = !this.innerOptions.gauge?.horizontal;

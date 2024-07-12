@@ -23,7 +23,7 @@ import { JsonLib } from '../../utils/jsonLib';
 import { v4, v4 as uuidv4 } from 'uuid';
 import { PdfLib } from '../../utils/pdfLib';
 import { LangUtils } from '../../utils/lang-utils';
-import _, { isEqual } from 'lodash';
+import _ from 'lodash';
 
 @Component({
   tag: 'discovery-dashboard',
@@ -54,13 +54,13 @@ export class DiscoveryDashboardComponent {
   @State() result: Dashboard;
   @State() modalContent: Tile | Dashboard;
   @State() headers: any;
-  @State() loaded = false;
+  @State()  loaded = false;
   @State() start: number;
   @State() innerStyle: { [k: string]: string; };
   @State() audioFile: string;
   @State() title: string;
   @State() description: string;
-  @State() private types: any = {};
+  private types: any = {};
 
   private LOG: Logger;
   private ws: string;
@@ -85,7 +85,7 @@ export class DiscoveryDashboardComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.options)) {
+    if (!Utils.deepEqual(opts, this.options)) {
       this.options = { ...opts };
       this.LOG?.debug(['optionsUpdate'], { options: this.options, newValue, oldValue });
     }
@@ -103,7 +103,7 @@ export class DiscoveryDashboardComponent {
     if (!!this.vars && typeof this.vars === 'string') {
       vars = JSON.parse(this.vars);
     }
-    if (!isEqual(vars, this.innerVars)) {
+    if (!Utils.deepEqual(vars, this.innerVars)) {
       this.innerVars = vars;
       this.exec();
     }
@@ -236,8 +236,8 @@ export class DiscoveryDashboardComponent {
       Utils.httpPost(Utils.getUrl(this.url), this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', (this.options as Param).httpHeaders)
         .then((res: any) => {
           const result = new JsonLib().parse(res.data as string);
-          const tmpResult: Dashboard = result.length > 0 ? result[0] : new Dashboard();
-          this.options = { ...this.options as Param, ...tmpResult.options };
+          const tmpResult: Dashboard = result.length > 0 ? result[0] ?? new Dashboard() : new Dashboard();
+          this.options = { ...this.options as Param, ...(tmpResult?.options ?? {}) };
           this.headers = res.headers;
           this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
           this.statusHeaders.emit(this.headers);
@@ -252,9 +252,9 @@ export class DiscoveryDashboardComponent {
               this.timer = window.setInterval(() => this.exec(), this.autoRefresh * 1000);
             }
           }
-          this.innerType = tmpResult.type || this.type || 'dashboard';
+          this.innerType = tmpResult?.type ?? this.type ?? 'dashboard';
 
-          if (typeof tmpResult.tiles === 'string') {
+          if (typeof tmpResult?.tiles === 'string') {
             this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
             const ws = LangUtils.prepare(
               Utils.unsescape(tmpResult.tiles + ' EVAL'),
@@ -271,7 +271,7 @@ export class DiscoveryDashboardComponent {
               this.processResult(tmpResult);
             });
           } else {
-            this.renderedTiles = tmpResult.tiles || [];
+            this.renderedTiles = tmpResult?.tiles ?? [];
             this.processResult(tmpResult);
           }
         }).catch(e => {
@@ -399,7 +399,7 @@ export class DiscoveryDashboardComponent {
   private getRendering() {
     switch (this.innerType) {
       case 'scada':
-        return <div class="discovery-scada-main">
+        return this.result ? <div class="discovery-scada-main">
           {this.title && this.title !== '' ? <h1>{this.title}</h1> : ''}
           {this.description && this.description !== '' ? <p>{this.description}</p> : ''}
           <div class="discovery-scada-wrapper" style={{ height: `${this.scadaHeight}px` }}>
@@ -441,7 +441,7 @@ export class DiscoveryDashboardComponent {
                   }</div>
               </div>)
             }</div>
-        </div>;
+        </div>: '';
       case 'dashboard':
         return this.result ?
           <div class="discovery-dashboard-main">
@@ -497,10 +497,10 @@ export class DiscoveryDashboardComponent {
             {this.title && this.title !== '' ? <h1>{this.title}</h1> : ''}
             {this.description && this.description !== '' ? <p>{this.description}</p> : ''}
             <div class="discovery-flex-wrapper">
-              {(this.renderedTiles || []).map((t, i) =>
+              {(this.renderedTiles ?? []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
                      style={{
-                       height: `${((this.result.cellHeight || this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
+                       height: `${((this.result.cellHeight ?? this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
                        minHeight: '100%',
                        maxWidth: `calc(100% / ${this.result.cols} * ${t.w} - var(--warp-view-dashboard-gap, 10px) * 2)`,
                      }}
@@ -549,9 +549,11 @@ export class DiscoveryDashboardComponent {
         url={this.url}
         debug={this.debug} />
       {this.loaded
-        ? [<style>{this.generateStyle(this.innerStyle)}</style>,
-          <div ref={el => this.dash = el}>{this.getRendering()}</div>, this.audioFile ?
-            <audio src={this.audioFile} autoPlay id="song" /> : '']
+        ? [
+        <style>{this.generateStyle(this.innerStyle)}</style>,
+        <div ref={el => this.dash = el}>{this.getRendering()}</div>,
+        this.audioFile ? <audio src={this.audioFile} autoPlay id="song" /> : ''
+        ]
         : <discovery-spinner>Requesting data...</discovery-spinner>
       }
       <pre id="ws"><slot /></pre>
@@ -586,7 +588,7 @@ export class DiscoveryDashboardComponent {
               return this.done[s] === 1;
           }
         });
-        if ((this.renderedTiles || []).length === Object.keys(this.done).length && res.every(r => !!r)) {
+        if ((this.renderedTiles ?? []).length === Object.keys(this.done).length && res.every(r => !!r)) {
           this.rendered.emit();
         }
       });

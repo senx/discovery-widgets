@@ -23,7 +23,6 @@ import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import domtoimage from 'dom-to-image';
 import { LangUtils } from '../../utils/lang-utils';
-import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-button',
@@ -69,7 +68,7 @@ export class DiscoveryButtonComponent {
     if (!!this.vars && typeof this.vars === 'string') {
       vars = JSON.parse(this.vars);
     }
-    if (!isEqual(vars, this.innerVars)) {
+    if (!Utils.deepEqual(vars, this.innerVars)) {
       this.innerVars = vars;
       this.parseResult();
     }

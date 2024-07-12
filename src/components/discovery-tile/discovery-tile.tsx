@@ -23,7 +23,6 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { LangUtils } from '../../utils/lang-utils';
 import { v4 } from 'uuid';
-import { isEqual } from 'lodash';
 
 @Component({
   tag: 'discovery-tile',
@@ -78,9 +77,9 @@ export class DiscoveryTileComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!isEqual(opts, this.innerOptions)) {
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
-      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
+      this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
   }
 
@@ -90,7 +89,7 @@ export class DiscoveryTileComponent {
     if (!!this.vars && typeof this.vars === 'string') {
       vars = JSON.parse(this.vars);
     }
-    if (!isEqual(vars, this.innerVars)) {
+    if (!Utils.deepEqual(vars, this.innerVars)) {
       this.innerVars = vars;
       await this.exec(true);
     }
@@ -351,7 +350,7 @@ export class DiscoveryTileComponent {
               start={this.start}
               result={this.result}
               type={this.type}
-              options={this.innerOptions}
+              options={{...this.innerOptions}}
               unit={this.unit}
               debug={this.debug}
               height={this.height}
