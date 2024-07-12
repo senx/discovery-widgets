@@ -573,7 +573,7 @@ export class DiscoveryDashboardComponent {
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         this.done[i] = (this.done[i] || 0) + 1;
         const res = Object.keys(this.done).map(s => {
-          switch (this.tiles[i].type) {
+          switch (this.tiles[i]?.type) {
             case 'line':
             case 'area':
             case 'scatter':
