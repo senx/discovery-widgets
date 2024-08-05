@@ -15,12 +15,12 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, DiscoveryEvent} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
+import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
 import flatpickr from 'flatpickr';
 import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
@@ -76,11 +76,11 @@ export class DiscoveryInputComponent {
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
 
-  @Listen('discoveryEvent', {target: 'window'})
+  @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.el.id);
     if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+      this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
     }
   }
 
@@ -90,9 +90,23 @@ export class DiscoveryInputComponent {
     this.innerResult = GTSLib.getData(this.result);
     this.innerOptions = Utils.mergeDeep<Param>(this.innerOptions || {} as Param, this.innerResult.globalParams);
     if (this.innerOptions.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
+      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
     }
     this.parseResult();
+  }
+
+  @Watch('options')
+  optionsUpdate(newValue: any, oldValue: any) {
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
+      this.parseResult();
+    }
   }
 
   @Method()
@@ -108,10 +122,10 @@ export class DiscoveryInputComponent {
     this.width = dims.w - 15;
     this.height = dims.h;
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.innerOptions) || { bgColor }).bgColor || bgColor;
     const dm: Param = (((this.result as unknown as DataModel) || {
-      globalParams: {bgColor}
-    }).globalParams || {bgColor}) as Param;
+      globalParams: { bgColor },
+    }).globalParams || { bgColor }) as Param;
     bgColor = dm.bgColor || bgColor;
     if (this.type === 'input:slider') {
       return await (this.inputField as HTMLDiscoverySliderElement).export(type, bgColor);
@@ -119,7 +133,7 @@ export class DiscoveryInputComponent {
       return await domToImage.toPng(this.type === 'input:multi-cb' ? this.pngWrapper : this.root, {
         height: this.height,
         width: this.width,
-        bgcolor: bgColor
+        bgcolor: bgColor,
       });
     }
   }
@@ -135,23 +149,16 @@ export class DiscoveryInputComponent {
     this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
-    this.innerOptions = {...options};
-    const btnLabel = (this.innerOptions.button || {label: 'Ok'}).label;
-    const dm = ((this.result as unknown as DataModel) || {
-      globalParams: {
-        button: {label: btnLabel}
-      }
-    }).globalParams || {button: {label: btnLabel}};
+    this.innerOptions = { ...options };
 
-    this.label = (dm.button || {label: btnLabel}).label;
     if (this.innerOptions.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
+      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
     }
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       innerOptions: this.innerOptions,
       innerResult: this.innerResult,
-      result: this.result
+      result: this.result,
     });
   }
 
@@ -163,32 +170,32 @@ export class DiscoveryInputComponent {
         const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
         const opts = {
           enableTime: true,
-      //    appendTo: this.root,
           positionElement: this.inputField,
           static: true,
           enableSeconds: true,
           time_24hr: true,
           plugins: [],
-          formatDate: (d: Date) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(d.valueOf(), 1) * divider, divider, this.innerOptions.timeZone,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined)
+          formatDate: (d: Date) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(d.valueOf(), 1) * divider, divider, undefined, //this.innerOptions.timeZone,
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined),
         } as any;
         if (this.subType === 'date-range') {
-          opts.plugins = [rangePlugin({input: this.inputField2})];
+          opts.plugins = [rangePlugin({ input: this.inputField2 })];
         }
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
-          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, this.innerOptions.timeZone,
+          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, undefined, //this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         if (!!this.innerOptions.input && !!this.innerOptions.input.max) {
-          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, this.innerOptions.timeZone,
+          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, undefined, //this.innerOptions.timeZone,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
         this.flatpickrInstance.config.onClose.push(() => {
           if (this.subType === 'date-range') {
-            this.selectedValue = this.flatpickrInstance.selectedDates.map(date => GTSLib.zonedTimeToUtc(date.valueOf(), 1) * divider);
+            this.selectedValue = this.flatpickrInstance.selectedDates
+              .map(date => GTSLib.zonedTimeToUtc(date.valueOf(), 1, this.innerOptions.timeZone) * divider);
           } else {
-            this.selectedValue = GTSLib.zonedTimeToUtc(this.flatpickrInstance.selectedDates[0].valueOf(), 1) * divider;
+            this.selectedValue = GTSLib.zonedTimeToUtc(this.flatpickrInstance.selectedDates[0].valueOf(), 1, this.innerOptions.timeZone) * divider;
           }
           if (!this.innerOptions.input?.showButton) {
             this.handleClick();
@@ -200,21 +207,21 @@ export class DiscoveryInputComponent {
         this.autoCompleteJS = new autoComplete({
           placeHolder: 'Search...',
           selector: () => this.inputField,
-          data: {src: this.values, keys: 'v'},
-          resultItem: {highlight: {render: true}},
+          data: { src: this.values, keys: 'v' },
+          resultItem: { highlight: { render: true } },
           events: {
             input: {
               selection: (event: any) => {
                 const selection = event.detail.selection.value.v;
                 this.autoCompleteJS.input.value = selection;
                 this.selectedValue = selection;
-                this.LOG?.debug(['selection'], {v: this.selectedValue, b: !this.innerOptions.input?.showButton});
+                this.LOG?.debug(['selection'], { v: this.selectedValue, b: !this.innerOptions.input?.showButton });
                 if (!this.innerOptions.input?.showButton) {
                   this.handleClick();
                 }
-              }
-            }
-          }
+              },
+            },
+          },
         });
         break;
       default:
@@ -226,7 +233,7 @@ export class DiscoveryInputComponent {
       type: this.type,
       innerOptions: this.innerOptions,
       innerResult: this.innerResult,
-      result: this.result
+      result: this.result,
     });
     this.draw.emit();
   }
@@ -257,11 +264,11 @@ export class DiscoveryInputComponent {
         } else {
           e.value = this.selectedValue;
         }
-        this.LOG?.debug(['handleClick', 'emit'], {discoveryEvent: e, subtype: this.subType}, this.selectedValue);
-        this.discoveryEvent.emit({...e, source: this.el.id});
+        this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
       }
     });
-  }
+  };
 
   private generateStyle(innerStyle: { [k: string]: string }): string {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
@@ -290,6 +297,14 @@ export class DiscoveryInputComponent {
   private parseResult() {
     const data = this.innerResult.data || '';
     this.LOG.debug(['parseResult', 'innerOptions'], this.innerOptions);
+    const btnLabel = (this.innerOptions.button || { label: 'Ok' }).label;
+    const dm = ((this.result as unknown as DataModel) || {
+      globalParams: {
+        button: { label: btnLabel },
+      },
+    }).globalParams || { button: { label: btnLabel } };
+
+    this.label = (dm.button || { label: btnLabel }).label;
     switch (this.subType) {
       case 'text':
       case 'secret':
@@ -321,8 +336,8 @@ export class DiscoveryInputComponent {
           this.flatpickrInstance.setDate(
             [
               this.formatDateTime(`${this.value[0]}`),
-              this.formatDateTime(`${this.value[1]}`)
-            ], true
+              this.formatDateTime(`${this.value[1]}`),
+            ], true,
           );
         }
         break;
@@ -331,7 +346,7 @@ export class DiscoveryInputComponent {
         this.innerOptions.input.value = this.innerOptions.input.value ?? data;
         this.value = this.innerOptions.input.value;
         this.selectedValue = this.value;
-        this.innerOptions = {...this.innerOptions};
+        this.innerOptions = { ...this.innerOptions };
         break;
       case 'list':
       case 'multi':
@@ -351,9 +366,9 @@ export class DiscoveryInputComponent {
           this.values = [data.toString() as string].filter(d => d !== '');
         }
         if (typeof this.values[0] === 'string' || typeof this.values[0] === 'number') {
-          this.values = this.values.map(s => ({k: s, v: s, h: false}));
+          this.values = this.values.map(s => ({ k: s, v: s, h: false }));
         }
-        let index = 0
+        let index = 0;
         if (!!(this.innerOptions.input || {}).value) {
           index = this.values.map(o => o.v).indexOf((this.innerOptions.input || {}).value);
         }
@@ -383,8 +398,8 @@ export class DiscoveryInputComponent {
                   return item.value;
                 }
               }
-            })
-          }
+            }),
+          };
         }
         break;
       default:
@@ -421,7 +436,7 @@ export class DiscoveryInputComponent {
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       this.values = this.values.map(v => ({
         ...v,
-        h: !new RegExp(`.*${(e.target.value || e.detail || '')}.*`, 'gi').test(v.v)
+        h: !new RegExp(`.*${(e.target.value || e.detail || '')}.*`, 'gi').test(v.v),
       }));
     }
   }
@@ -431,7 +446,7 @@ export class DiscoveryInputComponent {
       return this.values
         .filter(v => v.k.match(new RegExp('^.*' + input + '.*$')))
         .map(v => {
-          return v.k
+          return v.k;
         });
     } else {
       return [];
@@ -457,9 +472,9 @@ export class DiscoveryInputComponent {
       case 'date-range':
         return <div class="range">
           <span>from</span>
-          <input type="text" class="discovery-input" ref={el => this.inputField = el}/>
+          <input type="text" class="discovery-input" ref={el => this.inputField = el} />
           <span>to</span>
-          <input type="text" class="discovery-input" ref={el => this.inputField2 = el}/>
+          <input type="text" class="discovery-input" ref={el => this.inputField2 = el} />
         </div>;
       case 'autocomplete':
         return <input type="text" class="discovery-input" value={this.value as string}
@@ -488,16 +503,16 @@ export class DiscoveryInputComponent {
         return <div class="multi-cb-wrapper" ref={el => this.pngWrapper = el}>
           <div class="multi-cb-layout">
             {this.innerOptions.input?.showFilter
-              ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)}/>
+              ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)} />
               : ''
             }
             <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el}>
               {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
-              {this.values.map(v => (<div class={{'multi-cb-item-wrapper': true, hidden: v.h}}>
+              {this.values.map(v => (<div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
                 <input type="checkbox" value={v.k}
                        checked={(this.value as string[] || []).includes(v.k)}
                        onInput={e => this.handleSelect(e)}
-                       name={v.v}/>
+                       name={v.v} />
                 <label htmlFor={v.v}>{v.v}</label>
               </div>))}
             </div>
@@ -546,7 +561,7 @@ export class DiscoveryInputComponent {
               >{this.label}</button>
             </div> : ''}
         </div>
-      </div>
+      </div>,
     ];
   }
 }
