@@ -53,6 +53,11 @@
     padding: 1px 5px;
   }
 
+  .chips-input-wrapper {
+    min-height: 34px;
+    height: fit-content;
+  }
+
   select.discovery-input {
     height: 38px;
 

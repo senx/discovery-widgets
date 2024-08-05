@@ -48,7 +48,8 @@
     border-width: var(--chip-input-border-width, 0px 0px 2px 0px);
     margin: 0;
     padding: 0;
-    height: 32px;
+    min-height: 32px;
+    height: auto;
   }
 
   .chip-input-autocomplete-container {
