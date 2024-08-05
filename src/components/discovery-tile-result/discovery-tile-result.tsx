@@ -682,7 +682,7 @@ JSON-> 0 GET`}
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
       options = { ...options, ...JSON.parse(this.options) };
     } else {
-      options = { ...options, ...(this.options as Param || {}) };
+      options = { ...options, ...(this.options as Param ?? {}) };
     }
     options = Utils.mergeDeep<Param>(options ?? {} as Param, (this.innerResult as unknown as DataModel)?.globalParams ?? {});
     setTimeout(() => {

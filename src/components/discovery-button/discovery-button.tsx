@@ -55,6 +55,7 @@ export class DiscoveryButtonComponent {
   @State() label = 'Ok';
   @State() innerStyle: { [k: string]: string; };
   @State() active: string;
+  @State() innerOptions: Param;
 
   private defOptions: Param = new Param();
   private LOG: Logger;
@@ -78,6 +79,20 @@ export class DiscoveryButtonComponent {
   @Watch('result')
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      this.parseResult();
+    }
+  }
+
+  @Watch('options')
+  optionsUpdate(newValue: any, oldValue: any) {
+    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
+    let opts = newValue;
+    if (!!newValue && typeof newValue === 'string') {
+      opts = JSON.parse(newValue);
+    }
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       this.parseResult();
     }
   }
@@ -115,11 +130,11 @@ export class DiscoveryButtonComponent {
     this.LOG = new Logger(DiscoveryButtonComponent, this.debug);
     this.parsing = true;
     if (typeof this.options === 'string') {
-      this.options = JSON.parse(this.options);
+      this.innerOptions = JSON.parse(this.options);
     }
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
-      options: this.options,
+      options: this.innerOptions,
     });
     this.parseResult();
     this.draw.emit();
@@ -127,37 +142,36 @@ export class DiscoveryButtonComponent {
 
   private parseResult() {
     this.innerResult = GTSLib.getData(this.result);
-    const btnLabel = ((this.options as Param).button || { label: 'Ok' }).label;
-    const dm = (this.innerResult || {
+    const btnLabel = this.innerOptions?.button?.label ?? 'Ok';
+    const dm = (this.innerResult ?? {
       globalParams: {
         button: { label: btnLabel },
       },
     }).globalParams || { button: { label: btnLabel } };
-
     this.label = dm.button.label;
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
-    this.options = { ...options };
+    this.innerOptions = { ...options };
 
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
     } else if (!!this.vars) {
       this.innerVars = this.vars;
     }
-    if ((this.options as Param).customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...(this.options as Param).customStyles || {} };
+    if (this.innerOptions.customStyles) {
+      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
     }
-    setTimeout(() => this.active = (this.innerResult?.data || []).find(v => v.active)?.value);
+    setTimeout(() => this.active = (this.innerResult?.data || []).find((v: any) => v.active)?.value);
   }
 
   private handleClick() {
     const ws = LangUtils.prepare(
       `${this.innerResult.data} EVAL`,
       this.innerVars || {},
-      (this.options as Param)?.skippedVars || [],
+      this.innerOptions?.skippedVars || [],
       this.type,
       this.language);
-    Utils.httpPost(this.url, ws, (this.options as Param).httpHeaders)
+    Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders)
       .then(res => {
         this.LOG?.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);
