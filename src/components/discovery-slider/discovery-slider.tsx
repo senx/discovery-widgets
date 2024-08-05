@@ -15,13 +15,13 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {Logger} from '../../utils/logger';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { Logger } from '../../utils/logger';
 import noUiSlider from 'nouislider';
-import {API} from 'nouislider/src/nouislider';
-import {GTSLib} from '../../utils/gts.lib';
-import {Param} from '../../model/param';
-import {Utils} from '../../utils/utils';
+import { API } from 'nouislider/src/nouislider';
+import { GTSLib } from '../../utils/gts.lib';
+import { Param } from '../../model/param';
+import { Utils } from '../../utils/utils';
 import domToImage from 'dom-to-image';
 
 @Component({
@@ -33,7 +33,7 @@ export class DiscoverySlider {
 
   @Prop() debug: boolean;
   @Prop() progress: boolean;
-  @Prop() options: Param | string = {...new Param(), timeMode: 'date'};
+  @Prop() options: Param | string = { ...new Param(), timeMode: 'date' };
 
   @State() innerOptions: Param;
 
@@ -47,7 +47,7 @@ export class DiscoverySlider {
   private slider: API;
   private divider: number;
   private innerValue: number | number[];
-  private defOptions = {...new Param(), input: {min: 0, max: 100, horizontal: true, showTicks: true, step: 1}};
+  private defOptions = { ...new Param(), input: { min: 0, max: 100, horizontal: true, showTicks: true, step: 1 } };
 
   @Watch('options')
   optionsUpdate(newValue: any, oldValue: any) {
@@ -56,19 +56,17 @@ export class DiscoverySlider {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
-      this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      setTimeout(async () => {
-        await this.setValue(this.innerValue)
-        if (this.LOG) {
-          this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
-        }
-        return Promise.resolve();
-      });
-      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-    }
+    this.innerOptions = { ...this.defOptions, ...opts };
+    this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout(async () => {
+      await this.setValue(this.innerValue);
+      if (this.LOG) {
+        this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
+      }
+      return Promise.resolve();
+    });
+    this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -80,8 +78,8 @@ export class DiscoverySlider {
     } else {
       this.innerOptions = this.options;
     }
-    const options = Utils.mergeDeep<Param>({...this.defOptions}, this.innerOptions || {});
-    this.innerOptions = {...options};
+    const options = Utils.mergeDeep<Param>({ ...this.defOptions }, this.innerOptions || {});
+    this.innerOptions = { ...options };
     this.LOG?.debug(['componentWillLoad'], this.innerOptions);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
   }
@@ -110,13 +108,13 @@ export class DiscoverySlider {
     const dims = Utils.getContentBounds(this.sliderDiv);
     const width = dims.w - 15;
     const height = dims.h;
-    return await domToImage.toPng(this.sliderDiv, {height, width, bgcolor: bgColor});
+    return await domToImage.toPng(this.sliderDiv, { height, width, bgcolor: bgColor });
   }
 
   render() {
     return (
       <div>
-        <div id="slider" ref={(el) => this.sliderDiv = el}/>
+        <div id="slider" ref={(el) => this.sliderDiv = el} />
       </div>
     );
   }
@@ -124,8 +122,8 @@ export class DiscoverySlider {
   private getSliderOptions() {
     const minmax = {
       min: this.innerOptions.input?.min || 0,
-      max: (!!this.innerOptions.input?.max || this.innerOptions.input?.max === 0) ? this.innerOptions.input?.max : 100
-    }
+      max: (!!this.innerOptions.input?.max || this.innerOptions.input?.max === 0) ? this.innerOptions.input?.max : 100,
+    };
     const start = this.innerValue;
     const range = minmax.max - minmax.min;
     const pips = this.innerOptions.input?.step ?? Math.round(range / (this.innerOptions.input?.stepCount ?? range));
@@ -135,7 +133,7 @@ export class DiscoverySlider {
           .replace('T', '<br />').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
         : parseFloat(v.toFixed(4)).toString() + (this.innerOptions.unit ?? '')
       ,
-      from: Number
+      from: Number,
     };
     if (this.innerOptions.timeMode === 'date') {
       this.sliderDiv.classList.add('discovery-date');
@@ -153,7 +151,7 @@ export class DiscoverySlider {
       orientation: this.innerOptions.input?.horizontal ?? true ? 'horizontal' : 'vertical',
       tooltips: this.innerOptions.timeMode === 'date' ? true : {
         to: (v: any) => parseFloat((v).toFixed(4)).toString() + (this.innerOptions.unit || ''),
-        from: (v: any) => parseFloat((v).toFixed(4))
+        from: (v: any) => parseFloat((v).toFixed(4)),
       },
       step: this.innerOptions.input?.step || this.innerOptions.input?.stepCount ? pips : undefined,
       range: minmax,
@@ -163,7 +161,7 @@ export class DiscoverySlider {
         stepped: true,
         density: 4,
         format,
-      } as any : undefined
+      } as any : undefined,
     } as any;
   }
 

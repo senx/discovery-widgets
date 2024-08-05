@@ -7,11 +7,11 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type              | Default                              |
-| ---------- | ---------- | ----------- | ----------------- | ------------------------------------ |
-| `debug`    | `debug`    |             | `boolean`         | `undefined`                          |
-| `options`  | `options`  |             | `Param \| string` | `{...new Param(), timeMode: 'date'}` |
-| `progress` | `progress` |             | `boolean`         | `undefined`                          |
+| Property   | Attribute  | Description | Type              | Default                                |
+| ---------- | ---------- | ----------- | ----------------- | -------------------------------------- |
+| `debug`    | `debug`    |             | `boolean`         | `undefined`                            |
+| `options`  | `options`  |             | `Param \| string` | `{ ...new Param(), timeMode: 'date' }` |
+| `progress` | `progress` |             | `boolean`         | `undefined`                            |
 
 
 ## Events
