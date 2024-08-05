@@ -85,7 +85,7 @@ export class DiscoveryLineComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       const options = Utils.mergeDeep<Param>(this.innerOptions, this.result.globalParams ?? {});
-      this.innerOptions = { ...options };
+      this.innerOptions = {...this.defOptions, ...options };
       this.chartOpts = this.convert(this.result || new DataModel());
       this.setOpts(true);
     }
@@ -99,7 +99,7 @@ export class DiscoveryLineComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = {...this.defOptions, ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
@@ -114,9 +114,9 @@ export class DiscoveryLineComponent {
     this.LOG = new Logger(DiscoveryLineComponent, this.debug);
     this.result = GTSLib.getData(this.result);
     if (typeof this.options === 'string') {
-      this.innerOptions = JSON.parse(this.options);
+      this.innerOptions = {...this.defOptions, ...JSON.parse(this.options)};
     } else {
-      this.innerOptions = this.options;
+      this.innerOptions = {...this.defOptions, ...this.options};
     }
     this.LOG?.debug(['componentWillLoad'], { type: this.type, options: this.innerOptions });
     this.chartOpts = this.convert(this.result || new DataModel());
@@ -187,7 +187,11 @@ export class DiscoveryLineComponent {
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
           ).join('<br>')}`,
         axisPointer: {
-          type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
+          type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor
+            ? 'cross'
+            : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor
+              ? 'line'
+              : 'none',
           axis: !!this.innerOptions.yAxisFocus ? 'y' : 'x',
           animation: false,
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
