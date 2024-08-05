@@ -325,13 +325,13 @@ export class GTSLib {
   static getData(data: any): DataModel {
     if (typeof data === 'string') {
       if (data.startsWith('[') || data.startsWith('{')) {
-        return GTSLib.getData(new JsonLib().parse(data));
+          return GTSLib.getData(new JsonLib().parse(data));
       } else {
         return { data: new JsonLib().parse(`[${data}]`) };
       }
-    } else if (data && (data.data || data.events)) {
+    } else if (data && ((!!data.data || data.data === '') || data.events)) {
       if ('' !== data.data) {
-        data.data = data.data || [];
+        data.data = data.data ?? [];
       }
       if (!GTSLib.isArray(data.data)) {
         data.data = [data.data];

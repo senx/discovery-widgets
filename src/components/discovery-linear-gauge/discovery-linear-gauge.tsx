@@ -199,6 +199,7 @@ export class DiscoveryLinearGauge {
       this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
+    gtsList = gtsList.filter(d => d !== '');
     this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
     const gtsCount = gtsList.length;
     let overallMax = this.innerOptions.maxValue ?? 0;
@@ -359,7 +360,7 @@ export class DiscoveryLinearGauge {
         {'vertical-wrapper': !this.innerOptions.gauge?.horizontal}
       }>
         <div class="wv-tooltip" style={{display: 'none'}} ref={el => this.tooltip = el}></div>
-        {this.dataStruct.map(d =>
+        {(this.dataStruct ?? []).map(d =>
           <div class={
             {
               'discovery-progress-group': true,

@@ -28,9 +28,9 @@ export class JsonLib {
     r: '\r',
     t: '\t'
   };
-  text;
+  text: string;
 
-  private error(m) {
+  private error(m: string) {
     // eslint-disable-next-line no-throw-literal
     throw {
       name: 'SyntaxError',
@@ -44,7 +44,7 @@ export class JsonLib {
     return this.ch = this.text.charAt(this.at++);
   }
 
-  private check(c) {
+  private check(c: string) {
     if (c !== this.ch) {
       this.error(`Expected '${c}' instead of '${this.ch}'`);
     }
