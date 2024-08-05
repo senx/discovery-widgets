@@ -87,7 +87,7 @@ export class DiscoveryMapComponent {
   private mapOpts: MapParams;
   private initial = true;
   private hidden: { [key: string]: boolean } = {};
-  private poputTimeout: any;
+  private popupTimeout: any;
   private markerOver = false;
   private markersRef: any;
   private tileLayers: string[] = [];
@@ -646,10 +646,10 @@ export class DiscoveryMapComponent {
       marker.on('mouseover', () => {
         marker.openPopup();
         this.markerOver = true;
-        if (!!this.poputTimeout) {
-          clearTimeout(this.poputTimeout)
+        if (!!this.popupTimeout) {
+          clearTimeout(this.popupTimeout)
         }
-        this.poputTimeout = setTimeout(() => {
+        this.popupTimeout = setTimeout(() => {
           if (marker.isPopupOpen() && !this.markerOver) marker.closePopup();
         }, this.innerOptions.tooltipDelay || 3000);
         this.dataPointOver.emit({

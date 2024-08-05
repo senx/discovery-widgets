@@ -223,12 +223,12 @@ export class GTSLib {
     if (GTSLib.isGts(a)) {
       a = [a];
     }
-    (a || []).forEach(d => {
+    (a ?? []).forEach(d => {
       if (GTSLib.isArray(d)) {
         const walk = GTSLib.flattenGtsIdArray(d, r);
         res.push(walk.res);
         r = walk.r;
-      } else if (d && d.v) {
+      } else if (d && (d.v || d.positions)) {
         d.id = r;
         res.push(d);
         r++;
@@ -325,7 +325,7 @@ export class GTSLib {
   static getData(data: any): DataModel {
     if (typeof data === 'string') {
       if (data.startsWith('[') || data.startsWith('{')) {
-          return GTSLib.getData(new JsonLib().parse(data));
+        return GTSLib.getData(new JsonLib().parse(data));
       } else {
         return { data: new JsonLib().parse(`[${data}]`) };
       }
