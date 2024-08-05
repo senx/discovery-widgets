@@ -346,9 +346,9 @@ export class DiscoveryInputComponent {
         }
         this.values = [];
         if (GTSLib.isArray(data)) {
-          this.values = [...data as any[]];
+          this.values = [...data as any[]].filter(d => d !== '');
         } else {
-          this.values = [data.toString() as string];
+          this.values = [data.toString() as string].filter(d => d !== '');
         }
         if (typeof this.values[0] === 'string' || typeof this.values[0] === 'number') {
           this.values = this.values.map(s => ({k: s, v: s, h: false}));
