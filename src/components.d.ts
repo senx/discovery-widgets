@@ -12,7 +12,7 @@ export { Param } from "./model/param";
 export namespace Components {
     interface DiscoveryAnnotation {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -30,7 +30,7 @@ export namespace Components {
     }
     interface DiscoveryBar {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -48,7 +48,7 @@ export namespace Components {
     }
     interface DiscoveryBarPolar {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -66,7 +66,7 @@ export namespace Components {
     }
     interface DiscoveryBoxplot {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -84,7 +84,7 @@ export namespace Components {
     }
     interface DiscoveryButton {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
@@ -97,7 +97,7 @@ export namespace Components {
     }
     interface DiscoveryCalendar {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -128,7 +128,7 @@ export namespace Components {
     }
     interface DiscoveryDisplay {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -139,7 +139,7 @@ export namespace Components {
     }
     interface DiscoveryGauge {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -154,7 +154,7 @@ export namespace Components {
     }
     interface DiscoveryHeatmap {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -179,7 +179,7 @@ export namespace Components {
     }
     interface DiscoveryImage {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string[]>;
+        "export": (type?: "png" | "svg") => Promise<string[]>;
         "height": number;
         "options": Param | string;
         "result": DataModel | string;
@@ -189,7 +189,7 @@ export namespace Components {
     }
     interface DiscoveryInput {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -202,7 +202,7 @@ export namespace Components {
         "autocomplete": (value: string) => Promise<any>;
         "chips": string[];
         "constrain_input": boolean;
-        "contains": (value: string) => Promise<boolean>;
+        "containsFn": (value: string) => Promise<boolean>;
         "value": string;
     }
     interface DiscoveryInputChipsChip {
@@ -210,7 +210,7 @@ export namespace Components {
     }
     interface DiscoveryLine {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -228,7 +228,7 @@ export namespace Components {
     }
     interface DiscoveryLinearGauge {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -244,7 +244,7 @@ export namespace Components {
     }
     interface DiscoveryMap {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number) => Promise<void>;
@@ -276,7 +276,7 @@ export namespace Components {
     }
     interface DiscoveryPie {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -291,7 +291,7 @@ export namespace Components {
     }
     interface DiscoveryProfile {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -309,7 +309,7 @@ export namespace Components {
     }
     interface DiscoverySlider {
         "debug": boolean;
-        "export": (type: 'png' | 'svg', bgColor: string) => Promise<string>;
+        "export": (type: "png" | "svg", bgColor: string) => Promise<string>;
         "options": Param | string;
         "progress": boolean;
         "setValue": (value: number | number[]) => Promise<void>;
@@ -320,7 +320,7 @@ export namespace Components {
     interface DiscoverySvg {
         "chartTitle": string;
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string | string[]>;
+        "export": (type?: "png" | "svg") => Promise<string | string[]>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -333,7 +333,7 @@ export namespace Components {
     }
     interface DiscoveryTabular {
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<string>;
+        "export": (type?: "png" | "svg") => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -348,7 +348,7 @@ export namespace Components {
         "chartTitle": string;
         "debug": boolean;
         "exec": (refresh?: boolean) => Promise<unknown>;
-        "export": (type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>;
+        "export": (type?: "png" | "svg") => Promise<{ dataUrl: string; bgColor: string; }>;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number) => Promise<void>;
         "language": 'warpscript' | 'flows';
@@ -368,7 +368,7 @@ export namespace Components {
         "chartDescription": string;
         "chartTitle": string;
         "debug": boolean;
-        "export": (type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>;
+        "export": (type?: "png" | "svg") => Promise<{ dataUrl: string; bgColor: string; }>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number) => Promise<void>;
@@ -1227,7 +1227,7 @@ declare namespace LocalJSX {
         "autocomplete"?: (value: string) => Promise<any>;
         "chips"?: string[];
         "constrain_input"?: boolean;
-        "contains"?: (value: string) => Promise<boolean>;
+        "containsFn"?: (value: string) => Promise<boolean>;
         "onChipChange"?: (event: DiscoveryInputChipsCustomEvent<string[]>) => void;
         "onChipClick"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
         "onChipCreate"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;

@@ -31,7 +31,7 @@
 
 ## Methods
 
-### `export(type?: 'png' | 'svg') => Promise<string | string[]>`
+### `export(type?: "png" | "svg") => Promise<string | string[]>`
 
 
 

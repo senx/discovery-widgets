@@ -27,7 +27,7 @@ export class DiscoveryInputChips {
 
   @Prop() chips: string[] = [];
   @Prop() autocomplete: (value: string) => Promise<any>;
-  @Prop() contains: (value: string) => Promise<boolean>;
+  @Prop() containsFn: (value: string) => Promise<boolean>;
   @Prop() constrain_input = false;
   @Prop({ mutable: true }) value: string;
 
@@ -339,7 +339,7 @@ export class DiscoveryInputChips {
     if (!value) {
       value = this.real_input.value;
     }
-    if (!!this.constrain_input && !await this.contains(this.real_input.value)) {
+    if (!!this.constrain_input && !await this.containsFn(this.real_input.value)) {
       return;
     }
     if (value.trim() !== '') {

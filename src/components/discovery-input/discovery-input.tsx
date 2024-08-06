@@ -544,7 +544,7 @@ export class DiscoveryInputComponent {
             ref={el => this.inputField = el}
             chips={this.value as string[]}
             autocomplete={this.handleAutoComplete.bind(this)}
-            contains={this.handleContains.bind(this)}
+            containsFn={this.handleContains.bind(this)}
             onChipChange={e => this.handleSelect(e)}
             constrain_input={!!this.innerOptions.input?.onlyFromAutocomplete}
           ></discovery-input-chips>

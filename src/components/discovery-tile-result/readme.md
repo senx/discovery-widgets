@@ -35,7 +35,7 @@
 
 ## Methods
 
-### `export(type?: 'png' | 'svg') => Promise<{ dataUrl: string; bgColor: string; }>`
+### `export(type?: "png" | "svg") => Promise<{ dataUrl: string; bgColor: string; }>`
 
 
 
