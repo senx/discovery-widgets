@@ -63,7 +63,7 @@ export class DiscoveryInputComponent {
   @State() selectedValue: string | string[] | any;
   @State() values = [];
 
-  private defOptions: Param = new Param();
+  private defOptions: Param = { ...new Param(), input: { caseSensitive: true, onlyFromAutocomplete: true } };
   private innerOptions: Param = new Param();
   private LOG: Logger;
   private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
@@ -102,11 +102,11 @@ export class DiscoveryInputComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!Utils.deepEqual(opts, this.innerOptions)) {
+    //if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       this.parseResult();
-    }
+    // }
   }
 
   @Method()
@@ -392,8 +392,8 @@ export class DiscoveryInputComponent {
             keys: 'v',
             filter: (list: any[]) => list.filter(item => {
               if ('value' in this.inputField) {
-                const inputValue = this.inputField.value.toLowerCase();
-                const itemValue = item.value.v.toLowerCase();
+                const inputValue = this.innerOptions.input?.caseSensitive ? this.inputField.value : this.inputField.value.toLowerCase();
+                const itemValue = this.innerOptions.input?.caseSensitive ? item.value.v : item.value.v.toLowerCase();
                 if (itemValue.startsWith(inputValue)) {
                   return item.value;
                 }
@@ -444,10 +444,8 @@ export class DiscoveryInputComponent {
   private handleAutoComplete(input: string) {
     if (this.subType === 'chips-autocomplete') {
       return this.values
-        .filter(v => v.k.match(new RegExp('^.*' + input + '.*$')))
-        .map(v => {
-          return v.k;
-        });
+        .filter(v => v.k.match(new RegExp( input, this.innerOptions.input?.caseSensitive ? 'g': 'gi')))
+        .map(v => v.k);
     } else {
       return [];
     }

@@ -70,6 +70,7 @@ export class DiscoveryInputChips {
     this.innerChips = (this.chips || []).slice();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.el.addEventListener('click', () => this.real_input.focus());
     this.innerChips = (this.chips || []).slice();
@@ -80,7 +81,7 @@ export class DiscoveryInputChips {
     event.stopImmediatePropagation();
   }
 
-  private handleChipClose(event) {
+  private handleChipClose(event: any) {
     const chipLabel = event.detail;
     let index = -1;
     for (let i = 0; i < this.innerChips.length; i++) {
@@ -95,24 +96,24 @@ export class DiscoveryInputChips {
   }
 
   @Listen('document:click')
-  handleDocumentClick(event) {
-    if (event.path.includes(this.el)) {
+  handleDocumentClick(event: any) {
+    if ((event.path ?? []).includes(this.el)) {
       return;
     }
     this.closeAutoComplete(true);
   }
 
-  private handleChipClick(event, chip) {
+  private handleChipClick(event: any, chip: any) {
     this.chipClick.emit({
       label: chip.label,
       event: event
     });
   }
 
-  private handleInput(event?) {
+  private handleInput(event?: any) {
     let autocomplete_items = [];
     this.value = this.real_input.value;
-    const key = event ? event.data || '' : '';
+    const key = event ? event.data ?? '' : '';
     if (this.delimiters.includes(key)) {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -145,7 +146,7 @@ export class DiscoveryInputChips {
 
   }
 
-  private async handleBeforeInput(event) {
+  private async handleBeforeInput(event: any) {
     const input_type = event.inputType;
     const key = event.data;
     let autocomplete_items = [];
@@ -196,7 +197,7 @@ export class DiscoveryInputChips {
     }
   }
 
-  private handleKeydown(event) {
+  private handleKeydown(event: any) {
     const key = event.key;
     let navigating = false;
     if (key === 'ArrowDown') {
@@ -286,8 +287,8 @@ export class DiscoveryInputChips {
     this.autocompleteContainer.style.top = `${rect.height + 3}px`;
     this.autocompleteContainer.style.left = `${this.real_input.offsetLeft}px`;
     this.autocompleteContainer.innerHTML = '';
-    autocomplete_items.map(item => {
-        let label;
+    autocomplete_items.map((item: any) => {
+        let label: string;
         if (typeof item == 'string') {
           label = item;
         } else {
@@ -295,8 +296,8 @@ export class DiscoveryInputChips {
         }
         const start_index: number = label.toLowerCase().indexOf(value.toLowerCase());
         const prefix = label.substring(0, start_index);
-        const match = label.substr(start_index, value.length);
-        const postfix = label.substr(start_index + value.length);
+        const match = label.slice(start_index, start_index + value.length);
+        const postfix = label.slice(start_index + value.length);
         const div = document.createElement('DIV');
         div.addEventListener('focus', (event) => {
           event.preventDefault();
@@ -325,7 +326,7 @@ export class DiscoveryInputChips {
       }
     );
     let autocomplete_dismiss_target = this.autocompleteContainer;
-    let element;
+    let element: HTMLDivElement;
     if (this.autocomplete_dismiss_target) {
       if (typeof this.autocomplete_dismiss_target == 'string') {
         element = this.autocompleteContainer.querySelector(this.autocomplete_dismiss_target);

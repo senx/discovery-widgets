@@ -160,6 +160,8 @@ export class Param {
     showTicks?: boolean,
     showFilter?: boolean,
     immediate?: boolean,
+    caseSensitive?: boolean,
+    onlyFromAutocomplete?: boolean,
   }
   map?: MapParams;
   svg?: {
