@@ -12,7 +12,7 @@
 | `autocomplete`    | --                |             | `(value: string) => Promise<any>`     | `undefined` |
 | `chips`           | --                |             | `string[]`                            | `[]`        |
 | `constrain_input` | `constrain_input` |             | `boolean`                             | `false`     |
-| `contains`        | --                |             | `(value: string) => Promise<boolean>` | `undefined` |
+| `containsFn`      | --                |             | `(value: string) => Promise<boolean>` | `undefined` |
 | `value`           | `value`           |             | `string`                              | `undefined` |
 
 
