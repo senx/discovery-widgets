@@ -1,6 +1,51 @@
 Discovery
 ---
 
+## v1.1.116
+
+> +  2024/08/06  | v1.1.116 
+> +  2024/08/06  | Deps update 
+> +  2024/08/06  | Deps update 
+> +  2024/08/06  | Deps update 
+> +  2024/08/06  | [input:autocomplete] Fix autocomplete list zIndex 
+> +  2024/08/06  | [input:autocomplete] Fix autocomplete list position 
+> +  2024/08/06  | [input:autocomplete] Add onlyFromAutocomplete option 
+> +  2024/08/06  | [input:autocomplete] Add case-sensitive option 
+> +  2024/08/05  | [map] Fix coloredWeightedDots and weightedDots 
+> +  2024/08/05  | [input:date] [input:date-range] Fix options inheritance and timezone 
+> +  2024/08/05  | [input:chips] Fix input size on multi line 
+> +  2024/08/05  | [input:button] Fix label setting 
+> +  2024/08/05  | [input:slider] Fix options updates 
+> +  2024/08/05  | [input:multi-cb] Fix no data when data = '' 
+> +  2024/08/05  | [linear-gauge] Fix 
+> +  2024/08/05  | [line] [area] Fix defOption inheritance and restore default xCursor 
+
+## v1.1.115
+
+> +  2024/07/12  | v1.1.115 
+> +  2024/07/12  | readmes 
+> +  2024/07/12  | small fix 
+> +  2024/07/12  | update readme 
+> +  2024/07/12  | Fix option inheritance within inner dashboards 
+
+## v1.1.114
+
+> +  2024/07/11  | v1.1.114 
+> +  2024/07/11  | Fixes 
+
+## v1.1.113
+
+> +  2024/07/11  | v1.1.113 
+> +  2024/07/11  | Fixes 
+
+## v1.1.112
+
+> +  2024/07/11  | v1.1.112 
+> +  2024/07/09  | code cleanup 
+> +  2024/07/09  | code cleanup 
+> +  2024/07/09  | Fix globalParams do not update options with an event sent to a dynamic dashboard tile 
+> +  2024/07/09  | Changelog 
+
 ## v1.1.111
 
 > +  2024/07/05  | v1.1.111 
