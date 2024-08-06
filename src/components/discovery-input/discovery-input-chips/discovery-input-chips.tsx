@@ -285,7 +285,7 @@ export class DiscoveryInputChips {
     const rect = this.real_input.getBoundingClientRect();
     const value = highlight_value;
     this.autocompleteContainer.style.display = 'block';
-    this.autocompleteContainer.style.top = `${rect.height + 3}px`;
+    this.autocompleteContainer.style.top = `${this.real_input.offsetTop + rect.height + 3}px`;
     this.autocompleteContainer.style.left = `${this.real_input.offsetLeft}px`;
     this.autocompleteContainer.innerHTML = '';
     autocomplete_items.map((item: any) => {
