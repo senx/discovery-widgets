@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // noinspection ES6UnusedImports eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch} from '@stencil/core';
+import { Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch } from '@stencil/core';
 
 @Component({
   tag: 'discovery-input-chips',
@@ -27,25 +27,26 @@ export class DiscoveryInputChips {
 
   @Prop() chips: string[] = [];
   @Prop() autocomplete: (value: string) => Promise<any>;
+  @Prop() contains: (value: string) => Promise<boolean>;
   @Prop() constrain_input = false;
-  @Prop({mutable: true}) value: string;
+  @Prop({ mutable: true }) value: string;
 
   @Element() el: HTMLDiscoveryInputChipsElement;
 
   @Event() chipClick: EventEmitter;
   @Event({
     composed: true,
-    bubbles: true
+    bubbles: true,
   }) chipInput: EventEmitter<void>;
   @Event({
     composed: true,
     bubbles: true,
-    cancelable: false
+    cancelable: false,
   }) chipChange: EventEmitter<string[]>;
   @Event({
     composed: true,
     bubbles: true,
-    cancelable: false
+    cancelable: false,
   }) chipCreate: EventEmitter;
 
   @State() private innerChips = [];
@@ -106,7 +107,7 @@ export class DiscoveryInputChips {
   private handleChipClick(event: any, chip: any) {
     this.chipClick.emit({
       label: chip.label,
-      event: event
+      event: event,
     });
   }
 
@@ -238,8 +239,8 @@ export class DiscoveryInputChips {
     const input_rect = this.real_input.getBoundingClientRect();
     this.caret_position = {
       x: input_rect.x + pos_rect.width,
-      y: input_rect.y + pos_rect.height
-    }
+      y: input_rect.y + pos_rect.height,
+    };
   }
 
   private closeAutoComplete(force: boolean) {
@@ -313,17 +314,11 @@ export class DiscoveryInputChips {
           div.innerHTML = label;
         }
         div.dataset.value = label;
-        div.onmouseover = () => {
-          div.style.backgroundColor = 'var(--chip-input-autocomplete-hover-background-color, lightblue)';
-        }
-        div.onmouseout = () => {
-          div.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
-        }
-        div.onclick = () => {
-          void this.handleAutoCompleteItemSelected(div);
-        };
+        div.onmouseover = () => div.style.backgroundColor = 'var(--chip-input-autocomplete-hover-background-color, lightblue)';
+        div.onmouseout = () => div.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
+        div.onclick = () => void this.handleAutoCompleteItemSelected(div);
         this.autocompleteContainer.appendChild(div);
-      }
+      },
     );
     let autocomplete_dismiss_target = this.autocompleteContainer;
     let element: HTMLDivElement;
@@ -343,6 +338,9 @@ export class DiscoveryInputChips {
   private async createChip(value: string) {
     if (!value) {
       value = this.real_input.value;
+    }
+    if (!!this.constrain_input && !await this.contains(this.real_input.value)) {
+      return;
     }
     if (value.trim() !== '') {
       this.innerChips = [...this.innerChips, value.trim()];
@@ -382,8 +380,8 @@ export class DiscoveryInputChips {
                onKeyDown={this.handleKeydown.bind(this)}
                onKeyUp={this.updateCaretPosition.bind(this)}
                onClick={this.updateCaretPosition.bind(this)}
-               onFocus={this.handleFocus.bind(this)}/>
+               onFocus={this.handleFocus.bind(this)} />
       </div>
-    </Host>
+    </Host>;
   }
 }

@@ -103,9 +103,9 @@ export class DiscoveryInputComponent {
       opts = JSON.parse(newValue);
     }
     //if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
-      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-      this.parseResult();
+    this.innerOptions = { ...opts };
+    this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
+    this.parseResult();
     // }
   }
 
@@ -444,10 +444,20 @@ export class DiscoveryInputComponent {
   private handleAutoComplete(input: string) {
     if (this.subType === 'chips-autocomplete') {
       return this.values
-        .filter(v => v.k.match(new RegExp( input, this.innerOptions.input?.caseSensitive ? 'g': 'gi')))
+        .filter(v => v.k.match(new RegExp(input, this.innerOptions.input?.caseSensitive ? 'g' : 'gi')))
         .map(v => v.k);
     } else {
       return [];
+    }
+  }
+
+  private handleContains(input: string) {
+    if (this.subType === 'chips-autocomplete') {
+      return this.values
+        .map(v => !!this.innerOptions.input?.caseSensitive ? v.k.toLowerCase() : v.k)
+        .includes(!!this.innerOptions.input?.caseSensitive ? input.toLowerCase() : input);
+    } else {
+      return false;
     }
   }
 
@@ -534,8 +544,9 @@ export class DiscoveryInputComponent {
             ref={el => this.inputField = el}
             chips={this.value as string[]}
             autocomplete={this.handleAutoComplete.bind(this)}
+            contains={this.handleContains.bind(this)}
             onChipChange={e => this.handleSelect(e)}
-            constrain_input={this.subType === 'chips-autocomplete'}
+            constrain_input={!!this.innerOptions.input?.onlyFromAutocomplete}
           ></discovery-input-chips>
         </div>;
       default:

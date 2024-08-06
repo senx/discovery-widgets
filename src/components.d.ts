@@ -202,6 +202,7 @@ export namespace Components {
         "autocomplete": (value: string) => Promise<any>;
         "chips": string[];
         "constrain_input": boolean;
+        "contains": (value: string) => Promise<boolean>;
         "value": string;
     }
     interface DiscoveryInputChipsChip {
@@ -1226,6 +1227,7 @@ declare namespace LocalJSX {
         "autocomplete"?: (value: string) => Promise<any>;
         "chips"?: string[];
         "constrain_input"?: boolean;
+        "contains"?: (value: string) => Promise<boolean>;
         "onChipChange"?: (event: DiscoveryInputChipsCustomEvent<string[]>) => void;
         "onChipClick"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
         "onChipCreate"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
