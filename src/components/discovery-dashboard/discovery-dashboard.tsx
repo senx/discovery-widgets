@@ -54,7 +54,7 @@ export class DiscoveryDashboardComponent {
   @State() result: Dashboard;
   @State() modalContent: Tile | Dashboard;
   @State() headers: any;
-  @State()  loaded = false;
+  @State() loaded = false;
   @State() start: number;
   @State() innerStyle: { [k: string]: string; };
   @State() audioFile: string;
@@ -366,7 +366,7 @@ export class DiscoveryDashboardComponent {
       options = JSON.parse(options);
     }
     let opts = { ...options as Param };
-    return _.merge(new Param(), opts, {eventHandler: undefined}, options2);
+    return _.merge(new Param(), opts, { eventHandler: undefined }, options2);
   }
 
   static mergeVars(vars: any[] | string[]) {
@@ -441,7 +441,7 @@ export class DiscoveryDashboardComponent {
                   }</div>
               </div>)
             }</div>
-        </div>: '';
+        </div> : '';
       case 'dashboard':
         return this.result ?
           <div class="discovery-dashboard-main">
@@ -550,9 +550,9 @@ export class DiscoveryDashboardComponent {
         debug={this.debug} />
       {this.loaded
         ? [
-        <style>{this.generateStyle(this.innerStyle)}</style>,
-        <div ref={el => this.dash = el}>{this.getRendering()}</div>,
-        this.audioFile ? <audio src={this.audioFile} autoPlay id="song" /> : ''
+          <style>{this.generateStyle(this.innerStyle)}</style>,
+          <div ref={el => this.dash = el}>{this.getRendering()}</div>,
+          this.audioFile ? <audio src={this.audioFile} autoPlay id="song" /> : '',
         ]
         : <discovery-spinner>Requesting data...</discovery-spinner>
       }

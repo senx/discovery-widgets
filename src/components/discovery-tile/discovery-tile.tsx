@@ -71,14 +71,19 @@ export class DiscoveryTileComponent {
   private firstExec = false;
 
   @Watch('options')
-  optionsUpdate(newValue: any, oldValue: any) {
+  async optionsUpdate(newValue: any, oldValue: any) {
     this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
     let opts = newValue;
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      if (!Utils.deepEqual(opts.httpHeaders ?? {}, this.innerOptions.httpHeaders ?? {})) {
+        this.innerOptions = { ...opts };
+        await this.exec(true);
+      } else {
+        this.innerOptions = { ...opts };
+      }
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
   }
