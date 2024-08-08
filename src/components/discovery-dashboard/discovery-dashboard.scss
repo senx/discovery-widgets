@@ -27,7 +27,7 @@
   }
 
   .discovery-dashboard-main {
-    height: 100%;
+    height: calc(100% - 20px);
     text-align: center;
     color: var(--warp-view-font-color, $w10-charcoal);
     background: var(--warp-view-dashboard-background, $w10-transparent);
