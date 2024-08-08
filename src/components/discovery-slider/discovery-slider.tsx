@@ -120,9 +120,12 @@ export class DiscoverySlider {
   }
 
   private getSliderOptions() {
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     const minmax = {
       min: this.innerOptions.input?.min || 0,
-      max: (!!this.innerOptions.input?.max || this.innerOptions.input?.max === 0) ? this.innerOptions.input?.max : 100,
+      max: (!!this.innerOptions.input?.max || this.innerOptions.input?.max === 0)
+        ? this.innerOptions.input?.max
+        : 100,
     };
     const start = this.innerValue;
     const range = minmax.max - minmax.min;
