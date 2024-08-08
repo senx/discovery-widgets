@@ -95,7 +95,7 @@ export class DiscoveryTileResultComponent {
 
   @Watch('options')
   optionsUpdate(newValue: any, oldValue: string) {
-    this.LOG?.debug(['optionsUpdate'], newValue, oldValue);
+    this.LOG?.debug(['optionsUpdate'], this.innerType, newValue, oldValue);
     let opts = newValue;
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
@@ -531,14 +531,11 @@ export class DiscoveryTileResultComponent {
           dashBoardType = sub[1];
         }
         return <discovery-dashboard
-          warpscript={`<'
-          ${JSON.stringify(GTSLib.getData(this.innerResult).data)}
-'>
-JSON-> 0 GET`}
-          vars={this.innerVars}
+          data={GTSLib.getData(this.innerResult).data}
+          vars={JSON.stringify(this.innerVars)}
           type={dashBoardType as any}
           url={this.url}
-          options={this.innerOptions}
+          options={JSON.stringify(this.innerOptions)}
           ref={el => this.tile = el || this.tile}
           onRendered={() => this.draw.emit()}
           debug={this.debug}

@@ -355,7 +355,7 @@ export class DiscoveryTileComponent {
               start={this.start}
               result={this.result}
               type={this.type}
-              options={{...this.innerOptions}}
+              options={JSON.stringify(this.innerOptions)}
               unit={this.unit}
               debug={this.debug}
               height={this.height}
