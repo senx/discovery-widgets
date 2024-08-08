@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.1.117
+
+> +  2024/08/08  | v1.1.117 
+> +  2024/08/08  | [input:slider] Fix date display when timeunit is not µs 
+> +  2024/08/08  | Fix when httpHeaders options changes, tiles are not reloaded. 
+> +  2024/08/06  | changelog 
+
 ## v1.1.116
 
 > +  2024/08/06  | v1.1.116 
