@@ -26,6 +26,7 @@ import 'flatpickr/dist/l10n/index';
 import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domToImage from 'dom-to-image';
+import { tz } from 'moment-timezone';
 
 @Component({
   tag: 'discovery-input',
@@ -326,8 +327,11 @@ export class DiscoveryInputComponent {
         if (this.flatpickrInstance) {
           this.flatpickrInstance.set('plugins', []);
           if (this.innerOptions.input?.locale) {
-            const locale = flatpickr.l10ns[this.innerOptions.input?.locale ?? 'default'];
-            this.flatpickrInstance.set('locale', locale);
+            let locale = this.innerOptions.input?.locale ?? 'default';
+            if(locale === 'AUTO') {
+              locale = Utils.getNavigatorLanguage();
+            }
+            this.flatpickrInstance.set('locale', flatpickr.l10ns[locale]);
           }
           this.flatpickrInstance.setDate(this.formatDateTime(`${this.value}`), true);
         }
@@ -339,8 +343,11 @@ export class DiscoveryInputComponent {
         this.selectedValue = this.value;
         if (this.flatpickrInstance) {
           if (this.innerOptions.input?.locale) {
-            const locale = flatpickr.l10ns[this.innerOptions.input?.locale ?? 'default'];
-            this.flatpickrInstance.set('locale', locale);
+            let locale = this.innerOptions.input?.locale ?? 'default';
+            if(locale === 'AUTO') {
+              locale = Utils.getNavigatorLanguage();
+            }
+            this.flatpickrInstance.set('locale', flatpickr.l10ns[locale]);
           }
           this.flatpickrInstance.setDate(
             [

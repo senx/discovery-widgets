@@ -21,6 +21,16 @@ import { DataModel, DiscoveryEvent } from '../model/types';
 
 export class Utils {
 
+  static getNavigatorLanguage = () => {
+    let lang = 'en';
+    if (navigator.languages && navigator.languages.length) {
+      lang = navigator.languages[0];
+    } else {
+      lang = navigator['userLanguage'] || navigator.language || navigator['browserLanguage'] || 'en';
+    }
+    return lang.split('-')[0].toLowerCase();
+  }
+
   static clone(inObject: any): any {
     return cloneDeep(inObject);
   }
