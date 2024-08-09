@@ -22,6 +22,7 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import flatpickr from 'flatpickr';
+import 'flatpickr/dist/l10n/index';
 import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domToImage from 'dom-to-image';
@@ -163,7 +164,7 @@ export class DiscoveryInputComponent {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  componentDidLoad() {
+  async componentDidLoad() {
     switch (this.subType) {
       case 'date':
       case 'date-range':
@@ -324,6 +325,10 @@ export class DiscoveryInputComponent {
         this.selectedValue = this.value;
         if (this.flatpickrInstance) {
           this.flatpickrInstance.set('plugins', []);
+          if (this.innerOptions.input?.locale) {
+            const locale = flatpickr.l10ns[this.innerOptions.input?.locale ?? 'default'];
+            this.flatpickrInstance.set('locale', locale);
+          }
           this.flatpickrInstance.setDate(this.formatDateTime(`${this.value}`), true);
         }
         break;
@@ -333,6 +338,10 @@ export class DiscoveryInputComponent {
         }
         this.selectedValue = this.value;
         if (this.flatpickrInstance) {
+          if (this.innerOptions.input?.locale) {
+            const locale = flatpickr.l10ns[this.innerOptions.input?.locale ?? 'default'];
+            this.flatpickrInstance.set('locale', locale);
+          }
           this.flatpickrInstance.setDate(
             [
               this.formatDateTime(`${this.value[0]}`),
@@ -479,9 +488,9 @@ export class DiscoveryInputComponent {
         />;
       case 'date-range':
         return <div class="range">
-          <span>from</span>
+          <span>{this.innerOptions.input?.fromLabel ?? 'from'}</span>
           <input type="text" class="discovery-input" ref={el => this.inputField = el} />
-          <span>to</span>
+          <span>{this.innerOptions.input?.toLabel ?? 'to'}</span>
           <input type="text" class="discovery-input" ref={el => this.inputField2 = el} />
         </div>;
       case 'autocomplete':

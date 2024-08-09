@@ -16,7 +16,7 @@
 
 import { GTSLib } from './gts.lib';
 import { Param } from '../model/param';
-import { merge, cloneDeep } from 'lodash';
+import { cloneDeep, merge } from 'lodash';
 import { DataModel, DiscoveryEvent } from '../model/types';
 
 export class Utils {
@@ -277,15 +277,15 @@ export class Utils {
     return parsed;
   }
 
-  static parseXML(xmlString, contentType) {
+  static parseXML(xmlString: string, contentType: DOMParserSupportedType) {
     const parser = new DOMParser();
     // Parse a simple Invalid XML source to get namespace of <parsererror>:
     const docError = parser.parseFromString('INVALID', contentType);
-    const parsererrorNS = docError.getElementsByTagName('parsererror')[0].namespaceURI;
+    const parserErrorNS = docError.getElementsByTagName('parsererror')[0].namespaceURI;
     // Parse xmlString:
     // (XMLDocument object)
     const doc = parser.parseFromString(xmlString, contentType);
-    if (doc.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
+    if (doc.getElementsByTagNameNS(parserErrorNS, 'parsererror').length > 0) {
       throw new Error('Error parsing XML');
     }
     return doc;
@@ -307,7 +307,7 @@ export class Utils {
     }
   }
 
-  static deepEqual(object1, object2) {
+  static deepEqual(object1: any, object2: any) {
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
 
@@ -330,7 +330,7 @@ export class Utils {
     return true;
   }
 
-  static isObject(object) {
+  static isObject(object: any) {
     return object != null && typeof object === 'object';
   }
 }

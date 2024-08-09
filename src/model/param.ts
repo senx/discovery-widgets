@@ -162,6 +162,9 @@ export class Param {
     immediate?: boolean,
     caseSensitive?: boolean,
     onlyFromAutocomplete?: boolean,
+    locale?: string,
+    fromLabel?: string,
+    toLabel?: string
   }
   map?: MapParams;
   svg?: {
