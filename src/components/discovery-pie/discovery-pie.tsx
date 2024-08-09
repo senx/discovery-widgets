@@ -330,7 +330,7 @@ export class DiscoveryPieComponent {
 
   componentDidLoad() {
     setTimeout(() => {
-      this.height = Utils.getContentBounds(this.el.parentElement).h;
+      this.height = Utils.getContentBounds(this.el.parentElement).h - 20;
       this.parsing = false;
       this.rendering = true;
       let initial = false;
