@@ -361,12 +361,14 @@ export class DiscoveryDashboardComponent {
     }
   }
 
-  static merge(options: Param | string, options2: Param) {
+  static merge(options: Param | string, tileOptions: Param) {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
     let opts = { ...options as Param };
-    return _.merge(new Param(), opts, { eventHandler: undefined }, options2);
+    const params = _.merge(new Param(), opts, { eventHandler: undefined }, tileOptions ?? {});
+    params.httpHeaders = opts.httpHeaders ?? {};
+    return params;
   }
 
   static mergeVars(vars: any[] | string[]) {

@@ -347,31 +347,28 @@ export class DiscoveryTileComponent {
   render() {
     return <div>
       {this.loaded ?
-        this.hasError
-          ? <div class="discovery-tile-error">{this.errorMessage}</div>
-          : <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <discovery-tile-result
-              url={this.url}
-              start={this.start}
-              result={this.result}
-              type={this.type}
-              options={JSON.stringify(this.innerOptions)}
-              unit={this.unit}
-              debug={this.debug}
-              height={this.height}
-              width={this.width}
-              language={this.language}
-              chart-title={this.chartTitle}
-              chart-description={this.chartDescription}
-              onSelfType={type => this.handleSelfType(type)}
-              vars={JSON.stringify(this.innerVars)}
-              ref={(el) => this.tileResult = el}
-              id={this.componentId}
-            />
-            {this.statusMessage
-              ? <div class="discovery-tile-status">{this.statusMessage}</div>
-              : ''}
-          </div>
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {this.hasError ? <div class="discovery-tile-error">{this.errorMessage}</div> : ''}
+          <discovery-tile-result
+            url={this.url}
+            start={this.start}
+            result={this.result}
+            type={this.type}
+            options={JSON.stringify(this.innerOptions)}
+            unit={this.unit}
+            debug={this.debug}
+            height={this.height}
+            width={this.width}
+            language={this.language}
+            chart-title={this.chartTitle}
+            chart-description={this.chartDescription}
+            onSelfType={type => this.handleSelfType(type)}
+            vars={JSON.stringify(this.innerVars)}
+            ref={(el) => this.tileResult = el}
+            id={this.componentId}
+          />
+          {this.statusMessage ? <div class="discovery-tile-status">{this.statusMessage}</div> : ''}
+        </div>
         : <div class="discovery-tile-spinner">
           {this.showLoader ? <discovery-spinner>Requesting data...</discovery-spinner> : ''}
         </div>
