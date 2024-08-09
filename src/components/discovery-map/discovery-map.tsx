@@ -15,20 +15,21 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, MapParams} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
-import Leaflet, {TileLayerOptions} from 'leaflet';
-import {MapLib} from '../../utils/map-lib';
-import {ColorLib} from '../../utils/color-lib';
-import {AntPath, antPath} from 'leaflet-ant-path';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, MapParams } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
+import Leaflet, { TileLayerOptions } from 'leaflet';
+import { MapLib } from '../../utils/map-lib';
+import { ColorLib } from '../../utils/color-lib';
+import { AntPath, antPath } from 'leaflet-ant-path';
 import domtoimage from 'dom-to-image';
 import 'leaflet-edgebuffer';
 import 'leaflet.heat';
-import {v4} from 'uuid';
+import 'leaflet.markercluster';
+import { v4 } from 'uuid';
 
 @Component({
   tag: 'discovery-map',
@@ -36,11 +37,11 @@ import {v4} from 'uuid';
   shadow: true,
 })
 export class DiscoveryMapComponent {
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop({ mutable: true }) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @State() @Prop() width: number;
-  @State() @Prop({mutable: true}) height: number;
+  @State() @Prop({ mutable: true }) height: number;
   @Prop() debug = false;
 
   @Element() el: HTMLElement;
@@ -58,9 +59,9 @@ export class DiscoveryMapComponent {
   private defOptions: Param = {
     ...new Param(), map: {
       tiles: [],
-      animate: false
-    }
-  }
+      animate: false,
+    },
+  };
   private divider = 1000;
   private LOG: Logger;
   private mapElement: HTMLDivElement;
@@ -131,7 +132,7 @@ export class DiscoveryMapComponent {
   @Method()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
-    return await domtoimage.toPng(this.mapElement, {height: this.height, width: this.width});
+    return await domtoimage.toPng(this.mapElement, { height: this.height, width: this.width });
   }
 
   @Method()
@@ -213,16 +214,16 @@ export class DiscoveryMapComponent {
     this.tileLayers = [];
     // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
-    this.LOG?.debug(['drawMap', 'this.options 2 '], {...data.globalParams});
+    this.LOG?.debug(['drawMap', 'this.options 2 '], { ...data.globalParams });
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
     optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     if (!!this.map) {
       this.map.invalidateSize(true);
     }
     this.LOG?.debug(['drawMap', 'data'], data);
     this.LOG?.debug(['drawMap', 'this.height'], this.height);
-    this.LOG?.debug(['drawMap', 'this.options'], {...this.innerOptions});
+    this.LOG?.debug(['drawMap', 'this.options'], { ...this.innerOptions });
     const dataList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     data.params = data.params || [];
     const params = data.params;
@@ -238,21 +239,21 @@ export class DiscoveryMapComponent {
     this.pathData = MapLib.toLeafletMapPaths({
       gts: dataList,
       params,
-      globalParams: this.innerOptions
+      globalParams: this.innerOptions,
     }, this.hidden, this.innerOptions.scheme) || [];
     this.positionData = MapLib.toLeafletMapPositionArray({
       gts: dataList,
       params,
-      globalParams: this.innerOptions
+      globalParams: this.innerOptions,
     }, this.hidden, this.innerOptions.scheme) || [];
-    this.geoJson = MapLib.toGeoJSON({gts: dataList, params});
+    this.geoJson = MapLib.toGeoJSON({ gts: dataList, params });
 
     if (this.mapOpts.mapType !== 'NONE') {
       const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'] || MapLib.mapTypes.DEFAULT;
       const mapOpts: TileLayerOptions = {
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
         maxZoom: this.mapOpts.maxZoom || 40,
-        edgeBufferTiles: 5
+        edgeBufferTiles: 5,
       };
       if (map.attribution) {
         mapOpts.attribution = map.attribution;
@@ -260,7 +261,7 @@ export class DiscoveryMapComponent {
       if (map.subdomains) {
         mapOpts.subdomains = map.subdomains;
       }
-      this.LOG?.debug(['displayMap'], {isRefresh, optionUpdate});
+      this.LOG?.debug(['displayMap'], { isRefresh, optionUpdate });
       if (!isRefresh || optionUpdate) {
         this.LOG?.debug(['displayMap'], 'map', map);
         this.tileLayers.push(map.link);
@@ -293,7 +294,7 @@ export class DiscoveryMapComponent {
         maxBoundsViscocity: 1,
         worldCopyJump: true,
         maxBounds: new Leaflet.LatLngBounds(new Leaflet.latLng(-89.98155760646617, -180), new Leaflet.LatLng(89.99346179538875, 180)),
-        maxZoom: this.mapOpts.maxZoom || 19
+        maxZoom: this.mapOpts.maxZoom || 19,
       });
       this.geoJsonLayer.bringToBack();
       Leaflet.control.scale().addTo(this.map);
@@ -323,7 +324,7 @@ export class DiscoveryMapComponent {
     for (let i = 0; i < positionsSize; i++) {
       const pData = this.positionData[i];
       if (!!pData) {
-        this.updatePositionArray(this.positionData[i], data.params[i]);
+        this.updatePositionArray(pData, data.params[i], i);
       }
     }
     this.LOG?.debug(['displayMap'], 'positionData', this.positionData);
@@ -332,7 +333,7 @@ export class DiscoveryMapComponent {
       const tile: { url?: string, subdomains: string, maxNativeZoom: number, maxZoom: number } = {
         subdomains: 'abcd',
         maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
-        maxZoom: this.mapOpts.maxZoom || 19
+        maxZoom: this.mapOpts.maxZoom || 19,
       };
       if (typeof t === 'string') {
         tile.url = t;
@@ -345,7 +346,7 @@ export class DiscoveryMapComponent {
       const l = Leaflet.tileLayer(tile.url, {
         subdomains: 'abcd',
         maxNativeZoom: tile.maxNativeZoom || 19,
-        maxZoom: this.mapOpts.maxZoom || 19
+        maxZoom: this.mapOpts.maxZoom || 19,
       });
 
       // eslint-disable-next-line no-underscore-dangle
@@ -373,11 +374,11 @@ export class DiscoveryMapComponent {
             fillColor: (data.params && data.params[i])
               ? ColorLib.transparentize(data.params[i].fillColor ?? color)
               : ColorLib.transparentize(color),
-          })
+          }),
         } as any;
         if (m.geometry.type === 'Point') {
           opts.pointToLayer = (geoJsonPoint: any, latlng: any) => Leaflet.marker(latlng, {
-            icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || {marker: 'circle'}).marker : 'circle', (data.params && data.params[i])),
+            icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || { marker: 'circle' }).marker : 'circle', (data.params && data.params[i]), 0),
             riseOnHover: true,
             opacity: 1,
           });
@@ -397,7 +398,7 @@ export class DiscoveryMapComponent {
     for (let i = 0; i < size; i++) {
       let p = (params || [])[i];
       if (!p) {
-        p = {...new Param()};
+        p = { ...new Param() };
       }
       if (!!p.map?.heatmap && dataList[i].v[0] && dataList[i].v[0].length >= 3) {
         const g = dataList[i];
@@ -407,8 +408,8 @@ export class DiscoveryMapComponent {
         const hasHeatmapData = g.v.map(v => {
           max = Math.max(max, v[v.length - 1]);
           min = Math.min(min, v[v.length - 1]);
-          Leaflet.circleMarker([v[1], v[2]], {radius: 1}).addTo(this.shadowHeatmapLayer);
-          return [v[1], v[2], v[v.length - 1]]
+          Leaflet.circleMarker([v[1], v[2]], { radius: 1 }).addTo(this.shadowHeatmapLayer);
+          return [v[1], v[2], v[v.length - 1]];
         });
         Leaflet.heatLayer(hasHeatmapData, {
           radius: p.map?.heatRadius || this.innerOptions.map?.heatRadius || 25,
@@ -431,33 +432,33 @@ export class DiscoveryMapComponent {
             if (this.mapOpts.track) {
               this.map.setView({
                   lat: this.mapOpts.startLat || this.bounds.getCenter().lat || 0,
-                  lng: this.mapOpts.startLong || this.bounds.getCenter().lng || 0
+                  lng: this.mapOpts.startLong || this.bounds.getCenter().lng || 0,
                 }, this.mapOpts.startZoom || this.map.getBoundsZoom(this.bounds) || 10,
-                {animate: true}
+                { animate: true },
               );
             } else {
               this.map.setView({
                   lat: this.currentLat || this.mapOpts.startLat || 0,
-                  lng: this.currentLong || this.mapOpts.startLong || 0
+                  lng: this.currentLong || this.mapOpts.startLong || 0,
                 }, this.currentZoom || this.mapOpts.startZoom || 10,
-                {animate: false});
+                { animate: false });
             }
           } else if (this.map && this.bounds) {
             this.LOG?.debug(['displayMap', 'setView'], 'fitBounds', 'this.bounds', this.bounds);
-            this.map.fitBounds(this.bounds, {padding: [1, 1], animate: false, duration: 0});
+            this.map.fitBounds(this.bounds, { padding: [1, 1], animate: false, duration: 0 });
           }
           this.currentLat = this.map.getCenter().lat;
           this.currentLong = this.map.getCenter().lng;
         } else {
-          this.LOG?.debug(['displayMap', 'setView'], 'invalid bounds', {lat: this.currentLat, lng: this.currentLong});
+          this.LOG?.debug(['displayMap', 'setView'], 'invalid bounds', { lat: this.currentLat, lng: this.currentLong });
           this.map.setView({
               lat: this.currentLat || this.mapOpts.startLat || 0,
-              lng: this.currentLong || this.mapOpts.startLong || 0
+              lng: this.currentLong || this.mapOpts.startLong || 0,
             }, this.currentZoom || this.mapOpts.startZoom || 10,
             {
               animate: false,
-              duration: 0
-            }
+              duration: 0,
+            },
           );
           zoomPromise = new Promise(resolve => this.map.once('moveend zoomend', () => resolve()));
         }
@@ -472,13 +473,13 @@ export class DiscoveryMapComponent {
       this.map.setView(
         [
           this.currentLat || this.mapOpts.startLat || 0,
-          this.currentLong || this.mapOpts.startLong || 0
+          this.currentLong || this.mapOpts.startLong || 0,
         ],
         this.currentZoom || this.mapOpts.startZoom || 2,
         {
           animate: false,
-          duration: 0
-        }
+          duration: 0,
+        },
       );
       zoomPromise = new Promise(resolve => setTimeout(() => this.map.once('moveend zoomend', () => resolve())));
     }
@@ -494,9 +495,8 @@ export class DiscoveryMapComponent {
       }, 500));
   }
 
-  private icon(color: string, marker = '', param: Param) {
+  private icon(color: string, marker: string | string[] = '', param: Param, i: number) {
     const c = `${ColorLib.sanitizeColor(color).slice(1)}`;
-    const m = marker !== '' ? marker : 'circle';
     let iconUrl: string;
     let iconSize = [20, 20];
     let iconAnchor = [10, 10];
@@ -505,10 +505,11 @@ export class DiscoveryMapComponent {
       iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
       iconAnchor = [iconSize[0] / 2, iconSize[0] / 2];
     }
-    if (marker.startsWith('http') || marker.startsWith('data:image')) {
-      iconUrl = marker;
-    } else if (marker.startsWith('<svg')) {
-      iconUrl = 'data:image/svg+xml;base64,' + window.btoa(marker);
+    let mark: string = GTSLib.isArray(marker) ? marker[i] ?? 'circle' : marker as string ?? 'circle';
+    if (mark.startsWith('http') || mark.startsWith('data:image')) {
+      iconUrl = mark;
+    } else if (mark.startsWith('<svg')) {
+      iconUrl = 'data:image/svg+xml;base64,' + window.btoa(mark);
     } else {
       iconAnchor = [10, 22];
       const margin = 2;
@@ -517,9 +518,9 @@ export class DiscoveryMapComponent {
         iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
         iconAnchor = [iconSize[0] / 2, iconSize[0] - margin];
       }
-      iconUrl = `https://www.mapmarker.io/api/v2/font-awesome/v5/pin?icon=fa-${m}-solid&size=${iconSize[0]}&color=fff&background=${c}`;
+      iconUrl = `https://www.mapmarker.io/api/v2/font-awesome/v5/pin?icon=fa-${mark}-solid&size=${iconSize[0]}&color=fff&background=${c}`;
     }
-    return Leaflet.icon({iconUrl, iconAnchor, iconSize, popupAnchor: this.popupAnchor});
+    return Leaflet.icon({ iconUrl, iconAnchor, iconSize, popupAnchor: this.popupAnchor });
   }
 
   private getGTSDots(gts: any, param: Param) {
@@ -528,7 +529,7 @@ export class DiscoveryMapComponent {
     let size: number;
     switch (gts.render) {
       case 'path': {
-        icon = this.icon(gts.color, gts.marker, param);
+        icon = this.icon(gts.color, gts.marker, param, 0);
         size = (gts.path ?? []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
@@ -540,12 +541,12 @@ export class DiscoveryMapComponent {
                 fillColor: gts.color,
                 fillOpacity: 1,
                 riseOnHover: true,
-              }
+              },
             );
             this.addPopup(gts, g.val, g.ts, marker);
             dots.push(marker);
           } else {
-            const marker = Leaflet.marker(g, {icon, riseOnHover: true, opacity: 1});
+            const marker = Leaflet.marker(g, { icon, riseOnHover: true, opacity: 1 });
             this.addPopup(gts, g.val, g.ts, marker);
             dots.push(marker);
           }
@@ -553,11 +554,16 @@ export class DiscoveryMapComponent {
         break;
       }
       case 'marker':
-        icon = this.icon(gts.color, gts.marker, param);
+        if (!GTSLib.isArray(gts.marker)) {
+          icon = this.icon(gts.color, gts.marker, param, 0);
+        }
         size = (gts.path || []).length;
         for (let i = 0; i < size; i++) {
+          if (GTSLib.isArray(gts.marker)) {
+            icon = this.icon(gts.color, gts.marker, param, i);
+          }
           const g = gts.path[i];
-          const marker = Leaflet.marker(g, {icon, riseOnHover: true, opacity: 1});
+          const marker = Leaflet.marker(g, { icon, riseOnHover: true, opacity: 1 });
           this.addPopup(gts, g.val, g.ts, marker);
           dots.push(marker);
         }
@@ -577,7 +583,7 @@ export class DiscoveryMapComponent {
               color: gts.borderColor || 'transparent',
               fillColor: gts.color, fillOpacity: 0.5,
               riseOnHover: true,
-              weight: 1
+              weight: 1,
             });
           this.addPopup(gts, p.val, p.ts, marker);
           dots.push(marker);
@@ -594,8 +600,8 @@ export class DiscoveryMapComponent {
               color: gts.color,
               riseOnHover: true,
               fillColor: gts.color,
-              fillOpacity: 1
-            }
+              fillOpacity: 1,
+            },
           );
           this.addPopup(gts, g.val, g.ts, marker);
           dots.push(marker);
@@ -614,10 +620,10 @@ export class DiscoveryMapComponent {
           delay: 800, dashArray: [10, 100],
           weight: 5, color: ColorLib.transparentize(gts.color, 0.5),
           pulseColor: gts.color,
-          paused: false, reverse: false, hardwareAccelerated: true, hardwareAcceleration: true
+          paused: false, reverse: false, hardwareAccelerated: true, hardwareAcceleration: true,
         }));
       } else {
-        group.addLayer(Leaflet.polyline(path || [], {color: gts.color, opacity: 0.5}));
+        group.addLayer(Leaflet.polyline(path || [], { color: gts.color, opacity: 0.5 }));
       }
     }
     const dots = this.getGTSDots(gts, param);
@@ -636,7 +642,7 @@ export class DiscoveryMapComponent {
           .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }
       let content = '';
-      content = `${date? `<p>${date}</p>`: ''}<p><b>${positionData.key}</b>: ${value === 0 ? 0 : value || 'na'}</p>`;
+      content = `${date ? `<p>${date}</p>` : ''}<p><b>${positionData.key}</b>: ${value === 0 ? 0 : value || 'na'}</p>`;
       Object.keys(positionData.properties || [])
         .forEach(k => content += `<b>${k}</b>: ${decodeURIComponent(positionData.properties[k])}<br />`);
 
@@ -647,7 +653,7 @@ export class DiscoveryMapComponent {
         marker.openPopup();
         this.markerOver = true;
         if (!!this.popupTimeout) {
-          clearTimeout(this.popupTimeout)
+          clearTimeout(this.popupTimeout);
         }
         this.popupTimeout = setTimeout(() => {
           if (marker.isPopupOpen() && !this.markerOver) marker.closePopup();
@@ -656,22 +662,22 @@ export class DiscoveryMapComponent {
           date: ts,
           name: positionData.key,
           value,
-          meta: positionData.properties
+          meta: positionData.properties,
         });
-      })
-      this.markersRef = {...this.markersRef || {}}
+      });
+      this.markersRef = { ...this.markersRef || {} };
       if (!this.markersRef[positionData.key]) {
         this.markersRef[positionData.key] = {};
       }
       this.markersRef[positionData.key][ts] = marker;
-      marker.bindPopup(content, {autoClose: true});
+      marker.bindPopup(content, { autoClose: true });
     }
     marker.on('mouseout', () => this.markerOver = false);
     marker.on('click', () => {
       const date = this.innerOptions.timeMode === 'date'
         ? GTSLib.zonedTimeToUtc(ts, 1, this.innerOptions.timeZone) * this.divider
         : ts;
-      this.dataPointSelected.emit({date, name: positionData.key, value, meta: positionData.properties});
+      this.dataPointSelected.emit({ date, name: positionData.key, value, meta: positionData.properties });
       if (this.innerOptions.poi) {
         if (this.pois.find(p => p.lat === marker.getLatLng().lat && p.lng === marker.getLatLng().lng && p.name === positionData.key)) {
           this.pois = this.pois.filter(p => p.lat !== marker.getLatLng().lat && p.lng !== marker.getLatLng().lng && p.name !== positionData.key);
@@ -689,8 +695,8 @@ export class DiscoveryMapComponent {
         this.poiLayer.clearLayers();
         this.poi.emit(this.pois);
         this.pois.forEach(p => {
-          const icon = this.icon(this.innerOptions.poiColor, undefined, this.innerOptions);
-          const m = Leaflet.marker([p.lat, p.lng], {icon, riseOnHover: true, opacity: 1});
+          const icon = this.icon(this.innerOptions.poiColor, undefined, this.innerOptions, 0);
+          const m = Leaflet.marker([p.lat, p.lng], { icon, riseOnHover: true, opacity: 1 });
           this.poiLayer.addLayer(m);
         });
       }
@@ -724,8 +730,10 @@ export class DiscoveryMapComponent {
     return Promise.resolve();
   }
 
-  private updatePositionArray(positionData: any, param: Param) {
-    const group = Leaflet.featureGroup();
+  private updatePositionArray(positionData: any, param: Param, dataIndex: number) {
+    const group = this.innerOptions.map?.cluster
+      ? Leaflet.markerClusterGroup()
+      : Leaflet.featureGroup();
     const path = MapLib.updatePositionArrayToLeaflet(positionData.positions);
     if ((positionData.positions || []).length > 1 && !!positionData.line) {
       if (!!this.mapOpts.animate) {
@@ -733,10 +741,10 @@ export class DiscoveryMapComponent {
           delay: 800, dashArray: [10, 100],
           weight: 5, color: ColorLib.transparentize(positionData.color, 0.5),
           pulseColor: positionData.color,
-          paused: false, reverse: false, hardwareAccelerated: true, hardwareAcceleration: true
+          paused: false, reverse: false, hardwareAccelerated: true, hardwareAcceleration: true,
         }));
       } else {
-        group.addLayer(Leaflet.polyline(path || [], {color: positionData.color, opacity: 0.5}));
+        group.addLayer(Leaflet.polyline(path || [], { color: positionData.color, opacity: 0.5 }));
       }
     }
     let icon: any;
@@ -747,11 +755,12 @@ export class DiscoveryMapComponent {
 
     switch (positionData.render) {
       case 'marker':
-        icon = this.icon(positionData.color, positionData.marker, param);
         size = (positionData.positions || []).length;
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
-          const marker = Leaflet.marker({lat: p[0], lng: p[1]}, {icon, riseOnHover: true, opacity: 1});
+          icon = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[i] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,
+            GTSLib.isArray(positionData.marker) ? i : 0);
+          const marker = Leaflet.marker({ lat: p[0], lng: p[1] }, { icon, riseOnHover: true, opacity: 1 });
           this.addPopup(positionData, p[2], undefined, marker);
           group.addLayer(marker);
         }
@@ -772,7 +781,7 @@ export class DiscoveryMapComponent {
 
           this.LOG?.debug(['updatePositionArray', 'coloredWeightedDots', 'radius'], positionData.baseRadius * p[4]);
           const marker = Leaflet.circleMarker(
-            {lat: p[0], lng: p[1]},
+            { lat: p[0], lng: p[1] },
             {
               radius,
               color: positionData.borderColor || positionData.color,
@@ -793,7 +802,7 @@ export class DiscoveryMapComponent {
           const p = positionData.positions[i];
           const radius = (parseInt(p[2], 10) - (positionData.minValue || 0)) * 50 / (positionData.maxValue || 50);
           const marker = Leaflet.circleMarker(
-            {lat: p[0], lng: p[1]}, {
+            { lat: p[0], lng: p[1] }, {
               radius,
               color: positionData.borderColor || positionData.color,
               fillColor: positionData.color,
@@ -811,7 +820,7 @@ export class DiscoveryMapComponent {
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
           const marker = Leaflet.circleMarker(
-            {lat: p[0], lng: p[1]}, {
+            { lat: p[0], lng: p[1] }, {
               radius: positionData.baseRadius || MapLib.BASE_RADIUS,
               color: positionData.borderColor || positionData.color,
               fillColor: positionData.color,
@@ -828,8 +837,8 @@ export class DiscoveryMapComponent {
   }
 
   render() {
-    return <div class="map-container" style={{width: `${this.width}px`, height: `${this.height}px`}}>
-      <div ref={(el) => this.mapElement = el}/>
+    return <div class="map-container" style={{ width: `${this.width}px`, height: `${this.height}px` }}>
+      <div ref={(el) => this.mapElement = el} />
     </div>;
   }
 

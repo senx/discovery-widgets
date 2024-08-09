@@ -68,6 +68,7 @@ export class MapParams {
     delay?: number;
     tooltip?: any;
     iconSize?: number | number[];
+    cluster?: boolean;
 }
 
 export class Dataset {
