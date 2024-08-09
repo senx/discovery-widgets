@@ -636,7 +636,7 @@ export class DiscoveryMapComponent {
           .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }
       let content = '';
-      content = `<p>${date}</p><p><b>${positionData.key}</b>: ${value === 0 ? 0 : value || 'na'}</p>`;
+      content = `${date? `<p>${date}</p>`: ''}<p><b>${positionData.key}</b>: ${value === 0 ? 0 : value || 'na'}</p>`;
       Object.keys(positionData.properties || [])
         .forEach(k => content += `<b>${k}</b>: ${decodeURIComponent(positionData.properties[k])}<br />`);
 
