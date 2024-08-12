@@ -1,6 +1,24 @@
 Discovery
 ---
 
+## v1.1.119
+
+> +  2024/08/12  | v1.1.119 
+> +  2024/08/09  | [pie] Fix bottom margin issue 
+> +  2024/08/09  | [map] add clustering support for position arrays 
+> +  2024/08/09  | [input:date] [input:date-range] localization options and AUTO support 
+> +  2024/08/09  | [map] fix invalid date in popups 
+> +  2024/08/09  | [input:date] [input:date-range] localization options 
+> +  2024/08/09  | Fix when httpHeaders options changes, tiles are not reloaded. 
+> +  2024/08/08  | Fix inner dashboard padding 
+
+## v1.1.118
+
+> +  2024/08/08  | v1.1.118 
+> +  2024/08/08  | Fix when httpHeaders options changes, tiles are not reloaded. 
+> +  2024/08/08  | changelog 
+> +  2024/08/08  | deps update 
+
 ## v1.1.117
 
 > +  2024/08/08  | v1.1.117 
