@@ -48,15 +48,17 @@
         overflow: visible;
         background: var(--warp-view-tile-background, $w10-transparent);
 
+
         &.dashboard, &.dashboard-flex, &.dashboard-scada {
           overflow-y: auto;
-          overflow-x: hidden;
+          overflow-x: visible;
           margin-bottom: 20px;
         }
 
         &.dashboard.auto-height, &.dashboard-flex.auto-height, &.dashboard-scada.auto-height {
           height: auto !important;
-          overflow: hidden;
+       //   overflow: hidden;
+          overflow: visible;
           margin-bottom: 20px;
         }
 
