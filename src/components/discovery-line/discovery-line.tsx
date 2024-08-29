@@ -149,7 +149,7 @@ export class DiscoveryLineComponent {
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     const gtsList = [
       ...GTSLib.flattenGtsIdArray(GTSLib.flatDeep([data.data] as any[]), 0).res,
-      ...GTSLib.flatDeep([data.data] as any[]).filter(g => g.values && g.label),
+      ...GTSLib.flatDeep([data.data] as any[]).filter(g => !!g && g.values && g.label),
     ];
     const gtsCount = gtsList.length;
     let multiY = false;

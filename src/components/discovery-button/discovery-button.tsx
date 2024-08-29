@@ -56,6 +56,7 @@ export class DiscoveryButtonComponent {
   @State() innerStyle: { [k: string]: string; };
   @State() active: string;
   @State() innerOptions: Param;
+  @State() loading = false;
 
   private defOptions: Param = new Param();
   private LOG: Logger;
@@ -165,6 +166,7 @@ export class DiscoveryButtonComponent {
   }
 
   private handleClick() {
+    this.loading = true;
     const ws = LangUtils.prepare(
       `${this.innerResult.data} EVAL`,
       this.innerVars || {},
@@ -185,9 +187,11 @@ export class DiscoveryButtonComponent {
             this.discoveryEvent.emit({ ...e, source: this.el.id });
           });
         }
+        this.loading = false;
         this.execResult.emit(res.data);
       })
       .catch(e => {
+        this.loading = false;
         this.statusError.emit(e);
         this.LOG?.error(['exec'], e);
       });
@@ -214,21 +218,21 @@ export class DiscoveryButtonComponent {
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div ref={el => this.root = el} class="button-wrapper">
         {this.type === 'button'
-          ? <button type="button" class="discovery-btn"
+          ? <button type="button" class={{'discovery-btn': true, 'button--loading': this.loading}}
+                    disabled={this.loading}
                     innerHTML={this.label}
-                    onClick={() => this.handleClick()} />
+                    onClick={() => this.handleClick()}></button>
           : ''}
         {this.type === 'button:radio'
           ? <div class="discovery-btn-group">
             {GTSLib.isArray(this.innerResult?.data)
               ? (this.innerResult?.data || []).map(v =>
-                <button type="button" class={{
-                  'discovery-btn': true,
-                  'active': v.value === this.active,
-                }}
-                        innerHTML={v.label}
-                        onClick={() => this.toggle(v.value)}
-                />,
+                  <button type="button"
+                          class={{
+                            'discovery-btn': true,
+                            'active': v.value === this.active,
+                          }} innerHTML={v.label} onClick={() => this.toggle(v.value)} />
+                ,
               ) : ''}
           </div> : ''}
       </div>,

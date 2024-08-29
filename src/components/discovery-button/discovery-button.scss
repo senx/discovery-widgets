@@ -45,6 +45,11 @@
       min-width: var(--warp-view-button-width, auto);
       border-radius: var(--warp-view-button-border-radius, 0.25rem);
     }
+
+    button:disabled {
+      background-color: var(--warp-view-button-bg-disabled-color, $w10-lightgrey);;
+      border: 1px solid var(--warp-view-button-disabled-border-color, $w10-grey);
+    }
   }
 
   .discovery-btn-group {
@@ -59,10 +64,12 @@
 
 
       }
+
       &:hover {
         color: var(--warp-view-button-label-color, $w10-white);
         background-color: var(--warp-view-button-bg-color, $w10-blue);
       }
+
       &:not(:last-child) {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
@@ -73,6 +80,31 @@
         border-bottom-left-radius: 0;
       }
     }
-
   }
+
+  .button--loading::before {
+    content: "";
+    position: absolute;
+    width: var(--warp-view-button-font-size, 1rem);
+    height: var(--warp-view-button-font-size, 1rem);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 4px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s ease infinite;
+  }
+  @keyframes button-loading-spinner {
+    from {
+      transform: rotate(0turn);
+    }
+
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
 }
