@@ -188,8 +188,8 @@ export class DiscoveryPieComponent {
       radius: this.type === 'pie' ? '70%' : this.type === 'rose' ? ['30%', '90%'] : ['40%', '90%'],
       roseType: this.type === 'rose' ? 'area' : undefined,
       label: {
-        position: 'outside',
-        overflow: 'none',
+        position: 'outer',
+        alignTo: 'labelLine',
         color: Utils.getLabelColor(this.el),
       },
       emphasis: {
