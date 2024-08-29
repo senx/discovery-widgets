@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.1.120
+
+> +  2024/08/29  | v1.1.120 
+> +  2024/08/29  | [pie] Fix bottom margin issue 
+> +  2024/08/29  | [dashboard] fix overflow in responsive mode 
+> +  2024/08/29  | [tile] do not refresh when httpHeader changes 
+> +  2024/08/29  | [input:button] Add a loading state and disable button during script execution 
+> +  2024/08/12  | changelog 
+> +  2024/08/12  | readmes 
+
 ## v1.1.119
 
 > +  2024/08/12  | v1.1.119 
