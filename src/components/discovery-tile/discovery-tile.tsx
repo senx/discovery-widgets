@@ -78,11 +78,9 @@ export class DiscoveryTileComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      if (!Utils.deepEqual(opts.httpHeaders ?? {}, this.innerOptions.httpHeaders ?? {})) {
-        this.innerOptions = { ...opts };
+      this.innerOptions = { ...opts };
+      if (Utils.deepEqual(opts.httpHeaders ?? {}, this.innerOptions.httpHeaders ?? {})) {
         await this.exec(true);
-      } else {
-        this.innerOptions = { ...opts };
       }
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }

@@ -61,7 +61,6 @@ export class DiscoveryDashboardComponent {
   @State() title: string;
   @State() description: string;
   private types: any = {};
-
   private LOG: Logger;
   private ws: string;
   private timer: any;
@@ -69,6 +68,7 @@ export class DiscoveryDashboardComponent {
   private innerType: 'scada' | 'dashboard' | 'flex';
   private scadaHeight: number;
   private innerStyles: any;
+  private innerOptions: Param;
   private tiles: Tile[];
   private renderedTiles: Tile[];
   private done: any = {};
@@ -85,9 +85,9 @@ export class DiscoveryDashboardComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    if (!Utils.deepEqual(opts, this.options)) {
-      this.options = { ...opts };
-      this.LOG?.debug(['optionsUpdate'], { options: this.options, newValue, oldValue });
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
+      this.LOG?.debug(['optionsUpdate'], { options: this.innerOptions, newValue, oldValue });
     }
   }
 
@@ -128,7 +128,7 @@ export class DiscoveryDashboardComponent {
   @Listen('discoveryEvent', { target: 'window' })
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     this.eventState = Utils.mergeDeep(this.eventState, Utils.parseEventData(event.detail, 'tag=.*,type=.*', this.componentId));
-    const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.componentId);
+    const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.componentId);
     if (res.popup && this.modal) {
       this.modalContent = res.popup;
       await this.modal.open();
@@ -154,7 +154,7 @@ export class DiscoveryDashboardComponent {
     }
     if (res.vars) {
       this.innerVars = { ...(this.innerVars || {}), ...res.vars };
-      if (!((this.options as Param).mutedVars || []).includes(event.detail.selector)) {
+      if (!(this.innerOptions.mutedVars || []).includes(event.detail.selector)) {
         this.exec();
       }
     }
@@ -165,12 +165,13 @@ export class DiscoveryDashboardComponent {
     this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
     this.componentId = v4();
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
-      this.options = JSON.parse(this.options || '{}');
+      this.innerOptions = JSON.parse(this.options || '{}');
+    } else if (this.options === 'undefined') {
+      this.innerOptions = new Param();
+    } else {
+      this.innerOptions = {...(this.options as Param)};
     }
-    if (this.options === 'undefined') {
-      this.options = new Param();
-    }
-    this.LOG?.debug(['componentWillLoad'], { url: this.url, options: this.options });
+    this.LOG?.debug(['componentWillLoad'], { url: this.url, options: this.innerOptions });
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
@@ -233,18 +234,18 @@ export class DiscoveryDashboardComponent {
     if (this.ws && this.ws !== '') {
       this.loaded = false;
       this.done = {};
-      Utils.httpPost(Utils.getUrl(this.url), this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', (this.options as Param).httpHeaders)
+      Utils.httpPost(Utils.getUrl(this.url), this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', this.innerOptions.httpHeaders)
         .then((res: any) => {
           const result = new JsonLib().parse(res.data as string);
           const tmpResult: Dashboard = result.length > 0 ? result[0] ?? new Dashboard() : new Dashboard();
-          this.options = { ...this.options as Param, ...(tmpResult?.options ?? {}) };
+          this.innerOptions = { ...this.innerOptions, ...(tmpResult?.options ?? {}) };
           this.headers = res.headers;
           this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
           this.statusHeaders.emit(this.headers);
           this.loaded = true;
           this.start = new Date().getTime();
-          if (this.autoRefresh !== this.options.autoRefresh) {
-            this.autoRefresh = this.options.autoRefresh;
+          if (this.autoRefresh !== this.innerOptions.autoRefresh) {
+            this.autoRefresh = this.innerOptions.autoRefresh;
             if (this.timer) {
               window.clearInterval(this.timer);
             }
@@ -259,9 +260,9 @@ export class DiscoveryDashboardComponent {
             const ws = LangUtils.prepare(
               Utils.unsescape(tmpResult.tiles + ' EVAL'),
               this.innerVars || {},
-              (this.options)?.skippedVars || [],
+              this.innerOptions?.skippedVars || [],
               'dashboard', 'warpscript');
-            Utils.httpPost(this.url, ws, this.options.httpHeaders).then((t: any) => {
+            Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders).then((t: any) => {
               this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
               this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
               this.processResult(tmpResult);
@@ -291,7 +292,7 @@ export class DiscoveryDashboardComponent {
     } else {
       tmpResult = GTSLib.isArray(this.data) ? this.data[0] : this.data;
     }
-    this.options = { ...this.options as Param, ...tmpResult?.options ?? {} };
+    this.innerOptions = { ...this.innerOptions, ...tmpResult?.options ?? {} };
     this.innerType = tmpResult?.type || this.type || 'dashboard';
     this.loaded = true;
     if (typeof tmpResult?.tiles === 'string') {
@@ -308,12 +309,12 @@ export class DiscoveryDashboardComponent {
       clearInterval(this.refreshTimer);
     }
     if (typeof tmpResult.tiles === 'string') {
-      Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', (this.options as Param).httpHeaders).then((t: any) => {
+      Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', this.innerOptions.httpHeaders).then((t: any) => {
         this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
         this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
         this.processResult(tmpResult);
-        if ((this.options as Param).autoRefresh || 0 > 0 && !!this.data) {
-          this.refreshTimer = setTimeout(() => this.processMacroTiles(tmpResult), (this.options as Param).autoRefresh * 1000);
+        if (this.innerOptions.autoRefresh || 0 > 0 && !!this.data) {
+          this.refreshTimer = setTimeout(() => this.processMacroTiles(tmpResult), this.innerOptions.autoRefresh * 1000);
         }
       }).catch(e => {
         this.LOG?.error(['exec'], e);
@@ -426,7 +427,7 @@ export class DiscoveryDashboardComponent {
                                       id={`chart-${i}}`}
                                       ref={(el) => this.addTile(el, t, i)}
                                       vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
-                                      options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                                      options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result
                       url={t.endpoint || this.url}
@@ -436,7 +437,7 @@ export class DiscoveryDashboardComponent {
                       ref={(el) => this.addTile(el, t, i)}
                       id={`chart-${i}}`}
                       unit={t.unit}
-                      options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                      options={DiscoveryDashboardComponent.merge(this.innerOptions, t.options)}
                       debug={this.debug}
                       chart-title={t.title}
                     />
@@ -475,7 +476,7 @@ export class DiscoveryDashboardComponent {
                                         ref={(el) => this.addTile(el, t, i)}
                                         onSelfType={type => this.setActualType(i, type)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.innerVars, this.result.vars, t.vars]))}
-                                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
                         url={t.endpoint || this.url}
@@ -485,7 +486,7 @@ export class DiscoveryDashboardComponent {
                         unit={t.unit}
                         id={`chart-${i}}`}
                         onSelfType={type => this.setActualType(i, type)}
-                        options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                        options={DiscoveryDashboardComponent.merge(this.innerOptions, t.options)}
                         debug={this.debug}
                         chart-title={t.title}
                       />
@@ -518,7 +519,7 @@ export class DiscoveryDashboardComponent {
                                         onSelfType={type => this.setActualType(i, type)}
                                         ref={(el) => this.addTile(el, t, i)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
-                                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.options, t.options))}
+                                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
                         url={t.endpoint || this.url}
@@ -528,7 +529,7 @@ export class DiscoveryDashboardComponent {
                         unit={t.unit}
                         onSelfType={type => this.setActualType(i, type)}
                         id={`chart-${i}}`}
-                        options={DiscoveryDashboardComponent.merge(this.options, t.options)}
+                        options={DiscoveryDashboardComponent.merge(this.innerOptions, t.options)}
                         debug={this.debug}
                         chart-title={t.title}
                       />
@@ -547,7 +548,7 @@ export class DiscoveryDashboardComponent {
       <discovery-modal
         ref={(el) => this.modal = el}
         data={this.modalContent}
-        options={this.options}
+        options={this.innerOptions}
         url={this.url}
         debug={this.debug} />
       {this.loaded
@@ -563,7 +564,7 @@ export class DiscoveryDashboardComponent {
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
-    this.innerStyles = { ...this.innerStyles, ...styles, ...(this.options as Param).customStyles || {} };
+    this.innerStyles = { ...this.innerStyles, ...styles, ...this.innerOptions.customStyles || {} };
     return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 
