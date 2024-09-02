@@ -26,7 +26,6 @@ import 'flatpickr/dist/l10n/index';
 import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domToImage from 'dom-to-image';
-import { tz } from 'moment-timezone';
 
 @Component({
   tag: 'discovery-input',
@@ -84,6 +83,7 @@ export class DiscoveryInputComponent {
     if (res.style) {
       this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
     }
+    this.parseResult();
   }
 
   @Watch('result')
@@ -149,10 +149,9 @@ export class DiscoveryInputComponent {
     }
     this.innerResult = GTSLib.getData(this.result);
     this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.options ?? {});
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
     this.innerOptions = { ...options };
-
     if (this.innerOptions.customStyles) {
       this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
     }
@@ -277,7 +276,7 @@ export class DiscoveryInputComponent {
   }
 
   private handleSelect(e: any) {
-    this.selectedValue = e.target.value ?? e.detail;
+    this.selectedValue = e?.target?.value ?? e?.detail;
     if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
       this.selectedValue = e.detail;
     }
@@ -394,13 +393,18 @@ export class DiscoveryInputComponent {
         setTimeout(() => {
           let value: string | number | number[] | string[] = this.innerOptions?.input?.value;
           if (this.subType === 'multi' || this.subType === 'multi-cb' || this.subType === 'chips' || this.subType === 'chips-autocomplete') {
-            value = value || [];
+            value = value ?? [];
             if (!GTSLib.isArray(value)) {
               value = [value] as number[] | string[];
             }
           }
           this.value = value;
           this.selectedValue = this.value;
+          if (this.subType === 'multi-cb' && this.checkBoxes) {
+            Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+              .forEach((o: HTMLInputElement) => o.checked = (this.value as any[]).includes(o.value));
+            this.handleSelect({detail: this.value});
+          }
         });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {
@@ -532,7 +536,8 @@ export class DiscoveryInputComponent {
             }
             <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el}>
               {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
-              {this.values.map(v => (<div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
+              {this.values.map(v => (
+                <div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
                 <input type="checkbox" value={v.k}
                        checked={(this.value as string[] || []).includes(v.k)}
                        onInput={e => this.handleSelect(e)}
