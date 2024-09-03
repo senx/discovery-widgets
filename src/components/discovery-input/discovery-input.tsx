@@ -83,7 +83,6 @@ export class DiscoveryInputComponent {
     if (res.style) {
       this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
     }
-    this.parseResult();
   }
 
   @Watch('result')
