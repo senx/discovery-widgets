@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.122
+
+> +  2024/09/03  | v1.1.122 
+> +  2024/09/03  | [input:cb-multi] Fix Event handling and initial state 
+> +  2024/09/03  | changelog 
+
 ## v1.1.121
 
 > +  2024/09/03  | v1.1.121 
