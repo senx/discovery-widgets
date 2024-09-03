@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.121
+
+> +  2024/09/03  | v1.1.121 
+> +  2024/09/02  | [input:cb-multi] Fix Event handling and initial state 
+> +  2024/08/30  | readmes 
+> +  2024/08/30  | [pie] Fix bottom margin issue 
+> +  2024/08/29  | changelog 
+> +  2024/08/29  | update readmes 
+
 ## v1.1.120
 
 > +  2024/08/29  | v1.1.120 
