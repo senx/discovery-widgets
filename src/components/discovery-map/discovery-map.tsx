@@ -765,7 +765,7 @@ export class DiscoveryMapComponent {
           const p = positionData.positions[i];
           icon = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[i] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,
             GTSLib.isArray(positionData.marker) ? i : 0);
-          const marker = Leaflet.marker({ lat: p[0], lng: p[1] }, { icon, riseOnHover: true, opacity: 1 });
+          const marker = Leaflet.marker({ lat: p[0], lng: p[1] }, { icon, riseOnHover: true, opacity: 1, extras: p.slice(2) });
           this.addPopup(positionData, p[2], undefined, marker);
           group.addLayer(marker);
         }
