@@ -731,8 +731,33 @@ export class DiscoveryMapComponent {
   }
 
   private updatePositionArray(positionData: any, param: Param, dataIndex: number) {
+    let opts: { [key: string]: any } = {};
+
+    if (this.mapOpts?.maxClusterRadius) opts.maxClusterRadius = this.mapOpts.maxClusterRadius;
+    if (this.mapOpts?.clusterCustomIcon) {
+      opts.iconCreateFunction = function(cluster) {
+        let ico = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[0] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,0);
+        let icohtmlelt = ico.createIcon();
+        let icow=parseInt(icohtmlelt.style.getPropertyValue("width"),10);
+        let icoh=parseInt(icohtmlelt.style.getPropertyValue("height"),10);
+        let icomarginleft=icohtmlelt.style.getPropertyValue("margin-left");
+        let icomargintop=icohtmlelt.style.getPropertyValue("margin-top");
+        // remove shift from ico, to apply it to the parent div later on
+        icohtmlelt.style.removeProperty("margin-left");
+        icohtmlelt.style.removeProperty("margin-top");
+        // 30 pixel is hardcoded for the cluster child count indicator
+        var html = `<div style="margin-left:${icomarginleft};margin-top:${icomargintop};">
+                       <div style="position:absolute">${icohtmlelt.outerHTML}</div>
+                       <div style="position:absolute;left:${(icow/2)-15}px;top:${(icoh/2)-15}px;width:30px;height:30px;border-radius:50%;background-color:rgba(255,255,255,0.8);text-align:center;line-height: 30px;">
+                         ${cluster.getChildCount()}
+                       </div>
+                    </div>`
+        return Leaflet.divIcon({ html: html});  
+      }.bind(this);
+    }
+
     const group = this.innerOptions.map?.cluster
-      ? Leaflet.markerClusterGroup()
+      ? Leaflet.markerClusterGroup(opts)
       : Leaflet.featureGroup();
     const path = MapLib.updatePositionArrayToLeaflet(positionData.positions);
     if ((positionData.positions || []).length > 1 && !!positionData.line) {

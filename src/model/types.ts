@@ -69,6 +69,9 @@ export class MapParams {
     tooltip?: any;
     iconSize?: number | number[];
     cluster?: boolean;
+    maxClusterRadius?: number;
+   // iconCreateFunction?: string;
+   clusterCustomIcon?:boolean;
 }
 
 export class Dataset {
