@@ -70,7 +70,8 @@ export class MapParams {
     iconSize?: number | number[];
     cluster?: boolean;
     maxClusterRadius?: number;
-    iconCreateFunction?: string;
+   // iconCreateFunction?: string;
+   clusterCustomIcon?:boolean;
 }
 
 export class Dataset {

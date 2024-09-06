@@ -734,7 +734,27 @@ export class DiscoveryMapComponent {
     let opts: { [key: string]: any } = {};
 
     if (this.mapOpts?.maxClusterRadius) opts.maxClusterRadius = this.mapOpts.maxClusterRadius;
-    if (this.mapOpts?.iconCreateFunction) opts.iconCreateFunction = new Function('cluster', this.mapOpts.iconCreateFunction);
+    if (this.mapOpts?.clusterCustomIcon) {
+      opts.iconCreateFunction = function(cluster) {
+        let ico = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[0] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,0);
+        let icohtmlelt = ico.createIcon();
+        let icow=parseInt(icohtmlelt.style.getPropertyValue("width"),10);
+        let icoh=parseInt(icohtmlelt.style.getPropertyValue("height"),10);
+        let icomarginleft=icohtmlelt.style.getPropertyValue("margin-left");
+        let icomargintop=icohtmlelt.style.getPropertyValue("margin-top");
+        // remove shift from ico, to apply it to the parent div later on
+        icohtmlelt.style.removeProperty("margin-left");
+        icohtmlelt.style.removeProperty("margin-top");
+        // 30 pixel is hardcoded for the cluster child count indicator
+        var html = `<div style="margin-left:${icomarginleft};margin-top:${icomargintop};">
+                       <div style="position:absolute">${icohtmlelt.outerHTML}</div>
+                       <div style="position:absolute;left:${(icow/2)-15}px;top:${(icoh/2)-15}px;width:30px;height:30px;border-radius:50%;background-color:rgba(255,255,255,0.8);text-align:center;line-height: 30px;">
+                         ${cluster.getChildCount()}
+                       </div>
+                    </div>`
+        return Leaflet.divIcon({ html: html});  
+      }.bind(this);
+    }
 
     const group = this.innerOptions.map?.cluster
       ? Leaflet.markerClusterGroup(opts)
@@ -765,7 +785,7 @@ export class DiscoveryMapComponent {
           const p = positionData.positions[i];
           icon = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[i] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,
             GTSLib.isArray(positionData.marker) ? i : 0);
-          const marker = Leaflet.marker({ lat: p[0], lng: p[1] }, { icon, riseOnHover: true, opacity: 1, extras: p.slice(2) });
+          const marker = Leaflet.marker({ lat: p[0], lng: p[1] }, { icon, riseOnHover: true, opacity: 1 });
           this.addPopup(positionData, p[2], undefined, marker);
           group.addLayer(marker);
         }
