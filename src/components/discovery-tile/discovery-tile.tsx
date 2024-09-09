@@ -282,6 +282,7 @@ export class DiscoveryTileComponent {
                   this.LOG?.debug(['exec', 'result'], this.result);
                   this.result = res.data as string;
                   this.execResult.emit(this.result);
+                  this.hasError = false;
                   if (toRefresh && refresh && !!this.tileResult) {
                     await this.tileResult.parseEvents();
                   }
@@ -291,12 +292,10 @@ export class DiscoveryTileComponent {
             })
             .catch(e => {
               this.statusError.emit(e);
-              setTimeout(() => {
-                this.loaded = true;
-                this.showLoader = false;
-                this.hasError = this.innerOptions.showErrors;
-                this.errorMessage = e.message || e.statusText;
-              });
+              this.loaded = true;
+              this.showLoader = false;
+              this.hasError = this.innerOptions.showErrors;
+              this.errorMessage = e.message || e.statusText;            
               this.LOG?.error(['exec'], e);
               resolve(true);
             });
