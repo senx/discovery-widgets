@@ -77,18 +77,36 @@ export class Utils {
               fetched: parseInt(resHeaders['x-warp10-fetched'], 10),
             },
           });
-        } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status == 403) {
           reject({
             statusText: xmlHttp.statusText,
             status: xmlHttp.status,
             url: theUrl,
             headers: resHeaders,
-            message: `line #${resHeaders['x-warp10-error-line']}: ${resHeaders['x-warp10-error-message']}`,
-            detail: {
-              mess: resHeaders['x-warp10-error-message'],
-              line: resHeaders['x-warp10-error-line'],
-            },
+            message: `Not Authorized`,
           });
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 500) {
+          if (resHeaders['x-warp10-error-line'] && resHeaders['x-warp10-error-message']){
+            reject({
+              statusText: xmlHttp.statusText,
+              status: xmlHttp.status,
+              url: theUrl,
+              headers: resHeaders,
+              message: `line #${resHeaders['x-warp10-error-line']}: ${resHeaders['x-warp10-error-message']}`,
+              detail: {
+                mess: resHeaders['x-warp10-error-message'],
+                line: resHeaders['x-warp10-error-line'],
+              },
+            });
+          } else {
+            reject({
+              statusText: xmlHttp.statusText,
+              status: xmlHttp.status,
+              url: theUrl,
+              headers: resHeaders,
+              message: `WarpScript Error without message`
+            });
+          }
         } else if (xmlHttp.readyState === 4 && xmlHttp.status === 0) {
           reject({
             statusText: theUrl + ' is unreachable',
