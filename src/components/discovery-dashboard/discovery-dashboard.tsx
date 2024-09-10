@@ -280,7 +280,9 @@ export class DiscoveryDashboardComponent {
         this.LOG?.error(['exec'], e);
       });
     } else {
-      this.parseResult();
+      setTimeout(() => {
+        this.parseResult();  // TODO: dashboard within a dashboard: this hacky delay ensure to have the right innerOptions to avoid the first requests that will end in 403.
+      }, 1000);
     }
   }
 
