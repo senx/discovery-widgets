@@ -15,6 +15,7 @@ export const config: Config = {
   },
   namespace: 'discovery',
   globalStyle: './src/styles.css',
+  globalScript: './src/discovery.ts',
   outputTargets: [
     {
       type: 'dist-custom-elements'
