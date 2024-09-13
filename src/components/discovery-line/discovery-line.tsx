@@ -326,8 +326,10 @@ export class DiscoveryLineComponent {
             textStyle: { color: Utils.getLabelColor(this.el), fontSize: 14 },
           },
           lineStyle: {
+            cap: 'round',
+            join: 'miter',
             color: !opts.visualMap[gts.id] ? color : undefined,
-            width: this.innerOptions.strokeWidth ?? 2,
+            width: ((data.params ?? [])[gts.id] ?? { strokeWidth: undefined }).strokeWidth ?? this.innerOptions.strokeWidth ?? 2,
           },
           itemStyle: type === 'bar' ? {
             opacity: 0.8,
@@ -416,7 +418,7 @@ export class DiscoveryLineComponent {
           itemStyle: isBubble || this.innerOptions.dotSize > 10 ? {
             opacity: 0.8,
             borderColor: color,
-            borderWidth: this.innerOptions.strokeWidth,
+            borderWidth: ((data.params ?? [])[gts.id] ?? { strokeWidth: undefined }).strokeWidth ?? this.innerOptions.strokeWidth,
             color: gts.values[0] && gts.values[0].length === 3
               ? {
                 type: 'radial', x: 0.5, y: 0.5, x2: 1, y2: 1,
