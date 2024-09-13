@@ -495,13 +495,13 @@ export class DiscoveryMapComponent {
       }, 500));
   }
 
-  private icon(color: string, marker: string | string[] = '', param: Param, i: number) {
+  private icon(color: string, marker: string | string[] = '', param: Param, i: number): Leaflet.Icon {
     const c = `${ColorLib.sanitizeColor(color).slice(1)}`;
     let iconUrl: string;
     let iconSize = [20, 20];
     let iconAnchor = [10, 10];
     if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
-      const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || [48, 48];
+      const size = param?.map?.iconSize ?? this.innerOptions?.map?.iconSize ?? [48, 48];
       iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
       iconAnchor = [iconSize[0] / 2, iconSize[0] / 2];
     }
@@ -516,11 +516,11 @@ export class DiscoveryMapComponent {
       if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
         const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || iconSize;
         iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
-        iconAnchor = [iconSize[0] / 2, iconSize[0] - margin];
+        iconAnchor = [iconSize[0] / 2, iconSize[1] - margin];
       }
       iconUrl = `https://www.mapmarker.io/api/v2/font-awesome/v5/pin?icon=fa-${mark}-solid&size=${iconSize[0]}&color=fff&background=${c}`;
     }
-    return Leaflet.icon({ iconUrl, iconAnchor, iconSize, popupAnchor: this.popupAnchor });
+    return Leaflet.icon({ iconUrl, iconAnchor, iconSize }); //, popupAnchor: [0, 0  ]}); //, popupAnchor: this.popupAnchor });
   }
 
   private getGTSDots(gts: any, param: Param) {
@@ -543,11 +543,11 @@ export class DiscoveryMapComponent {
                 riseOnHover: true,
               },
             );
-            this.addPopup(gts, g.val, g.ts, marker);
+            this.addPopup(gts, g.val, g.ts, marker, 0);
             dots.push(marker);
           } else {
             const marker = Leaflet.marker(g, { icon, riseOnHover: true, opacity: 1 });
-            this.addPopup(gts, g.val, g.ts, marker);
+            this.addPopup(gts, g.val, g.ts, marker, icon.options.iconAnchor[1] * -1);
             dots.push(marker);
           }
         }
@@ -564,7 +564,7 @@ export class DiscoveryMapComponent {
           }
           const g = gts.path[i];
           const marker = Leaflet.marker(g, { icon, riseOnHover: true, opacity: 1 });
-          this.addPopup(gts, g.val, g.ts, marker);
+          this.addPopup(gts, g.val, g.ts, marker, 0);
           dots.push(marker);
         }
         break;
@@ -585,7 +585,7 @@ export class DiscoveryMapComponent {
               riseOnHover: true,
               weight: 1,
             });
-          this.addPopup(gts, p.val, p.ts, marker);
+          this.addPopup(gts, p.val, p.ts, marker, 0);
           dots.push(marker);
         }
         break;
@@ -603,7 +603,7 @@ export class DiscoveryMapComponent {
               fillOpacity: 1,
             },
           );
-          this.addPopup(gts, g.val, g.ts, marker);
+          this.addPopup(gts, g.val, g.ts, marker, 0);
           dots.push(marker);
         }
         break;
@@ -634,7 +634,7 @@ export class DiscoveryMapComponent {
     this.pathDataLayer.addLayer(group);
   }
 
-  private addPopup(positionData: any, value: any, ts: any, marker: any) {
+  private addPopup(positionData: any, value: any, ts: any, marker: any, offset: number) {
     if (!!positionData) {
       let date = ts;
       if (ts && (this.innerOptions.timeMode ?? 'date') === 'date') {
@@ -665,12 +665,12 @@ export class DiscoveryMapComponent {
           meta: positionData.properties,
         });
       });
-      this.markersRef = { ...this.markersRef || {} };
+      this.markersRef = { ...this.markersRef ?? {} };
       if (!this.markersRef[positionData.key]) {
         this.markersRef[positionData.key] = {};
       }
       this.markersRef[positionData.key][ts] = marker;
-      marker.bindPopup(content, { autoClose: true });
+      marker.bindPopup(content, { autoClose: true, offset: new Leaflet.Point(0, offset) });
     }
     marker.on('mouseout', () => this.markerOver = false);
     marker.on('click', () => {
@@ -735,25 +735,25 @@ export class DiscoveryMapComponent {
 
     if (this.mapOpts?.maxClusterRadius) opts.maxClusterRadius = this.mapOpts.maxClusterRadius;
     if (this.mapOpts?.clusterCustomIcon) {
-      opts.iconCreateFunction = function(cluster) {
-        let ico = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[0] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,0);
-        let icohtmlelt = ico.createIcon();
-        let icow=parseInt(icohtmlelt.style.getPropertyValue("width"),10);
-        let icoh=parseInt(icohtmlelt.style.getPropertyValue("height"),10);
-        let icomarginleft=icohtmlelt.style.getPropertyValue("margin-left");
-        let icomargintop=icohtmlelt.style.getPropertyValue("margin-top");
+      opts.iconCreateFunction = (cluster: any) => {
+        let ico = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[0] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param, 0);
+        let icoHtmlElt = ico.createIcon();
+        let icoW = parseInt(icoHtmlElt.style.getPropertyValue('width'), 10);
+        let icoH = parseInt(icoHtmlElt.style.getPropertyValue('height'), 10);
+        let icoMarginLeft = icoHtmlElt.style.getPropertyValue('margin-left');
+        let icoMarginTop = icoHtmlElt.style.getPropertyValue('margin-top');
         // remove shift from ico, to apply it to the parent div later on
-        icohtmlelt.style.removeProperty("margin-left");
-        icohtmlelt.style.removeProperty("margin-top");
+        icoHtmlElt.style.removeProperty('margin-left');
+        icoHtmlElt.style.removeProperty('margin-top');
         // 30 pixel is hardcoded for the cluster child count indicator
-        var html = `<div style="margin-left:${icomarginleft};margin-top:${icomargintop};">
-                       <div style="position:absolute">${icohtmlelt.outerHTML}</div>
-                       <div style="position:absolute;left:${(icow/2)-15}px;top:${(icoh/2)-15}px;width:30px;height:30px;border-radius:50%;background-color:rgba(255,255,255,0.8);text-align:center;line-height: 30px;">
+        const html = `<div style="margin-left:${icoMarginLeft};margin-top:${icoMarginTop};">
+                       <div style="position:absolute">${icoHtmlElt.outerHTML}</div>
+                       <div style="position:absolute;left:${(icoW / 2) - 15}px;top:${(icoH / 2) - 15}px;width:30px;height:30px;border-radius:50%;background-color:rgba(255,255,255,0.8);text-align:center;line-height: 30px;">
                          ${cluster.getChildCount()}
                        </div>
-                    </div>`
-        return Leaflet.divIcon({ html: html});  
-      }.bind(this);
+                    </div>`;
+        return Leaflet.divIcon({ html: html });
+      };
     }
 
     const group = this.innerOptions.map?.cluster
@@ -786,7 +786,7 @@ export class DiscoveryMapComponent {
           icon = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[i] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,
             GTSLib.isArray(positionData.marker) ? i : 0);
           const marker = Leaflet.marker({ lat: p[0], lng: p[1] }, { icon, riseOnHover: true, opacity: 1 });
-          this.addPopup(positionData, p[2], undefined, marker);
+          this.addPopup(positionData, p[2], undefined, marker, 0);
           group.addLayer(marker);
         }
         this.LOG?.debug(['updatePositionArray', 'build marker'], icon);
@@ -817,7 +817,7 @@ export class DiscoveryMapComponent {
               riseOnHover: true,
               fillOpacity: 0.3,
             });
-          this.addPopup(positionData, p[2], undefined, marker);
+          this.addPopup(positionData, p[2], undefined, marker, 0);
           group.addLayer(marker);
         }
         break;
@@ -835,7 +835,7 @@ export class DiscoveryMapComponent {
               riseOnHover: true,
               fillOpacity: 0.3,
             });
-          this.addPopup(positionData, p[2], undefined, marker);
+          this.addPopup(positionData, p[2], undefined, marker, 0);
           group.addLayer(marker);
         }
         break;
@@ -853,7 +853,7 @@ export class DiscoveryMapComponent {
               riseOnHover: true,
               fillOpacity: 0.7,
             });
-          this.addPopup(positionData, p[2] === 0 ? 0 : p[2] || 'na', undefined, marker);
+          this.addPopup(positionData, p[2] === 0 ? 0 : p[2] || 'na', undefined, marker, 0);
           group.addLayer(marker);
         }
         break;
