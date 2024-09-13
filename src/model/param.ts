@@ -16,8 +16,8 @@
 
 // noinspection JSUnusedGlobalSymbols
 
-import {ChartType, DiscoveryEvent, MapParams, TimeMode, TimeUnit} from './types';
-import {HeatMaps} from '../utils/color-lib';
+import { ChartType, DiscoveryEvent, MapParams, TimeMode, TimeUnit } from './types';
+import { HeatMaps } from '../utils/color-lib';
 
 export class Param {
   skippedVars?: string[];
@@ -112,6 +112,13 @@ export class Param {
   dotSize = 5;
   strokeWidth = 1;
   stacked?: boolean;
+  popup?: {
+    width?: string;
+    height?: string;
+    bgColor?: string;
+    backdropColor?: string;
+    fontColor?: string;
+  };
 // components specific params
   bar?: {
     horizontal?: boolean,
@@ -165,11 +172,11 @@ export class Param {
     locale?: string,
     fromLabel?: string,
     toLabel?: string
-  }
+  };
   map?: MapParams;
   svg?: {
     handlers?: { selector?: string, event: DiscoveryEvent, hover: boolean, click: boolean }[],
-  }
+  };
   calendar?: {
     horizontal?: boolean,
     firstDay?: number,

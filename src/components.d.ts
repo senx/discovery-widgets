@@ -984,6 +984,7 @@ declare global {
         "statusError": any;
         "execResult": string;
         "selfType": ChartType;
+        "draw": void;
     }
     interface HTMLDiscoveryTileElement extends Components.DiscoveryTile, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryTileElementEventMap>(type: K, listener: (this: HTMLDiscoveryTileElement, ev: DiscoveryTileCustomEvent<HTMLDiscoveryTileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1366,6 +1367,7 @@ declare namespace LocalJSX {
         "chartTitle"?: string;
         "debug"?: boolean;
         "language"?: 'warpscript' | 'flows';
+        "onDraw"?: (event: DiscoveryTileCustomEvent<void>) => void;
         "onExecResult"?: (event: DiscoveryTileCustomEvent<string>) => void;
         "onSelfType"?: (event: DiscoveryTileCustomEvent<ChartType>) => void;
         "onStatusError"?: (event: DiscoveryTileCustomEvent<any>) => void;

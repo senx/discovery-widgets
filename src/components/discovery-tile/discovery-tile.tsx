@@ -46,6 +46,7 @@ export class DiscoveryTileComponent {
   @Event({ bubbles: true }) statusError: EventEmitter;
   @Event({ bubbles: true }) execResult: EventEmitter<string>;
   @Event() selfType: EventEmitter<ChartType>;
+  @Event() draw: EventEmitter<void>;
 
   @Element() el: HTMLElement;
 
@@ -360,6 +361,7 @@ export class DiscoveryTileComponent {
             chart-title={this.chartTitle}
             chart-description={this.chartDescription}
             onSelfType={type => this.handleSelfType(type)}
+            onDraw={e => this.draw.emit()}
             vars={JSON.stringify(this.innerVars)}
             ref={(el) => this.tileResult = el}
             id={this.componentId}

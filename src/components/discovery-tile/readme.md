@@ -25,6 +25,7 @@
 
 | Event           | Description | Type                    |
 | --------------- | ----------- | ----------------------- |
+| `draw`          |             | `CustomEvent<void>`     |
 | `execResult`    |             | `CustomEvent<string>`   |
 | `selfType`      |             | `CustomEvent<string>`   |
 | `statusError`   |             | `CustomEvent<any>`      |
@@ -57,7 +58,7 @@ Type: `Promise<unknown>`
 
 | Name   | Type             | Description |
 | ------ | ---------------- | ----------- |
-| `type` | `"svg" \| "png"` |             |
+| `type` | `"png" \| "svg"` |             |
 
 #### Returns
 

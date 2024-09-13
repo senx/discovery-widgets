@@ -14,10 +14,13 @@
  *   limitations under the License.
  */
 
+@import "../../scss/vars";
+
+
 :host {
 
   div.modal {
- //   display: none; /* Hidden by default */
+    //   display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 999; /* Sit on top */
     left: 0;
@@ -25,26 +28,27 @@
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 
     .modal-content {
-      background-color: var(--warp-view-modal-bg-color, #fefefe);
       margin: 5% auto;
-      padding: 20px;
+      padding-left: 10px;
+      padding-right: 10px;
       border: 1px solid #888;
       min-height: 80%;
-      width: 80%; /* Could be more or less, depending on screen size */
+      width: 80%;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: stretch;
 
       .modal-wrapper {
-        height: calc(100% - 50px);
-        width: calc(100% - 40px);
-        position: absolute;
+        height: calc(100% - 70px);
+        min-height: calc(100% - 70px);
+        width: 100%;
         overflow-y: auto;
         overflow-x: hidden;
-        margin-top: 10px;
-        padding-bottom: 50px;
+        flex-grow: 1;
 
         .discovery-dashboard-tile {
           width: 100%;
@@ -59,20 +63,26 @@
       }
     }
 
-    .close {
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      position: absolute;
-      top: 0;
-      right: 20px;
-      z-index: 900;
+    .header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
 
+      .title {
+        margin: 0;
+        font-size: 18px;
+      }
 
-      &:hover, &:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
+      .close {
+        font-size: 28px;
+        font-weight: bold;
+
+        &:hover, &:focus {
+          color: var(--warp-view-font-color-hover, $w10-black);
+          text-decoration: none;
+          cursor: pointer;
+        }
       }
     }
   }

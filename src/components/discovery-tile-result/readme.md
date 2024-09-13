@@ -43,7 +43,7 @@
 
 | Name   | Type             | Description |
 | ------ | ---------------- | ----------- |
-| `type` | `"svg" \| "png"` |             |
+| `type` | `"png" \| "svg"` |             |
 
 #### Returns
 
