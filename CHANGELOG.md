@@ -1,6 +1,31 @@
 Discovery
 ---
 
+## v1.1.125
+
+> +  2024/09/13  | v1.1.125 
+> +  2024/09/13  | [line][area][step] Fix custom strokeWidth per curve 
+> +  2024/09/13  | [map] Fix popup anchor with custom markers 
+> +  2024/09/13  | Dashboard popup customization 
+> +  2024/09/11  | Add version console output 
+> +  2024/09/11  | Readmes update 
+
+## v1.1.124
+
+> +  2024/09/10  | version bump 
+> +  2024/09/10  | fix the 403 errors with a delay 
+> +  2024/09/09  | swap two words in auto generated doc. unknown reason. 
+> +  2024/09/09  | in case of two consecutive requests, fix error that remains on top of ok result 
+> +  2024/09/09  | clarify execution error messages, in case of 403 
+> +  2024/09/06  | version bump 
+
+## v1.1.123
+
+> +  2024/09/06  | clustering with dataset icon 
+> +  2024/09/05  | Leaflet Marker: Adding support for extra options 
+> +  2024/09/05  | Add support for Leaflet maxClusterRadius and iconCreateFunction 
+> +  2024/09/03  | changelog 
+
 ## v1.1.122
 
 > +  2024/09/03  | v1.1.122 
