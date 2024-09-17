@@ -64,7 +64,7 @@ export class Utils {
         xmlHttp.getAllResponseHeaders().split('\n').forEach(header => {
           if (header.trim() !== '') {
             const h = header.split(':');
-            resHeaders[h[0].trim()] = h[1].trim().replace('\r', '');
+            resHeaders[h[0].trim().toLowerCase()] = h[1].trim().replace('\r', '');
           }
         });
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
