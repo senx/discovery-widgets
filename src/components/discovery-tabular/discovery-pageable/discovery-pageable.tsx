@@ -102,8 +102,9 @@ export class DiscoveryPageable {
     const dataset: Cell[][] = (this.data.values || [])
       .map(row => row.map((v, i) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
       .filter(d => {
-        let found = Object.keys(this.filters).length === 0;
-        Object.keys(this.filters).forEach(k => found = found || d[k].display.toLowerCase().search(this.filters[k].toLowerCase())>=0);
+        if (Object.keys(this.filters).length === 0) { return true }
+        let found = true;
+        Object.keys(this.filters).forEach(k => found = found && d[k]?.display.toLowerCase().search(this.filters[k].toLowerCase())>=0);
         return found;
       });
     if (this.sortCol >= 0) {
