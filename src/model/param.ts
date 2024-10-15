@@ -138,7 +138,8 @@ export class Param {
     fixedWidth: boolean,
     sortable: boolean,
     filterable: boolean,
-    onTop: boolean
+    onTop: boolean,
+    stickyHeader:boolean
   };
   gauge?: {
     horizontal: boolean,

@@ -244,26 +244,28 @@ export class DiscoveryPageable {
     return <div>
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)}/>
       {!!this.options?.tabular?.onTop ? this.getPagination() : ''}
-      <table class="sortable">
-        <thead>
-        {this.data.headers.map((header, i) =>
-          <th
-            data-sort={i}
-            class={this.getClasses(i)}
-            onClick={() => this.sort(i)}
-            style={{
-              width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
-            }}>{header}</th>)
-        }
-        </thead>
-        <thead>
-        {this.options?.tabular?.filterable ? this.data.headers.map((header, i) =>
-            <th
-              data-filter={i} style={{
-              width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
-            }}><input type="text" class="discovery-input" onInput={e => this.filter(i, e)}/></th>)
-          : ''
-        }
+      <table class={!!this.options?.tabular?.stickyHeader ? "sortable nospace" : "sortable"}>
+        <thead class={!!this.options?.tabular?.stickyHeader ? "stickyHeader" : ''}>
+          <tr>
+            {this.data.headers.map((header, i) =>
+              <th
+                data-sort={i}
+                class={this.getClasses(i)}
+                onClick={() => this.sort(i)}
+                style={{
+                  width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
+                }}>{header}</th>)
+            }
+          </tr>
+          <tr>
+            {this.options?.tabular?.filterable ? this.data.headers.map((header, i) =>
+                <th
+                  data-filter={i} style={{
+                  width: this.options.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto'
+                }}><input type="text" class="discovery-input" onInput={e => this.filter(i, e)}/></th>)
+              : ''
+            }
+          </tr>
         </thead>
         <tbody>
         {this.displayedValues.map((value, i) =>

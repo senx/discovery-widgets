@@ -127,4 +127,13 @@
   ul {
     list-style: none;
   }
+
+  .stickyHeader {
+    position: sticky;
+    top: -10px;
+    background-color: white;
+  }
+  .nospace {
+    border-spacing: 0;
+  }
 }
