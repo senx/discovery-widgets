@@ -70,6 +70,10 @@ export class DiscoveryPageable {
     this.drawGridData();
   }
 
+  componentWillRender() {
+    this.drawGridData();
+  }
+
   private goto(page: number) {
     this.page = page;
     this.drawGridData();

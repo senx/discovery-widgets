@@ -218,6 +218,7 @@ export class DiscoveryMapComponent {
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
     optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
     this.innerOptions = { ...options };
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     if (!!this.map) {
       this.map.invalidateSize(true);
     }
