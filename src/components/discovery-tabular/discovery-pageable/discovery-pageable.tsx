@@ -98,9 +98,6 @@ export class DiscoveryPageable {
     this.options = {...options};
     this.pages = [];
     this.elemsCount = this.options.elemsCount || this.elemsCount;
-    for (let i = 0; i < (this.data.values || []).length / this.elemsCount; i++) {
-      this.pages.push(i);
-    }
     this.windowed = this.options.windowed || this.windowed;
     const dataset: Cell[][] = (this.data.values || [])
       .map(row => row.map((v, i) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
@@ -122,6 +119,9 @@ export class DiscoveryPageable {
               : b[this.sortCol].value - a[this.sortCol].value;
         }
       });
+    }    
+    for (let i = 0; i < dataset.length / this.elemsCount; i++) {
+      this.pages.push(i);
     }
     this.displayedValues = dataset.slice(
       Math.max(0, this.elemsCount * this.page),
