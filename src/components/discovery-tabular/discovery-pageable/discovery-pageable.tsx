@@ -106,7 +106,7 @@ export class DiscoveryPageable {
       .map(row => row.map((v, i) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
       .filter(d => {
         let found = Object.keys(this.filters).length === 0;
-        Object.keys(this.filters).forEach(k => found = found || d[k].display.toLowerCase().startsWith(this.filters[k].toLowerCase()));
+        Object.keys(this.filters).forEach(k => found = found || d[k].display.toLowerCase().search(this.filters[k].toLowerCase())>=0);
         return found;
       });
     if (this.sortCol >= 0) {
