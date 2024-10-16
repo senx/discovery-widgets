@@ -267,8 +267,14 @@ export class DiscoveryTileComponent {
                 this.statusMessage = this.headers.statusText;
               }
               this.start = window.performance.now();
-              if (this.autoRefresh !== this.innerOptions.autoRefresh) {
-                this.autoRefresh = this.innerOptions.autoRefresh;
+              let autoRefreshFeedBack = undefined;
+              try {
+                autoRefreshFeedBack = JSON.parse(res.data as string)[0].globalParams.autoRefresh;
+                if (autoRefreshFeedBack < 0) { autoRefreshFeedBack = undefined; } 
+              } catch (error) { 
+              }
+              if (this.autoRefresh !== this.innerOptions.autoRefresh || autoRefreshFeedBack) {
+                this.autoRefresh = autoRefreshFeedBack? autoRefreshFeedBack : this.innerOptions.autoRefresh;
                 if (this.timer) {
                   window.clearInterval(this.timer);
                 }
