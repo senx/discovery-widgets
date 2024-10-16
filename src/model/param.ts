@@ -94,6 +94,7 @@ export class Param {
   };
   isRefresh?: boolean;
   elemsCount?: number;
+  fadeOutAfter?:number;
   windowed?: number;
   eventHandler?: string;
   customStyles?: { [key: string]: string; };

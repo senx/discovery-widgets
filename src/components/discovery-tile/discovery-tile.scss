@@ -66,4 +66,10 @@
     width: calc(100% - 40px);
     margin-top: 12px;
   }
+
+  .hidden-by-ws {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  
 }

@@ -60,10 +60,12 @@ export class DiscoveryTileComponent {
   @State() hasError = false;
   @State() errorMessage = '';
   @State() statusMessage = '';
+  @State() hiddenByWs = false;
 
   private LOG: Logger;
   private ws: string;
   private timer: any;
+  private timerFadeOut: any;
   private innerVars = {};
   private innerOptions: Param = new Param();
   private tileResult: HTMLDiscoveryTileResultElement;
@@ -205,6 +207,7 @@ export class DiscoveryTileComponent {
     this.LOG?.debug(['disconnectedCallback'], 'disconnected');
     if (this.timer) {
       window.clearInterval(this.timer);
+      window.clearInterval(this.timerFadeOut);
     }
     if (!!this.socket) {
       this.socket.close();
@@ -255,6 +258,7 @@ export class DiscoveryTileComponent {
 
           Utils.httpPost(this.url, this.ws, this.innerOptions.httpHeaders)
             .then((res: any) => {
+              this.hiddenByWs = false;
               const toRefresh = this.result === res.data;
               if ((this.type ?? '').startsWith('input')) {
                 this.result = '';
@@ -268,8 +272,11 @@ export class DiscoveryTileComponent {
               }
               this.start = window.performance.now();
               let autoRefreshFeedBack = undefined;
+              let fadeOutAfter = undefined;
               try {
-                autoRefreshFeedBack = JSON.parse(res.data as string)[0].globalParams.autoRefresh;
+                let rws=JSON.parse(res.data as string)[0]
+                autoRefreshFeedBack = rws.globalParams?.autoRefresh;
+                fadeOutAfter = rws.globalParams?.fadeOutAfter;
                 if (autoRefreshFeedBack < 0) { autoRefreshFeedBack = undefined; } 
               } catch (error) { 
               }
@@ -280,6 +287,14 @@ export class DiscoveryTileComponent {
                 }
                 if (this.autoRefresh && this.autoRefresh > 0) {
                   this.timer = window.setInterval(() => void this.exec(true), this.autoRefresh * 1000);
+                }
+              }
+              if (fadeOutAfter) {
+                if (this.timerFadeOut) {
+                  window.clearInterval(this.timerFadeOut);
+                }
+                if (fadeOutAfter > 0) {
+                  this.timerFadeOut = window.setInterval(() => { this.hiddenByWs = true; window.clearInterval(this.timerFadeOut)}, fadeOutAfter * 1000);
                 }
               }
               setTimeout(() => {
@@ -351,7 +366,7 @@ export class DiscoveryTileComponent {
   render() {
     return <div>
       {this.loaded ?
-        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} class={this.hiddenByWs ? "hidden-by-ws" : ""}>
           {this.hasError ? <div class="discovery-tile-error">{this.errorMessage}</div> : ''}
           <discovery-tile-result
             url={this.url}
