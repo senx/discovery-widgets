@@ -70,6 +70,7 @@ export class DiscoveryInputComponent {
   private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
   private inputField2: HTMLInputElement;
   private disabled = false;
+  private delayTimer:any;
 
   private root: HTMLDivElement;
   private flatpickrInstance: flatpickr.Instance;
@@ -239,6 +240,17 @@ export class DiscoveryInputComponent {
   }
 
   private handleClick = () => {
+    if (this.innerOptions.input?.delayRequest && this.innerOptions.input?.delayRequest > 0) {
+      if (this.delayTimer) {
+        window.clearInterval(this.delayTimer);
+      }
+      this.delayTimer = window.setTimeout(() => { this.handleClickRT(); }, this.innerOptions.input?.delayRequest)
+    } else {
+      this.handleClickRT();
+    }
+  }
+
+  private handleClickRT() {
     if (
       this.inputField &&
       this.subType !== 'date' &&

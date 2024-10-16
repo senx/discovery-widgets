@@ -173,7 +173,8 @@ export class Param {
     onlyFromAutocomplete?: boolean,
     locale?: string,
     fromLabel?: string,
-    toLabel?: string
+    toLabel?: string,
+    delayRequest?: number
   };
   map?: MapParams;
   svg?: {
