@@ -65,6 +65,11 @@ export class DiscoveryPageable {
     this.drawGridData();
   }
 
+  // nice hook... avoid infinite loop when globalParams return a new ElemCount
+  componentShouldUpdate(Sold,Snew,Sname) {
+    return !Utils.deepEqual(Sold,Snew);
+  }
+
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryPageable, this.debug);
     this.drawGridData();
