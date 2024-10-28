@@ -59,6 +59,7 @@ export class DiscoveryPageable {
   private sortAsc = true;
   private filters = {};
   private sortCol = -1;
+  private updateCounter = 0;
 
   @Watch('data')
   updateData() {
@@ -66,8 +67,12 @@ export class DiscoveryPageable {
   }
 
   // nice hook... avoid infinite loop when globalParams return a new ElemCount
-  componentShouldUpdate(Sold,Snew,Sname) {
-    return !Utils.deepEqual(Sold,Snew);
+  componentShouldUpdate(Sold, Snew, Sname) {
+    if (Sname === "options") {
+      return !Utils.deepEqual(Sold, Snew);
+    } else {
+      return true;
+    }
   }
 
   componentWillLoad() {
@@ -100,7 +105,6 @@ export class DiscoveryPageable {
       return;
     }
     const options = Utils.mergeDeep<Param>({...new Param(), timeMode: 'date'}, this.options || {});
-    this.options = {...options};
     this.pages = [];
     this.elemsCount = this.options.elemsCount || this.elemsCount;
     this.windowed = this.options.windowed || this.windowed;
@@ -114,6 +118,7 @@ export class DiscoveryPageable {
       });
     if (this.sortCol >= 0) {
       dataset.sort((a, b) => {
+        if (a[this.sortCol] == null || b[this.sortCol] == null) { return -1; }
         switch (a[this.sortCol].type) {
           case 'string':
             return this.sortAsc
@@ -138,6 +143,8 @@ export class DiscoveryPageable {
       elemsCount: this.elemsCount,
       displayedValues: this.displayedValues,
     });
+    this.updateCounter++;
+    this.options = { ...options, extra: this.updateCounter }; // cleaner way to force a render ?
   }
 
   private static formatLabel(name: string) {
