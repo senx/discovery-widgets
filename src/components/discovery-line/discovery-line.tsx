@@ -338,7 +338,7 @@ export class DiscoveryLineComponent {
             cap: 'round',
             join: 'miter',
             color: !opts.visualMap[gts.id] ? color : undefined,
-            width: ((data.params ?? [])[gts.id] ?? { strokeWidth: undefined }).strokeWidth ?? this.innerOptions.strokeWidth ?? 2,
+            width: (data.params ?? [])[gts.id]?.strokeWidth ?? this.innerOptions.strokeWidth ?? 2,
           },
           itemStyle: type === 'bar' ? {
             opacity: 0.8,
