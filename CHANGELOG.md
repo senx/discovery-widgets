@@ -1,9 +1,23 @@
 Discovery
 ---
 
+## v1.1.131
+
+> +  2024/10/30  | Changelog 
+> +  2024/10/30  | Readmes 
+> +  2024/10/30  | [line] [area] Add a slider for the Y axis 
+> +  2024/10/30  | Fix spinner z-index on map 
+> +  2024/10/30  | deps update 
+> +  2024/10/28  | version update 
+> +  2024/10/28  | fix non sorting and sorting with nulls 
+
 ## v1.1.129
 
 > +  2024/10/17  | fix infinite refresh bug on tabular 
+> +  2024/10/17  | fix a color bug with tabular headers 
+
+## v1.1.128
+
 > +  2024/10/17  | fix a color bug with tabular headers 
 > +  2024/10/17  | 1.1.127 
 
