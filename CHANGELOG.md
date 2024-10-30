@@ -1,6 +1,28 @@
 Discovery
 ---
 
+## v1.1.129
+
+> +  2024/10/17  | fix infinite refresh bug on tabular 
+> +  2024/10/17  | fix a color bug with tabular headers 
+> +  2024/10/17  | 1.1.127 
+
+## v1.1.127
+
+> +  2024/10/16  | introduce input delayRequest to throttle inputs without need of showButton 
+> +  2024/10/16  | introduce fadeOutAfter in globalParams feedback to auto hide a tile after some time 
+> +  2024/10/16  | autorefresh can be updated by globalParams feedback 
+> +  2024/10/15  | fix filter bug when line is incomplete. change to cumulative filters 
+> +  2024/10/15  | tabular: add an option to fix the headers 
+> +  2024/10/15  | tabular page number now follows filtering 
+> +  2024/10/15  | tabular filter by regexp 
+> +  2024/10/15  | fix option merge on tabular 
+
+## v1.1.126
+
+> +  2024/09/17  | make sure headers are in lower case 
+> +  2024/09/13  | CHANGELOG 
+
 ## v1.1.125
 
 > +  2024/09/13  | v1.1.125 
