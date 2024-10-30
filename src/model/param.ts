@@ -35,6 +35,7 @@ export class Param {
   type?: ChartType;
   subType?: ChartType;
   showRangeSelector?: boolean = false;
+  showYRangeSelector?: boolean = false;
   timeMode?: TimeMode;
   showDots = false;
   timeUnit: TimeUnit = 'us';

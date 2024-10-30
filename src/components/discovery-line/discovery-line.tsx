@@ -162,7 +162,7 @@ export class DiscoveryLineComponent {
           : 10,
         top: 30,
         bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (!!this.innerOptions.showRangeSelector ? 40 : 0),
-        right: 10,
+        right: 10 + (!!this.innerOptions.showYRangeSelector ? 40 : 0),
         containLabel: true,
       },
       responsive: true,
@@ -213,6 +213,7 @@ export class DiscoveryLineComponent {
         feature: {
           saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
           restore: { show: true },
+          dataZoom: {},
         },
       },
       legend: {
@@ -233,6 +234,14 @@ export class DiscoveryLineComponent {
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
           bottom: !!this.innerOptions.showLegend ? 30 : 20,
+          xAxisIndex: [0],
+          filterMode: 'none',
+        },
+        {
+          type: 'slider',
+          width: '20px',
+          show: !!this.innerOptions.showYRangeSelector,
+          yAxisIndex: [0],
           filterMode: 'none',
         },
         {
