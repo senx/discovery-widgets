@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.132
+
+> +  2024/10/31  | v1.1.132 
+> +  2024/10/31  | [tabular] Fix Pagination buttons on filtered dataset 
+> +  2024/10/31  | [tabular] Fix CSV export with filtered data 
+> +  2024/10/31  | [tabular] Fix infinite loop 
+> +  2024/10/30  | [line] [area] [step] Fix individual strokeWidth when no global strokeWidth 
+> +  2024/10/30  | Changelog 
+
 ## v1.1.131
 
 > +  2024/10/30  | Changelog 
