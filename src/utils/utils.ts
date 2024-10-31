@@ -77,7 +77,7 @@ export class Utils {
               fetched: parseInt(resHeaders['x-warp10-fetched'], 10),
             },
           });
-        } else if (xmlHttp.readyState === 4 && xmlHttp.status == 403) {
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 403) {
           reject({
             statusText: xmlHttp.statusText,
             status: xmlHttp.status,

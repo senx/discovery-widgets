@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars,max-classes-per-file
-import { Component, Event, EventEmitter, h, Prop, State, Watch } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { Logger } from '../../../utils/logger';
 import { Param } from '../../../model/param';
 import { GTSLib } from '../../../utils/gts.lib';
@@ -62,6 +62,7 @@ export class DiscoveryPageable {
   private filters = {};
   private sortCol = -1;
   private updateCounter = 0;
+  private filteredDataset: Cell[][];
 
   @Watch('data')
   updateData() {
@@ -80,6 +81,17 @@ export class DiscoveryPageable {
       this.drawGridData();
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
+  }
+
+  @Method()
+  async getData() {
+    const dataset = [];
+    this.filteredDataset.forEach(row => {
+      const d = {};
+      this.data.headers.forEach((h: string, i: number) => d[h] = row[i].display);
+      dataset.push(d);
+    });
+    return Promise.resolve({ data: dataset, headers: this.data.headers });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -114,7 +126,7 @@ export class DiscoveryPageable {
     this.elemsCount = this.innerOptions.elemsCount || this.elemsCount;
     this.windowed = this.innerOptions.windowed || this.windowed;
     const dataset: Cell[][] = (this.data.values || [])
-      .map(row => row.map((v, i) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
+      .map(row => row.map((v: any, i: number) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
       .filter(d => {
         if (Object.keys(this.filters).length === 0) {
           return true;
@@ -140,6 +152,7 @@ export class DiscoveryPageable {
         }
       });
     }
+    this.filteredDataset = dataset;
     for (let i = 0; i < dataset.length / this.elemsCount; i++) {
       this.pages.push(i);
     }

@@ -26,6 +26,19 @@
 | `dataPointSelected` |             | `CustomEvent<any>` |
 
 
+## Methods
+
+### `getData() => Promise<{ data: any[]; headers: string[]; }>`
+
+
+
+#### Returns
+
+Type: `Promise<{ data: any[]; headers: string[]; }>`
+
+
+
+
 ## Dependencies
 
 ### Used by

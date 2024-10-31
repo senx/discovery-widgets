@@ -270,6 +270,7 @@ export namespace Components {
         "debug": boolean;
         "divider": number;
         "elemsCount": number;
+        "getData": () => Promise<{ data: any[]; headers: string[]; }>;
         "options": Param;
         "params": Param[];
         "windowed": number;

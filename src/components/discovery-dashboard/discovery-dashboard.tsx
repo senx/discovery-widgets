@@ -368,7 +368,7 @@ export class DiscoveryDashboardComponent {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
-    let opts = { ...options as Param };
+    const opts = { ...options as Param };
     const params = _.merge(new Param(), opts, { eventHandler: undefined }, tileOptions ?? {});
     params.httpHeaders = opts.httpHeaders ?? {};
     return params;
@@ -421,7 +421,7 @@ export class DiscoveryDashboardComponent {
                 <div>
                   {t.macro
                     ? <discovery-tile url={t.endpoint || this.url}
-                                      type={t.type as ChartType}
+                                      type={t.type}
                                       chart-title={t.title}
                                       unit={t.unit}
                                       onSelfType={type => this.setActualType(i, type)}
@@ -434,7 +434,7 @@ export class DiscoveryDashboardComponent {
                     : <discovery-tile-result
                       url={t.endpoint || this.url}
                       result={DiscoveryDashboardComponent.sanitize(t.data)}
-                      type={t.type as ChartType}
+                      type={t.type}
                       onSelfType={type => this.setActualType(i, type)}
                       ref={(el) => this.addTile(el, t, i)}
                       id={`chart-${i}}`}
@@ -470,7 +470,7 @@ export class DiscoveryDashboardComponent {
                   <div>
                     {t.macro
                       ? <discovery-tile url={t.endpoint || this.url}
-                                        type={t.type as ChartType}
+                                        type={t.type}
                                         chart-title={t.title}
                                         debug={this.debug}
                                         unit={t.unit}
@@ -483,7 +483,7 @@ export class DiscoveryDashboardComponent {
                       : <discovery-tile-result
                         url={t.endpoint || this.url}
                         result={DiscoveryDashboardComponent.sanitize(t.data)}
-                        type={t.type as ChartType}
+                        type={t.type}
                         ref={(el) => this.addTile(el, t, i)}
                         unit={t.unit}
                         id={`chart-${i}}`}
@@ -513,7 +513,7 @@ export class DiscoveryDashboardComponent {
                   <div>
                     {t.macro
                       ? <discovery-tile url={t.endpoint || this.url}
-                                        type={t.type as ChartType}
+                                        type={t.type}
                                         chart-title={t.title}
                                         debug={this.debug}
                                         unit={t.unit}
@@ -526,7 +526,7 @@ export class DiscoveryDashboardComponent {
                       : <discovery-tile-result
                         url={t.endpoint || this.url}
                         result={DiscoveryDashboardComponent.sanitize(t.data)}
-                        type={t.type as ChartType}
+                        type={t.type}
                         ref={(el) => this.addTile(el, t, i)}
                         unit={t.unit}
                         onSelfType={type => this.setActualType(i, type)}
