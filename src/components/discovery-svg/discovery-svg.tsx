@@ -15,12 +15,12 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, DiscoveryEvent} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
+import { Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
 import html2canvas from 'html2canvas';
 
 @Component({
@@ -33,8 +33,8 @@ export class DiscoverySvgComponent {
   @Prop() type: ChartType;
   @Prop() start: number;
   @Prop() options: Param | string = new Param();
-  @Prop({mutable: true}) width: number;
-  @Prop({mutable: true}) height: number;
+  @Prop({ mutable: true }) width: number;
+  @Prop({ mutable: true }) height: number;
   @Prop() debug = false;
   @Prop() unit = '';
   @Prop() url: string;
@@ -56,7 +56,7 @@ export class DiscoverySvgComponent {
   @State() parsing = false;
   @State() toDisplay: string[] = [];
   @State() innerStyle: { [k: string]: string };
-  @State() innerResult: DataModel
+  @State() innerResult: DataModel;
   @State() innerOptions: Param;
 
   private LOG: Logger;
@@ -80,11 +80,11 @@ export class DiscoverySvgComponent {
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       setTimeout(() => this.parseResult());
-      this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
   }
 
-  @Listen('discoveryEvent', {target: 'window'})
+  @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     this.funqueue.push(this.wrapFunction(this.processEvent.bind(this), this, [event]));
   }
@@ -108,22 +108,22 @@ export class DiscoverySvgComponent {
   convert(data: DataModel) {
     const toDisplay = [];
     this.refs = [];
-    this.LOG?.debug(['convert'], data)
+    this.LOG?.debug(['convert'], data);
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     if (this.innerOptions.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
+      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
     }
     if (GTSLib.isArray(data.data)) {
       (data.data as any[] || []).forEach(img => {
-        this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(img))
+        this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(img));
         if (DiscoverySvgComponent.isSVG(img)) {
           toDisplay.push(this.sanitize(img));
         }
-      })
+      });
     } else if (data.data && DiscoverySvgComponent.isSVG(data.data)) {
-      this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(data.data))
+      this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(data.data));
       toDisplay.push(this.sanitize(data.data as string));
     }
 
@@ -134,17 +134,17 @@ export class DiscoverySvgComponent {
     return new Promise(resolve => {
       const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.el.id);
       if (res.style) {
-        this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+        this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
       }
       if (res.xpath) {
         const toDisplay = [];
         (this.toDisplay || []).forEach(img => {
-          this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(img))
+          this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(img));
           if (DiscoverySvgComponent.isSVG(img)) {
             toDisplay.push(this.sanitize(img, res.xpath.selector, res.xpath.value));
           }
-        })
-        this.toDisplay = [...toDisplay]
+        });
+        this.toDisplay = [...toDisplay];
       }
       resolve(true);
     });
@@ -173,7 +173,7 @@ export class DiscoverySvgComponent {
       this.innerOptions = this.options;
     }
     this.innerResult = GTSLib.getData(this.result);
-    this.toDisplay = this.convert(this.innerResult || new DataModel())
+    this.toDisplay = this.convert(this.innerResult || new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -186,32 +186,32 @@ export class DiscoverySvgComponent {
             svgWrapper.querySelectorAll(h.selector).forEach(elem => {
               elem.classList.add('hoverable');
               if (!!h.click) {
-                elem.addEventListener('click', () => this.triggerEvent(h.event))
+                elem.addEventListener('click', () => this.triggerEvent(h.event));
               }
               if (!!h.hover) {
-                elem.addEventListener('mouseover', () => this.triggerEvent(h.event))
+                elem.addEventListener('mouseover', () => this.triggerEvent(h.event));
               }
             });
           }
         });
 
       });
-    })
+    });
     this.parsing = false;
     this.draw.emit();
   }
 
-  private static isSVG(data) {
+  private static isSVG(data: any) {
     return typeof data === 'string' && /<svg/gi.test(data);
   }
 
-  private sanitize(svg, xpath?: string, replacement?: string | { [k: string]: string }) {
+  private sanitize(svg: string, xpath?: string, replacement?: string | { [k: string]: string }) {
     try {
       const svgDoc = Utils.parseXML(svg, 'image/svg+xml');
       const el = svgDoc.getElementsByTagName('svg').item(0);
       if (!!xpath) {
         const nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
-        const iterator = svgDoc.evaluate(nsXpath, svgDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
+        const iterator = svgDoc.evaluate(nsXpath, svgDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
         let elem = iterator.iterateNext();
         const elemsToReplace: SVGElement[] = [];
         while (elem) {
@@ -225,7 +225,13 @@ export class DiscoverySvgComponent {
             g.innerHTML = replacement.trim();
             parent.replaceChild(g.firstChild, e);
           } else {
-            Object.keys(replacement).forEach(k => e.setAttribute(k, replacement[k].toString()));
+            Object.keys(replacement).forEach(k => {
+              if ('innerHTML' !== k) {
+                e.setAttribute(k, replacement[k].toString());
+              } else {
+                e.innerHTML = replacement[k].toString();
+              }
+            });
           }
         });
       }
@@ -247,7 +253,7 @@ export class DiscoverySvgComponent {
   }
 
   private triggerEvent(evt: DiscoveryEvent) {
-    this.discoveryEvent.emit({...evt, source: this.el.id});
+    this.discoveryEvent.emit({ ...evt, source: this.el.id });
   }
 
   @Method()
@@ -256,7 +262,7 @@ export class DiscoverySvgComponent {
     return type === 'svg' ? this.toDisplay : (await html2canvas(this.el)).toDataURL();
   }
 
-  private
+  private;
 
   generateStyle(innerStyle: { [k: string]: string }): string {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
@@ -266,11 +272,11 @@ export class DiscoverySvgComponent {
     return (
       <Host>
         <style>{this.generateStyle(this.innerStyle)}</style>
-        <div class="svg-wrapper" style={{width: `${this.width}px`, height: `${this.height}px`}}>
+        <div class="svg-wrapper" style={{ width: `${this.width}px`, height: `${this.height}px` }}>
           {this.parsing
             ? <discovery-spinner>Parsing data...</discovery-spinner>
             : this.toDisplay.length > 0
-              ? this.toDisplay.map(svg => <div class="svg-container" innerHTML={svg} ref={el => this.refs.push(el)}/>)
+              ? this.toDisplay.map(svg => <div class="svg-container" innerHTML={svg} ref={el => this.refs.push(el)} />)
               : ''
           }</div>
       </Host>
