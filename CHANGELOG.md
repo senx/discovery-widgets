@@ -1,6 +1,17 @@
 Discovery
 ---
 
+## v1.1.133
+
+> +  2024/11/04  | v1.1.133 
+> +  2024/11/04  | [svg] `innerHTML` custom attribute support for `xpath` events 
+> +  2024/11/04  | [line] [bar] [area] [step] Fix labels overlaps 
+> +  2024/11/04  | Code enhancement. 
+> +  2024/11/04  | [line] [area] Fix zoom event emission on y data range 
+> +  2024/11/04  | [bar] Fix bottom margin when range slider is set 
+> +  2024/11/04  | modify deepEqual to be more resilient 
+> +  2024/10/31  | Changelog 
+
 ## v1.1.132
 
 > +  2024/10/31  | v1.1.132 
