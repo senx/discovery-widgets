@@ -86,7 +86,7 @@ export class Utils {
             message: `Not Authorized`,
           });
         } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 500) {
-          if (resHeaders['x-warp10-error-line'] && resHeaders['x-warp10-error-message']){
+          if (resHeaders['x-warp10-error-line'] && resHeaders['x-warp10-error-message']) {
             reject({
               statusText: xmlHttp.statusText,
               status: xmlHttp.status,
@@ -134,7 +134,7 @@ export class Utils {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
-    return { ...new Param(), ...options as Param, ...options2 };
+    return {...new Param(), ...options as Param, ...options2};
   }
 
   static sanitize(data: string | DataModel) {
@@ -223,7 +223,7 @@ export class Utils {
             parsed.hasEvent = true;
             break;
           case 'xpath':
-            parsed.xpath = { selector: evt.selector, value: evt.value };
+            parsed.xpath = {selector: evt.selector, value: evt.value};
             parsed.hasEvent = true;
             break;
           case 'popup':
@@ -279,8 +279,8 @@ export class Utils {
             break;
           case 'link':
             parsed.link = typeof evt.value === 'string'
-              ? { link: evt.value, target: 'self' }
-              : { ...evt.value };
+              ? {link: evt.value, target: 'self'}
+              : {...evt.value};
             parsed.hasEvent = true;
             break;
           case 'selected':
@@ -326,7 +326,7 @@ export class Utils {
    */
   static getUrl(url: string): string {
     if (!url.toLowerCase().startsWith('http') && !url.toLowerCase().startsWith('ws')) {
-      const { host, pathname, port, protocol, search } = window.location;
+      const {host, pathname, port, protocol, search} = window.location;
       let urlComputed = protocol + '//' + host + (port !== '' ? ':' + port : '');
       urlComputed += url.startsWith('/') ? url : pathname + (pathname.endsWith('/') ? '' : '/') + url;
       return urlComputed + search;
@@ -336,6 +336,11 @@ export class Utils {
   }
 
   static deepEqual(object1: any, object2: any) {
+    if (object1 == null && object2 != null ||
+      object1 != null && object2 == null) {
+      return false;
+    }
+
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
 
