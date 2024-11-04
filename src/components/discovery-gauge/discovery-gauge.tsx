@@ -352,6 +352,7 @@ export class DiscoveryGauge {
           lineStyle: { width: 1, color: Utils.getGridColor(this.el) },
         },
         axisLabel: this.type === 'compass' ? {
+          hideOverlap: true,
           color: Utils.getLabelColor(this.el),
           distance: 0,
           formatter: (value: any) => value === d.max ? '' : `${value}`,

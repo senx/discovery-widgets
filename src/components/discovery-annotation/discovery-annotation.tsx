@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -348,6 +348,7 @@ export class DiscoveryAnnotation {
         splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
         axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
         axisLabel: {
+          hideOverlap: true,
           color: Utils.getLabelColor(this.el),
           formatter: this.innerOptions.fullDateDisplay ? value =>
               GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
@@ -370,7 +371,10 @@ export class DiscoveryAnnotation {
       yAxis: {
         show: true,
         axisTick: { show: false },
-        axisLabel: { show: false },
+        axisLabel: {
+          hideOverlap: true,
+          show: false
+        },
         type: 'category',
         data: categories.length === 0 ? ['-'] : categories,
         splitNumber: Math.max(categories.length, 1),

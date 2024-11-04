@@ -334,7 +334,10 @@ export class DiscoveryBoxPlotComponent {
       type: this.innerOptions?.box?.horizontal ? 'category' : 'value',
       splitLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
-      axisLabel: { color: Utils.getLabelColor(this.el) },
+      axisLabel: {
+        hideOverlap: true,
+        color: Utils.getLabelColor(this.el),
+      },
       axisTick: { lineStyle: { color: Utils.getGridColor(this.el) } },
       min: this.innerOptions?.box?.horizontal
         ? undefined
@@ -357,6 +360,7 @@ export class DiscoveryBoxPlotComponent {
       type: this.innerOptions?.box?.horizontal ? 'value' : 'category',
       axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLabel: {
+        hideOverlap: true,
         show: !this.innerOptions.hideXAxis,
         color: Utils.getLabelColor(this.el),
       },

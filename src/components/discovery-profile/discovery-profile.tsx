@@ -505,6 +505,7 @@ export class DiscoveryProfile {
         splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
         axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
         axisLabel: {
+          hideOverlap: true,
           color: Utils.getLabelColor(this.el),
           formatter: this.innerOptions.fullDateDisplay ? value =>
               GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
@@ -528,6 +529,7 @@ export class DiscoveryProfile {
       yAxis: {
         show: !this.innerOptions.hideYAxis,
         axisLabel: this.expanded ? {
+          hideOverlap: true,
           color: Utils.getLabelColor(this.el),
           show: !this.innerOptions.hideYAxis && !this.innerOptions.showLegend,
         } : { show: false },

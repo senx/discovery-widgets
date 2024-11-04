@@ -671,7 +671,11 @@ export class DiscoveryLineComponent {
       nameTextStyle: { color: color || Utils.getLabelColor(this.el) },
       splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLine: { show: true, lineStyle: { color: color || Utils.getGridColor(this.el) } },
-      axisLabel: { color: color || Utils.getLabelColor(this.el), show: !this.innerOptions.hideYAxis },
+      axisLabel: {
+        hideOverlap: true,
+        color: color || Utils.getLabelColor(this.el),
+        show: !this.innerOptions.hideYAxis,
+      },
       axisTick: { show: true, lineStyle: { color: color || Utils.getGridColor(this.el) } },
       data: this.innerOptions.yLabelsMapping ? Object.keys(this.innerOptions.yLabelsMapping).map(k => this.innerOptions.yLabelsMapping[k]) : undefined,
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
@@ -688,6 +692,7 @@ export class DiscoveryLineComponent {
       splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLine: { lineStyle: { color: color || Utils.getGridColor(this.el) } },
       axisLabel: {
+        hideOverlap: true,
         show: !this.innerOptions.hideXAxis,
         color: color || Utils.getLabelColor(this.el),
         formatter: this.innerOptions.fullDateDisplay

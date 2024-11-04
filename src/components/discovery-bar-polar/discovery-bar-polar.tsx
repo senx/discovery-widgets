@@ -347,6 +347,7 @@ export class DiscoveryBarPolarComponent {
           },
         },
         axisLabel: {
+          hideOverlap: true,
           show: !this.innerOptions.hideXAxis,
           color: Utils.getLabelColor(this.el),
           formatter: this.innerOptions.timeMode === 'date'
@@ -434,6 +435,7 @@ export class DiscoveryBarPolarComponent {
           },
         },
         axisLabel: {
+          hideOverlap: true,
           color: Utils.getLabelColor(this.el),
         },
         axisTick: {

@@ -412,6 +412,7 @@ export class DiscoveryBarComponent {
       splitLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLabel: {
+        hideOverlap: true,
         color: Utils.getLabelColor(this.el),
         show: !this.innerOptions.hideYAxis,
         formatter: this.innerOptions?.bar?.horizontal
@@ -460,6 +461,7 @@ export class DiscoveryBarComponent {
           : 'category',
       axisLine: { lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLabel: {
+        hideOverlap: true,
         show: !this.innerOptions.hideXAxis,
         color: Utils.getLabelColor(this.el),
         formatter: !this.innerOptions?.bar?.horizontal

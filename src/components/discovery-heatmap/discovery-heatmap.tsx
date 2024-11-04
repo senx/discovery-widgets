@@ -286,6 +286,7 @@ export class DiscoveryHeatmap {
           }
         },
         axisLabel: {
+          hideOverlap: true,
           color: Utils.getLabelColor(this.el),
           formatter: value => this.innerOptions.timeMode === 'date'
             ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(parseInt(value, 10), 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
