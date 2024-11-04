@@ -248,7 +248,8 @@ export class DiscoveryBarComponent {
             : 30
           : this.innerOptions?.bar?.horizontal && !!(this.unit || this.innerOptions.unit)
             ? 20
-            : 10,
+            : 10
+            + (!!this.innerOptions.showRangeSelector ? 40 : 0),
         right: 10,
         containLabel: true,
       },
