@@ -20,15 +20,16 @@
 
 ## Events
 
-| Event                | Description | Type                                                                                        |
-| -------------------- | ----------- | ------------------------------------------------------------------------------------------- |
-| `dataPointOver`      |             | `CustomEvent<any>`                                                                          |
-| `dataPointSelected`  |             | `CustomEvent<any>`                                                                          |
-| `dataZoom`           |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; type?: string; }>` |
-| `draw`               |             | `CustomEvent<void>`                                                                         |
-| `leftMarginComputed` |             | `CustomEvent<number>`                                                                       |
-| `poi`                |             | `CustomEvent<any>`                                                                          |
-| `timeBounds`         |             | `CustomEvent<any>`                                                                          |
+| Event                | Description | Type                                                                                                              |
+| -------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `dataPointOver`      |             | `CustomEvent<any>`                                                                                                |
+| `dataPointSelected`  |             | `CustomEvent<any>`                                                                                                |
+| `dataZoom`           |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; orientation?: string; type?: string; }>` |
+| `dataZoomY`          |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; orientation?: string; type?: string; }>` |
+| `draw`               |             | `CustomEvent<void>`                                                                                               |
+| `leftMarginComputed` |             | `CustomEvent<number>`                                                                                             |
+| `poi`                |             | `CustomEvent<any>`                                                                                                |
+| `timeBounds`         |             | `CustomEvent<any>`                                                                                                |
 
 
 ## Methods

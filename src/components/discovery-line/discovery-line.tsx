@@ -48,7 +48,22 @@ export class DiscoveryLineComponent {
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
-  @Event() dataZoom: EventEmitter<{ start?: number, end?: number, min?: number, max?: number, type?: string }>;
+  @Event() dataZoom: EventEmitter<{
+    start?: number,
+    end?: number,
+    min?: number,
+    max?: number,
+    orientation?: string,
+    type?: string
+  }>;
+  @Event() dataZoomY: EventEmitter<{
+    start?: number,
+    end?: number,
+    min?: number,
+    max?: number,
+    orientation?: string,
+    type?: string
+  }>;
   @Event() leftMarginComputed: EventEmitter<number>;
   @Event() dataPointOver: EventEmitter;
   @Event() dataPointSelected: EventEmitter;
@@ -85,7 +100,7 @@ export class DiscoveryLineComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       const options = Utils.mergeDeep<Param>(this.innerOptions, this.result.globalParams ?? {});
-      this.innerOptions = {...this.defOptions, ...options };
+      this.innerOptions = { ...this.defOptions, ...options };
       this.chartOpts = this.convert(this.result || new DataModel());
       this.setOpts(true);
     }
@@ -99,7 +114,7 @@ export class DiscoveryLineComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = {...this.defOptions, ...opts };
+      this.innerOptions = { ...this.defOptions, ...opts };
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
@@ -114,9 +129,9 @@ export class DiscoveryLineComponent {
     this.LOG = new Logger(DiscoveryLineComponent, this.debug);
     this.result = GTSLib.getData(this.result);
     if (typeof this.options === 'string') {
-      this.innerOptions = {...this.defOptions, ...JSON.parse(this.options)};
+      this.innerOptions = { ...this.defOptions, ...JSON.parse(this.options) };
     } else {
-      this.innerOptions = {...this.defOptions, ...this.options};
+      this.innerOptions = { ...this.defOptions, ...this.options };
     }
     this.LOG?.debug(['componentWillLoad'], { type: this.type, options: this.innerOptions });
     this.chartOpts = this.convert(this.result || new DataModel());
@@ -717,12 +732,25 @@ export class DiscoveryLineComponent {
       end,
       min: this.innerOptions.bounds?.minDate || this.bounds?.min,
       max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
+      orientation: 'x',
+    });
+  }
+
+  private zoomYHandler(start: number, end: number) {
+    this.dataZoomY.emit({
+      start,
+      end,
+      min: this.innerOptions.bounds?.minDate || this.bounds?.min,
+      max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
+      orientation: 'y',
     });
   }
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     const zoomHandler = throttle((start: number, end: number) => this.zoomHandler(start, end),
+      16, { leading: true, trailing: true });
+    const zoomYHandler = throttle((start: number, end: number) => this.zoomYHandler(start, end),
       16, { leading: true, trailing: true });
 
     const focusHandler = throttle((type: string, event: any) => {
@@ -776,19 +804,16 @@ export class DiscoveryLineComponent {
           initial = false;
         });
       });
-      this.myChart.on('dataZoom', (event: any) => {
-        let start: number;
-        let end: number;
-        if (!!event.batch) {
-          const batch = (event.batch || [])[0] || {};
-          start = batch.start || batch.startValue;
-          end = batch.end || batch.endValue;
-          this.zoomHandler(start, end);
-        } else if (event.start !== undefined && event.end !== undefined) {
-          start = event.start;
-          end = event.end;
-          zoomHandler(start, end);
-        }
+      this.myChart.on('dataZoom', () => {
+        const option = this.myChart.getOption();
+        const sliders = (option.dataZoom as any[] ?? []).filter(z => z.type === 'inside');
+        sliders.forEach(s => {
+          if (s.orient === 'horizontal') {
+            zoomHandler(s.start, s.end);
+          } else {
+            zoomYHandler(s.start, s.end);
+          }
+        });
       });
       this.myChart.on('restore', () => {
         this.dataZoom.emit({ type: 'restore', start: 0, end: 100 });

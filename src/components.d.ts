@@ -793,7 +793,22 @@ declare global {
     };
     interface HTMLDiscoveryLineElementEventMap {
         "draw": void;
-        "dataZoom": { start?: number, end?: number, min?: number, max?: number, type?: string };
+        "dataZoom": {
+    start?: number,
+    end?: number,
+    min?: number,
+    max?: number,
+    orientation?: string,
+    type?: string
+  };
+        "dataZoomY": {
+    start?: number,
+    end?: number,
+    min?: number,
+    max?: number,
+    orientation?: string,
+    type?: string
+  };
         "leftMarginComputed": number;
         "dataPointOver": any;
         "dataPointSelected": any;
@@ -1245,7 +1260,22 @@ declare namespace LocalJSX {
         "height"?: number;
         "onDataPointOver"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryLineCustomEvent<any>) => void;
-        "onDataZoom"?: (event: DiscoveryLineCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
+        "onDataZoom"?: (event: DiscoveryLineCustomEvent<{
+    start?: number,
+    end?: number,
+    min?: number,
+    max?: number,
+    orientation?: string,
+    type?: string
+  }>) => void;
+        "onDataZoomY"?: (event: DiscoveryLineCustomEvent<{
+    start?: number,
+    end?: number,
+    min?: number,
+    max?: number,
+    orientation?: string,
+    type?: string
+  }>) => void;
         "onDraw"?: (event: DiscoveryLineCustomEvent<void>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryLineCustomEvent<number>) => void;
         "onPoi"?: (event: DiscoveryLineCustomEvent<any>) => void;

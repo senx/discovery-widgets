@@ -66,7 +66,7 @@ export class DiscoveryBarComponent {
   private hasFocus = false;
   private bounds: { min: number; max: number };
   private isGTS = false;
-  private zoom: { start?: number; end?: number };
+  private zoom: { start?: number; end?: number; type?: string };
   private pois: any[] = [];
 
   @Watch('result')
@@ -103,7 +103,7 @@ export class DiscoveryBarComponent {
   @Method()
   async setZoom(dataZoom: { start?: number, end?: number }) {
     if (!!this.myChart) {
-      dataZoom.start = dataZoom.start || 0;
+      dataZoom.start = dataZoom.start ?? 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
         this.myChart.dispatchAction({ type: 'dataZoom', ...dataZoom, dataZoomIndex: 0 });
@@ -581,7 +581,7 @@ export class DiscoveryBarComponent {
     return opts;
   }
 
-  private zoomHandler(start, end) {
+  private zoomHandler(start: number, end: number) {
     this.dataZoom.emit({
       start,
       end,
@@ -590,6 +590,7 @@ export class DiscoveryBarComponent {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
       16, { leading: true, trailing: true });
