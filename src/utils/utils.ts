@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
+/* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
 import { GTSLib } from './gts.lib';
 import { Param } from '../model/param';
 import { cloneDeep, merge } from 'lodash';
@@ -26,6 +26,7 @@ export class Utils {
     if (navigator.languages && navigator.languages.length) {
       lang = navigator.languages[0];
     } else {
+      // eslint-disable-next-line @typescript-eslint/dot-notation,dot-notation
       lang = navigator['userLanguage'] || navigator.language || navigator['browserLanguage'] || 'en';
     }
     return lang.split('-')[0].toLowerCase();
@@ -336,8 +337,8 @@ export class Utils {
   }
 
   static deepEqual(object1: any, object2: any) {
-    if (object1 == null && object2 != null ||
-      object1 != null && object2 == null) {
+    if (object1 === null && object2 !== null ||
+      object1 !== null && object2 === null) {
       return false;
     }
 
