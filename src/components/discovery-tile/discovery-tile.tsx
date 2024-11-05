@@ -23,6 +23,7 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { LangUtils } from '../../utils/lang-utils';
 import { v4 } from 'uuid';
+import { DiscoveryTileResultCustomEvent } from '../../components';
 
 @Component({
   tag: 'discovery-tile',
@@ -233,7 +234,7 @@ export class DiscoveryTileComponent {
         this.ws = LangUtils.prepare(
           Utils.unsescape(this.el.innerHTML),
           this.innerVars || {},
-          (this.innerOptions as Param)?.skippedVars || [],
+          this.innerOptions?.skippedVars || [],
           this.type,
           this.language);
         if (!!window) {
@@ -271,17 +272,20 @@ export class DiscoveryTileComponent {
                 this.statusMessage = this.headers.statusText;
               }
               this.start = window.performance.now();
-              let autoRefreshFeedBack = undefined;
-              let fadeOutAfter = undefined;
+              let autoRefreshFeedBack: number;
+              let fadeOutAfter: number;
               try {
-                let rws=JSON.parse(res.data as string)[0]
+                const rws = JSON.parse(res.data as string)[0];
                 autoRefreshFeedBack = rws.globalParams?.autoRefresh;
                 fadeOutAfter = rws.globalParams?.fadeOutAfter;
-                if (autoRefreshFeedBack < 0) { autoRefreshFeedBack = undefined; } 
-              } catch (error) { 
+                if (autoRefreshFeedBack < 0) {
+                  autoRefreshFeedBack = undefined;
+                }
+              } catch (e) {
+                console.error(e);
               }
               if (this.autoRefresh !== this.innerOptions.autoRefresh || autoRefreshFeedBack) {
-                this.autoRefresh = autoRefreshFeedBack? autoRefreshFeedBack : this.innerOptions.autoRefresh;
+                this.autoRefresh = autoRefreshFeedBack ? autoRefreshFeedBack : this.innerOptions.autoRefresh;
                 if (this.timer) {
                   window.clearInterval(this.timer);
                 }
@@ -294,7 +298,10 @@ export class DiscoveryTileComponent {
                   window.clearInterval(this.timerFadeOut);
                 }
                 if (fadeOutAfter > 0) {
-                  this.timerFadeOut = window.setInterval(() => { this.hiddenByWs = true; window.clearInterval(this.timerFadeOut)}, fadeOutAfter * 1000);
+                  this.timerFadeOut = window.setInterval(() => {
+                    this.hiddenByWs = true;
+                    window.clearInterval(this.timerFadeOut);
+                  }, fadeOutAfter * 1000);
                 }
               }
               setTimeout(() => {
@@ -317,7 +324,7 @@ export class DiscoveryTileComponent {
               this.loaded = true;
               this.showLoader = false;
               this.hasError = this.innerOptions.showErrors;
-              this.errorMessage = e.message || e.statusText;            
+              this.errorMessage = e.message || e.statusText;
               this.LOG?.error(['exec'], e);
               resolve(true);
             });
@@ -359,14 +366,15 @@ export class DiscoveryTileComponent {
     await this.tileResult.setZoom(dataZoom);
   }
 
-  private handleSelfType(type) {
+  private handleSelfType(type: any) {
     this.selfType.emit(type);
   }
 
   render() {
     return <div>
       {this.loaded ?
-        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} class={this.hiddenByWs ? "hidden-by-ws" : ""}>
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
+             class={this.hiddenByWs ? 'hidden-by-ws' : ''}>
           {this.hasError ? <div class="discovery-tile-error">{this.errorMessage}</div> : ''}
           <discovery-tile-result
             url={this.url}
@@ -382,7 +390,7 @@ export class DiscoveryTileComponent {
             chart-title={this.chartTitle}
             chart-description={this.chartDescription}
             onSelfType={type => this.handleSelfType(type)}
-            onDraw={e => this.draw.emit()}
+            onDraw={() => this.draw.emit()}
             vars={JSON.stringify(this.innerVars)}
             ref={(el) => this.tileResult = el}
             id={this.componentId}

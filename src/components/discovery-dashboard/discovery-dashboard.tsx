@@ -60,7 +60,7 @@ export class DiscoveryDashboardComponent {
   @State() audioFile: string;
   @State() title: string;
   @State() description: string;
-  private types: any = {};
+  @State() types: any = {};
   private LOG: Logger;
   private ws: string;
   private timer: any;
@@ -76,7 +76,7 @@ export class DiscoveryDashboardComponent {
   private innerVars = {};
   private componentId: string;
   private eventState: any = {};
-  private refreshTimer;
+  private refreshTimer: any;
 
   @Watch('options')
   optionsUpdate(newValue: any, oldValue: any) {

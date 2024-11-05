@@ -648,10 +648,12 @@ export class DiscoveryTileResultComponent {
              color: this.fontColor,
              height: '100%', width: '100%',
            }}>
-        {this.innerTitle && this.innerTitle !== '' ? <h2 class="tile-title"
-                                                         ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2> : ''}
-        {this.chartDescription && this.chartDescription !== '' ? <p class="tile-desc"
-                                                                    ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription || ''}</p> : ''}
+        {this.innerTitle && this.innerTitle !== ''
+          ? <h2 class="tile-title" ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2>
+          : ''}
+        {this.chartDescription && this.chartDescription !== ''
+          ? <p class="tile-desc" ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription || ''}</p>
+          : ''}
         {this.ready ? <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
           {this.getView()}
         </div> : ''}
