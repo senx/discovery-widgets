@@ -337,7 +337,8 @@ export class Utils {
   }
 
   static deepEqual(object1: any, object2: any) {
-    if (!object1 || !object2) {
+    if (object1 == null && object2 != null ||
+      object1 != null && object2 == null) {
       return false;
     }
     const keys1 = Object.keys(object1 ?? {});
