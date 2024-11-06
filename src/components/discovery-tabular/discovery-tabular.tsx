@@ -246,6 +246,7 @@ export class DiscoveryTabular {
     this.pageables = [];
     return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el}>
       {(this.options as Param).showControls ? <div class="tabular-action-button">
+          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <button class="tabular-export-csv" title="CSV Export" onClick={() => this.csvExport()}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path

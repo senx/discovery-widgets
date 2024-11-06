@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -44,12 +44,13 @@
         background-color: transparent;
         border: none;
         cursor: pointer;
+        color: rgb(102, 102, 102);
+        padding-top: 10px;
 
         &:hover {
-          background-color: $w10-lightgrey;
+          color: rgb(62, 152, 197);
         }
       }
-
 
       .tabular-export-csv {
 
