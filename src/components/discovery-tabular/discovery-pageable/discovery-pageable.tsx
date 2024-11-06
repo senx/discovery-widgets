@@ -88,7 +88,7 @@ export class DiscoveryPageable {
     const dataset = [];
     this.filteredDataset.forEach(row => {
       const d = {};
-      this.data.headers.forEach((h: string, i: number) => d[h] = row[i].display);
+      this.data.headers.forEach((h: string, i: number) => d[h] = row[i]?.display ?? '');
       dataset.push(d);
     });
     return Promise.resolve({ data: dataset, headers: this.data.headers });
