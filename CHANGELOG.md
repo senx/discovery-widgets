@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.1.135
+
+> +  2024/11/06  | v1.1.135 
+> +  2024/11/06  | [tabular] fix export icon 
+> +  2024/11/06  | [tile] fix JSON parsing 
+> +  2024/11/06  | [tabular] fix missing value in export 
+> +  2024/11/05  | Changelog 
+> +  2024/11/05  | Readmes 
+
 ## v1.1.134
 
 > +  2024/11/05  | v1.1.134 
