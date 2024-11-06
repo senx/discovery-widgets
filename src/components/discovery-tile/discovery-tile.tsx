@@ -23,7 +23,7 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { LangUtils } from '../../utils/lang-utils';
 import { v4 } from 'uuid';
-import { DiscoveryTileResultCustomEvent } from '../../components';
+import { JsonLib } from '../../utils/jsonLib';
 
 @Component({
   tag: 'discovery-tile',
@@ -272,19 +272,13 @@ export class DiscoveryTileComponent {
                 this.statusMessage = this.headers.statusText;
               }
               this.start = window.performance.now();
-              let autoRefreshFeedBack: number;
-              let fadeOutAfter: number;
-              try {
-                const rws = JSON.parse(res.data as string)[0];
-                autoRefreshFeedBack = rws.globalParams?.autoRefresh;
-                fadeOutAfter = rws.globalParams?.fadeOutAfter;
-                if (autoRefreshFeedBack < 0) {
-                  autoRefreshFeedBack = undefined;
-                }
-              } catch (e) {
-                console.error(e);
+              const rws = new JsonLib().parse(res.data as string)[0] ?? {};
+              let autoRefreshFeedBack = rws.globalParams?.autoRefresh ?? -1;
+              const fadeOutAfter = rws.globalParams?.fadeOutAfter;
+              if (autoRefreshFeedBack < 0) {
+                autoRefreshFeedBack = undefined;
               }
-              if (this.autoRefresh !== this.innerOptions.autoRefresh || autoRefreshFeedBack) {
+              if (this.autoRefresh !== this.innerOptions.autoRefresh ?? autoRefreshFeedBack) {
                 this.autoRefresh = autoRefreshFeedBack ? autoRefreshFeedBack : this.innerOptions.autoRefresh;
                 if (this.timer) {
                   window.clearInterval(this.timer);
