@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.1.136
+
+> +  2024/11/08  | v1.1.136 
+> +  2024/11/08  | Fix infinite loop when using data and events. 
+> +  2024/11/06  | Changelog 
+
 ## v1.1.135
 
 > +  2024/11/06  | v1.1.135 
