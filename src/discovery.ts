@@ -18,6 +18,7 @@ import pack from '../package.json';
 import { Logger } from './utils/logger';
 
 export default () => {
-  const LOG: Logger = new Logger({ name: 'Discovery' });
+  const LOG: Logger = new Logger({ name: 'Discovery by SenX' });
   LOG.info(['Version'], pack.version);
+  LOG.info(['Info'], 'https://discovery.warp10.io/');
 }

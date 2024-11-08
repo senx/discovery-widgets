@@ -70,7 +70,7 @@ export class DiscoveryInputComponent {
   private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
   private inputField2: HTMLInputElement;
   private disabled = false;
-  private delayTimer:any;
+  private delayTimer: any;
 
   private root: HTMLDivElement;
   private flatpickrInstance: flatpickr.Instance;
@@ -90,9 +90,9 @@ export class DiscoveryInputComponent {
   updateRes() {
     this.LOG.debug(['updateRes'], this.innerResult);
     this.innerResult = GTSLib.getData(this.result);
-    this.innerOptions = Utils.mergeDeep<Param>(this.innerOptions || {} as Param, this.innerResult.globalParams);
+    this.innerOptions = Utils.mergeDeep<Param>(this.innerOptions ?? {} as Param, this.innerResult.globalParams);
     if (this.innerOptions.customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
+      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles ?? {} };
     }
     this.parseResult();
   }
@@ -104,11 +104,11 @@ export class DiscoveryInputComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    //if (!Utils.deepEqual(opts, this.innerOptions)) {
-    this.innerOptions = { ...opts };
-    this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
-    this.parseResult();
-    // }
+    if (!Utils.deepEqual(opts, this.innerOptions)) {
+      this.innerOptions = { ...opts };
+      this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
+      this.parseResult();
+    }
   }
 
   @Method()
@@ -164,7 +164,7 @@ export class DiscoveryInputComponent {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async componentDidLoad() {
+  componentDidLoad() {
     switch (this.subType) {
       case 'date':
       case 'date-range':
@@ -176,18 +176,18 @@ export class DiscoveryInputComponent {
           enableSeconds: true,
           time_24hr: true,
           plugins: [],
-          formatDate: (d: Date) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(d.valueOf(), 1) * divider, divider, undefined, //this.innerOptions.timeZone,
+          formatDate: (d: Date) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(d.valueOf(), 1) * divider, divider, undefined,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined),
         } as any;
         if (this.subType === 'date-range') {
           opts.plugins = [rangePlugin({ input: this.inputField2 })];
         }
         if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
-          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, undefined, //this.innerOptions.timeZone,
+          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, undefined,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         if (!!this.innerOptions.input && !!this.innerOptions.input.max) {
-          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, undefined, //this.innerOptions.timeZone,
+          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, undefined,
             this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         }
         this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
@@ -244,11 +244,13 @@ export class DiscoveryInputComponent {
       if (this.delayTimer) {
         window.clearInterval(this.delayTimer);
       }
-      this.delayTimer = window.setTimeout(() => { this.handleClickRT(); }, this.innerOptions.input?.delayRequest)
+      this.delayTimer = window.setTimeout(() => {
+        this.handleClickRT();
+      }, this.innerOptions.input?.delayRequest);
     } else {
       this.handleClickRT();
     }
-  }
+  };
 
   private handleClickRT() {
     if (
@@ -287,22 +289,24 @@ export class DiscoveryInputComponent {
   }
 
   private handleSelect(e: any) {
-    this.selectedValue = e?.target?.value ?? e?.detail;
-    if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
-      this.selectedValue = e.detail;
-    }
-    if (this.subType === 'multi' && e.target?.options) {
-      this.selectedValue = Array.from(e.target.options)
-        .filter((o: HTMLOptionElement) => !!o.selected)
-        .map((o: HTMLOptionElement) => o.value);
-    }
-    if (this.subType === 'multi-cb' && this.checkBoxes) {
-      this.selectedValue = Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
-        .filter((o: HTMLInputElement) => o.checked)
-        .map((o: HTMLInputElement) => o.value);
-    }
-    if (!this.innerOptions.input?.showButton) {
-      this.handleClick();
+    if (this.selectedValue !== e?.target?.value ?? e?.detail) {
+      this.selectedValue = e?.target?.value ?? e?.detail;
+      if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
+        this.selectedValue = e.detail;
+      }
+      if (this.subType === 'multi' && e.target?.options) {
+        this.selectedValue = Array.from(e.target.options)
+          .filter((o: HTMLOptionElement) => !!o.selected)
+          .map((o: HTMLOptionElement) => o.value);
+      }
+      if (this.subType === 'multi-cb' && this.checkBoxes) {
+        this.selectedValue = Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+          .filter((o: HTMLInputElement) => o.checked)
+          .map((o: HTMLInputElement) => o.value);
+      }
+      if (!this.innerOptions.input?.showButton) {
+        this.handleClick();
+      }
     }
   }
 
@@ -338,7 +342,7 @@ export class DiscoveryInputComponent {
           this.flatpickrInstance.set('plugins', []);
           if (this.innerOptions.input?.locale) {
             let locale = this.innerOptions.input?.locale ?? 'default';
-            if(locale === 'AUTO') {
+            if (locale === 'AUTO') {
               locale = Utils.getNavigatorLanguage();
             }
             this.flatpickrInstance.set('locale', flatpickr.l10ns[locale]);
@@ -354,7 +358,7 @@ export class DiscoveryInputComponent {
         if (this.flatpickrInstance) {
           if (this.innerOptions.input?.locale) {
             let locale = this.innerOptions.input?.locale ?? 'default';
-            if(locale === 'AUTO') {
+            if (locale === 'AUTO') {
               locale = Utils.getNavigatorLanguage();
             }
             this.flatpickrInstance.set('locale', flatpickr.l10ns[locale]);
@@ -414,7 +418,7 @@ export class DiscoveryInputComponent {
           if (this.subType === 'multi-cb' && this.checkBoxes) {
             Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
               .forEach((o: HTMLInputElement) => o.checked = (this.value as any[]).includes(o.value));
-            this.handleSelect({detail: this.value});
+            this.handleSelect({ detail: this.value });
           }
         });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
@@ -549,12 +553,12 @@ export class DiscoveryInputComponent {
               {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
               {this.values.map(v => (
                 <div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
-                <input type="checkbox" value={v.k}
-                       checked={(this.value as string[] || []).includes(v.k)}
-                       onInput={e => this.handleSelect(e)}
-                       name={v.v} />
-                <label htmlFor={v.v}>{v.v}</label>
-              </div>))}
+                  <input type="checkbox" value={v.k}
+                         checked={(this.value as string[] || []).includes(v.k)}
+                         onInput={e => this.handleSelect(e)}
+                         name={v.v} />
+                  <label htmlFor={v.v}>{v.v}</label>
+                </div>))}
             </div>
           </div>
           <div class="multi-cb-buttons-wrapper">

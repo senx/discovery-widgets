@@ -108,16 +108,23 @@ export class DiscoveryTileComponent {
   @Listen('discoveryEvent', { target: 'window' })
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.componentId);
+
     if (res.vars) {
-      this.innerVars = { ...(this.innerVars || {}), ...res.vars };
-      if (!(this.innerOptions.mutedVars || []).includes(event.detail.selector)) {
-        await this.exec(true);
+      const vars = { ...(this.innerVars ?? {}), ...res.vars };
+      if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
+        this.innerVars = vars;
+        if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
+          await this.exec(true);
+        }
       }
     }
     if (res.selected) {
-      this.innerVars = { ...(this.innerVars || {}), ...res.selected };
-      if (!(this.innerOptions.mutedVars || []).includes(event.detail.selector)) {
-        await this.exec(true);
+      const vars = { ...(this.innerVars ?? {}), ...res.vars };
+      if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
+        this.innerVars = vars;
+        if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
+          await this.exec(true);
+        }
       }
     }
   }

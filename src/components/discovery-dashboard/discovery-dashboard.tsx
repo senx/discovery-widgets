@@ -169,7 +169,7 @@ export class DiscoveryDashboardComponent {
     } else if (this.options === 'undefined') {
       this.innerOptions = new Param();
     } else {
-      this.innerOptions = {...(this.options as Param)};
+      this.innerOptions = { ...(this.options as Param) };
     }
     this.LOG?.debug(['componentWillLoad'], { url: this.url, options: this.innerOptions });
     const dims = Utils.getContentBounds(this.el.parentElement);
@@ -265,6 +265,7 @@ export class DiscoveryDashboardComponent {
             Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders).then((t: any) => {
               this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
               this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
+              this.sanitizeTiles();
               this.processResult(tmpResult);
             }).catch(e => {
               this.LOG?.error(['exec'], e);
@@ -273,6 +274,7 @@ export class DiscoveryDashboardComponent {
             });
           } else {
             this.renderedTiles = tmpResult?.tiles ?? [];
+            this.sanitizeTiles();
             this.processResult(tmpResult);
           }
         }).catch(e => {
@@ -284,6 +286,12 @@ export class DiscoveryDashboardComponent {
         this.parseResult();  // TODO: dashboard within a dashboard: this hacky delay ensure to have the right innerOptions to avoid the first requests that will end in 403.
       }, 1000);
     }
+  }
+
+  private sanitizeTiles() {
+    this.renderedTiles.forEach(t => {
+      t.data = DiscoveryDashboardComponent.sanitize(t.data);
+    });
   }
 
   private parseResult() {
@@ -302,6 +310,7 @@ export class DiscoveryDashboardComponent {
       this.processMacroTiles(tmpResult);
     } else {
       this.renderedTiles = tmpResult?.tiles ?? [];
+      this.sanitizeTiles();
     }
     this.processResult(tmpResult);
   }
@@ -314,6 +323,7 @@ export class DiscoveryDashboardComponent {
       Utils.httpPost(this.url, tmpResult.tiles + ' EVAL', this.innerOptions.httpHeaders).then((t: any) => {
         this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
         this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
+        this.sanitizeTiles();
         this.processResult(tmpResult);
         if (this.innerOptions.autoRefresh || 0 > 0 && !!this.data) {
           this.refreshTimer = setTimeout(() => this.processMacroTiles(tmpResult), this.innerOptions.autoRefresh * 1000);
@@ -433,7 +443,7 @@ export class DiscoveryDashboardComponent {
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result
                       url={t.endpoint || this.url}
-                      result={DiscoveryDashboardComponent.sanitize(t.data)}
+                      result={t.data}
                       type={t.type}
                       onSelfType={type => this.setActualType(i, type)}
                       ref={(el) => this.addTile(el, t, i)}
@@ -482,7 +492,7 @@ export class DiscoveryDashboardComponent {
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
                         url={t.endpoint || this.url}
-                        result={DiscoveryDashboardComponent.sanitize(t.data)}
+                        result={t.data}
                         type={t.type}
                         ref={(el) => this.addTile(el, t, i)}
                         unit={t.unit}
@@ -525,13 +535,13 @@ export class DiscoveryDashboardComponent {
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
                         url={t.endpoint || this.url}
-                        result={DiscoveryDashboardComponent.sanitize(t.data)}
+                        result={t.data}
                         type={t.type}
                         ref={(el) => this.addTile(el, t, i)}
                         unit={t.unit}
                         onSelfType={type => this.setActualType(i, type)}
                         id={`chart-${i}}`}
-                        options={DiscoveryDashboardComponent.merge(this.innerOptions, t.options)}
+                        options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
                         debug={this.debug}
                         chart-title={t.title}
                       />

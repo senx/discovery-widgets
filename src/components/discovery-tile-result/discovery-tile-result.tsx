@@ -100,6 +100,7 @@ export class DiscoveryTileResultComponent {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
+    opts = Utils.mergeDeep<Param>(opts ?? {} as Param, (this.innerResult as unknown as DataModel)?.globalParams ?? {});
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
@@ -181,18 +182,24 @@ export class DiscoveryTileResultComponent {
   onLeftMarginComputed(event: CustomEvent) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'margin')
-      .forEach(e => {
-        this.discoveryEvent.emit({ source: this.componentId, type: 'margin', tags: e.tags, value: event.detail });
-      });
+      .forEach(e => this.discoveryEvent.emit({
+        source: this.componentId,
+        type: 'margin',
+        tags: e.tags,
+        value: event.detail,
+      }));
   }
 
   @Listen('timeBounds', { capture: false })
   onTimeBounds(event: CustomEvent) {
     ((this.innerResult as unknown as DataModel).events || [])
       .filter(e => e.type === 'bounds')
-      .forEach(e => {
-        this.discoveryEvent.emit({ source: this.componentId, type: 'bounds', tags: e.tags, value: event.detail });
-      });
+      .forEach(e => this.discoveryEvent.emit({
+        source: this.componentId,
+        type: 'bounds',
+        tags: e.tags,
+        value: event.detail,
+      }));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -204,8 +211,7 @@ export class DiscoveryTileResultComponent {
       type: this.type,
       options: this.innerOptions,
     });
-    this.innerResult = GTSLib.getData(this.result ?? '[]');
-
+    this.innerResult = GTSLib.getData(this.result);
     this.innerVars = JSON.parse(this.vars ?? '{}');
     this.innerType = this.innerResult.globalParams?.type ?? this.innerOptions.type ?? this.innerType;
     this.selfType.emit(this.innerType);
@@ -669,7 +675,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type !== 'zoom' && e.type !== 'margin' && e.type !== 'selected')
       .forEach(e => {
         if (this.LOG) {
-          this.LOG?.debug(['parseResult', 'emit'], { discoveryEvent: e });
+          this.LOG?.debug(['parseEvents', 'emit'], { discoveryEvent: e });
         }
         this.discoveryEvent.emit({ ...e, source: this.el.id });
       }));
@@ -688,7 +694,7 @@ export class DiscoveryTileResultComponent {
       void (async () => {
         this.unit = (this.options as Param).unit ?? this.unit;
         this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type ?? this.innerType;
-        this.innerOptions = options;
+        this.innerOptions = { ...options };
         this.selfType.emit(this.innerType);
         this.innerTitle = this.innerOptions?.title ?? this.chartTitle ?? '';
         this.handleCSSColors();

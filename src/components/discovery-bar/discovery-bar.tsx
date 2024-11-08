@@ -85,7 +85,7 @@ export class DiscoveryBarComponent {
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
       if (!!this.myChart) {
-        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
