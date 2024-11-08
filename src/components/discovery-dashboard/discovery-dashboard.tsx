@@ -390,12 +390,11 @@ export class DiscoveryDashboardComponent {
     return myVars;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   static sanitize(data: string | DataModel | any): string | DataModel {
-    if (typeof data === 'string') return '["' + data + '"]';
+    if (typeof data === 'string' && !data.startsWith('[') && !data.startsWith('{')) return '["' + data + '"]';
+    else if (typeof data === 'string') return data;
     else return GTSLib.isArray(data) ? data : [data];
   }
-
 
   private getType(id: number, type: string): string {
     return ((this.types[id] || type || '').replace(/:/gi, '-') as string) + (!!this.renderedTiles[id]?.options?.responsive ? ' auto-height' : '');
