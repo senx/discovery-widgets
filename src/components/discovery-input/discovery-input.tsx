@@ -386,8 +386,8 @@ export class DiscoveryInputComponent {
       case 'chips-autocomplete':
         if (this.checkBoxes) {
           Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
-            .filter((o: HTMLInputElement) => o.checked)
-            .forEach((o: HTMLInputElement) => o.checked = false);
+          .filter((o: HTMLInputElement) => o.checked)
+          .forEach((o: HTMLInputElement) => o.checked = false);
         }
         this.values = [];
         if (GTSLib.isArray(data)) {
@@ -578,7 +578,7 @@ export class DiscoveryInputComponent {
         return <div class="chips-input-wrapper">
           <discovery-input-chips
             ref={el => this.inputField = el}
-            chips={this.value as string[]}
+            chips={Object.assign([],this.value as string[])}   // explicit clone, otherwise stencil watcher will randomly fail to detect changes
             autocomplete={this.handleAutoComplete.bind(this)}
             containsFn={this.handleContains.bind(this)}
             onChipChange={e => this.handleSelect(e)}
