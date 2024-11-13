@@ -255,7 +255,7 @@ export class DiscoveryInputChips {
   }
 
   private async deleteChip(index: number) {
-    this.innerChips = (this.innerChips ?? []).splice(index, 1);
+    (this.innerChips ?? []).splice(index, 1);
     this.chipChange.emit(this.innerChips);
     if (this.show_autocomplete_on_focus && this.autocomplete) {
       await this.handleInput(undefined);
