@@ -413,7 +413,7 @@ export class DiscoveryInputComponent {
               value = [value] as number[] | string[];
             }
           }
-          this.value = value;
+          this.value = [...value  as number[] | string[]] ;
           this.selectedValue = this.value;
           if (this.subType === 'multi-cb' && this.checkBoxes) {
             Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))

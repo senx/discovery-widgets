@@ -67,14 +67,14 @@ export class DiscoveryInputChips {
   private autocompleteContainer: HTMLDivElement;
 
   @Watch('chips')
-  private updateChips() {
-    this.innerChips = (this.chips || []).slice();
+  updateChips() {
+    this.innerChips = (this.chips ?? []).slice();
   }
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.el.addEventListener('click', () => this.real_input.focus());
-    this.innerChips = (this.chips || []).slice();
+    this.innerChips = (this.chips ?? []).slice();
   }
 
   handleAutocompleteContainerFocus(event: FocusEvent) {
@@ -85,7 +85,7 @@ export class DiscoveryInputChips {
   private handleChipClose(event: any) {
     const chipLabel = event.detail;
     let index = -1;
-    for (let i = 0; i < this.innerChips.length; i++) {
+    for (let i = 0; i < (this.innerChips ?? []).length; i++) {
       if (this.innerChips[i] === chipLabel) {
         index = i;
         break;
@@ -154,7 +154,7 @@ export class DiscoveryInputChips {
 
     if (input_type === 'deleteContentBackward') {
       if (this.real_input.selectionStart === 0) {
-        if (this.innerChips.length)
+        if (this.innerChips?.length)
           await this.deleteChip(this.innerChips.length - 1);
       }
       return;
@@ -255,8 +255,7 @@ export class DiscoveryInputChips {
   }
 
   private async deleteChip(index: number) {
-    this.innerChips.splice(index, 1);
-    this.innerChips = [...this.innerChips];
+    this.innerChips = (this.innerChips ?? []).splice(index, 1);
     this.chipChange.emit(this.innerChips);
     if (this.show_autocomplete_on_focus && this.autocomplete) {
       await this.handleInput(undefined);
@@ -365,10 +364,12 @@ export class DiscoveryInputChips {
         onFocus={this.handleAutocompleteContainerFocus.bind(this)}
         ref={e => this.autocompleteContainer = e}></div>
       <div class="wrapper">
-        {this.innerChips.map(chip => <discovery-input-chips-chip
-          onClick={event => this.handleChipClick(event, chip)}
-          label={chip}
-          onRemoveChip={this.handleChipClose.bind(this)}></discovery-input-chips-chip>)}
+        {this.innerChips
+          ? this.innerChips.map(chip => <discovery-input-chips-chip
+            onClick={event => this.handleChipClick(event, chip)}
+            label={chip}
+            onRemoveChip={this.handleChipClose.bind(this)}></discovery-input-chips-chip>)
+          : ''}
         <div class="caret_position_tracker" ref={el => this.caret_position_tracker = el}></div>
         <input class="real_input" type="text"
                ref={e => {
