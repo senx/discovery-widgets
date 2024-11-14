@@ -109,9 +109,9 @@ export class DiscoveryAnnotation {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       if (!!this.myChart) {
-        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
@@ -199,7 +199,7 @@ export class DiscoveryAnnotation {
       this.chartOpts.yAxis = { show: false };
       this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
+      this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
@@ -209,10 +209,10 @@ export class DiscoveryAnnotation {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
-    options = Utils.mergeDeep<Param>(options, data.globalParams || {});
-    this.innerOptions = { ...options, leftMargin: this.innerOptions.leftMargin };
-    this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
+    options = Utils.mergeDeep<Param>(options, data.globalParams ?? {});
+    this.innerOptions = Utils.clone({ ...options, leftMargin: this.innerOptions.leftMargin });
+    this.innerOptions.timeMode = this.innerOptions.timeMode ?? 'date';
     const series: any[] = [];
     const categories: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);

@@ -15,14 +15,14 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, DiscoveryEvent, ECharts} from '../../model/types';
-import {Param} from '../../model/param';
-import {EChartsOption} from 'echarts';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {ColorLib} from '../../utils/color-lib';
-import {Utils} from '../../utils/utils';
+import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
+import { Param } from '../../model/param';
+import { EChartsOption } from 'echarts';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { ColorLib } from '../../utils/color-lib';
+import { Utils } from '../../utils/utils';
 import domtoimage from 'dom-to-image';
 
 @Component({
@@ -31,7 +31,7 @@ import domtoimage from 'dom-to-image';
   shadow: true,
 })
 export class DiscoveryLinearGauge {
-  @Prop({mutable: true}) result: DataModel | string;
+  @Prop({ mutable: true }) result: DataModel | string;
   @Prop() type: ChartType;
   @Prop() options: Param | string = new Param();
   @Prop() width: number;
@@ -64,7 +64,7 @@ export class DiscoveryLinearGauge {
   @Watch('result')
   updateRes() {
     this.convert(GTSLib.getData(this.result) || new DataModel());
-    this.innerOptions.gauge = {horizontal: true, ...this.innerOptions.gauge};
+    this.innerOptions.gauge = { horizontal: true, ...this.innerOptions.gauge };
     this.isVertical = !this.innerOptions.gauge?.horizontal;
   }
 
@@ -77,7 +77,7 @@ export class DiscoveryLinearGauge {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       opts.gauge = { horizontal: true, ...this.innerOptions.gauge };
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       this.isVertical = !this.innerOptions.gauge?.horizontal;
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
@@ -91,19 +91,19 @@ export class DiscoveryLinearGauge {
     if (this.LOG) {
       this.LOG?.debug(['varsUpdate'], {
         vars: this.vars,
-        newValue, oldValue
+        newValue, oldValue,
       });
     }
   }
 
-  @Listen('discoveryEvent', {target: 'window'})
+  @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.el.id);
     if (res.style) {
-      this.innerStyle = {...this.innerStyle, ...res.style as { [k: string]: string }};
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...res.style as { [k: string]: string } });
     }
     if (res.vars) {
-      this.innerVars = {...this.innerVars, ...res.vars};
+      this.innerVars = Utils.clone({ ...this.innerVars, ...res.vars });
     }
   }
 
@@ -119,7 +119,7 @@ export class DiscoveryLinearGauge {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => ({name: s.name})).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).map(s => ({ name: s.name })).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
@@ -128,18 +128,18 @@ export class DiscoveryLinearGauge {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).map(s => ({name: s.name})).filter(s => new RegExp(regexp).test(s.name))
+      batch: (this.myChart.getOption().series as any[]).map(s => ({ name: s.name })).filter(s => new RegExp(regexp).test(s.name)),
     });
     return Promise.resolve();
   }
 
   @Method()
   async hideById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -147,11 +147,11 @@ export class DiscoveryLinearGauge {
 
   @Method()
   async showById(id: number | string) {
-    if(this.myChart) {
+    if (this.myChart) {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s,i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -170,18 +170,18 @@ export class DiscoveryLinearGauge {
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
-      chartOpts: this.chartOpts
+      chartOpts: this.chartOpts,
     });
   }
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = Utils.clone(options);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.isVertical = !this.innerOptions.gauge?.horizontal;
     if (this.innerOptions.customStyles) {
-      this.innerStyle = {...this.innerStyle, ...this.innerOptions.customStyles || {}};
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
     }
     // noinspection JSUnusedAssignment
     let gtsList = [];
@@ -200,15 +200,15 @@ export class DiscoveryLinearGauge {
       gtsList = [data.data];
     }
     gtsList = gtsList.filter(d => d !== '');
-    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], { options: this.innerOptions, gtsList });
     const gtsCount = gtsList.length;
     let overallMax = this.innerOptions.maxValue ?? 0;
     let overallMin = this.innerOptions.minValue ?? 0;
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
-      const color = ((data.params || [])[i] || {datasetColor: c}).datasetColor || c;
-      const unit = ((data.params || [])[i] || {}).unit || this.innerOptions.unit  || this.unit || '';
+      const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
+      const unit = ((data.params || [])[i] || {}).unit || this.innerOptions.unit || this.unit || '';
       const gts = gtsList[i];
       if (GTSLib.isGts(gts)) {
         let max: number = Number.MIN_VALUE;
@@ -237,14 +237,14 @@ export class DiscoveryLinearGauge {
           }
         }
         if (this.innerOptions.gauge?.decimals) {
-          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
           value = Math.round(parseFloat(value + '') * dec) / dec;
           max = Math.round(parseFloat(max + '') * dec) / dec;
           min = Math.round(parseFloat(min + '') * dec) / dec;
         }
         dataStruct.push({
-          key: ((data.params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-          value, max, min, color, ts, unit
+          key: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
+          value, max, min, color, ts, unit,
         });
       } else {
         // custom data format
@@ -271,17 +271,17 @@ export class DiscoveryLinearGauge {
           value = gts ?? 0;
         }
         if (this.innerOptions.gauge?.decimals) {
-          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
           value = Math.round(parseFloat(value + '') * dec) / dec;
           max = Math.round(parseFloat(max + '') * dec) / dec;
           min = Math.round(parseFloat(min + '') * dec) / dec;
         }
-        dataStruct.push({key: gts.key ?? '', value, max, min, color, unit});
+        dataStruct.push({ key: gts.key ?? '', value, max, min, color, unit });
       }
     }
     this.LOG?.debug(['convert', 'dataStruct'], dataStruct);
     if (this.innerOptions.gauge?.decimals) {
-      const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2)
+      const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
       overallMax = Math.round(parseFloat(overallMax + '') * dec) / dec;
       overallMin = Math.round(parseFloat(overallMin + '') * dec) / dec;
     }
@@ -315,13 +315,13 @@ export class DiscoveryLinearGauge {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async export(type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.options as Param) || {bgColor}).bgColor || bgColor;
+    bgColor = ((this.options as Param) ?? { bgColor }).bgColor ?? bgColor;
     const res = this.result as DataModel;
-    const dm: Param = ((res || {
-      globalParams: {...new Param(), bgColor}
-    }).globalParams || {...new Param(), bgColor});
+    const dm: Param = ((res ?? {
+      globalParams: { ...new Param(), bgColor },
+    }).globalParams ?? { ...new Param(), bgColor });
     bgColor = dm.bgColor || bgColor;
-    return await domtoimage.toPng(this.root, {height: this.height, width: this.width, bgcolor: bgColor});
+    return await domtoimage.toPng(this.root, { height: this.height, width: this.width, bgcolor: bgColor });
   }
 
   setMousePosition(e: MouseEvent) {
@@ -337,13 +337,13 @@ export class DiscoveryLinearGauge {
           ? GTSLib.toISOString(
             GTSLib.toTimestamp(data.ts, 1, this.innerOptions.timeZone),
             this.divider, this.innerOptions.timeZone,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined
+            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined,
           ).replace('T', ' ').replace('Z', '')
           : data.ts
         : ''
     }</div>
       <span class="label">${GTSLib.formatLabel(data.key)}</span>
-      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}${data.unit??''}</span>`
+      <span class="value" style="margin-left: ${data.key || '' !== '' ? '20px' : '0'} ">${data.value}${data.unit ?? ''}</span>`;
   }
 
   hideTooltip() {
@@ -357,25 +357,25 @@ export class DiscoveryLinearGauge {
   render() {
     return [<style>{this.generateStyle(this.innerStyle)}</style>,
       <div ref={el => this.root = el} onMouseMove={e => this.setMousePosition(e)} class={
-        {'vertical-wrapper': !this.innerOptions.gauge?.horizontal}
+        { 'vertical-wrapper': !this.innerOptions.gauge?.horizontal }
       }>
-        <div class="wv-tooltip" style={{display: 'none'}} ref={el => this.tooltip = el}></div>
+        <div class="wv-tooltip" style={{ display: 'none' }} ref={el => this.tooltip = el}></div>
         {(this.dataStruct ?? []).map(d =>
           <div class={
             {
               'discovery-progress-group': true,
-              'discovery-progress-group-vertical': this.isVertical
+              'discovery-progress-group-vertical': this.isVertical,
             }
           }>{this.innerOptions.showLegend && !this.innerOptions.gauge?.horizontal ?
             <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
             <h3
               class="discovery-legend">{d.value ?? '0'}{d.unit} {!this.innerOptions.gauge?.horizontal ?
-              <br/> : ''}
+              <br /> : ''}
               <span
-                class="small">of {d.value > 0 ? d.max: d.min}{d.unit}</span></h3>
+                class="small">of {d.value > 0 ? d.max : d.min}{d.unit}</span></h3>
             <div class={{
               'discovery-progress-container-horizontal': this.innerOptions.gauge?.horizontal,
-              'discovery-progress-container-vertical': !this.innerOptions.gauge?.horizontal
+              'discovery-progress-container-vertical': !this.innerOptions.gauge?.horizontal,
             }}>
               {d.min < 0 ?
                 <div class="discovery-progress negative" onMouseOver={() => this.showTooltip(d)}
@@ -387,7 +387,7 @@ export class DiscoveryLinearGauge {
                     width: this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
                     height: !this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
                     display: d.progress > 0 ? 'none' : 'block',
-                    backgroundColor: d.color
+                    backgroundColor: d.color,
                   }}></div>
                 </div>
                 : ''
@@ -402,7 +402,7 @@ export class DiscoveryLinearGauge {
                     width: this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
                     height: !this.innerOptions.gauge?.horizontal ? `${Math.abs(d.progress)}%` : 'var(--warp-view-progress-size, 1rem)',
                     backgroundColor: d.color,
-                    display: d.progress < 0 ? 'none' : 'block'
+                    display: d.progress < 0 ? 'none' : 'block',
                   }}></div>
                 </div>
                 : ''
@@ -410,7 +410,7 @@ export class DiscoveryLinearGauge {
             </div>
             {this.innerOptions.showLegend && this.innerOptions.gauge?.horizontal ?
               <p class="small" innerHTML={GTSLib.formatLabel(d.key)}></p> : ''}
-          </div>
+          </div>,
         )}
         {this.parsing ? <div class="discovery-chart-spinner">
           <discovery-spinner>Parsing data...</discovery-spinner>

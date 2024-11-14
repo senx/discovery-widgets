@@ -113,9 +113,9 @@ export class DiscoveryProfile {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       if (!!this.myChart) {
-        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
@@ -200,17 +200,17 @@ export class DiscoveryProfile {
       this.chartOpts.yAxis = { show: false };
       this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
+      this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+      this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
     });
   }
 
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
     const series: any[] = [];
     const categories: any[] = [];

@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 import {ChartType} from '../model/types';
 
 export class LangUtils {
-  static prepare(ws: string, vars: any = {}, skipedVars: string[], type: ChartType, lang: ('warpscript' | 'flows') = 'warpscript') {
+  static prepare(ws: string, vars: any = {}, skippedVars: string[], type: ChartType, lang: ('warpscript' | 'flows') = 'warpscript') {
     switch (lang) {
       case 'flows':
-        return LangUtils.generateFlows(ws, vars, skipedVars, type)
+        return LangUtils.generateFlows(ws, vars, skippedVars, type)
       case 'warpscript':
-        return LangUtils.generateWarpscript(ws, vars, skipedVars, type)
+        return LangUtils.generateWarpscript(ws, vars, skippedVars, type)
     }
   }
 
@@ -67,9 +67,9 @@ ${JSON.stringify(value)}
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private static generateFlows(ws: string, vars: any, skipedVars: string[], type: ChartType) {
+  private static generateFlows(ws: string, vars: any, skippedVars: string[], type: ChartType) {
     const varsStr = Object.keys(vars || {})
-      .filter(k => !(skipedVars || []).includes(k))
+      .filter(k => !(skippedVars || []).includes(k))
       .map(k => LangUtils.generateFlowsVars(k, vars[k])).join('\n') + '\n';
     return `<'
 ${varsStr}
@@ -80,9 +80,9 @@ FLOWS`;
 
   // noinspection JSUnusedLocalSymbols
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private static generateWarpscript(ws: string, vars: any, skipedVars: string[], type: ChartType) {
-    const varsStr = Object.keys(vars || {})
-      .filter(k => !(skipedVars || []).includes(k))
+  private static generateWarpscript(ws: string, vars: any, skippedVars: string[], type: ChartType) {
+    const varsStr = Object.keys(vars ?? {})
+      .filter(k => !(skippedVars ?? []).includes(k))
       .map(k => LangUtils.generateWarpscriptVars(k, vars[k])).join('\n') + '\n';
     return `
 ${varsStr}

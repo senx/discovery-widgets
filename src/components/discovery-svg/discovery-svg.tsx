@@ -78,7 +78,7 @@ export class DiscoverySvgComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       setTimeout(() => this.parseResult());
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
@@ -111,9 +111,9 @@ export class DiscoverySvgComponent {
     this.LOG?.debug(['convert'], data);
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     if (this.innerOptions.customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
     }
     if (GTSLib.isArray(data.data)) {
       (data.data as any[] || []).forEach(img => {

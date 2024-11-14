@@ -87,7 +87,7 @@ export class DiscoveryCalendar {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
@@ -328,11 +328,11 @@ export class DiscoveryCalendar {
       this.chartOpts.yAxis = { show: false };
       this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
+      this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
-        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+        this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
       }
     });
   }

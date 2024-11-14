@@ -125,7 +125,7 @@ export class DiscoveryTabular {
   private convert(data: DataModel): Dataset[] {
     let options = Utils.mergeDeep<Param>({ ...new Param(), timeMode: 'date' }, this.options || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.options = { ...options };
+    this.options = Utils.clone(options);
     this.params = data.params || [];
     let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {

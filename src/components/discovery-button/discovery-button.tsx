@@ -71,7 +71,7 @@ export class DiscoveryButtonComponent {
       vars = JSON.parse(this.vars);
     }
     if (!Utils.deepEqual(vars, this.innerVars)) {
-      this.innerVars = vars;
+      this.innerVars = Utils.clone(vars as any);
       this.parseResult();
     }
     this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
@@ -92,7 +92,7 @@ export class DiscoveryButtonComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       this.parseResult();
     }
@@ -102,10 +102,10 @@ export class DiscoveryButtonComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, (this.options as Param).eventHandler, this.el.id);
     if (res.style) {
-      this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...res.style as { [k: string]: string } });
     }
     if (res.vars) {
-      this.innerVars = { ...this.innerVars, ...res.vars };
+      this.innerVars = Utils.clone({ ...this.innerVars, ...res.vars });
     }
   }
 
@@ -152,7 +152,7 @@ export class DiscoveryButtonComponent {
     this.label = dm.button.label;
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
 
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
@@ -160,7 +160,7 @@ export class DiscoveryButtonComponent {
       this.innerVars = this.vars;
     }
     if (this.innerOptions.customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
     }
     setTimeout(() => this.active = (this.innerResult?.data || []).find((v: any) => v.active)?.value);
   }
@@ -218,7 +218,7 @@ export class DiscoveryButtonComponent {
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div ref={el => this.root = el} class="button-wrapper">
         {this.type === 'button'
-          ? <button type="button" class={{'discovery-btn': true, 'button--loading': this.loading}}
+          ? <button type="button" class={{ 'discovery-btn': true, 'button--loading': this.loading }}
                     disabled={this.loading}
                     innerHTML={this.label}
                     onClick={() => this.handleClick()}></button>
@@ -226,7 +226,7 @@ export class DiscoveryButtonComponent {
         {this.type === 'button:radio'
           ? <div class="discovery-btn-group">
             {GTSLib.isArray(this.innerResult?.data)
-              ? (this.innerResult?.data || []).map(v =>
+              ? (this.innerResult?.data || []).map((v: any) =>
                   <button type="button"
                           class={{
                             'discovery-btn': true,

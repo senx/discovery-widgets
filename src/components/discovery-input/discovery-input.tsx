@@ -82,7 +82,7 @@ export class DiscoveryInputComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.el.id);
     if (res.style) {
-      this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...res.style as { [k: string]: string } });
     }
   }
 
@@ -92,7 +92,7 @@ export class DiscoveryInputComponent {
     this.innerResult = GTSLib.getData(this.result);
     this.innerOptions = Utils.mergeDeep<Param>(this.innerOptions ?? {} as Param, this.innerResult.globalParams);
     if (this.innerOptions.customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles ?? {} };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
     }
     this.parseResult();
   }
@@ -105,7 +105,7 @@ export class DiscoveryInputComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
       this.parseResult();
     }
@@ -151,9 +151,9 @@ export class DiscoveryInputComponent {
     this.subType = this.type.split(':')[1] as 'list' | 'text' | 'secret' | 'autocomplete';
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options ?? {});
     options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     if (this.innerOptions.customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
     }
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
@@ -278,7 +278,8 @@ export class DiscoveryInputComponent {
         } else {
           e.value = this.selectedValue;
         }
-        this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
+        this.LOG?.debug(['handleCick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
+        console.log('emits', e.value);
         this.discoveryEvent.emit({ ...e, source: this.el.id });
       }
     });
@@ -289,6 +290,7 @@ export class DiscoveryInputComponent {
   }
 
   private handleSelect(e: any) {
+    console.log('handleSelect');
     if (this.selectedValue !== e?.target?.value ?? e?.detail) {
       this.selectedValue = e?.target?.value ?? e?.detail;
       if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
@@ -376,7 +378,7 @@ export class DiscoveryInputComponent {
         this.innerOptions.input.value = this.innerOptions.input.value ?? data;
         this.value = this.innerOptions.input.value;
         this.selectedValue = this.value;
-        this.innerOptions = { ...this.innerOptions };
+        this.innerOptions = Utils.clone(this.innerOptions);
         break;
       case 'list':
       case 'multi':
@@ -413,13 +415,13 @@ export class DiscoveryInputComponent {
               value = [value] as number[] | string[];
             }
           }
-          this.value = [...value  as number[] | string[]] ;
+          this.value = [...value as number[] | string[]];
           this.selectedValue = this.value;
           if (this.subType === 'multi-cb' && this.checkBoxes) {
             Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
               .forEach((o: HTMLInputElement) => o.checked = (this.value as any[]).includes(o.value));
-            this.handleSelect({ detail: this.value });
           }
+          this.handleSelect({ detail: this.value });
         });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {

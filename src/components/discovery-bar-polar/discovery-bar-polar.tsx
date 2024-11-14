@@ -81,7 +81,7 @@ export class DiscoveryBarPolarComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
@@ -110,6 +110,7 @@ export class DiscoveryBarPolarComponent {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryBarPolarComponent, this.debug);
@@ -119,8 +120,8 @@ export class DiscoveryBarPolarComponent {
       this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.chartOpts = this.convert(this.result || new DataModel());
+    this.divider = GTSLib.getDivider((this.options as Param).timeUnit ?? 'us');
+    this.chartOpts = this.convert(this.result ?? new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -143,16 +144,16 @@ export class DiscoveryBarPolarComponent {
       this.chartOpts.yAxis = { show: false };
       this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
+      this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
-        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+        this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
       }
     });
   }
 
-  private getCommonSeriesParam(color) {
+  private getCommonSeriesParam(color: string) {
     const datasetNoAlpha = this.innerOptions.datasetNoAlpha;
     return {
       coordinateSystem: 'polar',
@@ -204,7 +205,7 @@ export class DiscoveryBarPolarComponent {
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     const series: any[] = [];
     let gtsList;
     if (GTSLib.isArray(data.data)) {
@@ -460,6 +461,7 @@ export class DiscoveryBarPolarComponent {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
       16, { leading: true, trailing: true });
@@ -633,20 +635,20 @@ export class DiscoveryBarPolarComponent {
     }
     if (GTSLib.isArray(this.chartOpts.angleAxis)) {
       (this.chartOpts.angleAxis as any[])
-        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: date, status: 'show' });
+        .forEach(a => a.axisPointer = { ...a.axisPointer ?? {}, value: date, status: 'show' });
     } else {
       (this.chartOpts.angleAxis as any).axisPointer = {
-        ...(this.chartOpts.angleAxis as any).axisPointer || {},
+        ...(this.chartOpts.angleAxis as any).axisPointer ?? {},
         value: date,
         status: 'show',
       };
     }
     if (GTSLib.isArray(this.chartOpts.radiusAxis)) {
       (this.chartOpts.radiusAxis as any[])
-        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: value || 0, status: 'show' });
+        .forEach(a => a.axisPointer = { ...a.axisPointer ?? {}, value: value ?? 0, status: 'show' });
     } else {
       (this.chartOpts.radiusAxis as any).axisPointer = {
-        ...(this.chartOpts.radiusAxis as any).axisPointer || {},
+        ...(this.chartOpts.radiusAxis as any).axisPointer ?? {},
         value: value || 0,
         status: 'show',
       };

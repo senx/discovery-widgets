@@ -135,7 +135,7 @@ export class Utils {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
-    return { ...new Param(), ...options as Param, ...options2 };
+    return  Utils.clone({ ...new Param(), ...options as Param, ...options2 });
   }
 
   static sanitize(data: string | DataModel) {

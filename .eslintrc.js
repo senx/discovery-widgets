@@ -18,7 +18,8 @@ module.exports = {
     "eslint-plugin-import",
     "eslint-plugin-jsdoc",
     "eslint-plugin-prefer-arrow",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    '@stylistic/ts',
   ],
   "root": true,
   "rules": {
@@ -27,31 +28,6 @@ module.exports = {
       "error",
       {
         "default": "array"
-      }
-    ],
-    "@typescript-eslint/ban-types": [
-      "error",
-      {
-        "types": {
-          "Object": {
-            "message": "Avoid using the `Object` type. Did you mean `object`?"
-          },
-          "Function": {
-            "message": "Avoid using the `Function` type. Prefer a specific function type, like `() => void`."
-          },
-          "Boolean": {
-            "message": "Avoid using the `Boolean` type. Did you mean `boolean`?"
-          },
-          "Number": {
-            "message": "Avoid using the `Number` type. Did you mean `number`?"
-          },
-          "String": {
-            "message": "Avoid using the `String` type. Did you mean `string`?"
-          },
-          "Symbol": {
-            "message": "Avoid using the `Symbol` type. Did you mean `symbol`?"
-          }
-        }
       }
     ],
     "@typescript-eslint/consistent-type-assertions": "error",
@@ -83,7 +59,7 @@ module.exports = {
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-unsafe-return": "off",
-    "@typescript-eslint/quotes": [
+    "@stylistic/ts/quotes": [
       "error",
       "single"
     ],

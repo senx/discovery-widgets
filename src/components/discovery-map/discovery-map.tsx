@@ -111,7 +111,7 @@ export class DiscoveryMapComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true, true));
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }

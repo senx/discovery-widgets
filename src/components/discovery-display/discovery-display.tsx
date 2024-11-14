@@ -86,8 +86,8 @@ export class DiscoveryDisplayComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
-      this.chartOptions = { ...this.chartOptions, fontColor: this.innerOptions.fontColor };
+      this.innerOptions =  Utils.clone(opts);
+      this.chartOptions =  Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
       this.message = this.convert(this.result as DataModel || new DataModel());
       this.flexFont();
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOptions);
@@ -98,7 +98,7 @@ export class DiscoveryDisplayComponent {
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '', this.el.id);
     if (res.style) {
-      this.innerStyle = { ...this.innerStyle, ...res.style };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...res.style });
     }
   }
 
@@ -132,7 +132,7 @@ export class DiscoveryDisplayComponent {
     } else {
       this.innerOptions = this.options;
     }
-    this.chartOptions = { ...this.chartOptions, fontColor: this.innerOptions.fontColor };
+    this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.message = this.convert(this.result || new DataModel());
@@ -165,13 +165,13 @@ export class DiscoveryDisplayComponent {
     if (!!this.timer) {
       clearInterval(this.timer);
     }
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     if (this.innerOptions.customStyles) {
-      this.innerStyle = { ...this.innerStyle, ...this.innerOptions.customStyles || {} };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
     }
-    this.chartOptions = { ...this.chartOptions, fontColor: this.innerOptions.fontColor };
+    this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
     this.LOG?.debug(['convert'], 'dataModel', dataModel);
     let display: any;
     if (!!dataModel.data) {

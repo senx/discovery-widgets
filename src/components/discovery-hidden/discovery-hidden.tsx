@@ -65,7 +65,7 @@ export class DiscoveryHidden {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       this.LOG?.debug(['optionsUpdate 2'], {options: this.innerOptions, newValue, oldValue});
     }
   }

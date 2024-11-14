@@ -102,7 +102,7 @@ export class DiscoveryTileResultComponent {
     }
     opts = Utils.mergeDeep<Param>(opts ?? {} as Param, (this.innerResult as unknown as DataModel)?.globalParams ?? {});
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
   }
@@ -111,11 +111,11 @@ export class DiscoveryTileResultComponent {
   varsUpdate(newValue: any, oldValue: any) {
     if (!!this.vars && typeof this.vars === 'string') {
       const vars = JSON.parse(this.vars);
-      if (!Utils.deepEqual(vars, this.innerVars)) {
-        this.innerVars = vars;
+      if (!Utils.deepEqual(this.innerVars, vars)) {
+        this.innerVars = Utils.clone(vars);
       }
     }
-    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
+    this.LOG?.debug(['varsUpdate'], { innerVars: this.innerVars, newValue, oldValue });
   }
 
   @Listen('discoveryEvent', { target: 'window' })
@@ -134,7 +134,7 @@ export class DiscoveryTileResultComponent {
         this.parseResult();
       }
       if (res.style) {
-        this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
+        this.innerStyle = Utils.clone({ ...this.innerStyle, ...res.style as { [k: string]: string } });
       }
       if (res.zoom) {
         void this.setZoom(res.zoom).then(() => {
@@ -153,7 +153,7 @@ export class DiscoveryTileResultComponent {
         }
       }
       if (res.margin) {
-        this.innerOptions = { ...this.innerOptions, leftMargin: res.margin };
+        this.innerOptions = Utils.clone({ ...this.innerOptions, leftMargin: res.margin });
       }
       if (res.bounds) {
         this.innerOptions = {
@@ -669,8 +669,8 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async parseEvents() {
-    this.LOG?.debug(['parseEvents'], { discoveryEvents: ((this.innerResult as unknown as DataModel)?.events || []) });
-    setTimeout(() => ((this.innerResult as unknown as DataModel)?.events || [])
+    this.LOG?.debug(['parseEvents'], { discoveryEvents: ((this.innerResult as unknown as DataModel)?.events ?? []) });
+    setTimeout(() => ((this.innerResult as unknown as DataModel)?.events ?? [])
       .filter(e => e.value !== undefined)
       .filter(e => e.type !== 'zoom' && e.type !== 'margin' && e.type !== 'selected')
       .forEach(e => {
@@ -694,7 +694,7 @@ export class DiscoveryTileResultComponent {
       void (async () => {
         this.unit = (this.options as Param).unit ?? this.unit;
         this.innerType = (this.innerResult as unknown as DataModel)?.globalParams?.type ?? this.innerType;
-        this.innerOptions = { ...options };
+        this.innerOptions = Utils.clone(options);
         this.selfType.emit(this.innerType);
         this.innerTitle = this.innerOptions?.title ?? this.chartTitle ?? '';
         this.handleCSSColors();
@@ -707,7 +707,7 @@ export class DiscoveryTileResultComponent {
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
-    this.innerStyles = { ...this.innerStyles, ...styles, ...this.innerOptions.customStyles || {} };
+    this.innerStyles = Utils.clone({ ...this.innerStyles, ...styles, ...this.innerOptions.customStyles ?? {} });
     return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 

@@ -17,6 +17,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // noinspection ES6UnusedImports eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch } from '@stencil/core';
+import { GTSLib } from '../../../utils/gts.lib';
 
 @Component({
   tag: 'discovery-input-chips',
@@ -256,6 +257,7 @@ export class DiscoveryInputChips {
 
   private async deleteChip(index: number) {
     (this.innerChips ?? []).splice(index, 1);
+    this.innerChips = [...this.innerChips];
     this.chipChange.emit(this.innerChips);
     if (this.show_autocomplete_on_focus && this.autocomplete) {
       await this.handleInput(undefined);
@@ -342,7 +344,7 @@ export class DiscoveryInputChips {
       return;
     }
     if (value.trim() !== '') {
-      this.innerChips = [...this.innerChips, value.trim()];
+      this.innerChips = [...this.innerChips?? [], value.trim()];
       this.change_handler_enabled = false;
       this.real_input.value = '';
       this.change_handler_enabled = true;
@@ -364,12 +366,14 @@ export class DiscoveryInputChips {
         onFocus={this.handleAutocompleteContainerFocus.bind(this)}
         ref={e => this.autocompleteContainer = e}></div>
       <div class="wrapper">
-        {this.innerChips
+        {
+          GTSLib.isArray(this.innerChips)
           ? this.innerChips.map(chip => <discovery-input-chips-chip
             onClick={event => this.handleChipClick(event, chip)}
             label={chip}
             onRemoveChip={this.handleChipClose.bind(this)}></discovery-input-chips-chip>)
-          : ''}
+            : ''
+        }
         <div class="caret_position_tracker" ref={el => this.caret_position_tracker = el}></div>
         <input class="real_input" type="text"
                ref={e => {

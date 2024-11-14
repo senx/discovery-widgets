@@ -86,7 +86,7 @@ export class DiscoveryDashboardComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       this.LOG?.debug(['optionsUpdate'], { options: this.innerOptions, newValue, oldValue });
     }
   }
@@ -104,7 +104,7 @@ export class DiscoveryDashboardComponent {
       vars = JSON.parse(this.vars);
     }
     if (!Utils.deepEqual(vars, this.innerVars)) {
-      this.innerVars = vars;
+      this.innerVars = Utils.clone(vars);
       this.exec();
     }
     if (this.LOG) {
@@ -134,7 +134,7 @@ export class DiscoveryDashboardComponent {
       await this.modal.open();
     }
     if (res.style) {
-      this.innerStyle = { ...this.innerStyle, ...res.style as { [k: string]: string } };
+      this.innerStyle = Utils.clone({ ...this.innerStyle, ...res.style as { [k: string]: string } });
     }
     if (res.audio) {
       this.audioFile = res.audio;
@@ -153,7 +153,7 @@ export class DiscoveryDashboardComponent {
       }
     }
     if (res.vars) {
-      this.innerVars = { ...(this.innerVars || {}), ...res.vars };
+      this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
       if (!(this.innerOptions.mutedVars || []).includes(event.detail.selector)) {
         this.exec();
       }
@@ -165,11 +165,11 @@ export class DiscoveryDashboardComponent {
     this.LOG = new Logger(DiscoveryDashboardComponent, this.debug);
     this.componentId = v4();
     if (!!this.options && typeof this.options === 'string' && this.options !== 'undefined') {
-      this.innerOptions = JSON.parse(this.options || '{}');
+      this.innerOptions = JSON.parse(this.options ?? '{}');
     } else if (this.options === 'undefined') {
       this.innerOptions = new Param();
     } else {
-      this.innerOptions = { ...(this.options as Param) };
+      this.innerOptions = Utils.clone(this.options as Param);
     }
     this.LOG?.debug(['componentWillLoad'], { url: this.url, options: this.innerOptions });
     const dims = Utils.getContentBounds(this.el.parentElement);
@@ -211,7 +211,10 @@ export class DiscoveryDashboardComponent {
   async getDashboardStructure(): Promise<Dashboard> {
     const result = Utils.clone(this.result);
     const tiles = Utils.clone(this.tiles);
-    const res: { dataUrl: string, bgColor: string }[] = await Promise.all(tiles.map((t => t.elem?.export('png'))));
+    const res: {
+      dataUrl: string,
+      bgColor: string
+    }[] = await Promise.all(tiles.map(((t: any) => t.elem?.export('png'))));
     for (let i = 0; i < tiles.length; i++) {
       tiles[i].png = res[i]?.dataUrl;
       tiles[i].bgColor = Utils.getCSSColor(this.el, '--warp-view-tile-background', res[i]?.bgColor);
@@ -221,7 +224,7 @@ export class DiscoveryDashboardComponent {
       delete tiles[i].elem;
       delete tiles[i].endpoint;
     }
-    result.tiles = tiles.filter(t => t.type !== 'hidden');
+    result.tiles = tiles.filter((t: any) => t.type !== 'hidden');
     result.cellHeight = result.cellHeight || this.cellHeight || 220;
     result.cols = result.cols || this.cols || 12;
     result.bgColor = Utils.getCSSColor(this.el, '--warp-view-dashboard-background', '#fff');
@@ -238,7 +241,7 @@ export class DiscoveryDashboardComponent {
         .then((res: any) => {
           const result = new JsonLib().parse(res.data as string);
           const tmpResult: Dashboard = result.length > 0 ? result[0] ?? new Dashboard() : new Dashboard();
-          this.innerOptions = { ...this.innerOptions, ...(tmpResult?.options ?? {}) };
+          this.innerOptions = Utils.clone({ ...this.innerOptions, ...(tmpResult?.options ?? {}) });
           this.headers = res.headers;
           this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
           this.statusHeaders.emit(this.headers);
@@ -282,9 +285,8 @@ export class DiscoveryDashboardComponent {
         this.LOG?.error(['exec'], e);
       });
     } else {
-      setTimeout(() => {
-        this.parseResult();  // TODO: dashboard within a dashboard: this hacky delay ensure to have the right innerOptions to avoid the first requests that will end in 403.
-      }, 1000);
+      // TODO: dashboard within a dashboard: this hacky delay ensure to have the right innerOptions to avoid the first requests that will end in 403.
+      setTimeout(() => this.parseResult(), 1000);
     }
   }
 
@@ -302,8 +304,8 @@ export class DiscoveryDashboardComponent {
     } else {
       tmpResult = GTSLib.isArray(this.data) ? this.data[0] : this.data;
     }
-    this.innerOptions = { ...this.innerOptions, ...tmpResult?.options ?? {} };
-    this.innerType = tmpResult?.type || this.type || 'dashboard';
+    this.innerOptions = Utils.clone({ ...this.innerOptions, ...tmpResult?.options ?? {} });
+    this.innerType = tmpResult?.type ?? this.type ?? 'dashboard';
     this.loaded = true;
     if (typeof tmpResult?.tiles === 'string') {
       this.LOG?.debug(['exec', 'macroTiles'], tmpResult?.tiles);
@@ -340,7 +342,7 @@ export class DiscoveryDashboardComponent {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
     } else {
-      this.innerVars = this.vars || {};
+      this.innerVars = this.vars ?? {};
     }
     if (this.innerType === 'scada') {
       const tiles = tmpResult.tiles as Tile[];  // items array
@@ -363,10 +365,10 @@ export class DiscoveryDashboardComponent {
       tmpResult.tiles = tmpResult.tiles ?? [];
     }
     this.LOG?.debug(['processResult', 'tmpResult'], tmpResult);
-    tmpResult.vars = { ...tmpResult.vars || {}, ...this.innerVars };
-    tmpResult.cols = tmpResult.cols || this.cols || 12;
-    this.result = { ...tmpResult };
-    this.title = this.dashboardTitle || this.result.title;
+    tmpResult.vars = Utils.clone({ ...tmpResult.vars ?? {}, ...this.innerVars });
+    tmpResult.cols = tmpResult.cols ?? this.cols ?? 12;
+    this.result = Utils.clone(tmpResult);
+    this.title = this.dashboardTitle ?? this.result.title;
     this.description = this.result.description;
     this.tiles = [];
     for (let i = 0; i < { tiles: {}, ...this.result }.tiles.length; i++) {
@@ -378,7 +380,7 @@ export class DiscoveryDashboardComponent {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
-    const opts = { ...options as Param };
+    const opts = Utils.clone(options as Param);
     const params = _.merge(new Param(), opts, { eventHandler: undefined }, tileOptions ?? {});
     params.httpHeaders = opts.httpHeaders ?? {};
     return params;
@@ -390,7 +392,7 @@ export class DiscoveryDashboardComponent {
     return myVars;
   }
 
-  static sanitize(data: string | DataModel | any): string | DataModel {
+  static sanitize(data: any): string | DataModel {
     if (typeof data === 'string' && !data.startsWith('[') && !data.startsWith('{')) return '["' + data + '"]';
     else if (typeof data === 'string') return data;
     else return GTSLib.isArray(data) ? data : [data];
@@ -407,7 +409,7 @@ export class DiscoveryDashboardComponent {
   private setActualType(id: number, type: CustomEvent<ChartType>) {
     type.stopPropagation();
     this.types[id] = type.detail;
-    this.types = { ...this.types };
+    this.types = Utils.clone(this.types);
   }
 
   private getRendering() {
@@ -575,7 +577,7 @@ export class DiscoveryDashboardComponent {
   }
 
   private generateStyle(styles: { [k: string]: string }): string {
-    this.innerStyles = { ...this.innerStyles, ...styles, ...this.innerOptions.customStyles || {} };
+    this.innerStyles = Utils.clone({ ...this.innerStyles, ...styles, ...this.innerOptions.customStyles ?? {} });
     return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 

@@ -82,7 +82,7 @@ export class DiscoveryTileComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       if (Utils.deepEqual(opts.httpHeaders ?? {}, this.innerOptions.httpHeaders ?? {})) {
         await this.exec(true);
       }
@@ -97,7 +97,7 @@ export class DiscoveryTileComponent {
       vars = JSON.parse(this.vars);
     }
     if (!Utils.deepEqual(vars, this.innerVars)) {
-      this.innerVars = vars;
+      this.innerVars = Utils.clone(vars);
       await this.exec(true);
     }
     if (this.LOG) {
@@ -108,9 +108,8 @@ export class DiscoveryTileComponent {
   @Listen('discoveryEvent', { target: 'window' })
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.componentId);
-
     if (res.vars) {
-      const vars = { ...(this.innerVars ?? {}), ...res.vars };
+      const vars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
       if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
         this.innerVars = vars;
         if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
@@ -119,9 +118,9 @@ export class DiscoveryTileComponent {
       }
     }
     if (res.selected) {
-      const vars = { ...(this.innerVars ?? {}), ...res.vars };
+      const vars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
       if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
-        this.innerVars = vars;
+        this.innerVars = Utils.clone(vars);
         if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
           await this.exec(true);
         }
@@ -198,7 +197,7 @@ export class DiscoveryTileComponent {
     } else {
       this.innerOptions = { ...(this.options as any) ?? new Param() };
     }
-    this.innerVars = JSON.parse(this.vars || '{}');
+    this.innerVars = JSON.parse(this.vars ?? '{}');
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
@@ -240,28 +239,26 @@ export class DiscoveryTileComponent {
         }
         this.ws = LangUtils.prepare(
           Utils.unsescape(this.el.innerHTML),
-          this.innerVars || {},
-          this.innerOptions?.skippedVars || [],
+          { ...this.innerVars ?? {} },
+          this.innerOptions?.skippedVars ?? [],
           this.type,
           this.language);
         if (!!window) {
           const win = window as any;
           let registry = win.DiscoveryPluginRegistry;
-          registry = registry || {};
+          registry = registry ?? {};
           if (!!(registry || {})[this.type] && !!registry[this.type].scriptWrapper && typeof registry[this.type].scriptWrapper === 'function') {
             this.ws = registry[this.type].scriptWrapper(this.ws);
           }
         }
-        this.LOG?.debug(['exec'], this.ws, this.type);
+        this.LOG?.debug(['exec'], this.chartTitle, this.ws, this.type);
         this.url = Utils.getUrl(this.url);
         if (this.url.toLowerCase().startsWith('http')) {
           setTimeout(() => {
             this.hasError = false;
             this.errorMessage = '';
             this.statusMessage = undefined;
-            if (this.innerOptions.showLoader) {
-              this.showLoader = true;
-            }
+            this.showLoader = !!this.innerOptions.showLoader;
           });
 
           Utils.httpPost(this.url, this.ws, this.innerOptions.httpHeaders)
@@ -309,7 +306,7 @@ export class DiscoveryTileComponent {
                 void (async () => {
                   this.loaded = true;
                   this.showLoader = false;
-                  this.LOG?.debug(['exec', 'result'], this.result);
+                  this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);
                   this.result = res.data as string;
                   this.execResult.emit(this.result);
                   this.hasError = false;

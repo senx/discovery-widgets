@@ -56,7 +56,7 @@ export class DiscoverySlider {
     if (!!newValue && typeof newValue === 'string') {
       opts = JSON.parse(newValue);
     }
-    this.innerOptions = { ...this.defOptions, ...opts };
+    this.innerOptions = Utils.clone({ ...this.defOptions, ...opts });
     this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout(async () => {
@@ -79,7 +79,7 @@ export class DiscoverySlider {
       this.innerOptions = this.options;
     }
     const options = Utils.mergeDeep<Param>({ ...this.defOptions }, this.innerOptions || {});
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     this.LOG?.debug(['componentWillLoad'], this.innerOptions);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
   }

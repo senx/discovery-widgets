@@ -77,7 +77,7 @@ export class DiscoveryPageable {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...new Param(), ...opts };
+      this.innerOptions = Utils.clone({ ...new Param(), ...opts });
       this.drawGridData();
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
@@ -97,7 +97,7 @@ export class DiscoveryPageable {
   // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryPageable, this.debug);
-    this.innerOptions = { ...new Param(), ...this.options };
+    this.innerOptions = Utils.clone({ ...new Param(), ...this.options });
     this.drawGridData();
   }
 
@@ -166,7 +166,7 @@ export class DiscoveryPageable {
       displayedValues: this.displayedValues,
     });
     this.updateCounter++;
-    this.innerOptions = { ...options, extra: this.updateCounter }; // cleaner way to force a render ?
+    this.innerOptions = Utils.clone({ ...options, extra: this.updateCounter }); // cleaner way to force a render ?
   }
 
   private static formatLabel(name: string) {

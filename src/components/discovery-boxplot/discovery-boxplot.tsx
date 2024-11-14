@@ -81,7 +81,7 @@ export class DiscoveryBoxPlotComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = { ...opts };
+      this.innerOptions = Utils.clone(opts);
       if (!!this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
@@ -143,11 +143,11 @@ export class DiscoveryBoxPlotComponent {
       this.chartOpts.yAxis = { show: false };
       this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
+      this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
-        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+        this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
       }
     });
   }
@@ -195,7 +195,7 @@ export class DiscoveryBoxPlotComponent {
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     const series: any[] = [];
     let gtsList: any[];
     if (GTSLib.isArray(data.data)) {
@@ -675,20 +675,20 @@ export class DiscoveryBoxPlotComponent {
     }
     if (GTSLib.isArray(this.chartOpts.xAxis)) {
       (this.chartOpts.xAxis as any[])
-        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: date, status: 'show' });
+        .forEach(a => a.axisPointer = { ...a.axisPointer ?? {}, value: date, status: 'show' });
     } else {
       (this.chartOpts.xAxis as any).axisPointer = {
-        ...(this.chartOpts.xAxis as any).axisPointer || {},
+        ...(this.chartOpts.xAxis as any).axisPointer ?? {},
         value: date,
         status: 'show',
       };
     }
     if (GTSLib.isArray(this.chartOpts.yAxis)) {
       (this.chartOpts.yAxis as any[])
-        .forEach(a => a.axisPointer = { ...a.axisPointer || {}, value: value || 0, status: 'show' });
+        .forEach(a => a.axisPointer = { ...a.axisPointer ?? {}, value: value ?? 0, status: 'show' });
     } else {
       (this.chartOpts.yAxis as any).axisPointer = {
-        ...(this.chartOpts.yAxis as any).axisPointer || {},
+        ...(this.chartOpts.yAxis as any).axisPointer ?? {},
         value: value ?? 0,
         status: 'show',
       };
