@@ -279,7 +279,6 @@ export class DiscoveryInputComponent {
           e.value = this.selectedValue;
         }
         this.LOG?.debug(['handleCick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
-        console.log('emits', e.value);
         this.discoveryEvent.emit({ ...e, source: this.el.id });
       }
     });
@@ -290,7 +289,6 @@ export class DiscoveryInputComponent {
   }
 
   private handleSelect(e: any) {
-    console.log('handleSelect');
     if (this.selectedValue !== e?.target?.value ?? e?.detail) {
       this.selectedValue = e?.target?.value ?? e?.detail;
       if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
