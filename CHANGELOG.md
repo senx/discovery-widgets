@@ -1,6 +1,22 @@
 Discovery
 ---
 
+## v1.1.138
+
+> +  2024/11/15  | v1.1.138 
+> +  2024/11/14  | Fix shallow copy issue on variables and options 
+> +  2024/11/13  | [input:chips] Fix chips deletion 
+> +  2024/11/13  | [input:chips] Fix chips state and values 
+> +  2024/11/13  | Revert "fix a random bug with chips" 
+> +  2024/11/08  | Fix data parsing 
+
+## v1.1.137
+
+> +  2024/11/12  | v1.1.137 
+> +  2024/11/12  | fix a random bug with chips 
+> +  2024/11/08  | changelog 
+> +  2024/11/08  | Readmes 
+
 ## v1.1.136
 
 > +  2024/11/08  | v1.1.136 
@@ -50,6 +66,9 @@ Discovery
 > +  2024/10/30  | [line] [area] Add a slider for the Y axis 
 > +  2024/10/30  | Fix spinner z-index on map 
 > +  2024/10/30  | deps update 
+
+## v1.1.130
+
 > +  2024/10/28  | version update 
 > +  2024/10/28  | fix non sorting and sorting with nulls 
 
