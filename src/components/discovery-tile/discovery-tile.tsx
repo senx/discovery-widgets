@@ -109,12 +109,9 @@ export class DiscoveryTileComponent {
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.componentId);
     if (res.vars) {
-      const vars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
-      if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
-        this.innerVars = vars;
-        if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-          await this.exec(true);
-        }
+      this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
+      if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
+        await this.exec(true);
       }
     }
     if (res.selected) {

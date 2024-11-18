@@ -63,6 +63,7 @@ export class DiscoverySvgComponent {
   private defOptions: Param = new Param();
   private funqueue = [];
   private refs: HTMLDivElement[] = [];
+  private listenersAdded = false;
 
   @Watch('result')
   updateRes() {
@@ -195,7 +196,7 @@ export class DiscoverySvgComponent {
       const el = svgDoc.getElementsByTagName('svg').item(0);
       if (!!xpath) {
         let nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
-        if(!nsXpath.startsWith('svg:svg')) {
+        if (!nsXpath.startsWith('svg:svg')) {
           nsXpath = '//' + nsXpath;
         }
         const iterator = svgDoc.evaluate(nsXpath, svgDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
@@ -258,6 +259,7 @@ export class DiscoverySvgComponent {
   }
 
   render() {
+    this.listenersAdded = false;
     return (
       <Host>
         <style>{this.generateStyle(this.innerStyle)}</style>
@@ -273,20 +275,29 @@ export class DiscoverySvgComponent {
   }
 
   private addHandlers() {
-    for (const svgWrapper of this.refs) {
-      for (const h of this.innerOptions.svg?.handlers ?? []) {
-        if (!!h.selector) {
-          for (const elem of svgWrapper.querySelectorAll(h.selector)) {
-            elem.classList.add('hoverable');
-            if (!!h.click) {
-              elem.addEventListener('click', () => this.triggerEvent(h.event));
-            }
-            if (!!h.hover) {
-              elem.addEventListener('mouseover', () => this.triggerEvent(h.event));
+    if (!this.listenersAdded) {
+      for (const svgWrapper of this.refs) {
+        for (const h of this.innerOptions.svg?.handlers ?? []) {
+          if (!!h.selector) {
+            for (const elem of svgWrapper.querySelectorAll(h.selector)) {
+              elem.classList.add('hoverable');
+              if (!!h.click) {
+                elem.addEventListener('click', e => {
+                  this.triggerEvent(h.event);
+                  e.stopImmediatePropagation();
+                });
+              }
+              if (!!h.hover) {
+                elem.addEventListener('mouseover', e => {
+                  this.triggerEvent(h.event);
+                  e.stopImmediatePropagation();
+                });
+              }
             }
           }
         }
       }
+      this.listenersAdded = true;
     }
   }
 }
