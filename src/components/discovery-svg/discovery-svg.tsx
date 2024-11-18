@@ -138,7 +138,7 @@ export class DiscoverySvgComponent {
       }
       if (res.xpath) {
         const toDisplay = [];
-        (this.toDisplay || []).forEach(img => {
+        (this.toDisplay ?? []).forEach(img => {
           this.LOG?.debug(['convert'], DiscoverySvgComponent.isSVG(img));
           if (DiscoverySvgComponent.isSVG(img)) {
             toDisplay.push(this.sanitize(img, res.xpath.selector, res.xpath.value));
@@ -150,7 +150,9 @@ export class DiscoverySvgComponent {
     });
   }
 
-  private wrapFunction(fn, context, params) {
+  private wrapFunction(fn: {
+    apply: (arg0: any, arg1: any) => any;
+  }, context: this, params: CustomEvent<DiscoveryEvent>[]) {
     return () => fn.apply(context, params);
   }
 
@@ -173,29 +175,11 @@ export class DiscoverySvgComponent {
       this.innerOptions = this.options;
     }
     this.innerResult = GTSLib.getData(this.result);
-    this.toDisplay = this.convert(this.innerResult || new DataModel());
+    this.toDisplay = this.convert(this.innerResult ?? new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
       toDisplay: this.toDisplay,
-    });
-    setTimeout(() => {
-      this.refs.forEach(svgWrapper => {
-        (this.innerOptions.svg?.handlers || []).forEach(h => {
-          if (!!h.selector) {
-            svgWrapper.querySelectorAll(h.selector).forEach(elem => {
-              elem.classList.add('hoverable');
-              if (!!h.click) {
-                elem.addEventListener('click', () => this.triggerEvent(h.event));
-              }
-              if (!!h.hover) {
-                elem.addEventListener('mouseover', () => this.triggerEvent(h.event));
-              }
-            });
-          }
-        });
-
-      });
     });
     this.parsing = false;
     this.draw.emit();
@@ -210,7 +194,10 @@ export class DiscoverySvgComponent {
       const svgDoc = Utils.parseXML(svg, 'image/svg+xml');
       const el = svgDoc.getElementsByTagName('svg').item(0);
       if (!!xpath) {
-        const nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
+        let nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
+        if(!nsXpath.startsWith('svg:svg')) {
+          nsXpath = '//' + nsXpath;
+        }
         const iterator = svgDoc.evaluate(nsXpath, svgDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
         let elem = iterator.iterateNext();
         const elemsToReplace: SVGElement[] = [];
@@ -262,10 +249,12 @@ export class DiscoverySvgComponent {
     return type === 'svg' ? this.toDisplay : (await html2canvas(this.el)).toDataURL();
   }
 
-  private;
-
-  generateStyle(innerStyle: { [k: string]: string }): string {
+  private generateStyle(innerStyle: { [k: string]: string }): string {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
+  }
+
+  componentDidRender() {
+    this.addHandlers();
   }
 
   render() {
@@ -281,5 +270,23 @@ export class DiscoverySvgComponent {
           }</div>
       </Host>
     );
+  }
+
+  private addHandlers() {
+    for (const svgWrapper of this.refs) {
+      for (const h of this.innerOptions.svg?.handlers ?? []) {
+        if (!!h.selector) {
+          for (const elem of svgWrapper.querySelectorAll(h.selector)) {
+            elem.classList.add('hoverable');
+            if (!!h.click) {
+              elem.addEventListener('click', () => this.triggerEvent(h.event));
+            }
+            if (!!h.hover) {
+              elem.addEventListener('mouseover', () => this.triggerEvent(h.event));
+            }
+          }
+        }
+      }
+    }
   }
 }
