@@ -262,7 +262,9 @@ export class DiscoveryTileComponent {
             .then((res: any) => {
               this.hiddenByWs = false;
               const toRefresh = this.result === res.data;
-              this.result = '';
+              if ((this.type ?? '').startsWith('input') || (this.type ?? '').startsWith('svg')) {
+                this.result = '';
+              }
               this.headers = res.headers;
               this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
               this.LOG?.debug(['exec', 'headers'], this.headers);

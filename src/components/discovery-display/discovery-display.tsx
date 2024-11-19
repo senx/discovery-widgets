@@ -49,7 +49,7 @@ export class DiscoveryDisplayComponent {
 
   @State() parsing = false;
   @State() rendering = false;
-  @State() message: string;
+  @State() message: string = '';
   @State() innerStyle: { [k: string]: string; };
   @State() innerOptions: Param;
 
@@ -72,10 +72,12 @@ export class DiscoveryDisplayComponent {
   };
 
   @Watch('result')
-  updateRes() {
-    this.result = GTSLib.getData(this.result);
-    this.message = this.convert(this.result ?? new DataModel());
-    this.fitties.fit();
+  updateRes(newValue: any) {
+    const message = this.convert(GTSLib.getData(newValue) ?? new DataModel());
+    if (message !== this.message) {
+      this.message = message;
+      this.fitties.fit();
+    }
   }
 
   @Watch('options')
@@ -90,7 +92,6 @@ export class DiscoveryDisplayComponent {
       this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
       this.message = this.convert(this.result as DataModel || new DataModel());
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOptions);
-      this.fitties.fit();
     }
   }
 
@@ -141,7 +142,7 @@ export class DiscoveryDisplayComponent {
     this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
     this.result = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.message = this.convert(this.result || new DataModel());
+    this.message = this.convert(this.result ?? new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -185,7 +186,7 @@ export class DiscoveryDisplayComponent {
     }
   }
 
-  private convert(dataModel: DataModel) {
+  private convert(dataModel: DataModel): string {
     if (!!this.timer) {
       clearInterval(this.timer);
     }
@@ -197,13 +198,13 @@ export class DiscoveryDisplayComponent {
     }
     this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
     this.LOG?.debug(['convert'], 'dataModel', dataModel);
-    let display: any;
+    let display: any = this.message;
     if (!!dataModel.data) {
-      display = GTSLib.isArray(dataModel.data) ? dataModel.data[0] : dataModel.data;
+      display = GTSLib.isArray(dataModel.data) ? dataModel.data[0] ?? this.message : dataModel.data ?? this.message;
     } else {
-      display = GTSLib.isArray(dataModel) ? dataModel[0] : dataModel;
+      display = GTSLib.isArray(dataModel) ? dataModel[0] ?? this.message : dataModel ?? this.message;
     }
-    display = GTSLib.isArray(display) ? display[0] : display;
+    display = GTSLib.isArray(display) ? display[0] ?? this.message : display ?? this.message;
     if (GTSLib.isGts(display)) {
       this.gts = [display];
       let v: string | number = this.innerOptions.display?.value ?? '';
@@ -242,7 +243,7 @@ export class DiscoveryDisplayComponent {
       case 'timestamp':
         display = decodeURIComponent(decodeURIComponent(display));
     }
-    return display;
+    return display ?? '';
   }
 
   render() {
@@ -254,7 +255,7 @@ export class DiscoveryDisplayComponent {
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el} class="value">
-          <span innerHTML={this.message} /><small>{this.innerOptions.unit ?? this.unit ?? ''}</small>
+          <span innerHTML={this.message ?? ''} /><small>{this.innerOptions.unit ?? this.unit ?? ''}</small>
         </div>
       </div>
       {this.gts && this.innerOptions.display?.showChart
