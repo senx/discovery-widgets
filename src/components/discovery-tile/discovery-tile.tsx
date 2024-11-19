@@ -262,9 +262,7 @@ export class DiscoveryTileComponent {
             .then((res: any) => {
               this.hiddenByWs = false;
               const toRefresh = this.result === res.data;
-              if ((this.type ?? '').startsWith('input')) {
-                this.result = '';
-              }
+              this.result = '';
               this.headers = res.headers;
               this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
               this.LOG?.debug(['exec', 'headers'], this.headers);
@@ -304,7 +302,7 @@ export class DiscoveryTileComponent {
                   this.loaded = true;
                   this.showLoader = false;
                   this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);
-                  this.result = res.data as string;
+                  this.result = res.data;
                   this.execResult.emit(this.result);
                   this.hasError = false;
                   if (toRefresh && refresh && !!this.tileResult) {

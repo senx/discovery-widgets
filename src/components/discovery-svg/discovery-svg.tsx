@@ -160,9 +160,7 @@ export class DiscoverySvgComponent {
   private processQueue() {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     void new Promise(async resolve => {
-      while (this.funqueue.length > 0) {
-        await (this.funqueue.shift())();
-      }
+      while (this.funqueue.length > 0) await (this.funqueue.shift())();
       resolve(true);
     }).then(() => setTimeout(() => this.processQueue(), 100));
   }
@@ -206,7 +204,7 @@ export class DiscoverySvgComponent {
           elemsToReplace.push(elem as SVGElement);
           elem = iterator.iterateNext();
         }
-        elemsToReplace.forEach(e => {
+        for (const e of elemsToReplace) {
           if (typeof replacement === 'string') {
             const parent = e.parentElement;
             const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -221,7 +219,7 @@ export class DiscoverySvgComponent {
               }
             });
           }
-        });
+        }
       }
       if (el.getAttribute('width') && el.getAttribute('height')) {
         el.setAttribute('viewBox',
@@ -245,8 +243,7 @@ export class DiscoverySvgComponent {
   }
 
   @Method()
-  async export
-  (type: 'png' | 'svg' = 'png') {
+  async export(type: 'png' | 'svg' = 'png') {
     return type === 'svg' ? this.toDisplay : (await html2canvas(this.el)).toDataURL();
   }
 
