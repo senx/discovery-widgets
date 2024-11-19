@@ -75,7 +75,6 @@ export class DiscoveryDisplayComponent {
   updateRes() {
     this.result = GTSLib.getData(this.result);
     this.message = this.convert(this.result || new DataModel());
-    this.flexFont();
   }
 
   @Watch('options')
@@ -86,10 +85,9 @@ export class DiscoveryDisplayComponent {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions =  Utils.clone(opts);
-      this.chartOptions =  Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
+      this.innerOptions = Utils.clone(opts);
+      this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
       this.message = this.convert(this.result as DataModel || new DataModel());
-      this.flexFont();
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOptions);
     }
   }
@@ -107,7 +105,13 @@ export class DiscoveryDisplayComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h;
-    this.flexFont();
+    if (!!this.wrapper) {
+      const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
+      if (height !== this.innerHeight) {
+        this.innerHeight = height;
+      }
+      this.fitties.fit();
+    }
     return Promise.resolve();
   }
 
@@ -146,8 +150,26 @@ export class DiscoveryDisplayComponent {
     setTimeout(() => {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
       this.initial = true;
-      this.flexFont();
       this.parsing = false;
+      if (!!this.wrapper) {
+        const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
+        if (height !== this.innerHeight) {
+          this.innerHeight = height;
+          this.LOG?.debug(['flexFont'], height);
+        }
+        if (this.innerOptions.responsive && this.initial) {
+          this.fitties = fitty(this.wrapper, {
+            maxSize: height * 0.80, minSize: 14, observeMutations: {
+              subtree: false,
+              childList: false,
+              characterData: true,
+            },
+          });
+          this.fitties.fit();
+        }
+      }
+      this.initial = false;
+      this.draw.emit();
     });
   }
 
@@ -221,34 +243,6 @@ export class DiscoveryDisplayComponent {
     return display;
   }
 
-  flexFont() {
-    if (!!this.wrapper) {
-      const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
-      if (height !== this.innerHeight) {
-        this.innerHeight = height;
-        this.LOG?.debug(['flexFont'], height);
-        if (this.fitties) {
-          this.fitties.unsubscribe();
-        }
-        if (this.innerOptions.responsive) {
-          this.fitties = fitty(this.wrapper, { maxSize: height * 0.80, minSize: 14 });
-          this.fitties.element.addEventListener('fit', () => {
-            if (this.initial) {
-              setTimeout(() => this.draw.emit());
-              this.initial = false;
-            }
-          });
-          this.fitties.fit();
-        } else {
-          if (this.initial) {
-            setTimeout(() => this.draw.emit());
-            this.initial = false;
-          }
-        }
-      }
-    }
-  }
-
   render() {
     return <div ref={(el) => this.pngWrapper = el} class="png-wrapper">
       <style>{this.generateStyle(this.innerStyle)}</style>
@@ -258,7 +252,7 @@ export class DiscoveryDisplayComponent {
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el} class="value">
-          <span innerHTML={this.message} /><small>{this.innerOptions.unit || this.unit || ''}</small>
+          <span innerHTML={this.message} /><small>{this.innerOptions.unit ?? this.unit ?? ''}</small>
         </div>
       </div>
       {this.gts && this.innerOptions.display?.showChart
