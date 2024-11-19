@@ -74,7 +74,8 @@ export class DiscoveryDisplayComponent {
   @Watch('result')
   updateRes() {
     this.result = GTSLib.getData(this.result);
-    this.message = this.convert(this.result || new DataModel());
+    this.message = this.convert(this.result ?? new DataModel());
+    this.fitties.fit();
   }
 
   @Watch('options')
@@ -89,6 +90,7 @@ export class DiscoveryDisplayComponent {
       this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
       this.message = this.convert(this.result as DataModel || new DataModel());
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOptions);
+      this.fitties.fit();
     }
   }
 
