@@ -100,7 +100,7 @@ export class GTSLib {
     try {
       response = new JsonLib().parse(data);
     } catch (e) {
-      this.LOG?.error(['isValidResponse'], 'Response non JSON compliant', data);
+      this.LOG?.error(['isValidResponse'], 'Response non JSON compliant', data, e);
       return false;
     }
     if (!GTSLib.isArray(response)) {

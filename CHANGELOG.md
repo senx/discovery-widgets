@@ -1,6 +1,20 @@
 Discovery
 ---
 
+## v1.1.139
+
+> +  2024/11/21  | v1.1.139 
+> +  2024/11/21  | localvars in data model 
+> +  2024/11/21  | local vars 
+> +  2024/11/19  | [display] Fix flicks on value change 
+> +  2024/11/19  | [display] Small refactoring 
+> +  2024/11/19  | [display] Small refactoring 
+> +  2024/11/19  | [svg] Fix result update 
+> +  2024/11/18  | [svg] Fix multiple event sent 
+> +  2024/11/18  | [svg] Fix eventHandlers and add wildcard support 
+> +  2024/11/15  | remove console output 
+> +  2024/11/15  | changelog 
+
 ## v1.1.138
 
 > +  2024/11/15  | v1.1.138 
