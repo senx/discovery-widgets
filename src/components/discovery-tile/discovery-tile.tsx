@@ -17,7 +17,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { Utils } from '../../utils/utils';
-import { ChartType, DiscoveryEvent } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
 import { Param } from '../../model/param';
 import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
@@ -273,9 +273,12 @@ export class DiscoveryTileComponent {
                 this.statusMessage = this.headers.statusText;
               }
               this.start = window.performance.now();
-              const rws = new JsonLib().parse(res.data as string)[0] ?? {};
+              const rws:DataModel = GTSLib.getData(res.data);
               let autoRefreshFeedBack = rws.globalParams?.autoRefresh ?? -1;
               const fadeOutAfter = rws.globalParams?.fadeOutAfter;
+              if (rws.localvars) {
+                Utils.mergeDeep(this.innerVars, rws.localvars);
+              }
               if (autoRefreshFeedBack < 0) {
                 autoRefreshFeedBack = undefined;
               }
