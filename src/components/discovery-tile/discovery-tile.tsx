@@ -276,6 +276,9 @@ export class DiscoveryTileComponent {
               const rws = new JsonLib().parse(res.data as string)[0] ?? {};
               let autoRefreshFeedBack = rws.globalParams?.autoRefresh ?? -1;
               const fadeOutAfter = rws.globalParams?.fadeOutAfter;
+              if (rws.localvars) {
+                Utils.mergeDeep(this.innerVars, rws.localvars);
+              }
               if (autoRefreshFeedBack < 0) {
                 autoRefreshFeedBack = undefined;
               }
