@@ -138,6 +138,7 @@ export class DataModel {
         ymin?: number,
         ymax?: number
     };
+    localvars?: { [key: string]: any; };
 }
 
 export class Dashboard {
