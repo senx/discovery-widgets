@@ -56,7 +56,7 @@ export class DiscoveryInputComponent {
   @State() parsing = false;
   @State() rendering = false;
   @State() value: string | number | number[] | string[] | any [] = '';
-  @State() subType: 'list' | 'text' | 'textarea' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' | 'chips' | 'chips-autocomplete' = 'text';
+  @State() subType: 'list' | 'text' | 'textarea' | 'file' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' | 'chips' | 'chips-autocomplete' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label = 'Ok';
@@ -228,7 +228,6 @@ export class DiscoveryInputComponent {
       default:
         break;
     }
-
     this.parseResult();
     this.LOG?.debug(['componentDidLoad'], {
       type: this.type,
@@ -253,22 +252,15 @@ export class DiscoveryInputComponent {
   };
 
   private handleClickRT() {
-    if (
-      this.inputField &&
-      this.subType !== 'date' &&
-      this.subType !== 'date-range' &&
-      this.subType !== 'multi' &&
-      this.subType !== 'chips' &&
-      this.subType !== 'chips-autocomplete'
-    ) {
+    if (this.inputField && !['file', 'date', 'date-range', 'multi', 'chips', 'chips-autocomplete'].includes(this.subType)) {
       if ('value' in this.inputField) {
         this.selectedValue = this.inputField.value;
       }
     }
-    (this.innerResult?.events || []).forEach(e => {
+    for (const e of (this.innerResult?.events ?? [])) {
       if (this.selectedValue !== undefined) {
         if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
-          return;
+          continue;
         }
         if (e.selector) {
           if (!e.value) {
@@ -281,11 +273,11 @@ export class DiscoveryInputComponent {
         this.LOG?.debug(['handleCick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
         this.discoveryEvent.emit({ ...e, source: this.el.id });
       }
-    });
+    }
   };
 
   private generateStyle(innerStyle: { [k: string]: string }): string {
-    return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
+    return Object.keys(innerStyle ?? {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
   private handleSelect(e: any) {
@@ -304,11 +296,31 @@ export class DiscoveryInputComponent {
           .filter((o: HTMLInputElement) => o.checked)
           .map((o: HTMLInputElement) => o.value);
       }
-      if (!this.innerOptions.input?.showButton) {
+      if (this.subType !== 'file' && !this.innerOptions.input?.showButton) {
         this.handleClick();
       }
     }
   }
+
+  private async readText(event: any) {
+    const file = event.target.files.item(0);
+    const text = await this.toBase64(file);
+    this.LOG.debug(['readText'], { file, text });
+    this.selectedValue = await  this.toBase64(file);
+    if (!this.innerOptions.input?.showButton) {
+      this.handleClick();
+    }
+    event.target.value = '';
+  }
+
+  private toBase64(file: any) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+  };
 
   private parseResult() {
     const data = this.innerResult.data || '';
@@ -504,10 +516,15 @@ export class DiscoveryInputComponent {
                       onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el}
         />;
+      case 'file':
+        return <input type="file" class="discovery-input"
+                      onChange={e => this.readText(e)}
+                      ref={el => this.inputField = el}
+        />;
       case 'textarea':
         return <textarea class="discovery-input" value={this.value as string}
-                      onInput={e => this.handleSelect(e)}
-                      ref={el => this.inputField = el}
+                         onInput={e => this.handleSelect(e)}
+                         ref={el => this.inputField = el}
         />;
       case 'secret':
         return <input type="password" class="discovery-input" value={this.value as string}

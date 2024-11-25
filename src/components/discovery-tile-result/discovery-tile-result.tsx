@@ -475,6 +475,7 @@ export class DiscoveryTileResultComponent {
       case 'input:multi-cb':
       case 'input:chips':
       case 'input:chips-autocomplete':
+      case 'input:file':
         return <discovery-input
           result={this.innerResult}
           type={this.innerType}

@@ -243,7 +243,7 @@ export class DiscoveryTileComponent {
           const win = window as any;
           let registry = win.DiscoveryPluginRegistry;
           registry = registry ?? {};
-          if (!!(registry || {})[this.type] && !!registry[this.type].scriptWrapper && typeof registry[this.type].scriptWrapper === 'function') {
+          if (!!(registry ?? {})[this.type] && !!registry[this.type].scriptWrapper && typeof registry[this.type].scriptWrapper === 'function') {
             this.ws = registry[this.type].scriptWrapper(this.ws);
           }
         }

@@ -31,7 +31,7 @@ export const CHART_TYPES = [
   , 'rose'
   , 'tabular'
   , 'svg'
-  , 'input:text', 'input:textarea', 'input:list', 'input:secret', 'input:autocomplete', 'input:chips'
+  , 'input:text', 'input:textarea', 'input:list', 'input:secret', 'input:autocomplete', 'input:chips', 'input:file'
   , 'input:chips-autocomplete', 'input:slider', 'input:date', 'input:date-range', 'input:multi', 'input:multi-cb'
   , 'button', 'button:radio'
   , 'hidden'

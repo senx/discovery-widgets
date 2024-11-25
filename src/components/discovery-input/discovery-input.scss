@@ -149,7 +149,8 @@
     }
   }
 
-  button.discovery-btn {
+
+  button.discovery-btn, input[type=file]::file-selector-button {
     margin: .25rem .125rem;
     display: inline-block;
     font-weight: 400;

@@ -43,7 +43,7 @@
     "lint": "eslint -c .eslintrc.js --format html  -o ./out/lint/eslint.html src/**/*.{js,ts,tsx}"
   },
   "dependencies": {
-    "@stencil/core": "^4.22.2",
+    "@stencil/core": "^4.22.3",
     "@tarekraafat/autocomplete.js": "^10.2.9",
     "css-color-names": "^1.0.1",
     "dayjs": "^1.11.13",
