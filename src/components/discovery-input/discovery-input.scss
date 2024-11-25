@@ -38,6 +38,7 @@
   input[type=password].discovery-input,
   input[type=date].discovery-input,
   input[type=time].discovery-input,
+  textarea.discovery-input,
   select.discovery-input {
     margin: .25rem .125rem;
     display: inline-block;
@@ -51,6 +52,11 @@
     width: 100%;
     height: 34px;
     padding: 1px 5px;
+  }
+
+  textarea.discovery-input {
+    width: calc(100% - 0.75rem);
+    height: 100%;
   }
 
   .chips-input-wrapper {
@@ -90,6 +96,10 @@
 
     &.type-date, &.type-date-range, &.type-autocomplete {
       height: auto;
+    }
+
+    &.type-textarea {
+      flex-direction: column;
     }
   }
 
@@ -165,6 +175,10 @@
 
   .discovery-input-btn-wrapper.slider {
     margin-top: 24px;
+  }
+
+  .discovery-input-btn-wrapper.textarea {
+    text-align: end;
   }
 
   .range {

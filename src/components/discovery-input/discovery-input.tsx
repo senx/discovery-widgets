@@ -56,7 +56,7 @@ export class DiscoveryInputComponent {
   @State() parsing = false;
   @State() rendering = false;
   @State() value: string | number | number[] | string[] | any [] = '';
-  @State() subType: 'list' | 'text' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' | 'chips' | 'chips-autocomplete' = 'text';
+  @State() subType: 'list' | 'text' | 'textarea' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' | 'chips' | 'chips-autocomplete' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label = 'Ok';
@@ -67,7 +67,7 @@ export class DiscoveryInputComponent {
   private defOptions: Param = { ...new Param(), input: { caseSensitive: true, onlyFromAutocomplete: true } };
   private innerOptions: Param = new Param();
   private LOG: Logger;
-  private inputField: HTMLInputElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
+  private inputField: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLDiscoverySliderElement | HTMLDiscoveryInputChipsElement;
   private inputField2: HTMLInputElement;
   private disabled = false;
   private delayTimer: any;
@@ -323,6 +323,7 @@ export class DiscoveryInputComponent {
     this.label = (dm.button || { label: btnLabel }).label;
     switch (this.subType) {
       case 'text':
+      case 'textarea':
       case 'secret':
         if (GTSLib.isArray(data) && !!data[0]) {
           this.value = data[0].toString();
@@ -500,6 +501,11 @@ export class DiscoveryInputComponent {
     switch (this.subType) {
       case 'text':
         return <input type="text" class="discovery-input" value={this.value as string}
+                      onInput={e => this.handleSelect(e)}
+                      ref={el => this.inputField = el}
+        />;
+      case 'textarea':
+        return <textarea class="discovery-input" value={this.value as string}
                       onInput={e => this.handleSelect(e)}
                       ref={el => this.inputField = el}
         />;

@@ -464,6 +464,7 @@ export class DiscoveryTileResultComponent {
           id={this.componentId}
         />;
       case 'input:text':
+      case 'input:textarea':
       case 'input:autocomplete':
       case 'input:list':
       case 'input:secret':
