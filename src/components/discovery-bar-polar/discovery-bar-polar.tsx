@@ -158,8 +158,9 @@ export class DiscoveryBarPolarComponent {
     return {
       coordinateSystem: 'polar',
       animation: !!this.innerOptions?.bar?.animate,
-      large: true,
+      large: false,
       clip: false,
+      progressive: 5000,
       emphasis: {
         focus: 'series',
         itemStyle: {
@@ -208,7 +209,6 @@ export class DiscoveryBarPolarComponent {
     this.innerOptions = Utils.clone(options);
     const series: any[] = [];
     let gtsList;
-    console.log(Utils.clone(data))
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG?.debug(['convert', 'isArray']);
@@ -260,23 +260,23 @@ export class DiscoveryBarPolarComponent {
           type, areaStyle,
           id: gts.id,
           name: GTSLib.setName(gts.id, (((data.params || [])[i] ?? { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts))),
-          data: sortedGTS.map(d => {
+          data: sortedGTS.map((d: any[]) => {
             const ts = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
               : d[0];
             return [d[d.length - 1], ts];
           }),
         } as SeriesOption;
-        const isStacked = (data.params ?? [])[i]?.stacked !== undefined
+        const isStacked = (data.params ?? [])[i]?.stacked
           ? (data.params ?? [])[i]?.stacked
           : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
         if (type === 'bar' && isStacked) {
           s.stack = 'a';
           s.stackStrategy = 'all';
         }
-        if (type === 'line' && this.innerOptions.bar?.fillGap) {
+      /*  if (type === 'line' && this.innerOptions.bar?.fillGap) {
           s.data.push(s.data[0]);
-        }
+        }*/
         series.push(s);
       } else if (!gts.v) {
         this.innerOptions.timeMode = 'custom';
@@ -341,7 +341,7 @@ export class DiscoveryBarPolarComponent {
       },
       polar: {},
       angleAxis: {
-        startAngle: !!this.innerOptions.bar?.startAngle ? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories || []).length, 1)) * -1.5 + 180,
+        startAngle: !!this.innerOptions.bar?.startAngle ? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories ?? []).length, 1)) * -1.5 + 180,
         type: this.isGTS ? this.innerOptions.timeMode === 'date' ? 'time' : 'value' : 'category',
         data: this.isGTS ? undefined : this.categories,
         axisLine: {
