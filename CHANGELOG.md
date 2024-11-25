@@ -1,6 +1,22 @@
 Discovery
 ---
 
+## v1.1.141
+
+> +  2024/11/25  | v1.1.141 
+> +  2024/11/25  | [bar-polar] fix track color 
+
+## v1.1.140
+
+> +  2024/11/25  | v1.1.140 
+> +  2024/11/25  | readmes 
+> +  2024/11/25  | [input:textarea] Add Textarea input 
+> +  2024/11/25  | [bar-polar] Add circular bar support 
+> +  2024/11/25  | [bar-polar] fix large dataset issue 
+> +  2024/11/25  | readmes 
+> +  2024/11/25  | [bar-polar] Fix custom data issue 
+> +  2024/11/21  | Changelog 
+
 ## v1.1.139
 
 > +  2024/11/21  | v1.1.139 
