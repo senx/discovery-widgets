@@ -128,6 +128,10 @@ export class Param {
     stacked?: boolean,
     startAngle?: number,
     fillGap?: boolean,
+    circular?: boolean,
+    rounded?: boolean,
+    track?: boolean,
+    trackColor?: string,
   };
   box?: {
     horizontal?: boolean

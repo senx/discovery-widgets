@@ -157,6 +157,7 @@ export class DiscoveryBarPolarComponent {
     const datasetNoAlpha = this.innerOptions.datasetNoAlpha;
     return {
       coordinateSystem: 'polar',
+      showBackground: !!this.innerOptions?.bar?.track,
       animation: !!this.innerOptions?.bar?.animate,
       large: false,
       clip: false,
@@ -185,7 +186,7 @@ export class DiscoveryBarPolarComponent {
       },
       label: {
         show: !!this.innerOptions.showValues,
-        position: 'top',
+        position: this.innerOptions?.bar?.circular ? 'outside' : 'top',
         textStyle: { color: Utils.getLabelColor(this.el), fontSize: 14 },
       },
       lineStyle: { color },
@@ -257,16 +258,27 @@ export class DiscoveryBarPolarComponent {
         const sortedGTS = gts.v.sort((a: number[], b: number[]) => a[0] < b[0] ? -1 : 1);
         const s = {
           ...this.getCommonSeriesParam(color),
+          backgroundStyle: this.innerOptions?.bar?.track ? {
+            color: (data.params ?? [])[i]?.bar?.trackColor
+              ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor)
+              : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color',  '#b4b4b440'),
+          } : undefined,
           type, areaStyle,
           id: gts.id,
-          name: GTSLib.setName(gts.id, (((data.params || [])[i] ?? { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts))),
+          name: GTSLib.setName(gts.id, (((data.params ?? [])[i] ?? { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts))),
           data: sortedGTS.map((d: any[]) => {
             const ts = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
               : d[0];
-            return [d[d.length - 1], ts];
+            return this.innerOptions?.bar?.circular ? [ts, d[d.length - 1]] : [d[d.length - 1], ts];
           }),
         } as SeriesOption;
+        const isRounded = (data.params ?? [])[i]?.bar?.rounded
+          ? (data.params ?? [])[i]?.bar?.rounded
+          : this.innerOptions?.bar?.rounded;
+        if (type === 'bar' && isRounded) {
+          s.roundCap = true;
+        }
         const isStacked = (data.params ?? [])[i]?.stacked
           ? (data.params ?? [])[i]?.stacked
           : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
@@ -274,9 +286,9 @@ export class DiscoveryBarPolarComponent {
           s.stack = 'a';
           s.stackStrategy = 'all';
         }
-      /*  if (type === 'line' && this.innerOptions.bar?.fillGap) {
+        if (type === 'line' && this.innerOptions.bar?.fillGap) {
           s.data.push(s.data[0]);
-        }*/
+        }
         series.push(s);
       } else if (!gts.v) {
         this.innerOptions.timeMode = 'custom';
@@ -305,6 +317,11 @@ export class DiscoveryBarPolarComponent {
           }
           const s = {
             ...this.getCommonSeriesParam(color),
+            backgroundStyle: this.innerOptions?.bar?.track ? {
+              color: (data.params ?? [])[i]?.bar?.trackColor
+                ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor)
+                : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color', '#b4b4b440'),
+            } : undefined,
             type, areaStyle,
             name: row[0],
             data: row.slice(1),
@@ -315,6 +332,12 @@ export class DiscoveryBarPolarComponent {
           if (type === 'bar' && isStacked) {
             s.stack = 'a';
             s.stackStrategy = 'all';
+          }
+          const isRounded = (data.params ?? [])[i]?.bar?.rounded
+            ? (data.params ?? [])[i]?.bar?.rounded
+            : this.innerOptions?.bar?.rounded;
+          if (type === 'bar' && isRounded) {
+            s.roundCap = true;
           }
           if (type === 'line') {
             s.data.push(s.data[0]);
@@ -334,16 +357,50 @@ export class DiscoveryBarPolarComponent {
         left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
-        top: !!(this.unit || this.innerOptions.unit) ? 30 : 10,
+        top: 10,
         bottom: !!this.innerOptions.showLegend ? 30 : 10,
         right: 10,
         containLabel: true,
       },
       polar: {},
+      radiusAxis: {
+        name: this.unit ?? this.innerOptions.unit ?? '',
+        hideOverlap: true,
+        show: !this.innerOptions.hideYAxis,
+        type: this.innerOptions?.bar?.circular ? (this.isGTS ? (this.innerOptions.timeMode === 'date' ? 'time' : 'value') : 'category') : 'value',
+        data: this.innerOptions?.bar?.circular ? (this.isGTS ? undefined : this.categories) : undefined,
+        nameTextStyle: { color: Utils.getLabelColor(this.el) },
+        splitLine: {
+          lineStyle: {
+            color: ColorLib.transparentize(Utils.getGridColor(this.el)),
+          },
+        },
+        axisLine: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el),
+          },
+        },
+        axisLabel: {
+          show: !this.innerOptions.hideYAxis,
+          hideOverlap: true,
+          color: Utils.getLabelColor(this.el),
+          formatter: this.innerOptions?.bar?.circular ? undefined : this.innerOptions.timeMode === 'date'
+            ? this.innerOptions.fullDateDisplay ? value =>
+                GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+              : undefined
+            : undefined,
+        },
+        axisTick: {
+          lineStyle: {
+            color: Utils.getGridColor(this.el),
+          },
+        },
+      },
       angleAxis: {
         startAngle: !!this.innerOptions.bar?.startAngle ? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories ?? []).length, 1)) * -1.5 + 180,
-        type: this.isGTS ? this.innerOptions.timeMode === 'date' ? 'time' : 'value' : 'category',
-        data: this.isGTS ? undefined : this.categories,
+        type: this.innerOptions?.bar?.circular ? 'value' : this.isGTS ? this.innerOptions.timeMode === 'date' ? 'time' : 'value' : 'category',
+        data: this.innerOptions?.bar?.circular ? undefined : this.isGTS ? undefined : this.categories,
         axisLine: {
           lineStyle: {
             color: Utils.getGridColor(this.el),
@@ -353,10 +410,11 @@ export class DiscoveryBarPolarComponent {
           hideOverlap: true,
           show: !this.innerOptions.hideXAxis,
           color: Utils.getLabelColor(this.el),
-          formatter: this.innerOptions.timeMode === 'date'
-            ? this.innerOptions.fullDateDisplay ? value =>
-                GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
-                  .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+          formatter: this.innerOptions?.bar?.circular ? this.innerOptions.timeMode === 'date'
+              ? this.innerOptions.fullDateDisplay ? value =>
+                  GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
+                    .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+                : undefined
               : undefined
             : undefined,
         },
@@ -422,31 +480,6 @@ export class DiscoveryBarPolarComponent {
         bottom: 0, left: 'center', show: !!this.innerOptions.showLegend, height: 30, type: 'scroll',
         textStyle: { color: Utils.getLabelColor(this.el) },
       },
-      radiusAxis: {
-        name: this.unit || this.innerOptions.unit,
-        show: !this.innerOptions.hideYAxis,
-        type: 'value',
-        nameTextStyle: { color: Utils.getLabelColor(this.el) },
-        splitLine: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el),
-          },
-        },
-        axisLine: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el),
-          },
-        },
-        axisLabel: {
-          hideOverlap: true,
-          color: Utils.getLabelColor(this.el),
-        },
-        axisTick: {
-          lineStyle: {
-            color: Utils.getGridColor(this.el),
-          },
-        },
-      },
       series,
       ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
@@ -465,8 +498,10 @@ export class DiscoveryBarPolarComponent {
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
-    const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
-      16, { leading: true, trailing: true });
+    const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end), 16, {
+      leading: true,
+      trailing: true,
+    });
 
     const focusHandler = _.throttle((type: string, event: any) => {
         if (this.hasFocus) {
@@ -476,7 +511,7 @@ export class DiscoveryBarPolarComponent {
               this.dataPointOver.emit({ date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {} });
               break;
             case 'highlight':
-              let ts;
+              let ts: number;
               (event.batch || []).forEach(b => {
                 const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
                 ts = s.data[b.dataIndex][0];
@@ -521,8 +556,8 @@ export class DiscoveryBarPolarComponent {
         });
       });
       this.myChart.on('dataZoom', (event: any) => {
-        let start;
-        let end;
+        let start: number;
+        let end: number;
         if (!!event.batch) {
           const batch = (event.batch || [])[0] || {};
           start = batch.start || batch.startValue;

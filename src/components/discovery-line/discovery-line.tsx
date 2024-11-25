@@ -507,7 +507,7 @@ export class DiscoveryLineComponent {
       }
     }
 
-    (this.innerOptions.polygons || []).forEach((polygon, i) => {
+    (this.innerOptions.polygons ?? []).forEach((polygon, i) => {
       const s: SeriesOption = {
         type: 'custom', renderItem: (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) => {
           if (params.context.rendered) {

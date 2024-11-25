@@ -23,7 +23,6 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { LangUtils } from '../../utils/lang-utils';
 import { v4 } from 'uuid';
-import { JsonLib } from '../../utils/jsonLib';
 
 @Component({
   tag: 'discovery-tile',
@@ -31,7 +30,7 @@ import { JsonLib } from '../../utils/jsonLib';
   shadow: true,
 })
 export class DiscoveryTileComponent {
-  @Prop() url: string;
+  @Prop({ mutable: true }) url: string;
   @Prop() chartTitle: string;
   @Prop() chartDescription: string;
   @Prop() type: ChartType;
@@ -273,7 +272,7 @@ export class DiscoveryTileComponent {
                 this.statusMessage = this.headers.statusText;
               }
               this.start = window.performance.now();
-              const rws:DataModel = GTSLib.getData(res.data);
+              const rws: DataModel = GTSLib.getData(res.data);
               let autoRefreshFeedBack = rws.globalParams?.autoRefresh ?? -1;
               const fadeOutAfter = rws.globalParams?.fadeOutAfter;
               if (rws.localvars) {
