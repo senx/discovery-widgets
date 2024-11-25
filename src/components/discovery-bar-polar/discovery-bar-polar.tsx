@@ -83,7 +83,7 @@ export class DiscoveryBarPolarComponent {
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
       if (!!this.myChart) {
-        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+        this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
@@ -119,9 +119,9 @@ export class DiscoveryBarPolarComponent {
     } else {
       this.innerOptions = this.options;
     }
-    this.result = GTSLib.getData(this.result);
+    const res = GTSLib.getData(this.result);
     this.divider = GTSLib.getDivider((this.options as Param).timeUnit ?? 'us');
-    this.chartOpts = this.convert(this.result ?? new DataModel());
+    this.chartOpts = this.convert(res ?? new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -132,7 +132,7 @@ export class DiscoveryBarPolarComponent {
   }
 
   private setOpts(notMerge = false) {
-    if ((this.chartOpts?.series as any[] || []).length === 0) {
+    if ((this.chartOpts?.series as any[] ?? []).length === 0) {
       this.chartOpts.title = {
         show: true,
         textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
@@ -203,11 +203,12 @@ export class DiscoveryBarPolarComponent {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
+    options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
     this.innerOptions = Utils.clone(options);
     const series: any[] = [];
     let gtsList;
+    console.log(Utils.clone(data))
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG?.debug(['convert', 'isArray']);
@@ -231,12 +232,12 @@ export class DiscoveryBarPolarComponent {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts) && !!gts.v) {
         this.isGTS = true;
-        const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-        const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
+        const c = ColorLib.getColor(gts.id ?? i, this.innerOptions.scheme);
+        const color = ((data.params ?? [])[i] ?? { datasetColor: c }).datasetColor ?? c;
         min = Math.min(min, ...gts.v.map(v => v[0]));
         max = Math.max(max, ...gts.v.map(v => v[0]));
         hasTimeBounds = true;
-        let type = ((data.params || [])[i] || { type: 'bar' }).type || 'bar';
+        let type = ((data.params ?? [])[i] ?? { type: 'bar' }).type || 'bar';
         const datasetNoAlpha = (data.params ?? [])[i]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
         let areaStyle: any;
         if (type === 'area') {
@@ -266,8 +267,8 @@ export class DiscoveryBarPolarComponent {
             return [d[d.length - 1], ts];
           }),
         } as SeriesOption;
-        const isStacked = (data.params || [])[i]?.stacked !== undefined
-          ? (data.params || [])[i]?.stacked
+        const isStacked = (data.params ?? [])[i]?.stacked !== undefined
+          ? (data.params ?? [])[i]?.stacked
           : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
         if (type === 'bar' && isStacked) {
           s.stack = 'a';
@@ -279,12 +280,13 @@ export class DiscoveryBarPolarComponent {
         series.push(s);
       } else if (!gts.v) {
         this.innerOptions.timeMode = 'custom';
-        this.LOG?.debug(['convert', 'gts'], gts);
+        this.LOG?.debug(['convert', 'custom data'], gts);
         this.categories = gts.columns;
-        (gts.rows || []).forEach((row: any[], index: number) => {
-          const c = ColorLib.getColor(gts.id || index, this.innerOptions.scheme);
-          const color = ((data.params || [])[index] || { datasetColor: c }).datasetColor || c;
-          let type = ((data.params || [])[index] || { type: 'bar' }).type || 'bar';
+        for (const row of (gts.rows ?? [])) {
+          const index: number = (gts.rows ?? []).indexOf(row);
+          const c = ColorLib.getColor(gts.id ?? index, this.innerOptions.scheme);
+          const color = ((data.params ?? [])[index] ?? { datasetColor: c }).datasetColor ?? c;
+          let type = ((data.params ?? [])[index] ?? { type: 'bar' }).type ?? 'bar';
           const datasetNoAlpha = (data.params ?? [])[index]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
           let areaStyle;
           if (type === 'area') {
@@ -305,10 +307,10 @@ export class DiscoveryBarPolarComponent {
             ...this.getCommonSeriesParam(color),
             type, areaStyle,
             name: row[0],
-            data: row.splice(1),
+            data: row.slice(1),
           } as SeriesOption;
-          const isStacked = (data.params || [])[index]?.stacked !== undefined
-            ? (data.params || [])[index]?.stacked
+          const isStacked = (data.params ?? [])[index]?.stacked !== undefined
+            ? (data.params ?? [])[index]?.stacked
             : this.innerOptions?.bar?.stacked ?? this.innerOptions?.stacked;
           if (type === 'bar' && isStacked) {
             s.stack = 'a';
@@ -318,7 +320,7 @@ export class DiscoveryBarPolarComponent {
             s.data.push(s.data[0]);
           }
           series.push(s);
-        });
+        }
       }
     }
     if (hasTimeBounds) {
