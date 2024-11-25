@@ -259,8 +259,8 @@ export class DiscoveryBarPolarComponent {
         const s = {
           ...this.getCommonSeriesParam(color),
           backgroundStyle: this.innerOptions?.bar?.track ? {
-            color: (data.params ?? [])[i]?.bar?.trackColor
-              ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor)
+            color: (data.params ?? [])[i]?.bar?.trackColor ?? this.innerOptions?.bar?.trackColor
+              ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor?? this.innerOptions?.bar?.trackColor)
               : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color',  '#b4b4b440'),
           } : undefined,
           type, areaStyle,
@@ -318,9 +318,9 @@ export class DiscoveryBarPolarComponent {
           const s = {
             ...this.getCommonSeriesParam(color),
             backgroundStyle: this.innerOptions?.bar?.track ? {
-              color: (data.params ?? [])[i]?.bar?.trackColor
-                ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor)
-                : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color', '#b4b4b440'),
+              color: (data.params ?? [])[i]?.bar?.trackColor ?? this.innerOptions?.bar?.trackColor
+                ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor?? this.innerOptions?.bar?.trackColor)
+                : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color',  '#b4b4b440'),
             } : undefined,
             type, areaStyle,
             name: row[0],
