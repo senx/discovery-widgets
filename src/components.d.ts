@@ -263,6 +263,7 @@ export namespace Components {
         "debug": boolean;
         "open": () => Promise<void>;
         "options": Param | string;
+        "parentId": string;
         "url": string;
     }
     interface DiscoveryPageable {
@@ -462,6 +463,10 @@ export interface DiscoveryLinearGaugeCustomEvent<T> extends CustomEvent<T> {
 export interface DiscoveryMapCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoveryMapElement;
+}
+export interface DiscoveryModalCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDiscoveryModalElement;
 }
 export interface DiscoveryPageableCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -869,7 +874,18 @@ declare global {
         prototype: HTMLDiscoveryMapElement;
         new (): HTMLDiscoveryMapElement;
     };
+    interface HTMLDiscoveryModalElementEventMap {
+        "discoveryEvent": DiscoveryEvent;
+    }
     interface HTMLDiscoveryModalElement extends Components.DiscoveryModal, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryModalElementEventMap>(type: K, listener: (this: HTMLDiscoveryModalElement, ev: DiscoveryModalCustomEvent<HTMLDiscoveryModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryModalElementEventMap>(type: K, listener: (this: HTMLDiscoveryModalElement, ev: DiscoveryModalCustomEvent<HTMLDiscoveryModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDiscoveryModalElement: {
         prototype: HTMLDiscoveryModalElement;
@@ -1317,7 +1333,9 @@ declare namespace LocalJSX {
     interface DiscoveryModal {
         "data"?: Tile | Dashboard;
         "debug"?: boolean;
+        "onDiscoveryEvent"?: (event: DiscoveryModalCustomEvent<DiscoveryEvent>) => void;
         "options"?: Param | string;
+        "parentId"?: string;
         "url"?: string;
     }
     interface DiscoveryPageable {

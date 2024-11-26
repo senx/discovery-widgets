@@ -201,19 +201,19 @@ export class Utils {
     if (eventHandler && evt.source !== id) {
       let tag = '.*';
       let type = '.*';
-      eventHandler.split(',').forEach(eh => {
+      for (const eh of eventHandler.split(',')) {
         if (eh.startsWith('tag')) {
           tag = eh.split('=')[1];
         }
         if (eh.startsWith('type')) {
           type = eh.split('=')[1];
         }
-      });
-      const tagRex = new RegExp('^' + tag + '$');
+      }
+      const tagRex = new RegExp(`^${tag}$`);
       if (evt.tags && typeof evt.tags === 'string') {
         evt.tags = [evt.tags];
       }
-      if ((evt.tags || []).some(t => tagRex.test(t)) && new RegExp(type).test(evt.type || '')) {
+      if ((evt.tags ?? []).some(t => tagRex.test(t)) && new RegExp(type).test(evt.type ?? '')) {
         switch (evt.type) {
           case 'data':
             parsed.data = GTSLib.getData(evt.value);

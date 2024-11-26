@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Component, h, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, Dashboard, Tile } from '../../model/types';
+import { Component, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { Dashboard, DiscoveryEvent, Tile } from '../../model/types';
 import { Utils } from '../../utils/utils';
 import { Param } from '../../model/param';
 import { Logger } from '../../utils/logger';
@@ -34,10 +34,16 @@ export class DiscoveryModalComponent {
   @Prop({ mutable: true }) options: Param | string = new Param();
   @Prop() url: string;
   @Prop() debug = false;
+  @Prop() parentId: string;
 
   @State() private tile: Tile;
   @State() private dashboard: Dashboard;
   @State() private showModal = false;
+
+  @Event({
+    eventName: 'discoveryEvent',
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
 
   private modal: HTMLDivElement;
   private modalWrapper: HTMLDivElement;
@@ -70,7 +76,7 @@ export class DiscoveryModalComponent {
   @Method()
   public async open() {
     this.showModal = true;
-    setTimeout(()=> this.resize(), 1000)
+    setTimeout(() => void this.resize(), 1000);
     return Promise.resolve();
   }
 
@@ -101,11 +107,14 @@ export class DiscoveryModalComponent {
 
   private async resize() {
     this.modalWrapper.style.height = Utils.getContentBounds(this.modalWrapper).h + 'px';
-    if(this.tileElem) await this.tileElem.resize();
+    if (this.tileElem) await this.tileElem.resize();
   }
 
   private closeModal() {
     this.showModal = false;
+    for (const e of ((this.data as any).events ?? [])) {
+      this.discoveryEvent.emit({ ...e, source: this.parentId });
+    }
   }
 
   render() {
@@ -140,25 +149,25 @@ export class DiscoveryModalComponent {
                   }}
                   onClick={() => this.closeModal()}>&times;</span>
           </div>
-          <div class="modal-wrapper"  ref={(el) => this.modalWrapper = el}>
+          <div class="modal-wrapper" ref={(el) => this.modalWrapper = el}>
             {!!this.tile
               ? this.tile.macro
-                ? <discovery-tile url={this.tile.endpoint || this.url}
-                                  type={this.tile.type as ChartType}
+                ? <discovery-tile url={this.tile.endpoint ?? this.url}
+                                  type={this.tile.type}
                                   chart-title={this.tile.title}
                                   debug={this.debug}
-                                  onDraw={e => this.resize()}
+                                  onDraw={() => void this.resize()}
                                   ref={(el) => this.tileElem = el}
                                   options={JSON.stringify(Utils.merge(this.options, this.tile.options))}
                 >{this.tile.macro + ' EVAL'}</discovery-tile>
                 : <discovery-tile-result
-                  url={this.tile.endpoint || this.url}
+                  url={this.tile.endpoint ?? this.url}
                   result={Utils.sanitize(this.tile.data)}
-                  type={this.tile.type as ChartType}
+                  type={this.tile.type}
                   unit={this.tile.unit}
                   options={Utils.merge(this.options, this.tile.options)}
                   debug={this.debug}
-                  onDraw={e => this.resize()}
+                  onDraw={() => void this.resize()}
                   ref={(el) => this.tileElem = el}
                   chart-title={this.tile.title}
                 />

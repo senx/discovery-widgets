@@ -7,12 +7,20 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                | Default       |
-| --------- | --------- | ----------- | ------------------- | ------------- |
-| `data`    | --        |             | `Dashboard \| Tile` | `undefined`   |
-| `debug`   | `debug`   |             | `boolean`           | `false`       |
-| `options` | `options` |             | `Param \| string`   | `new Param()` |
-| `url`     | `url`     |             | `string`            | `undefined`   |
+| Property   | Attribute   | Description | Type                | Default       |
+| ---------- | ----------- | ----------- | ------------------- | ------------- |
+| `data`     | --          |             | `Dashboard \| Tile` | `undefined`   |
+| `debug`    | `debug`     |             | `boolean`           | `false`       |
+| `options`  | `options`   |             | `Param \| string`   | `new Param()` |
+| `parentId` | `parent-id` |             | `string`            | `undefined`   |
+| `url`      | `url`       |             | `string`            | `undefined`   |
+
+
+## Events
+
+| Event            | Description | Type                          |
+| ---------------- | ----------- | ----------------------------- |
+| `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
 
 
 ## Methods

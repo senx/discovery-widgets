@@ -129,6 +129,12 @@ export class DiscoveryDashboardComponent {
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
     this.eventState = Utils.mergeDeep(this.eventState, Utils.parseEventData(event.detail, 'tag=.*,type=.*', this.componentId));
     const res = Utils.parseEventData(event.detail, this.innerOptions.eventHandler, this.componentId);
+    if (res.vars) {
+      this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
+      if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
+        this.exec();
+      }
+    }
     if (res.popup && this.modal) {
       this.modalContent = res.popup;
       await this.modal.open();
@@ -150,12 +156,6 @@ export class DiscoveryDashboardComponent {
         window.open(res.link.link, '_blank').focus();
       } else {
         window.location.href = res.link.link;
-      }
-    }
-    if (res.vars) {
-      this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
-      if (!(this.innerOptions.mutedVars || []).includes(event.detail.selector)) {
-        this.exec();
       }
     }
   }
@@ -563,6 +563,7 @@ export class DiscoveryDashboardComponent {
         data={this.modalContent}
         options={this.innerOptions}
         url={this.url}
+        parentId={this.componentId}
         debug={this.debug} />
       {this.loaded
         ? [
