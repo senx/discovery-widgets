@@ -306,7 +306,7 @@ export class DiscoveryInputComponent {
     const file = event.target.files.item(0);
     const text = await this.toBase64(file);
     this.LOG.debug(['readText'], { file, text });
-    this.selectedValue = await  this.toBase64(file);
+    this.selectedValue = await this.toBase64(file);
     if (!this.innerOptions.input?.showButton) {
       this.handleClick();
     }
@@ -412,7 +412,7 @@ export class DiscoveryInputComponent {
           this.values = this.values.map(s => ({ k: s, v: s, h: false }));
         }
         let index = 0;
-        if (!!(this.innerOptions.input || {}).value) {
+        if (!!(this.innerOptions.input ?? {}).value) {
           index = this.values.map(o => o.v).indexOf((this.innerOptions.input || {}).value);
         }
         if (!!this.inputField) {
@@ -426,7 +426,11 @@ export class DiscoveryInputComponent {
               value = [value] as number[] | string[];
             }
           }
-          this.value = [...value as number[] | string[]];
+          if (this.subType !== 'autocomplete') {
+            this.value = [...value as number[] | string[]];
+          } else {
+            this.value = this.innerOptions?.input?.value ?? '';
+          }
           this.selectedValue = this.value;
           if (this.subType === 'multi-cb' && this.checkBoxes) {
             Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
@@ -519,7 +523,7 @@ export class DiscoveryInputComponent {
       case 'file':
         return <input type="file" class="discovery-input"
                       accept={this.innerOptions?.input?.accept ?? '*/*'}
-                      onChange={e => this.readText(e)}
+                      onChange={e => void this.readText(e)}
                       ref={el => this.inputField = el}
         />;
       case 'textarea':
