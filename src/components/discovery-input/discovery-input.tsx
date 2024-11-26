@@ -326,11 +326,11 @@ export class DiscoveryInputComponent {
     const data = this.innerResult.data || '';
     this.LOG.debug(['parseResult', 'innerOptions'], this.innerOptions);
     const btnLabel = (this.innerOptions.button || { label: 'Ok' }).label;
-    const dm = ((this.result as unknown as DataModel) || {
+    const dm = ((this.result as unknown as DataModel) ?? {
       globalParams: {
         button: { label: btnLabel },
       },
-    }).globalParams || { button: { label: btnLabel } };
+    }).globalParams ?? { button: { label: btnLabel } };
 
     this.label = (dm.button || { label: btnLabel }).label;
     switch (this.subType) {
@@ -518,6 +518,7 @@ export class DiscoveryInputComponent {
         />;
       case 'file':
         return <input type="file" class="discovery-input"
+                      accept={this.innerOptions?.input?.accept ?? '*/*'}
                       onChange={e => this.readText(e)}
                       ref={el => this.inputField = el}
         />;

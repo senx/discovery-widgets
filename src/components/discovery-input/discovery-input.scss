@@ -39,6 +39,7 @@
   input[type=date].discovery-input,
   input[type=time].discovery-input,
   textarea.discovery-input,
+  input[type=file].discovery-input,
   select.discovery-input {
     margin: .25rem .125rem;
     display: inline-block;
@@ -52,6 +53,13 @@
     width: 100%;
     height: 34px;
     padding: 1px 5px;
+  }
+
+  input[type=file].discovery-input {
+    height: 38px;
+    padding: 0;
+
+
   }
 
   textarea.discovery-input {
@@ -172,6 +180,11 @@
       background-color: var(--warp-view-button-secondary-bg-color, $w10-grey);
       color: var(--warp-view-button-secondary-label-color, $w10-white);
     }
+  }
+
+  input[type=file]::file-selector-button {
+    margin: 0;
+    margin-right: 10px;
   }
 
   .discovery-input-btn-wrapper.slider {
