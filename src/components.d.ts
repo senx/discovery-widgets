@@ -590,6 +590,7 @@ declare global {
     interface HTMLDiscoveryButtonElementEventMap {
         "draw": void;
         "execResult": any[];
+        "execError": any;
         "statusError": any;
         "discoveryEvent": DiscoveryEvent;
     }
@@ -1020,6 +1021,7 @@ declare global {
         "discoveryEvent": DiscoveryEvent;
         "draw": void;
         "selfType": ChartType;
+        "execError": any[];
     }
     interface HTMLDiscoveryTileResultElement extends Components.DiscoveryTileResult, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryTileResultElementEventMap>(type: K, listener: (this: HTMLDiscoveryTileResultElement, ev: DiscoveryTileResultCustomEvent<HTMLDiscoveryTileResultElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1136,6 +1138,7 @@ declare namespace LocalJSX {
         "language"?: 'warpscript' | 'flows';
         "onDiscoveryEvent"?: (event: DiscoveryButtonCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryButtonCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryButtonCustomEvent<any>) => void;
         "onExecResult"?: (event: DiscoveryButtonCustomEvent<any[]>) => void;
         "onStatusError"?: (event: DiscoveryButtonCustomEvent<any>) => void;
         "options"?: Param | string;
@@ -1417,6 +1420,7 @@ declare namespace LocalJSX {
         "language"?: 'warpscript' | 'flows';
         "onDiscoveryEvent"?: (event: DiscoveryTileResultCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryTileResultCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryTileResultCustomEvent<any[]>) => void;
         "onSelfType"?: (event: DiscoveryTileResultCustomEvent<ChartType>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

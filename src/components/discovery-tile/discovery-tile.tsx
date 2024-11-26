@@ -317,12 +317,9 @@ export class DiscoveryTileComponent {
               });
             })
             .catch(e => {
-              this.statusError.emit(e);
+              this.displayError(e);
               this.loaded = true;
               this.showLoader = false;
-              this.hasError = this.innerOptions.showErrors;
-              this.errorMessage = e.message || e.statusText;
-              this.LOG?.error(['exec'], e);
               resolve(true);
             });
         } else if (this.url.toLowerCase().startsWith('ws')) {
@@ -367,6 +364,13 @@ export class DiscoveryTileComponent {
     this.selfType.emit(type);
   }
 
+  private displayError(e: any) {
+    this.statusError.emit(e);
+    this.hasError = !!this.innerOptions.showErrors;
+    this.errorMessage = e.message ?? e.statusText;
+    this.LOG?.error(['exec'], e, this.innerOptions.showErrors, this.errorMessage);
+  }
+
   render() {
     return <div>
       {this.loaded ?
@@ -387,6 +391,7 @@ export class DiscoveryTileComponent {
             chart-title={this.chartTitle}
             chart-description={this.chartDescription}
             onSelfType={type => this.handleSelfType(type)}
+            onExecError={(e: any) => this.displayError(e.detail)}
             onDraw={() => this.draw.emit()}
             vars={JSON.stringify(this.innerVars)}
             ref={(el) => this.tileResult = el}

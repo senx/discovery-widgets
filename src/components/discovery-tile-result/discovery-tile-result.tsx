@@ -24,6 +24,7 @@ import { GTSLib } from '../../utils/gts.lib';
 import elementResizeEvent from 'element-resize-event';
 import { PluginManager } from '../../utils/PluginManager';
 import { v4 } from 'uuid';
+import { DiscoveryButtonCustomEvent } from '../../components';
 
 @Component({
   tag: 'discovery-tile-result',
@@ -65,6 +66,7 @@ export class DiscoveryTileResultComponent {
   }) discoveryEvent: EventEmitter<DiscoveryEvent>;
   @Event() draw: EventEmitter<void>;
   @Event() selfType: EventEmitter<ChartType>;
+  @Event() execError: EventEmitter<any[]>;
 
   private LOG: Logger;
   private wrapper: HTMLDivElement;
@@ -399,6 +401,7 @@ export class DiscoveryTileResultComponent {
           ref={el => this.tile = el || this.tile}
           vars={JSON.stringify(this.innerVars)}
           language={this.language}
+          onExecError={e => this.handleExecError(e)}
           debug={this.debug}
           id={this.componentId}
         />;
@@ -736,5 +739,9 @@ export class DiscoveryTileResultComponent {
         this.tileElem.style.setProperty('--warp-view-chart-grid-color', this.fontColor);
       }
     }
+  }
+
+  private handleExecError(e: DiscoveryButtonCustomEvent<any>) {
+    this.execError.emit(e.detail);
   }
 }

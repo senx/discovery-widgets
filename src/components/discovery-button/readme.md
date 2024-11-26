@@ -26,6 +26,7 @@
 | ---------------- | ----------- | ----------------------------- |
 | `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
 | `draw`           |             | `CustomEvent<void>`           |
+| `execError`      |             | `CustomEvent<any>`            |
 | `execResult`     |             | `CustomEvent<any[]>`          |
 | `statusError`    |             | `CustomEvent<any>`            |
 

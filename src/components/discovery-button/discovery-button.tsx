@@ -44,6 +44,7 @@ export class DiscoveryButtonComponent {
 
   @Event() draw: EventEmitter<void>;
   @Event() execResult: EventEmitter<any[]>;
+  @Event() execError: EventEmitter;
   @Event() statusError: EventEmitter;
   @Event({
     eventName: 'discoveryEvent',
@@ -169,8 +170,8 @@ export class DiscoveryButtonComponent {
     this.loading = true;
     const ws = LangUtils.prepare(
       `${this.innerResult.data} EVAL`,
-      this.innerVars || {},
-      this.innerOptions?.skippedVars || [],
+      this.innerVars ?? {},
+      this.innerOptions?.skippedVars ?? [],
       this.type,
       this.language);
     Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders)
@@ -179,13 +180,13 @@ export class DiscoveryButtonComponent {
         const result = GTSLib.getData(res.data);
         this.LOG?.debug(['handleClick', 'getData'], result);
         if (!!result) {
-          (result.events || []).forEach(e => {
+          for (const e of (result.events ?? [])) {
             this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e });
             if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {
               e.value = [e.value];
             }
             this.discoveryEvent.emit({ ...e, source: this.el.id });
-          });
+          }
         }
         this.loading = false;
         this.execResult.emit(res.data);
@@ -193,20 +194,21 @@ export class DiscoveryButtonComponent {
       .catch(e => {
         this.loading = false;
         this.statusError.emit(e);
+        this.execError.emit(e);
         this.LOG?.error(['exec'], e);
       });
   }
 
   private toggle(value: string) {
     this.active = value;
-    (this.innerResult.events || []).forEach(e => {
+    for (const e of (this.innerResult.events ?? [])) {
       this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e });
       if (!e.value) {
         e.value = {};
       }
       e.value[e.selector] = value;
       this.discoveryEvent.emit({ ...e, source: this.el.id });
-    });
+    }
   }
 
   private generateStyle(innerStyle: { [k: string]: string }): string {

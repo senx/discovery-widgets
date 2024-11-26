@@ -30,6 +30,7 @@
 | ---------------- | ----------- | ----------------------------- |
 | `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
 | `draw`           |             | `CustomEvent<void>`           |
+| `execError`      |             | `CustomEvent<any[]>`          |
 | `selfType`       |             | `CustomEvent<string>`         |
 
 
@@ -43,7 +44,7 @@
 
 | Name   | Type             | Description |
 | ------ | ---------------- | ----------- |
-| `type` | `"png" \| "svg"` |             |
+| `type` | `"svg" \| "png"` |             |
 
 #### Returns
 
