@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.2.1
+
+> +  2024/11/26  | v1.2.1 
+> +  2024/11/26  | [display] Fix markdown default font size 
+> +  2024/11/26  | changelog 
+
 ## v1.2.0
 
 > +  2024/11/26  | v1.2.0 
