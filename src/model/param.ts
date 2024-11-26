@@ -160,7 +160,8 @@ export class Param {
     chartType?: ChartType,
     labelPosition?: 'n' | 's' | 'e' | 'w' | 'c' | 'ne' | 'se' | 'nw' | 'sw',
     decimals?: number,
-    value?: string | number
+    value?: string | number,
+    markdown?: boolean
   };
   input?: {
     showButton?: boolean,

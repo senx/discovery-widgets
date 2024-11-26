@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@
     right: -10px;
     opacity: 0.5;
 
-    &>div {
+    & > div {
       display: block;
       width: 100%;
       height: 100%;
@@ -59,8 +59,8 @@
     margin: 10px;
     z-index: 2;
     position: absolute;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: start;
 
     &.pos-n {
       align-items: start;
@@ -105,6 +105,33 @@
     &.pos-c {
       align-items: center;
       justify-content: center;
+    }
+
+    &.display-md {
+      text-align: start !important;
+      align-items: start;
+      justify-content: start;
+      overflow: auto;
+      width: calc(100% - 10px);
+      font-size: var(--warp-view-font-size, 14px) !important;
+      table {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      table, th, td {
+        border: 1px solid;
+        border-color: var(--warp-view-font-color, #404040);
+        border-collapse: collapse;
+        padding: var(--warp-view-datagrid-cell-padding, 5px);
+      }
+
+      pre {
+        font-size: 0.8rem;
+        background-color: var(--warp-view-font-color, #404040);
+        color: var(--warp-view-tile-background, #ffffff);
+        padding: 10px;
+        margin-right: 10px;
+      }
     }
 
     img {

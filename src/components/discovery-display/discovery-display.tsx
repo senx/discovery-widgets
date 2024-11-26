@@ -25,6 +25,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Utils } from '../../utils/utils';
 import domtoimage from 'dom-to-image';
+import showdown from 'showdown';
 
 dayjs.extend(relativeTime);
 
@@ -160,7 +161,7 @@ export class DiscoveryDisplayComponent {
           this.innerHeight = height;
           this.LOG?.debug(['flexFont'], height);
         }
-        if (this.innerOptions.responsive && this.initial) {
+        if (this.innerOptions.responsive && this.initial && !this.innerOptions?.display?.markdown) {
           this.fitties = fitty(this.wrapper, {
             maxSize: height * 0.80, minSize: 14, observeMutations: {
               subtree: false,
@@ -198,7 +199,7 @@ export class DiscoveryDisplayComponent {
     }
     this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
     this.LOG?.debug(['convert'], 'dataModel', dataModel);
-    let display: any = this.message;
+    let display: any;
     if (!!dataModel.data) {
       display = GTSLib.isArray(dataModel.data) ? dataModel.data[0] ?? this.message : dataModel.data ?? this.message;
     } else {
@@ -243,6 +244,21 @@ export class DiscoveryDisplayComponent {
       case 'timestamp':
         display = decodeURIComponent(decodeURIComponent(display));
     }
+    if (this.innerOptions?.display?.markdown) {
+      const converter = new showdown.Converter({ emoji: true,
+        tables: true,
+        tasklists: true,
+        flavor: 'github',
+        moreStyling: true,
+        parseImgDimensions: true,
+        requireSpaceBeforeHeadingText: true,
+        simpleLineBreaks: false,
+        encodeEmails: false,
+        simplifiedAutoLink: false,
+        metadata: true,
+        ghCodeBlocks: true, });
+      display = converter.makeHtml(display);
+    }
     return display ?? '';
   }
 
@@ -250,8 +266,7 @@ export class DiscoveryDisplayComponent {
     return <div ref={(el) => this.pngWrapper = el} class="png-wrapper">
       <style>{this.generateStyle(this.innerStyle)}</style>
       <div style={{ color: this.innerOptions.fontColor }}
-           class={'display-container pos-' + this.innerOptions?.display?.labelPosition ?? 'c'}>
-
+           class={this.getClass()}>
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el} class="value">
@@ -280,6 +295,10 @@ export class DiscoveryDisplayComponent {
   }
 
   private generateStyle(innerStyle: { [k: string]: string }): string {
-    return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
+    return Object.keys(innerStyle ?? {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
+  }
+
+  private getClass() {
+    return 'display-container pos-' + (this.innerOptions?.display?.labelPosition ?? 'c') + (this.innerOptions?.display?.markdown ? ' display-md' : '');
   }
 }
