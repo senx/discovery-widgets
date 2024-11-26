@@ -77,7 +77,9 @@ export class DiscoveryDisplayComponent {
     const message = this.convert(GTSLib.getData(newValue) ?? new DataModel());
     if (message !== this.message) {
       this.message = message;
-      this.fitties.fit();
+      if (!this.innerOptions?.display?.markdown) {
+        this.fitties.fit();
+      }
     }
   }
 
@@ -114,7 +116,9 @@ export class DiscoveryDisplayComponent {
       if (height !== this.innerHeight) {
         this.innerHeight = height;
       }
-      this.fitties.fit();
+      if (!this.innerOptions?.display?.markdown) {
+        this.fitties.fit();
+      }
     }
     return Promise.resolve();
   }
@@ -245,7 +249,8 @@ export class DiscoveryDisplayComponent {
         display = decodeURIComponent(decodeURIComponent(display));
     }
     if (this.innerOptions?.display?.markdown) {
-      const converter = new showdown.Converter({ emoji: true,
+      const converter = new showdown.Converter({
+        emoji: true,
         tables: true,
         tasklists: true,
         flavor: 'github',
@@ -256,7 +261,8 @@ export class DiscoveryDisplayComponent {
         encodeEmails: false,
         simplifiedAutoLink: false,
         metadata: true,
-        ghCodeBlocks: true, });
+        ghCodeBlocks: true,
+      });
       display = converter.makeHtml(display);
     }
     return display ?? '';
