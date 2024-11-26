@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.2.0
+
+> +  2024/11/26  | v1.2.0 
+> +  2024/11/26  | [button] Display error when macro execution fails on click. 
+> +  2024/11/26  | [display] Add markdown support 
+> +  2024/11/26  | [input:file] File input support 
+> +  2024/11/25  | [input:file] Add input file 
+> +  2024/11/25  | [input:textarea] avoid native textarea to resize 
+> +  2024/11/25  | changelog 
+
 ## v1.1.141
 
 > +  2024/11/25  | v1.1.141 
