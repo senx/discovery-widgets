@@ -56,7 +56,7 @@ export class DiscoveryInputComponent {
   @State() parsing = false;
   @State() rendering = false;
   @State() value: string | number | number[] | string[] | any [] = '';
-  @State() subType: 'list' | 'text' | 'textarea' | 'file' | 'secret' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' | 'chips' | 'chips-autocomplete' = 'text';
+  @State() subType: 'list' | 'text' | 'textarea' | 'file' | 'secret' | 'number' | 'autocomplete' | 'slider' | 'date' | 'date-range' | 'multi' | 'multi-cb' | 'chips' | 'chips-autocomplete' = 'text';
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label = 'Ok';
@@ -77,6 +77,7 @@ export class DiscoveryInputComponent {
   private autoCompleteJS: any;
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
+  private valid: boolean;
 
   @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -243,15 +244,19 @@ export class DiscoveryInputComponent {
       if (this.delayTimer) {
         window.clearInterval(this.delayTimer);
       }
-      this.delayTimer = window.setTimeout(() => {
-        this.handleClickRT();
-      }, this.innerOptions.input?.delayRequest);
+      this.delayTimer = window.setTimeout(() => this.handleClickRT(), this.innerOptions.input?.delayRequest);
     } else {
       this.handleClickRT();
     }
   };
 
   private handleClickRT() {
+    const valid = !this.innerOptions?.input?.validation
+      || (
+        !!this.innerOptions?.input?.validation
+        && !!(this.inputField as any)?.validity?.valid
+        && (!this.inputField2 || !!(this.inputField2 as any)?.validity?.valid)
+      );
     if (this.inputField && !['file', 'date', 'date-range', 'multi', 'chips', 'chips-autocomplete'].includes(this.subType)) {
       if ('value' in this.inputField) {
         this.selectedValue = this.inputField.value;
@@ -270,8 +275,12 @@ export class DiscoveryInputComponent {
         } else {
           e.value = this.selectedValue;
         }
-        this.LOG?.debug(['handleCick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
-        this.discoveryEvent.emit({ ...e, source: this.el.id });
+        if (valid) {
+          this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
+          this.discoveryEvent.emit({ ...e, source: this.el.id });
+        } else {
+          this.LOG?.debug(['handleClick', 'emit'], 'Invalid value');
+        }
       }
     }
   };
@@ -341,6 +350,14 @@ export class DiscoveryInputComponent {
           this.value = data[0].toString();
         } else {
           this.value = (data.toString() as string);
+        }
+        this.selectedValue = this.value;
+        break;
+      case 'number':
+        if (GTSLib.isArray(data) && !!data[0]) {
+          this.value = parseFloat(data[0].toString());
+        } else {
+          this.value = parseFloat(data.toString());
         }
         this.selectedValue = this.value;
         break;
@@ -513,42 +530,70 @@ export class DiscoveryInputComponent {
     }
   }
 
+  private getClass() {
+    return `discovery-input${this.innerOptions?.input?.validation ? ' validation' : ''}`;
+  }
+
   private getInput() {
     switch (this.subType) {
       case 'text':
-        return <input type="text" class="discovery-input" value={this.value as string}
+        return <input type="text" class={this.getClass()}
+                      value={this.value as string}
                       onInput={e => this.handleSelect(e)}
+                      required={this.innerOptions?.input?.validation}
+                      minlength={this.innerOptions?.input?.min}
+                      maxlength={this.innerOptions?.input?.max}
                       ref={el => this.inputField = el}
         />;
+      case 'number':
+        return [
+          <input type="number" class={this.getClass()} value={parseFloat(this.value as string)}
+                 onInput={e => this.handleSelect(e)}
+                 ref={el => this.inputField = el}
+                 min={this.innerOptions?.input?.min}
+                 max={this.innerOptions?.input?.max}
+                 required={this.innerOptions?.input?.validation}
+                 step="any"
+          />, <span class="validity"></span>];
       case 'file':
-        return <input type="file" class="discovery-input"
+        return <input type="file" class={this.getClass()}
                       accept={this.innerOptions?.input?.accept ?? '*/*'}
+                      required={this.innerOptions?.input?.validation}
                       onChange={e => void this.readText(e)}
                       ref={el => this.inputField = el}
         />;
       case 'textarea':
-        return <textarea class="discovery-input" value={this.value as string}
+        return <textarea class={this.getClass()} value={this.value as string}
                          onInput={e => this.handleSelect(e)}
+                         required={this.innerOptions?.input?.validation}
                          ref={el => this.inputField = el}
         />;
       case 'secret':
-        return <input type="password" class="discovery-input" value={this.value as string}
+        return <input type="password" class={this.getClass()} value={this.value as string}
                       onInput={e => this.handleSelect(e)}
+                      required={this.innerOptions?.input?.validation}
                       ref={el => this.inputField = el}
         />;
       case 'date':
-        return <input type="text" class="discovery-input"
+        return <input type="text" class={this.getClass()}
+                      required={this.innerOptions?.input?.validation}
                       ref={el => this.inputField = el}
         />;
       case 'date-range':
         return <div class="range">
           <span>{this.innerOptions.input?.fromLabel ?? 'from'}</span>
-          <input type="text" class="discovery-input" ref={el => this.inputField = el} />
+          <input type="text" class={this.getClass()}
+                 required={this.innerOptions?.input?.validation}
+                 ref={el => this.inputField = el} />
           <span>{this.innerOptions.input?.toLabel ?? 'to'}</span>
-          <input type="text" class="discovery-input" ref={el => this.inputField2 = el} />
+          <input type="text" class={this.getClass()}
+                 required={this.innerOptions?.input?.validation}
+                 ref={el => this.inputField2 = el} />
         </div>;
       case 'autocomplete':
-        return <input type="text" class="discovery-input" value={this.value as string}
+        return <input type="text" class={this.getClass()}
+                      required={this.innerOptions?.input?.validation}
+                      value={this.value as string}
                       ref={el => this.inputField = el}
         />;
       case 'slider':
@@ -560,12 +605,14 @@ export class DiscoveryInputComponent {
           />
         </div>;
       case 'list':
-        return <select class="discovery-input" onInput={e => this.handleSelect(e)}
+        return <select class={this.getClass()} onInput={e => this.handleSelect(e)}
+                       required={this.innerOptions?.input?.validation}
                        ref={el => this.inputField = el}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
         </select>;
       case 'multi':
-        return <select class="discovery-input" onInput={e => this.handleSelect(e)} multiple
+        return <select class={this.getClass()} onInput={e => this.handleSelect(e)} multiple
+                       required={this.innerOptions?.input?.validation}
                        ref={el => this.inputField = el}>
           {this.values.map(v => (
             <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
@@ -574,7 +621,7 @@ export class DiscoveryInputComponent {
         return <div class="multi-cb-wrapper" ref={el => this.pngWrapper = el}>
           <div class="multi-cb-layout">
             {this.innerOptions.input?.showFilter
-              ? <input type="text" class="discovery-input" onKeyUp={e => this.handleFilter(e)} />
+              ? <input type="text" class={this.getClass()} onKeyUp={e => this.handleFilter(e)} />
               : ''
             }
             <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el}>
@@ -597,7 +644,7 @@ export class DiscoveryInputComponent {
             {this.innerOptions.input?.showButton ?
               <div class="discovery-input-btn-wrapper">
                 <button class="discovery-btn" disabled={this.disabled} type="button"
-                        onClick={this.handleClick}>{this.label}</button>
+                        onClick={this.handleClick} innerHTML={this.label}></button>
               </div> : ''}
           </div>
         </div>;

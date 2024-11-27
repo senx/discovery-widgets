@@ -479,6 +479,7 @@ export class DiscoveryTileResultComponent {
       case 'input:chips':
       case 'input:chips-autocomplete':
       case 'input:file':
+      case 'input:number':
         return <discovery-input
           result={this.innerResult}
           type={this.innerType}
