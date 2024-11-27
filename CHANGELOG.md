@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.2.2
+
+> +  2024/11/27  | v1.2.2 
+> +  2024/11/27  | [input:number] Add input:number [input:*] Add a validation support 
+> +  2024/11/26  | [input:autocomplete] Fix initial value 
+> +  2024/11/26  | [dashboard] Emits a discovery event on popup close 
+> +  2024/11/26  | changelog 
+
 ## v1.2.1
 
 > +  2024/11/26  | v1.2.1 
