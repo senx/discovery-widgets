@@ -116,7 +116,7 @@ export class DiscoveryDisplayComponent {
       if (height !== this.innerHeight) {
         this.innerHeight = height;
       }
-      if (!this.innerOptions?.display?.markdown) {
+      if (!this.innerOptions?.display?.markdown && !!this.fitties) {
         this.fitties.fit();
       }
     }

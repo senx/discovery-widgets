@@ -443,8 +443,8 @@ export class DiscoveryInputComponent {
               value = [value] as number[] | string[];
             }
           }
-          if (this.subType !== 'autocomplete') {
-            this.value = [...value as number[] | string[]];
+          if (this.subType !== 'autocomplete' && this.subType !== 'list') {
+            this.value = [...value as any[]];
           } else {
             this.value = this.innerOptions?.input?.value ?? '';
           }
