@@ -93,7 +93,7 @@ export class DiscoveryDisplayComponent {
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
       this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
-      this.message = this.convert(this.result as DataModel || new DataModel());
+      this.message = this.convert(this.result as DataModel ?? new DataModel());
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOptions);
     }
   }
@@ -136,6 +136,7 @@ export class DiscoveryDisplayComponent {
     return await domtoimage.toPng(this.pngWrapper, { height: this.height, width: this.width, bgcolor: bgColor });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryDisplayComponent, this.debug);
@@ -146,7 +147,7 @@ export class DiscoveryDisplayComponent {
     }
     this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
     this.message = this.convert(this.result ?? new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
@@ -196,7 +197,7 @@ export class DiscoveryDisplayComponent {
       clearInterval(this.timer);
     }
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, dataModel.globalParams);
+    options = Utils.mergeDeep<Param>(options ?? {} as Param, dataModel.globalParams);
     this.innerOptions = Utils.clone(options);
     if (this.innerOptions.customStyles) {
       this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
@@ -204,7 +205,7 @@ export class DiscoveryDisplayComponent {
     this.chartOptions = Utils.clone({ ...this.chartOptions, fontColor: this.innerOptions.fontColor });
     this.LOG?.debug(['convert'], 'dataModel', dataModel);
     let display: any;
-    if (!!dataModel.data) {
+    if (dataModel.data !== undefined) {
       display = GTSLib.isArray(dataModel.data) ? dataModel.data[0] ?? this.message : dataModel.data ?? this.message;
     } else {
       display = GTSLib.isArray(dataModel) ? dataModel[0] ?? this.message : dataModel ?? this.message;
@@ -265,7 +266,7 @@ export class DiscoveryDisplayComponent {
       });
       display = converter.makeHtml(display);
     }
-    return display ?? '';
+    return display === undefined ? '' : display.toString();
   }
 
   render() {
@@ -276,7 +277,8 @@ export class DiscoveryDisplayComponent {
         {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
         {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
         <div ref={(el) => this.wrapper = el} class="value">
-          <span innerHTML={this.message ?? ''} /><small>{this.innerOptions.unit ?? this.unit ?? ''}</small>
+          <span innerHTML={this.message === undefined ? '' : this.message} />
+          <small>{this.innerOptions.unit ?? this.unit ?? ''}</small>
         </div>
       </div>
       {this.gts && this.innerOptions.display?.showChart
