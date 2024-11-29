@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.2.4
+
+> +  2024/11/29  | v1.2.4 
+> +  2024/11/29  | [display] Fix value display when { 'data' 0 } 
+> +  2024/11/29  | [svg] Fix size handling when with and height are not expressed in px. 
+> +  2024/11/28  | changelog 
+
 ## v1.2.3
 
 > +  2024/11/28  | v1.2.3 
