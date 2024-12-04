@@ -222,12 +222,12 @@ export class DiscoverySvgComponent {
         }
       }
 
-      if (!el.getAttribute('width').endsWith('px') && !!el.getAttribute('viewBox')) {
+      if (!el.getAttribute('width')?.endsWith('px') && !!el.getAttribute('viewBox')) {
         const vb =  el.getAttribute('viewBox').split(' ');
         el.setAttribute('width', vb[2] + 'px');
       }
 
-      if (!el.getAttribute('height').endsWith('px') && !!el.getAttribute('viewBox')) {
+      if (!el.getAttribute('height')?.endsWith('px') && !!el.getAttribute('viewBox')) {
         const vb =  el.getAttribute('viewBox').split(' ');
         el.setAttribute('height', vb[3] + 'px');
       }
