@@ -84,7 +84,7 @@ export class Utils {
             status: xmlHttp.status,
             url: theUrl,
             headers: resHeaders,
-            message: `Not Authorized`,
+            message: 'Not Authorized',
           });
         } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 500) {
           if (resHeaders['x-warp10-error-line'] && resHeaders['x-warp10-error-message']) {
@@ -105,7 +105,7 @@ export class Utils {
               status: xmlHttp.status,
               url: theUrl,
               headers: resHeaders,
-              message: `WarpScript Error without message`,
+              message: 'WarpScript Error without message',
             });
           }
         } else if (xmlHttp.readyState === 4 && xmlHttp.status === 0) {
