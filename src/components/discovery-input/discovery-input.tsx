@@ -259,7 +259,7 @@ export class DiscoveryInputComponent {
       );
     if (this.inputField && !['file', 'date', 'date-range', 'multi', 'chips', 'chips-autocomplete'].includes(this.subType)) {
       if ('value' in this.inputField) {
-        this.selectedValue = this.inputField.value;
+        // this.selectedValue = this.inputField.value;
       }
     }
     for (const e of (this.innerResult?.events ?? [])) {
@@ -306,7 +306,9 @@ export class DiscoveryInputComponent {
           .map((o: HTMLInputElement) => o.value);
       }
       if (this.subType !== 'file' && !this.innerOptions.input?.showButton) {
-        this.handleClick();
+        if (this.selectedValue !== undefined) {
+          this.handleClick();
+        }
       }
     }
   }
@@ -332,9 +334,9 @@ export class DiscoveryInputComponent {
   };
 
   private parseResult() {
-    const data = this.innerResult.data || '';
+    const data = this.innerResult.data !== undefined ? this.innerResult.data : '';
     this.LOG.debug(['parseResult', 'innerOptions'], this.innerOptions);
-    const btnLabel = (this.innerOptions.button || { label: 'Ok' }).label;
+    const btnLabel = (this.innerOptions.button ?? { label: 'Ok' }).label;
     const dm = ((this.result as unknown as DataModel) ?? {
       globalParams: {
         button: { label: btnLabel },
@@ -446,14 +448,16 @@ export class DiscoveryInputComponent {
           if (this.subType !== 'autocomplete' && this.subType !== 'list') {
             this.value = [...value as any[]];
           } else {
-            this.value = this.innerOptions?.input?.value ?? '';
+            this.value = this.innerOptions?.input?.value !== undefined ? this.innerOptions?.input?.value : '';
           }
-          this.selectedValue = this.value;
           if (this.subType === 'multi-cb' && this.checkBoxes) {
             Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
               .forEach((o: HTMLInputElement) => o.checked = (this.value as any[]).includes(o.value));
           }
-          this.handleSelect({ detail: this.value });
+          if (this.selectedValue !== this.value) {
+            this.selectedValue = this.value;
+            this.handleSelect({ detail: this.selectedValue });
+          }
         });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {
