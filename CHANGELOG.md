@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.2.5
+
+> +  2024/12/04  | v1.2.5 
+> +  2024/12/04  | [svg] Fix error when no width or height attributes are set in the SVG root tag 
+> +  2024/12/04  | ESLint fix 
+> +  2024/12/04  | [input:list] Fix event emission 
+> +  2024/11/29  | changelog 
+
 ## v1.2.4
 
 > +  2024/11/29  | v1.2.4 
