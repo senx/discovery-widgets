@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.2.6
+
+> +  2024/12/05  | v1.2.6 
+> +  2024/12/05  | readmes 
+> +  2024/12/05  | [dashboard] Fix infinite resize that appears in some cases 
+> +  2024/12/05  | [input:number] Fix 0 as value 
+> +  2024/12/05  | [input:list] Fix event emission 
+> +  2024/12/05  | [map] Fix tile height 
+> +  2024/12/04  | changelog 
+
 ## v1.2.5
 
 > +  2024/12/04  | v1.2.5 
