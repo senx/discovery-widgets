@@ -259,7 +259,7 @@ export class DiscoveryInputComponent {
       );
     if (this.inputField && !['file', 'date', 'date-range', 'multi', 'chips', 'chips-autocomplete'].includes(this.subType)) {
       if ('value' in this.inputField) {
-         this.selectedValue = this.inputField.value;
+        this.selectedValue = this.inputField.value;
       }
     }
     for (const e of (this.innerResult?.events ?? [])) {
@@ -274,6 +274,9 @@ export class DiscoveryInputComponent {
           e.value[e.selector] = this.selectedValue;
         } else {
           e.value = this.selectedValue;
+        }
+        if (this.subType === 'number') {
+          e.value[e.selector] = parseFloat(e.value[e.selector]);
         }
         if (valid) {
           this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
@@ -356,7 +359,7 @@ export class DiscoveryInputComponent {
         this.selectedValue = this.value;
         break;
       case 'number':
-        if (GTSLib.isArray(data) && !!data[0]) {
+        if (GTSLib.isArray(data) && data[0] !== undefined) {
           this.value = parseFloat(data[0].toString());
         } else {
           this.value = parseFloat(data.toString());
@@ -406,7 +409,7 @@ export class DiscoveryInputComponent {
       case 'slider':
         this.innerOptions.input = this.innerOptions.input ?? {};
         this.innerOptions.input.value = this.innerOptions.input.value ?? data;
-        this.value = this.innerOptions.input.value;
+        this.value = this.innerOptions?.input?.value === undefined ? 0 : this.innerOptions.input.value;
         this.selectedValue = this.value;
         this.innerOptions = Utils.clone(this.innerOptions);
         break;
@@ -456,7 +459,7 @@ export class DiscoveryInputComponent {
           }
           if (this.selectedValue !== this.value) {
             this.selectedValue = this.value;
-         //   this.handleSelect({ detail: this.selectedValue });
+            //   this.handleSelect({ detail: this.selectedValue });
           }
         });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
@@ -551,7 +554,7 @@ export class DiscoveryInputComponent {
         />;
       case 'number':
         return [
-          <input type="number" class={this.getClass()} value={parseFloat(this.value as string)}
+          <input type="number" class={this.getClass()} value={this.value.toString()}
                  onInput={e => this.handleSelect(e)}
                  ref={el => this.inputField = el}
                  min={this.innerOptions?.input?.min}
