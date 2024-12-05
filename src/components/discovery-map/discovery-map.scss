@@ -20,10 +20,14 @@
 :host {
   display: block;
   width: 100%;
+  height: 100%;
 
   .map-container {
     padding: 0;
     margin: 0 -2px 0 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
   }
 
   .leaflet-top, .leaflet-bottom {

@@ -199,12 +199,11 @@ export class DiscoveryMapComponent {
     });
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
-    this.height = dims.h;
+    this.height = dims.h -100;
     this.parsing = false;
   }
 
   componentDidLoad() {
-    this.height = Utils.getContentBounds(this.el.parentElement).h;
     this.drawMap(this.result as DataModel || new DataModel());
   }
 
@@ -217,7 +216,7 @@ export class DiscoveryMapComponent {
     this.LOG?.debug(['drawMap', 'this.options 2 '], { ...data.globalParams });
     options = Utils.mergeDeep<Param>(options, data.globalParams || {});
     optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
-    this.innerOptions = { ...options };
+    this.innerOptions = Utils.clone(options);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     if (!!this.map) {
       this.map.invalidateSize(true);
@@ -226,7 +225,7 @@ export class DiscoveryMapComponent {
     this.LOG?.debug(['drawMap', 'this.height'], this.height);
     this.LOG?.debug(['drawMap', 'this.options'], { ...this.innerOptions });
     const dataList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
-    data.params = data.params || [];
+    data.params = data.params ?? [];
     const params = data.params;
     this.mapOpts = this.innerOptions.map || {};
     this.pointslayer = [];
@@ -506,7 +505,7 @@ export class DiscoveryMapComponent {
       iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
       iconAnchor = [iconSize[0] / 2, iconSize[0] / 2];
     }
-    let mark: string = GTSLib.isArray(marker) ? marker[i] ?? 'circle' : marker as string ?? 'circle';
+    const mark: string = GTSLib.isArray(marker) ? marker[i] ?? 'circle' : marker as string ?? 'circle';
     if (mark.startsWith('http') || mark.startsWith('data:image')) {
       iconUrl = mark;
     } else if (mark.startsWith('<svg')) {
@@ -521,7 +520,7 @@ export class DiscoveryMapComponent {
       }
       iconUrl = `https://www.mapmarker.io/api/v2/font-awesome/v5/pin?icon=fa-${mark}-solid&size=${iconSize[0]}&color=fff&background=${c}`;
     }
-    return Leaflet.icon({ iconUrl, iconAnchor, iconSize }); //, popupAnchor: [0, 0  ]}); //, popupAnchor: this.popupAnchor });
+    return Leaflet.icon({ iconUrl, iconAnchor, iconSize });
   }
 
   private getGTSDots(gts: any, param: Param) {
@@ -732,17 +731,17 @@ export class DiscoveryMapComponent {
   }
 
   private updatePositionArray(positionData: any, param: Param, dataIndex: number) {
-    let opts: { [key: string]: any } = {};
+    const opts: { [key: string]: any } = {};
 
     if (this.mapOpts?.maxClusterRadius) opts.maxClusterRadius = this.mapOpts.maxClusterRadius;
     if (this.mapOpts?.clusterCustomIcon) {
       opts.iconCreateFunction = (cluster: any) => {
-        let ico = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[0] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param, 0);
-        let icoHtmlElt = ico.createIcon();
-        let icoW = parseInt(icoHtmlElt.style.getPropertyValue('width'), 10);
-        let icoH = parseInt(icoHtmlElt.style.getPropertyValue('height'), 10);
-        let icoMarginLeft = icoHtmlElt.style.getPropertyValue('margin-left');
-        let icoMarginTop = icoHtmlElt.style.getPropertyValue('margin-top');
+        const ico = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[0] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param, 0);
+        const icoHtmlElt = ico.createIcon();
+        const icoW = parseInt(icoHtmlElt.style.getPropertyValue('width'), 10);
+        const icoH = parseInt(icoHtmlElt.style.getPropertyValue('height'), 10);
+        const icoMarginLeft = icoHtmlElt.style.getPropertyValue('margin-left');
+        const icoMarginTop = icoHtmlElt.style.getPropertyValue('margin-top');
         // remove shift from ico, to apply it to the parent div later on
         icoHtmlElt.style.removeProperty('margin-left');
         icoHtmlElt.style.removeProperty('margin-top');
@@ -863,7 +862,7 @@ export class DiscoveryMapComponent {
   }
 
   render() {
-    return <div class="map-container" style={{ width: `${this.width}px`, height: `${this.height}px` }}>
+    return <div class="map-container">
       <div ref={(el) => this.mapElement = el} />
     </div>;
   }
