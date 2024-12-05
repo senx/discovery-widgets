@@ -383,6 +383,7 @@ export namespace Components {
         "setZoom": (dataZoom: { start?: number; end?: number; type?: string; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
         "showById": (id: number) => Promise<void>;
+        "standalone": boolean;
         "start": number;
         "type": ChartType;
         "unFocus": () => Promise<void>;
@@ -1442,6 +1443,7 @@ declare namespace LocalJSX {
         "onSelfType"?: (event: DiscoveryTileResultCustomEvent<ChartType>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
+        "standalone"?: boolean;
         "start"?: number;
         "type"?: ChartType;
         "unit"?: string;

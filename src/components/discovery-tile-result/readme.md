@@ -16,6 +16,7 @@
 | `language`         | `language`          |             | `"flows" \| "warpscript"` | `'warpscript'` |
 | `options`          | `options`           |             | `Param \| string`         | `new Param()`  |
 | `result`           | `result`            |             | `DataModel \| string`     | `undefined`    |
+| `standalone`       | `standalone`        |             | `boolean`                 | `true`         |
 | `start`            | `start`             |             | `number`                  | `undefined`    |
 | `type`             | `type`              |             | `string`                  | `undefined`    |
 | `unit`             | `unit`              |             | `string`                  | `''`           |

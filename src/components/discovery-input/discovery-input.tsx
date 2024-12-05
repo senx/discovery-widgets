@@ -239,7 +239,7 @@ export class DiscoveryInputComponent {
     this.draw.emit();
   }
 
-  private handleClick = () => {
+  private handleClick() {
     if (this.innerOptions.input?.delayRequest && this.innerOptions.input?.delayRequest > 0) {
       if (this.delayTimer) {
         window.clearInterval(this.delayTimer);
@@ -259,7 +259,7 @@ export class DiscoveryInputComponent {
       );
     if (this.inputField && !['file', 'date', 'date-range', 'multi', 'chips', 'chips-autocomplete'].includes(this.subType)) {
       if ('value' in this.inputField) {
-        // this.selectedValue = this.inputField.value;
+         this.selectedValue = this.inputField.value;
       }
     }
     for (const e of (this.innerResult?.events ?? [])) {
@@ -456,7 +456,7 @@ export class DiscoveryInputComponent {
           }
           if (this.selectedValue !== this.value) {
             this.selectedValue = this.value;
-            this.handleSelect({ detail: this.selectedValue });
+         //   this.handleSelect({ detail: this.selectedValue });
           }
         });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
@@ -648,7 +648,7 @@ export class DiscoveryInputComponent {
             {this.innerOptions.input?.showButton ?
               <div class="discovery-input-btn-wrapper">
                 <button class="discovery-btn" disabled={this.disabled} type="button"
-                        onClick={this.handleClick} innerHTML={this.label}></button>
+                        onClick={e => this.handleSelect(e)} innerHTML={this.label}></button>
               </div> : ''}
           </div>
         </div>;
@@ -681,7 +681,7 @@ export class DiscoveryInputComponent {
                 class="discovery-btn"
                 disabled={this.disabled}
                 type="button"
-                onClick={this.handleClick}
+                onClick={() => this.handleClickRT()}
               >{this.label}</button>
             </div> : ''}
         </div>

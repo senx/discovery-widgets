@@ -114,7 +114,7 @@ export class DiscoveryTileComponent {
       }
     }
     if (res.selected) {
-      const vars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
+      const vars = Utils.clone({ ...(this.innerVars ?? {}), ...res.selected });
       if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
         this.innerVars = Utils.clone(vars);
         if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
@@ -260,7 +260,6 @@ export class DiscoveryTileComponent {
           Utils.httpPost(this.url, this.ws, this.innerOptions.httpHeaders)
             .then((res: any) => {
               this.hiddenByWs = false;
-              const toRefresh = this.result === res.data;
               if ((this.type ?? '').startsWith('input') || (this.type ?? '').startsWith('svg')) {
                 this.result = '';
               }
@@ -309,7 +308,7 @@ export class DiscoveryTileComponent {
                   this.result = res.data;
                   this.execResult.emit(this.result);
                   this.hasError = false;
-                  if (toRefresh && refresh && !!this.tileResult) {
+                  if (refresh && !!this.tileResult) {
                     await this.tileResult.parseEvents();
                   }
                   resolve(true);
@@ -396,6 +395,7 @@ export class DiscoveryTileComponent {
             vars={JSON.stringify(this.innerVars)}
             ref={(el) => this.tileResult = el}
             id={this.componentId}
+            standalone={true}
           />
           {this.statusMessage ? <div class="discovery-tile-status">{this.statusMessage}</div> : ''}
         </div>

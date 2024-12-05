@@ -47,6 +47,7 @@ export class DiscoveryTileResultComponent {
   @Prop() chartDescription: string;
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
   @Prop() vars = '{}';
+  @Prop() standalone = true;
 
   @State() execTime = 0;
   @State() bgColor: string;
@@ -246,7 +247,7 @@ export class DiscoveryTileResultComponent {
   }
 
   handleDataPointOver(event: CustomEvent) {
-    ((this.innerResult as unknown as DataModel).events || [])
+    ((this.innerResult as unknown as DataModel).events ?? [])
       .filter(e => e.type === 'focus')
       .forEach(e => {
         e.value = event.detail;
@@ -255,7 +256,7 @@ export class DiscoveryTileResultComponent {
   }
 
   handleDataSelected(event: CustomEvent) {
-    ((this.innerResult as unknown as DataModel).events || [])
+    ((this.innerResult as unknown as DataModel).events ?? [])
       .filter(e => e.type === 'selected')
       .forEach(e => {
         e.value = event.detail;
@@ -264,7 +265,7 @@ export class DiscoveryTileResultComponent {
   }
 
   handlePoi(event: CustomEvent) {
-    ((this.innerResult as unknown as DataModel).events || [])
+    ((this.innerResult as unknown as DataModel).events ?? [])
       .filter(e => e.type === 'poi')
       .forEach(e => {
         e.value = event.detail;
@@ -273,7 +274,7 @@ export class DiscoveryTileResultComponent {
   }
 
   handleGeoBounds(event: CustomEvent) {
-    ((this.innerResult as unknown as DataModel).events || [])
+    ((this.innerResult as unknown as DataModel).events ?? [])
       .filter(e => e.type === 'bounds')
       .forEach(e => {
         e.value = event.detail;
@@ -678,12 +679,16 @@ export class DiscoveryTileResultComponent {
     this.LOG?.debug(['parseEvents'], { discoveryEvents: ((this.innerResult as unknown as DataModel)?.events ?? []) });
     setTimeout(() => ((this.innerResult as unknown as DataModel)?.events ?? [])
       .filter(e => e.value !== undefined)
-      .filter(e => e.type !== 'zoom' && e.type !== 'margin' && e.type !== 'selected')
+      .filter(e => !['zoom', 'margin', 'selected'].includes(e.type))
       .forEach(e => {
         if (this.LOG) {
           this.LOG?.debug(['parseEvents', 'emit'], { discoveryEvent: e });
         }
-        this.discoveryEvent.emit({ ...e, source: this.el.id });
+        if (this.type.startsWith('input') && this.innerOptions?.input?.showButton) {
+          // we skip
+        } else {
+          this.discoveryEvent.emit({ ...e, source: this.el.id });
+        }
       }));
     return Promise.resolve();
   }
