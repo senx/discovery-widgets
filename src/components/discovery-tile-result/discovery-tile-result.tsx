@@ -565,7 +565,7 @@ export class DiscoveryTileResultComponent {
             options={this.innerOptions}
             height={this.height}
             width={this.width}
-            ref={el => this.tile = el || this.tile}
+            ref={(el: any) => this.tile = el ?? this.tile}
             debug={this.debug}
             id={this.componentId}
           />;
@@ -662,12 +662,13 @@ export class DiscoveryTileResultComponent {
              height: '100%', width: '100%',
            }}>
         {this.innerTitle && this.innerTitle !== ''
-          ? <h2 class="tile-title" ref={el => this.title = el as HTMLDivElement}>{this.innerTitle || ''}</h2>
+          ? <h2 class="tile-title" ref={el => this.title = el as HTMLDivElement}>{this.innerTitle ?? ''}</h2>
           : ''}
         {this.chartDescription && this.chartDescription !== ''
-          ? <p class="tile-desc" ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription || ''}</p>
+          ? <p class="tile-desc" ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription ?? ''}</p>
           : ''}
-        {this.ready ? <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}>
+        {this.ready ? <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}
+                           style={{ maxWidth: this.width + 'px' }}>
           {this.getView()}
         </div> : ''}
       </div>,

@@ -70,6 +70,7 @@ export class DiscoveryAnnotation {
   private leftMargin = 0;
   private MAX_MARGIN = 1024;
   private pois: any[] = [];
+  private innerWidth: number = 0;
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -119,11 +120,12 @@ export class DiscoveryAnnotation {
   }
 
   @Method()
-  async resize(): Promise<void> {
-    if (this.myChart) {
-      this.myChart.resize();
-      return Promise.resolve();
+  async resize() {
+    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
+      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
+      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
     }
+    return Promise.resolve();
   }
 
   @Method()

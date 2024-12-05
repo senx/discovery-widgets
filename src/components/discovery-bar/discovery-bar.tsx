@@ -68,6 +68,7 @@ export class DiscoveryBarComponent {
   private isGTS = false;
   private zoom: { start?: number; end?: number; type?: string };
   private pois: any[] = [];
+  private innerWidth: number = 0;
 
   @Watch('result')
   updateRes() {
@@ -94,8 +95,9 @@ export class DiscoveryBarComponent {
 
   @Method()
   async resize() {
-    if (this.myChart) {
-      this.myChart.resize();
+    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
+      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
+      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
     }
     return Promise.resolve();
   }

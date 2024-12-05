@@ -127,10 +127,10 @@ export class DiscoveryTileComponent {
   @Method()
   async resize() {
     const dims = Utils.getContentBounds(this.el.parentElement);
-    this.width = dims.w - 15;
     this.height = dims.h;
     this.LOG?.debug(['componentDidLoad'], 'Tile - resize', this.tileResult);
-    if (this.tileResult) {
+    if (this.tileResult && this.width !== (dims.w - 15)) {
+      this.width = dims.w - 15;
       return this.tileResult.resize();
     }
   }

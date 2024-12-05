@@ -55,6 +55,7 @@ export class DiscoveryGauge {
   private defOptions: Param = new Param();
   private LOG: Logger;
   private myChart: ECharts;
+  private innerWidth: number = 0;
 
   @Watch('result')
   updateRes() {
@@ -81,8 +82,9 @@ export class DiscoveryGauge {
 
   @Method()
   async resize() {
-    if (this.myChart) {
-      this.myChart.resize();
+    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
+      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
+      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
     }
     return Promise.resolve();
   }

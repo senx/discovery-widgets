@@ -56,6 +56,7 @@ export class DiscoveryPieComponent {
   private LOG: Logger;
   private divider = 1000;
   private myChart: ECharts;
+  private innerWidth: number = 0;
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -90,8 +91,9 @@ export class DiscoveryPieComponent {
 
   @Method()
   async resize() {
-    if (this.myChart) {
-      this.myChart.resize();
+    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
+      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
+      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
     }
     return Promise.resolve();
   }

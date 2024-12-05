@@ -225,8 +225,8 @@ export class DiscoveryDashboardComponent {
       delete tiles[i].endpoint;
     }
     result.tiles = tiles.filter((t: any) => t.type !== 'hidden');
-    result.cellHeight = result.cellHeight || this.cellHeight || 220;
-    result.cols = result.cols || this.cols || 12;
+    result.cellHeight = result.cellHeight ?? this.cellHeight ?? 220;
+    result.cols = result.cols ?? this.cols ?? 12;
     result.bgColor = Utils.getCSSColor(this.el, '--warp-view-dashboard-background', '#fff');
     result.fontColor = Utils.getCSSColor(this.el, '--warp-view-font-color', '#000');
     return { ...new Dashboard(), ...result };

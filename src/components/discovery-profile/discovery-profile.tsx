@@ -73,6 +73,7 @@ export class DiscoveryProfile {
   private gtsList = [];
   private focusDate: number;
   private bounds: { min: number; max: number };
+  private innerWidth: number = 0;
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -123,11 +124,12 @@ export class DiscoveryProfile {
   }
 
   @Method()
-  async resize(): Promise<void> {
-    if (this.myChart) {
-      this.myChart.resize();
-      return Promise.resolve();
+  async resize() {
+    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
+      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
+      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
     }
+    return Promise.resolve();
   }
 
   @Method()

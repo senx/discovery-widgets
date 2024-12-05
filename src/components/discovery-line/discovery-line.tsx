@@ -85,6 +85,7 @@ export class DiscoveryLineComponent {
   private bounds: { min: number; max: number };
   private zoom: { start?: number; end?: number };
   private pois: any[] = [];
+  private innerWidth: number = 0;
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -892,8 +893,9 @@ export class DiscoveryLineComponent {
 
   @Method()
   async resize() {
-    if (this.myChart) {
-      this.myChart.resize();
+    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
+      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
+      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
     }
     return Promise.resolve();
   }
@@ -1051,7 +1053,7 @@ export class DiscoveryLineComponent {
   }
 
   render() {
-    return <div style={{ width: '100%', height: '100%' }}>
+    return <div>
       {this.parsing && !!this.innerOptions?.showLoader ?
         <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}

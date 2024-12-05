@@ -56,6 +56,7 @@ export class DiscoveryCalendar {
   private divider = 1000;
   private myChart: ECharts;
   private CAL_SIZE = 150;
+  private innerWidth: number = 0;
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -99,11 +100,13 @@ export class DiscoveryCalendar {
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
   }
+  
 
   @Method()
   async resize() {
-    if (this.myChart) {
-      this.myChart.resize();
+    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
+      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
+      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
     }
     return Promise.resolve();
   }
