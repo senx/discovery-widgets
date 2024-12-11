@@ -49,7 +49,6 @@
     "dayjs": "^1.11.13",
     "dom-to-image": "^2.6.0",
     "echarts": "5.5.1",
-    "element-resize-event": "^3.0.6",
     "fitty": "^2.4.2",
     "flatpickr": "^4.6.13",
     "html2canvas": "^1.4.1",

@@ -651,7 +651,7 @@ export class DiscoveryInputComponent {
             {this.innerOptions.input?.showButton ?
               <div class="discovery-input-btn-wrapper">
                 <button class="discovery-btn" disabled={this.disabled} type="button"
-                        onClick={e => this.handleSelect(e)} innerHTML={this.label}></button>
+                        onClick={() => this.handleClickRT()} innerHTML={this.label}></button>
               </div> : ''}
           </div>
         </div>;
