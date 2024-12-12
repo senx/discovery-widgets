@@ -560,7 +560,7 @@ export class DiscoveryInputComponent {
                  min={this.innerOptions?.input?.min}
                  max={this.innerOptions?.input?.max}
                  required={this.innerOptions?.input?.validation}
-                 step="any"
+                 step={this.innerOptions?.input?.step ?? 'any'}
           />, <span class="validity"></span>];
       case 'file':
         return <input type="file" class={this.getClass()}
