@@ -1,6 +1,6 @@
 {
   "name": "@senx/discovery-widgets",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Discovery Widgets Elements",
   "keywords": [
     "web",
@@ -49,6 +49,7 @@
     "dayjs": "^1.11.13",
     "dom-to-image": "^2.6.0",
     "echarts": "5.5.1",
+    "element-resize-event": "^3.0.6",
     "fitty": "^2.4.2",
     "flatpickr": "^4.6.13",
     "html2canvas": "^1.4.1",
@@ -59,7 +60,6 @@
     "leaflet-edgebuffer": "^1.0.6",
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.5.3",
-    "element-resize-event": "^3.0.6",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.46",
