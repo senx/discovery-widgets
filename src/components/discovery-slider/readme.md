@@ -10,6 +10,7 @@
 | Property   | Attribute  | Description | Type              | Default                                |
 | ---------- | ---------- | ----------- | ----------------- | -------------------------------------- |
 | `debug`    | `debug`    |             | `boolean`         | `undefined`                            |
+| `disabled` | `disabled` |             | `boolean`         | `false`                                |
 | `options`  | `options`  |             | `Param \| string` | `{ ...new Param(), timeMode: 'date' }` |
 | `progress` | `progress` |             | `boolean`         | `undefined`                            |
 
@@ -32,7 +33,7 @@
 
 | Name      | Type             | Description |
 | --------- | ---------------- | ----------- |
-| `type`    | `"png" \| "svg"` |             |
+| `type`    | `"svg" \| "png"` |             |
 | `bgColor` | `string`         |             |
 
 #### Returns

@@ -608,6 +608,7 @@ export class DiscoveryInputComponent {
           <discovery-slider options={this.innerOptions}
                             onValueChanged={e => this.handleSelect(e)}
                             debug={this.debug}
+                            disabled={this.innerOptions?.input?.disabled}
                             ref={el => this.inputField = el}
           />
         </div>;

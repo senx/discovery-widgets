@@ -33,6 +33,7 @@ export class DiscoverySlider {
 
   @Prop() debug: boolean;
   @Prop() progress: boolean;
+  @Prop() disabled: boolean = false;
   @Prop() options: Param | string = { ...new Param(), timeMode: 'date' };
 
   @State() innerOptions: Param;
@@ -40,7 +41,6 @@ export class DiscoverySlider {
   @Event() valueChanged: EventEmitter<number>;
   @Event() startDrag: EventEmitter<void>;
   @Element() el: HTMLElement;
-
 
   private sliderDiv: HTMLDivElement;
   private LOG: Logger;
@@ -66,6 +66,11 @@ export class DiscoverySlider {
       }
       return Promise.resolve();
     });
+    if(this.innerOptions?.input?.disabled) {
+      this.slider?.disable();
+    } else {
+      this.slider?.enable();
+    }
     this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
   }
 
@@ -89,6 +94,11 @@ export class DiscoverySlider {
   componentDidLoad() {
     this.innerValue = this.innerValue ?? this.innerOptions.input?.value as number | number[] ?? this.innerOptions.input?.min ?? 0;
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
+    if(this.innerOptions?.input?.disabled) {
+      this.slider?.disable();
+    } else {
+      this.slider?.enable();
+    }
     this.setChangeListener();
   }
 

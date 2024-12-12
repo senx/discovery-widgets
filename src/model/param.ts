@@ -183,7 +183,8 @@ export class Param {
     toLabel?: string,
     delayRequest?: number,
     accept?: string,
-    validation?: boolean
+    validation?: boolean,
+    disabled?: boolean
   };
   map?: MapParams;
   svg?: {

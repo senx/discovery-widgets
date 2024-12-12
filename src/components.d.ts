@@ -311,6 +311,7 @@ export namespace Components {
     }
     interface DiscoverySlider {
         "debug": boolean;
+        "disabled": boolean;
         "export": (type: "png" | "svg", bgColor: string) => Promise<string>;
         "options": Param | string;
         "progress": boolean;
@@ -1379,6 +1380,7 @@ declare namespace LocalJSX {
     }
     interface DiscoverySlider {
         "debug"?: boolean;
+        "disabled"?: boolean;
         "onStartDrag"?: (event: DiscoverySliderCustomEvent<void>) => void;
         "onValueChanged"?: (event: DiscoverySliderCustomEvent<number>) => void;
         "options"?: Param | string;

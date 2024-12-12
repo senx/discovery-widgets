@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -133,6 +133,17 @@
 
     .noUi-handle:before, .noUi-handle:after {
       display: none;
+    }
+
+    &[disabled] {
+      .noUi-connect {
+        border-radius: 3px;
+        background: var(--warp-view-disabled-input-bg-color, $w10-lightgrey);
+      }
+
+      .noUi-handle {
+        background-color: var(--warp-view-handle-disabled-bg-color, $w10-lightgrey);
+      }
     }
   }
 }
