@@ -102,9 +102,10 @@ export class DiscoveryHeatmap {
 
   @Method()
   async resize() {
-    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
-      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
-      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
+    const width = Utils.getContentBounds(this.el.parentElement).w - 4;
+    if (this.myChart && this.innerWidth !== width) {
+      this.innerWidth = width;
+      this.myChart.resize({ width, silent: true });
     }
     return Promise.resolve();
   }

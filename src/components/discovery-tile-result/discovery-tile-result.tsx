@@ -668,7 +668,7 @@ export class DiscoveryTileResultComponent {
           ? <p class="tile-desc" ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription ?? ''}</p>
           : ''}
         {this.ready ? <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}
-                           style={{ maxWidth: this.width + 'px' }}>
+                         >
           {this.getView()}
         </div> : ''}
       </div>,

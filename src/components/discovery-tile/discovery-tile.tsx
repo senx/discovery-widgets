@@ -129,8 +129,8 @@ export class DiscoveryTileComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.height = dims.h;
     this.LOG?.debug(['componentDidLoad'], 'Tile - resize', this.tileResult);
-    if (this.tileResult && this.width !== (dims.w - 15)) {
-      this.width = dims.w - 15;
+    if (this.tileResult && this.width !== (dims.w - 2)) {
+      this.width = dims.w - 2;
       return this.tileResult.resize();
     }
   }
@@ -195,7 +195,7 @@ export class DiscoveryTileComponent {
     }
     this.innerVars = JSON.parse(this.vars ?? '{}');
     const dims = Utils.getContentBounds(this.el.parentElement);
-    this.width = dims.w - 15;
+    this.width = dims.w - 2;
     this.height = dims.h;
   }
 

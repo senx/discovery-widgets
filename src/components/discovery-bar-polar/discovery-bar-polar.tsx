@@ -93,9 +93,10 @@ export class DiscoveryBarPolarComponent {
 
   @Method()
   async resize() {
-    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
-      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
-      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
+    const width = Utils.getContentBounds(this.el.parentElement).w - 4;
+    if (this.myChart && this.innerWidth !== width) {
+      this.innerWidth = width;
+      this.myChart.resize({ width, silent: true });
     }
     return Promise.resolve();
   }
@@ -262,8 +263,8 @@ export class DiscoveryBarPolarComponent {
           ...this.getCommonSeriesParam(color),
           backgroundStyle: this.innerOptions?.bar?.track ? {
             color: (data.params ?? [])[i]?.bar?.trackColor ?? this.innerOptions?.bar?.trackColor
-              ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor?? this.innerOptions?.bar?.trackColor)
-              : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color',  '#b4b4b440'),
+              ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor ?? this.innerOptions?.bar?.trackColor)
+              : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color', '#b4b4b440'),
           } : undefined,
           type, areaStyle,
           id: gts.id,
@@ -321,8 +322,8 @@ export class DiscoveryBarPolarComponent {
             ...this.getCommonSeriesParam(color),
             backgroundStyle: this.innerOptions?.bar?.track ? {
               color: (data.params ?? [])[i]?.bar?.trackColor ?? this.innerOptions?.bar?.trackColor
-                ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor?? this.innerOptions?.bar?.trackColor)
-                : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color',  '#b4b4b440'),
+                ? ColorLib.sanitizeColor((data.params ?? [])[i]?.bar?.trackColor ?? this.innerOptions?.bar?.trackColor)
+                : Utils.getCSSColor(this.el, '--warp-view-bar-bg-color', '#b4b4b440'),
             } : undefined,
             type, areaStyle,
             name: row[0],

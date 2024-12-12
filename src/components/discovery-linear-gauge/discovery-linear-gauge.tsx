@@ -60,6 +60,7 @@ export class DiscoveryLinearGauge {
   private myChart: ECharts;
   private dataStruct: any[];
   private isVertical = true;
+  private innerWidth: number;
 
   @Watch('result')
   updateRes() {
@@ -109,8 +110,10 @@ export class DiscoveryLinearGauge {
 
   @Method()
   async resize() {
-    if (this.myChart) {
-      this.myChart.resize();
+    const width = Utils.getContentBounds(this.el.parentElement).w - 4;
+    if (this.myChart && this.innerWidth !== width) {
+      this.innerWidth = width;
+      this.myChart.resize({ width, silent: true });
     }
     return Promise.resolve();
   }

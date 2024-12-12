@@ -768,13 +768,13 @@ export class DiscoveryLineComponent {
               break;
             case 'highlight':
               let ts: number;
-              (event.batch || []).forEach((b: any) => {
+              for (const b of (event.batch ?? [])) {
                 const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
                 ts = s.data[b.dataIndex][0];
                 ts = this.innerOptions.timeMode === 'date'
                   ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
                   : ts;
-              });
+              }
               if (ts !== undefined) {
                 this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
               }
@@ -893,9 +893,10 @@ export class DiscoveryLineComponent {
 
   @Method()
   async resize() {
-    if (this.myChart && this.innerWidth !== Utils.getContentBounds(this.el.parentElement).w) {
-      this.innerWidth = Utils.getContentBounds(this.el.parentElement).w;
-      this.myChart.resize({ width: Utils.getContentBounds(this.el.parentElement).w });
+    const width = Utils.getContentBounds(this.el.parentElement).w - 4;
+    if (this.myChart && this.innerWidth !== width) {
+      this.innerWidth = width;
+      this.myChart.resize({ width, silent: true });
     }
     return Promise.resolve();
   }
@@ -903,7 +904,7 @@ export class DiscoveryLineComponent {
   @Method()
   async setZoom(dataZoom: { start?: number, end?: number }) {
     if (!!this.myChart) {
-      dataZoom.start = dataZoom.start || 0;
+      dataZoom.start = dataZoom.start ?? 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
         this.myChart.dispatchAction({ type: 'dataZoom', ...dataZoom, dataZoomIndex: 0 });
