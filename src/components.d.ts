@@ -203,9 +203,11 @@ export namespace Components {
         "chips": string[];
         "constrain_input": boolean;
         "containsFn": (value: string) => Promise<boolean>;
+        "disabled": boolean;
         "value": string;
     }
     interface DiscoveryInputChipsChip {
+        "disabled": boolean;
         "label": string;
     }
     interface DiscoveryLine {
@@ -1266,6 +1268,7 @@ declare namespace LocalJSX {
         "chips"?: string[];
         "constrain_input"?: boolean;
         "containsFn"?: (value: string) => Promise<boolean>;
+        "disabled"?: boolean;
         "onChipChange"?: (event: DiscoveryInputChipsCustomEvent<string[]>) => void;
         "onChipClick"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
         "onChipCreate"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
@@ -1273,6 +1276,7 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface DiscoveryInputChipsChip {
+        "disabled"?: boolean;
         "label"?: string;
         "onRemoveChip"?: (event: DiscoveryInputChipsChipCustomEvent<string>) => void;
     }

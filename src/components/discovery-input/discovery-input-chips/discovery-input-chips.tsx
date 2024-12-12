@@ -31,6 +31,7 @@ export class DiscoveryInputChips {
   @Prop() containsFn: (value: string) => Promise<boolean>;
   @Prop() constrain_input = false;
   @Prop({ mutable: true }) value: string;
+  @Prop() disabled: boolean = false;
 
   @Element() el: HTMLDiscoveryInputChipsElement;
 
@@ -365,11 +366,13 @@ export class DiscoveryInputChips {
         class="chip-input-autocomplete-container"
         onFocus={this.handleAutocompleteContainerFocus.bind(this)}
         ref={e => this.autocompleteContainer = e}></div>
-      <div class="wrapper">
+      <div
+        class={{'wrapper': true, 'disabled': this.disabled}}>
         {
           GTSLib.isArray(this.innerChips)
           ? this.innerChips.map(chip => <discovery-input-chips-chip
             onClick={event => this.handleChipClick(event, chip)}
+            disabled={this.disabled}
             label={chip}
             onRemoveChip={this.handleChipClose.bind(this)}></discovery-input-chips-chip>)
             : ''
@@ -381,6 +384,7 @@ export class DiscoveryInputChips {
                  e.addEventListener('beforeinput', this.handleBeforeInput.bind(this));
                }}
                onInput={this.handleInput.bind(this)}
+               disabled={this.disabled}
                onChange={this.handleChange.bind(this)}
                onKeyDown={this.handleKeydown.bind(this)}
                onKeyUp={this.updateCaretPosition.bind(this)}

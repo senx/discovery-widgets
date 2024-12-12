@@ -13,6 +13,7 @@
 | `chips`           | --                |             | `string[]`                            | `[]`        |
 | `constrain_input` | `constrain_input` |             | `boolean`                             | `false`     |
 | `containsFn`      | --                |             | `(value: string) => Promise<boolean>` | `undefined` |
+| `disabled`        | `disabled`        |             | `boolean`                             | `false`     |
 | `value`           | `value`           |             | `string`                              | `undefined` |
 
 

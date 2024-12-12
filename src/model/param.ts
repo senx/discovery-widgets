@@ -184,7 +184,9 @@ export class Param {
     delayRequest?: number,
     accept?: string,
     validation?: boolean,
-    disabled?: boolean
+    disabled?: boolean,
+    allLabel?: string,
+    noneLabel?: string,
   };
   map?: MapParams;
   svg?: {

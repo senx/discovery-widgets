@@ -137,8 +137,7 @@
 
     &[disabled] {
       .noUi-connect {
-        border-radius: 3px;
-        background: var(--warp-view-disabled-input-bg-color, $w10-lightgrey);
+        background: var(--warp-view-input-disabled-bg-color, $w10-lightgrey);
       }
 
       .noUi-handle {

@@ -550,6 +550,7 @@ export class DiscoveryInputComponent {
                       required={this.innerOptions?.input?.validation}
                       minlength={this.innerOptions?.input?.min}
                       maxlength={this.innerOptions?.input?.max}
+                      disabled={this.innerOptions?.input?.disabled}
                       ref={el => this.inputField = el}
         />;
       case 'number':
@@ -560,6 +561,7 @@ export class DiscoveryInputComponent {
                  min={this.innerOptions?.input?.min}
                  max={this.innerOptions?.input?.max}
                  required={this.innerOptions?.input?.validation}
+                 disabled={this.innerOptions?.input?.disabled}
                  step={this.innerOptions?.input?.step ?? 'any'}
           />, <span class="validity"></span>];
       case 'file':
@@ -567,40 +569,47 @@ export class DiscoveryInputComponent {
                       accept={this.innerOptions?.input?.accept ?? '*/*'}
                       required={this.innerOptions?.input?.validation}
                       onChange={e => void this.readText(e)}
+                      disabled={this.innerOptions?.input?.disabled}
                       ref={el => this.inputField = el}
         />;
       case 'textarea':
         return <textarea class={this.getClass()} value={this.value as string}
                          onInput={e => this.handleSelect(e)}
                          required={this.innerOptions?.input?.validation}
+                         disabled={this.innerOptions?.input?.disabled}
                          ref={el => this.inputField = el}
         />;
       case 'secret':
         return <input type="password" class={this.getClass()} value={this.value as string}
                       onInput={e => this.handleSelect(e)}
                       required={this.innerOptions?.input?.validation}
+                      disabled={this.innerOptions?.input?.disabled}
                       ref={el => this.inputField = el}
         />;
       case 'date':
         return <input type="text" class={this.getClass()}
                       required={this.innerOptions?.input?.validation}
+                      disabled={this.innerOptions?.input?.disabled}
                       ref={el => this.inputField = el}
         />;
       case 'date-range':
-        return <div class="range">
+        return <div class={{ 'range': true, 'disabled': this.innerOptions?.input?.disabled }}>
           <span>{this.innerOptions.input?.fromLabel ?? 'from'}</span>
           <input type="text" class={this.getClass()}
                  required={this.innerOptions?.input?.validation}
+                 disabled={this.innerOptions?.input?.disabled}
                  ref={el => this.inputField = el} />
           <span>{this.innerOptions.input?.toLabel ?? 'to'}</span>
           <input type="text" class={this.getClass()}
                  required={this.innerOptions?.input?.validation}
+                 disabled={this.innerOptions?.input?.disabled}
                  ref={el => this.inputField2 = el} />
         </div>;
       case 'autocomplete':
         return <input type="text" class={this.getClass()}
                       required={this.innerOptions?.input?.validation}
                       value={this.value as string}
+                      disabled={this.innerOptions?.input?.disabled}
                       ref={el => this.inputField = el}
         />;
       case 'slider':
@@ -615,12 +624,14 @@ export class DiscoveryInputComponent {
       case 'list':
         return <select class={this.getClass()} onInput={e => this.handleSelect(e)}
                        required={this.innerOptions?.input?.validation}
+                       disabled={this.innerOptions?.input?.disabled}
                        ref={el => this.inputField = el}>
           {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
         </select>;
       case 'multi':
         return <select class={this.getClass()} onInput={e => this.handleSelect(e)} multiple
                        required={this.innerOptions?.input?.validation}
+                       disabled={this.innerOptions?.input?.disabled}
                        ref={el => this.inputField = el}>
           {this.values.map(v => (
             <option value={v.k} selected={(this.value as string[] || []).includes(v.k)}>{v.v}</option>))}
@@ -639,6 +650,7 @@ export class DiscoveryInputComponent {
                   <input type="checkbox" value={v.k}
                          checked={(this.value as string[] || []).includes(v.k)}
                          onInput={e => this.handleSelect(e)}
+                         disabled={this.innerOptions?.input?.disabled}
                          name={v.v} />
                   <label htmlFor={v.v}>{v.v}</label>
                 </div>))}
@@ -646,24 +658,31 @@ export class DiscoveryInputComponent {
           </div>
           <div class="multi-cb-buttons-wrapper">
             <div>
-              <button class="discovery-btn secondary" type="button" onClick={e => this.selectAll(e)}>All</button>
-              <button class="discovery-btn secondary" type="button" onClick={e => this.selectNone(e)}>None</button>
+              <button class="discovery-btn secondary" type="button"
+                      disabled={this.innerOptions?.input?.disabled}
+                      onClick={e => this.selectAll(e)}>{this.innerOptions?.input?.allLabel ?? 'All'}</button>
+              <button class="discovery-btn secondary" type="button"
+                      disabled={this.innerOptions?.input?.disabled}
+                      onClick={e => this.selectNone(e)}>{this.innerOptions?.input?.noneLabel ?? 'None'}</button>
             </div>
             {this.innerOptions.input?.showButton ?
               <div class="discovery-input-btn-wrapper">
-                <button class="discovery-btn" disabled={this.disabled} type="button"
+                <button class="discovery-btn"
+                        disabled={this.innerOptions?.input?.disabled || this.disabled}
+                        type="button"
                         onClick={() => this.handleClickRT()} innerHTML={this.label}></button>
               </div> : ''}
           </div>
         </div>;
       case 'chips':
       case 'chips-autocomplete':
-        return <div class="chips-input-wrapper">
+        return <div class={{ 'chips-input-wrapper': true, 'disabled': this.innerOptions?.input?.disabled }}>
           <discovery-input-chips
             ref={el => this.inputField = el}
             chips={this.value as string[]}
             autocomplete={this.handleAutoComplete.bind(this)}
             containsFn={this.handleContains.bind(this)}
+            disabled={this.innerOptions?.input?.disabled}
             onChipChange={e => this.handleSelect(e)}
             constrain_input={!!this.innerOptions.input?.onlyFromAutocomplete}
           ></discovery-input-chips>
@@ -683,7 +702,7 @@ export class DiscoveryInputComponent {
             <div class={'discovery-input-btn-wrapper ' + this.subType}>
               <button
                 class="discovery-btn"
-                disabled={this.disabled}
+                disabled={this.innerOptions?.input?.disabled || this.disabled}
                 type="button"
                 onClick={() => this.handleClickRT()}
               >{this.label}</button>
