@@ -95,7 +95,7 @@ export class Param {
   };
   isRefresh?: boolean;
   elemsCount?: number;
-  fadeOutAfter?:number;
+  fadeOutAfter?: number;
   windowed?: number;
   eventHandler?: string;
   customStyles?: { [key: string]: string; };
@@ -138,14 +138,15 @@ export class Param {
     animate?: boolean,
   };
   button?: {
-    label: string
+    label: string,
+    vertical?: boolean
   };
   tabular?: {
     fixedWidth: boolean,
     sortable: boolean,
     filterable: boolean,
     onTop: boolean,
-    stickyHeader:boolean
+    stickyHeader: boolean
   };
   gauge?: {
     horizontal: boolean,

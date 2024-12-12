@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@
     }
   }
 
-  .discovery-btn-group {
+  .discovery-btn-radio {
     button.discovery-btn {
       margin: .25rem 0;
       color: var(--warp-view-button-inactive-label-color, $w10-blue);
@@ -61,8 +61,6 @@
       &.active {
         color: var(--warp-view-button-label-color, $w10-white);
         background-color: var(--warp-view-button-bg-color, $w10-blue);
-
-
       }
 
       &:hover {
@@ -82,6 +80,20 @@
     }
   }
 
+  .discovery-btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.discovery-btn-group-v {
+      flex-direction: column;
+    }
+
+    &.discovery-btn-group-h {
+      flex-direction: row;
+    }
+  }
+
   .button--loading::before {
     content: "";
     position: absolute;
@@ -97,6 +109,7 @@
     border-radius: 50%;
     animation: button-loading-spinner 1s ease infinite;
   }
+
   @keyframes button-loading-spinner {
     from {
       transform: rotate(0turn);

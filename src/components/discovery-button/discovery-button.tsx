@@ -58,6 +58,7 @@ export class DiscoveryButtonComponent {
   @State() active: string;
   @State() innerOptions: Param;
   @State() loading = false;
+  private macros: any[];
 
   private defOptions: Param = new Param();
   private LOG: Logger;
@@ -143,16 +144,13 @@ export class DiscoveryButtonComponent {
   }
 
   private parseResult() {
+    this.macros = [];
     this.innerResult = GTSLib.getData(this.result);
-    const btnLabel = this.innerOptions?.button?.label ?? 'Ok';
-    const dm = (this.innerResult ?? {
-      globalParams: {
-        button: { label: btnLabel },
-      },
-    }).globalParams || { button: { label: btnLabel } };
-    this.label = dm.button.label;
+    const btnLabel = this.innerOptions?.button?.label ?? this.innerResult?.globalParams?.button?.label ?? 'Ok';
+
+    this.label = btnLabel;
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, this.innerResult.globalParams);
+    options = Utils.mergeDeep<Param>(options ?? {} as Param, this.innerResult.globalParams);
     this.innerOptions = Utils.clone(options);
 
     if (!!this.vars && typeof this.vars === 'string') {
@@ -164,12 +162,20 @@ export class DiscoveryButtonComponent {
       this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
     }
     setTimeout(() => this.active = (this.innerResult?.data || []).find((v: any) => v.active)?.value);
+    if (GTSLib.isArray(this.innerResult.data) && this.type === 'button:group') {
+      (this.innerResult.data ?? []).forEach((macro: any, i: number) => {
+        this.macros.push({
+          macro,
+          button: (this.innerResult.params ?? [])[i]?.button ?? this.innerOptions?.button ?? { label: btnLabel },
+        });
+      });
+    }
   }
 
-  private handleClick() {
+  private handleClick(macro?: any) {
     this.loading = true;
     const ws = LangUtils.prepare(
-      `${this.innerResult.data} EVAL`,
+      `${macro ? macro.macro : this.innerResult.data} EVAL`,
       this.innerVars ?? {},
       this.innerOptions?.skippedVars ?? [],
       this.type,
@@ -226,9 +232,9 @@ export class DiscoveryButtonComponent {
                     onClick={() => this.handleClick()}></button>
           : ''}
         {this.type === 'button:radio'
-          ? <div class="discovery-btn-group">
+          ? <div class="discovery-btn-radio">
             {GTSLib.isArray(this.innerResult?.data)
-              ? (this.innerResult?.data || []).map((v: any) =>
+              ? (this.innerResult?.data ?? []).map((v: any) =>
                   <button type="button"
                           class={{
                             'discovery-btn': true,
@@ -236,6 +242,21 @@ export class DiscoveryButtonComponent {
                           }} innerHTML={v.label} onClick={() => this.toggle(v.value)} />
                 ,
               ) : ''}
+          </div> : ''}
+        {this.type === 'button:group'
+          ? <div class={{
+            'discovery-btn-group': true,
+            'discovery-btn-group-v': !!this.innerOptions?.button?.vertical,
+            'discovery-btn-group-h': !this.innerOptions?.button?.vertical,
+          }}>
+            {(this.macros ?? []).map((b: any) =>
+                <button type="button"
+                        class={{ 'discovery-btn': true, 'button--loading': this.loading }}
+                        disabled={this.loading}
+                        innerHTML={b.button.label}
+                        onClick={() => this.handleClick(b)} />
+              ,
+            )}
           </div> : ''}
       </div>,
     ];

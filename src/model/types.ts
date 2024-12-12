@@ -34,7 +34,7 @@ export const CHART_TYPES = [
   , 'input:text', 'input:textarea', 'input:list', 'input:secret', 'input:autocomplete', 'input:chips', 'input:file'
   , 'input:chips-autocomplete', 'input:slider', 'input:date', 'input:date-range', 'input:multi', 'input:multi-cb'
   , 'input:number'
-  , 'button', 'button:radio'
+  , 'button', 'button:radio', 'button:group'
   , 'hidden'
   , 'calendar', 'heatmap'
   , 'profile'
