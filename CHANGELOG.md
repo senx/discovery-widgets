@@ -1,6 +1,17 @@
 Discovery
 ---
 
+## v1.2.7
+
+> +  2024/12/12  | v1.2.7 
+> +  2024/12/12  | [input:*] Add a disabled state to options 
+> +  2024/12/12  | [input:slider] Add a disabled state to options 
+> +  2024/12/12  | [button:group] Add Group buttons 
+> +  2024/12/12  | [input:number] Add step to options 
+> +  2024/12/12  | [dashboard] Fix infinite resize that appears in some cases 
+> +  2024/12/11  | [input:multi-cb] Fix event emission 
+> +  2024/12/05  | changelog 
+
 ## v1.2.6
 
 > +  2024/12/05  | v1.2.6 
