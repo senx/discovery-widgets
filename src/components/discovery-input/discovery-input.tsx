@@ -77,7 +77,7 @@ export class DiscoveryInputComponent {
   private autoCompleteJS: any;
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
-  private valid: boolean;
+  private innerStyles: any;
 
   @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -288,8 +288,9 @@ export class DiscoveryInputComponent {
     }
   };
 
-  private generateStyle(innerStyle: { [k: string]: string }): string {
-    return Object.keys(innerStyle ?? {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
+  private generateStyle(styles: { [k: string]: string }): string {
+    this.innerStyles = Utils.clone({ ...this.innerStyles, ...styles, ...this.innerOptions.customStyles ?? {} });
+    return Object.keys(this.innerStyles ?? {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 
   private handleSelect(e: any) {

@@ -721,7 +721,7 @@ export class DiscoveryTileResultComponent {
 
   private generateStyle(styles: { [k: string]: string }): string {
     this.innerStyles = Utils.clone({ ...this.innerStyles, ...styles, ...this.innerOptions.customStyles ?? {} });
-    return Object.keys(this.innerStyles || {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
+    return Object.keys(this.innerStyles ?? {}).map(k => `${k} { ${this.innerStyles[k]} }`).join('\n');
   }
 
   private handleCSSColors() {
