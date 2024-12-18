@@ -77,7 +77,7 @@ export class DiscoveryDisplayComponent {
     const message = this.convert(GTSLib.getData(newValue) ?? new DataModel());
     if (message !== this.message) {
       this.message = message;
-      if (!this.innerOptions?.display?.markdown) {
+      if (!this.innerOptions?.display?.markdown && !!this.fitties) {
         this.fitties.fit();
       }
     }
