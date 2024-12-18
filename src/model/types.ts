@@ -110,6 +110,7 @@ export class Tile {
   uid?: string;
   bgColor?: string;
   vars?: any[] | string[];
+  id?:string;
 }
 
 export class GTS {

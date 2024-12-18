@@ -520,6 +520,7 @@ export class DiscoveryDashboardComponent {
                        minHeight: '100%',
                        maxWidth: `calc(100% / ${this.result.cols} * ${t.w} - var(--warp-view-dashboard-gap, 10px) * 2)`,
                      }}
+                     id={t.id}
                 >
                   <div>
                     {t.macro
