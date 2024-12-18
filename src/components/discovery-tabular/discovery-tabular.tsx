@@ -23,7 +23,6 @@ import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import html2canvas from 'html2canvas';
 import streamSaver from 'streamsaver';
-import { DiscoveryPageable } from './discovery-pageable/discovery-pageable';
 
 @Component({
   tag: 'discovery-tabular',
@@ -92,8 +91,8 @@ export class DiscoveryTabular {
       this.options = JSON.parse(this.options);
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider((this.options as Param).timeUnit || 'us');
-    this.tabularData = this.convert(this.result || new DataModel());
+    this.divider = GTSLib.getDivider((this.options as Param).timeUnit ?? 'us');
+    this.tabularData = this.convert(this.result ?? new DataModel());
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.options,
@@ -123,10 +122,10 @@ export class DiscoveryTabular {
   }
 
   private convert(data: DataModel): Dataset[] {
-    let options = Utils.mergeDeep<Param>({ ...new Param(), timeMode: 'date' }, this.options || {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
+    let options = Utils.mergeDeep<Param>({ ...new Param(), timeMode: 'date' }, this.options ?? {});
+    options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
     this.options = Utils.clone(options);
-    this.params = data.params || [];
+    this.params = data.params ?? [];
     let dataGrid: Dataset[];
     if (GTSLib.isArray(data.data)) {
       const dataList = GTSLib.flatDeep(data.data as any[]);
@@ -148,11 +147,11 @@ export class DiscoveryTabular {
     data.forEach(d => {
       if (d !== null && d !== undefined) {
         const dataSet: Dataset = {
-          name: d?.title || '',
-          values: d?.rows || [],
-          headers: d?.columns || [],
+          name: d?.title ?? '',
+          values: d?.rows ?? [],
+          headers: d?.columns ?? [],
           isGTS: false,
-          params: d?.params || [],
+          params: d?.params ?? [],
         };
         flatData.push(dataSet);
       }
@@ -212,21 +211,21 @@ export class DiscoveryTabular {
   }
 
   private addPageable(elem: HTMLDiscoveryPageableElement) {
-      this.pageables.push(elem);
+    this.pageables.push(elem);
   }
 
   private async csvExport() {
     const headers: string[] = [];
     const csv: any[] = [];
     const tabularData = [];
-    for(const p of this.pageables) {
+    for (const p of this.pageables) {
       tabularData.push(await p.getData());
     }
     tabularData.forEach(t => {
-        (t.headers || []).forEach((h: string) => this.addCSVHeader(headers, h));
-        for (const v of t.data) {
-          csv.push(v);
-        }
+      (t.headers ?? []).forEach((h: string) => this.addCSVHeader(headers, h));
+      for (const v of t.data) {
+        csv.push(v);
+      }
     });
     const csvTxt = headers.join(';') + '\n' +
       csv.map(line => headers.map(h => line[h] ?? '').join(';')).join('\n');
@@ -244,10 +243,9 @@ export class DiscoveryTabular {
   render() {
     this.draw.emit();
     this.pageables = [];
-    return <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el}>
-      {(this.options as Param).showControls ? <div class="tabular-action-button">
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-          <button class="tabular-export-csv" title="CSV Export" onClick={() => this.csvExport()}>
+    return [
+      (this.options as Param).showControls ? <div class="tabular-action-button">
+          <button class="tabular-export-csv" title="CSV Export" onClick={() => void this.csvExport()}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path
                 d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
@@ -256,20 +254,23 @@ export class DiscoveryTabular {
             </svg>
           </button>
         </div>
-        : ''}
-      <div class="tabular-wrapper-inner">
-        {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
-        {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-        {this.tabularData.map(d =>
-          <discovery-pageable data={d}
-                              onDataPointOver={event => this.handleDataPointOver(event)}
-                              onDataPointSelected={event => this.handleDataPointSelected(event)}
-                              divider={this.divider}
-                              options={this.options as Param}
-                              ref={elem => this.addPageable(elem)}
-                              debug={this.debug}
-          />)}
-      </div>
-    </div>;
+        : '',
+
+      <div class="tabular-wrapper" ref={(el) => this.pngWrapper = el}>
+        <div class="tabular-wrapper-inner">
+          {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
+          {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
+          {this.tabularData.map(d =>
+            <discovery-pageable data={d}
+                                onDataPointOver={event => this.handleDataPointOver(event)}
+                                onDataPointSelected={event => this.handleDataPointSelected(event)}
+                                divider={this.divider}
+                                options={this.options as Param}
+                                ref={elem => this.addPageable(elem)}
+                                debug={this.debug}
+            />)}
+        </div>
+      </div>,
+    ];
   }
 }

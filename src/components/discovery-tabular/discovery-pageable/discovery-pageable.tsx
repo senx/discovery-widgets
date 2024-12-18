@@ -121,11 +121,11 @@ export class DiscoveryPageable {
     if (!this.data) {
       return;
     }
-    const options = Utils.mergeDeep<Param>({ ...new Param(), timeMode: 'date' }, this.innerOptions || {});
+    const options = Utils.mergeDeep<Param>({ ...new Param(), timeMode: 'date' }, this.innerOptions ?? {});
     this.pages = [];
-    this.elemsCount = this.innerOptions.elemsCount || this.elemsCount;
-    this.windowed = this.innerOptions.windowed || this.windowed;
-    const dataset: Cell[][] = (this.data.values || [])
+    this.elemsCount = this.innerOptions.elemsCount ?? this.elemsCount;
+    this.windowed = this.innerOptions.windowed ?? this.windowed;
+    const dataset: Cell[][] = (this.data.values ?? [])
       .map(row => row.map((v: any, i: number) => i === 0 ? this.formatDate(v) : this.formatValue(v)))
       .filter(d => {
         if (Object.keys(this.filters).length === 0) {
@@ -158,7 +158,7 @@ export class DiscoveryPageable {
     }
     this.displayedValues = dataset.slice(
       Math.max(0, this.elemsCount * this.page),
-      Math.min(this.elemsCount * (this.page + 1), (this.data.values || []).length),
+      Math.min(this.elemsCount * (this.page + 1), (this.data.values ?? []).length),
     );
     this.LOG?.debug(['drawGridData', 'data'], this.data, {
       windowed: this.windowed,
@@ -170,7 +170,7 @@ export class DiscoveryPageable {
   }
 
   private static formatLabel(name: string) {
-    return GTSLib.formatLabel(name);
+    return GTSLib.formatLabel(name || '&nbsp;');
   }
 
   private setSelected(value: Cell[]) {

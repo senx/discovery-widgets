@@ -19,6 +19,10 @@
 
 :host {
 
+  .heading {
+
+  }
+
   table {
     width: 100%;
     color: var(--warp-view-font-color, $w10-charcoal);
@@ -133,6 +137,7 @@
     top: -10px;
     background-color: var(--warp-view-bg-color, $w10-white);
   }
+
   .nospace {
     border-spacing: 0;
   }

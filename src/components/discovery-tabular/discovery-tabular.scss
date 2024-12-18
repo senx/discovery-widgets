@@ -16,10 +16,32 @@
 @import "../../scss/vars";
 
 :host {
+  .tabular-action-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    flex-direction: row;
 
+    button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      color: rgb(102, 102, 102);
+      padding-top: 10px;
+
+      &:hover {
+        color: rgb(62, 152, 197);
+      }
+    }
+
+    .tabular-export-csv {
+
+    }
+  }
   .tabular-wrapper {
     width: calc(100% - 20px);
-    height: calc(100% - 20px);
+    height: calc(100% - 50px);
     position: relative;
     overflow-y: auto;
     margin: 0;
@@ -34,27 +56,6 @@
       top: 0;
     }
 
-    .tabular-action-button {
-      position: absolute;
-      top: 0;
-      right: 0;
-      z-index: 99999;
 
-      button {
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        color: rgb(102, 102, 102);
-        padding-top: 10px;
-
-        &:hover {
-          color: rgb(62, 152, 197);
-        }
-      }
-
-      .tabular-export-csv {
-
-      }
-    }
   }
 }
