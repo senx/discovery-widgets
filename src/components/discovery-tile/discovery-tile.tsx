@@ -301,18 +301,13 @@ export class DiscoveryTileComponent {
                 }
               }
               setTimeout(() => {
-                void (async () => {
-                  this.loaded = true;
-                  this.showLoader = false;
-                  this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);
-                  this.result = res.data;
-                  this.execResult.emit(this.result);
-                  this.hasError = false;
-                  if (refresh && !!this.tileResult) {
-                    await this.tileResult.parseEvents();
-                  }
-                  resolve(true);
-                })();
+                this.loaded = true;
+                this.showLoader = false;
+                this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);
+                this.result = res.data;
+                this.execResult.emit(this.result);
+                this.hasError = false;
+                resolve(true);
               });
             })
             .catch(e => {

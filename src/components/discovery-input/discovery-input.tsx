@@ -78,6 +78,7 @@ export class DiscoveryInputComponent {
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
   private innerStyles: any;
+  private oldValue: string | string[] | any;
 
   @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -280,6 +281,7 @@ export class DiscoveryInputComponent {
         }
         if (valid) {
           this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
+
           this.discoveryEvent.emit({ ...e, source: this.el.id });
         } else {
           this.LOG?.debug(['handleClick', 'emit'], 'Invalid value');
@@ -458,10 +460,11 @@ export class DiscoveryInputComponent {
             Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
               .forEach((o: HTMLInputElement) => o.checked = (this.value as any[]).includes(o.value));
           }
-          if (this.selectedValue !== this.value) {
-            this.selectedValue = this.value;
-            //   this.handleSelect({ detail: this.selectedValue });
+          if (this.selectedValue !== undefined && this.selectedValue !== this.oldValue) {
+            this.handleSelect({ detail: this.selectedValue });
+            this.oldValue = Utils.clone(this.selectedValue);
           }
+          this.selectedValue = Utils.clone(this.value);
         });
         if (this.subType === 'autocomplete' && this.autoCompleteJS) {
           this.autoCompleteJS.data = {
