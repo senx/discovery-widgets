@@ -77,9 +77,7 @@ export class DiscoveryDisplayComponent {
     const message = this.convert(GTSLib.getData(newValue) ?? new DataModel());
     if (message !== this.message) {
       this.message = message;
-      if (!this.innerOptions?.display?.markdown && !!this.fitties) {
-        this.fitties.fit();
-      }
+      this.fitContent();
     }
   }
 
@@ -96,6 +94,7 @@ export class DiscoveryDisplayComponent {
       this.message = this.convert(this.result as DataModel ?? new DataModel());
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOptions);
     }
+    this.fitContent();
   }
 
   @Listen('discoveryEvent', { target: 'window' })
@@ -116,9 +115,7 @@ export class DiscoveryDisplayComponent {
       if (height !== this.innerHeight) {
         this.innerHeight = height;
       }
-      if (!this.innerOptions?.display?.markdown && !!this.fitties) {
-        this.fitties.fit();
-      }
+      this.fitContent();
     }
     return Promise.resolve();
   }
@@ -166,20 +163,33 @@ export class DiscoveryDisplayComponent {
           this.innerHeight = height;
           this.LOG?.debug(['flexFont'], height);
         }
-        if (this.innerOptions.responsive && this.initial && !this.innerOptions?.display?.markdown) {
-          this.fitties = fitty(this.wrapper, {
-            maxSize: height * 0.80, minSize: 14, observeMutations: {
-              subtree: false,
-              childList: false,
-              characterData: true,
-            },
-          });
-          this.fitties.fit();
-        }
+        this.fitContent();
       }
       this.initial = false;
       this.draw.emit();
     });
+  }
+
+  fitContent() {
+    if (this.innerOptions.responsive && !this.innerOptions?.display?.markdown) {
+      if (!this.fitties) {
+        const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
+        this.fitties = fitty(this.wrapper, {
+          maxSize: height * 0.80, minSize: 14, observeMutations: {
+            subtree: false,
+            childList: false,
+            characterData: true,
+          },
+        });        
+      }
+      this.fitties.fit();
+    } else {
+      if (!!this.fitties) {
+        this.fitties.unsubscribe();
+        this.fitties = null;
+        this.wrapper.style.fontSize = ''; // unsubscribe do not exactly restore the previous state
+      }
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols
