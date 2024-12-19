@@ -1,6 +1,17 @@
 Discovery
 ---
 
+## v1.2.8
+
+> +  2024/12/19  | v1.2.8 
+> +  2024/12/18  | allow to disable responsive display from execution result 
+> +  2024/12/18  | remove console errors in display tile 
+> +  2024/12/18  | add optional custom id for easier custom style 
+> +  2024/12/18  | [tabular] Fix control position and internal minimal height 
+> +  2024/12/18  | [input:list] Fix event emission 
+> +  2024/12/18  | [input:*] Fix custom style inheritance 
+> +  2024/12/12  | changelog 
+
 ## v1.2.7
 
 > +  2024/12/12  | v1.2.7 
