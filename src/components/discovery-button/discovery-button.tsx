@@ -54,10 +54,12 @@ export class DiscoveryButtonComponent {
   @State() parsing = false;
   @State() rendering = false;
   @State() label = 'Ok';
+  @State() labelPosition: 'start' | 'end' | 'center' = 'center';
   @State() innerStyle: { [k: string]: string; };
   @State() active: string;
   @State() innerOptions: Param;
   @State() loading = false;
+  @State() loadingBtnGrp: boolean[] = [];
   private macros: any[];
 
   private defOptions: Param = new Param();
@@ -147,8 +149,10 @@ export class DiscoveryButtonComponent {
     this.macros = [];
     this.innerResult = GTSLib.getData(this.result);
     const btnLabel = this.innerOptions?.button?.label ?? this.innerResult?.globalParams?.button?.label ?? 'Ok';
+    const labelPosition = this.innerOptions?.button?.labelPosition ?? this.innerResult?.globalParams?.button?.labelPosition ?? 'center';
 
     this.label = btnLabel;
+    this.labelPosition = labelPosition;
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options ?? {} as Param, this.innerResult.globalParams);
     this.innerOptions = Utils.clone(options);
@@ -158,22 +162,24 @@ export class DiscoveryButtonComponent {
     } else if (!!this.vars) {
       this.innerVars = this.vars;
     }
-    if (this.innerOptions.customStyles) {
-      this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions.customStyles ?? {} });
-    }
+    this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions?.customStyles ?? {} });
     setTimeout(() => this.active = (this.innerResult?.data || []).find((v: any) => v.active)?.value);
     if (GTSLib.isArray(this.innerResult.data) && this.type === 'button:group') {
       (this.innerResult.data ?? []).forEach((macro: any, i: number) => {
         this.macros.push({
           macro,
-          button: (this.innerResult.params ?? [])[i]?.button ?? this.innerOptions?.button ?? { label: btnLabel },
+          button: (this.innerResult.params ?? [])[i]?.button ?? this.innerOptions?.button ?? {
+            label: btnLabel,
+            labelPosition,
+          },
         });
       });
     }
   }
 
-  private handleClick(macro?: any) {
+  private handleClick(macro?: any, index?: number) {
     this.loading = true;
+    this.loadingBtnGrp[index ?? 0] = true;
     const ws = LangUtils.prepare(
       `${macro ? macro.macro : this.innerResult.data} EVAL`,
       this.innerVars ?? {},
@@ -195,10 +201,12 @@ export class DiscoveryButtonComponent {
           }
         }
         this.loading = false;
+        this.loadingBtnGrp[index ?? 0] = false;
         this.execResult.emit(res.data);
       })
       .catch(e => {
         this.loading = false;
+        this.loadingBtnGrp[index ?? 0] = false;
         this.statusError.emit(e);
         this.execError.emit(e);
         this.LOG?.error(['exec'], e);
@@ -226,8 +234,14 @@ export class DiscoveryButtonComponent {
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div ref={el => this.root = el} class="button-wrapper">
         {this.type === 'button'
-          ? <button type="button" class={{ 'discovery-btn': true, 'button--loading': this.loading }}
-                    disabled={this.loading}
+          ? <button type="button" class={{
+            'discovery-btn': true,
+            'button--loading': this.isLoading(0),
+            'button--start': this.labelPosition === 'start',
+            'button--center': this.labelPosition === 'center',
+            'button--end': this.labelPosition === 'end',
+          }}
+                    disabled={this.isLoading(0)}
                     innerHTML={this.label}
                     onClick={() => this.handleClick()}></button>
           : ''}
@@ -239,6 +253,9 @@ export class DiscoveryButtonComponent {
                           class={{
                             'discovery-btn': true,
                             'active': v.value === this.active,
+                            'button--start': this.labelPosition === 'start',
+                            'button--center': this.labelPosition === 'center',
+                            'button--end': this.labelPosition === 'end',
                           }} innerHTML={v.label} onClick={() => this.toggle(v.value)} />
                 ,
               ) : ''}
@@ -249,16 +266,26 @@ export class DiscoveryButtonComponent {
             'discovery-btn-group-v': !!this.innerOptions?.button?.vertical,
             'discovery-btn-group-h': !this.innerOptions?.button?.vertical,
           }}>
-            {(this.macros ?? []).map((b: any) =>
+            {(this.macros ?? []).map((b: any, i: number) =>
                 <button type="button"
-                        class={{ 'discovery-btn': true, 'button--loading': this.loading }}
-                        disabled={this.loading}
+                        class={{
+                          'discovery-btn': true,
+                          'button--loading': this.isLoading(i),
+                          'button--start': b.button.labelPosition === 'start',
+                          'button--center': b.button.labelPosition === 'center',
+                          'button--end': b.button.labelPosition === 'end',
+                        }}
+                        disabled={this.isLoading(i)}
                         innerHTML={b.button.label}
-                        onClick={() => this.handleClick(b)} />
+                        onClick={() => this.handleClick(b, i)} />
               ,
             )}
           </div> : ''}
       </div>,
     ];
+  }
+
+  private isLoading(index: number) {
+    return this.loadingBtnGrp[index ?? 0];
   }
 }

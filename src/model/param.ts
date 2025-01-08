@@ -139,7 +139,8 @@ export class Param {
   };
   button?: {
     label: string,
-    vertical?: boolean
+    vertical?: boolean,
+    labelPosition?: 'start' | 'end' | 'center',
   };
   tabular?: {
     fixedWidth: boolean,

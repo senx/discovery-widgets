@@ -29,6 +29,7 @@
     height: 100%;
 
     button.discovery-btn {
+      position: relative;
       margin: .25rem .125rem;
       display: inline-block;
       font-weight: 400;
@@ -44,6 +45,33 @@
       background-color: var(--warp-view-button-bg-color, $w10-blue);
       min-width: var(--warp-view-button-width, auto);
       border-radius: var(--warp-view-button-border-radius, 0.25rem);
+
+      &.button--start {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: center;
+
+        &.button--loading::before {
+          left: unset !important;
+          right: var(--warp-view-button-padding, .375rem) !important;
+        }
+      }
+
+      &.button--end {
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        align-items: center;
+
+        &.button--loading::before {
+          right: unset !important;
+          left: var(--warp-view-button-padding, .375rem) !important;
+        }
+      }
+
+      &.button--center {
+      }
     }
 
     button:disabled {
@@ -52,8 +80,25 @@
     }
   }
 
+  .button--loading::before {
+    content: "";
+    position: absolute;
+    width: var(--warp-view-button-font-size, 1rem);
+    height: var(--warp-view-button-font-size, 1rem);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 4px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s ease infinite;
+  }
+
   .discovery-btn-radio {
     button.discovery-btn {
+      position: relative;
       margin: .25rem 0;
       color: var(--warp-view-button-inactive-label-color, $w10-blue);
       background-color: var(--warp-view-button-inactive-bg-color, $w10-white);
@@ -91,23 +136,23 @@
 
     &.discovery-btn-group-h {
       flex-direction: row;
-    }
-  }
 
-  .button--loading::before {
-    content: "";
-    position: absolute;
-    width: var(--warp-view-button-font-size, 1rem);
-    height: var(--warp-view-button-font-size, 1rem);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    border: 4px solid transparent;
-    border-top-color: currentColor;
-    border-radius: 50%;
-    animation: button-loading-spinner 1s ease infinite;
+      button.button--loading::before {
+        content: "";
+        position: absolute;
+        width: var(--warp-view-button-font-size, 1rem);
+        height: var(--warp-view-button-font-size, 1rem);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        border: 4px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: button-loading-spinner 1s ease infinite;
+      }
+    }
   }
 
   @keyframes button-loading-spinner {
