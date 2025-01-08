@@ -62,6 +62,7 @@ export class DiscoveryDashboardComponent {
   @State() title: string;
   @State() description: string;
   @State() types: any = {};
+
   private LOG: Logger;
   private ws: string;
   private timer: any;
@@ -78,6 +79,7 @@ export class DiscoveryDashboardComponent {
   private componentId: string;
   private eventState: any = {};
   private refreshTimer: any;
+  private firstLoad = false;
 
   @Watch('options')
   optionsUpdate(newValue: any, oldValue: any) {
@@ -115,7 +117,7 @@ export class DiscoveryDashboardComponent {
 
   @Watch('warpscript')
   warpscriptUpdate(newValue: string, oldValue: string) {
-    if (!!this.warpscript) {
+    if (this.warpscript !== undefined && this.warpscript !== '' && this.warpscript !== 'undefined') {
       this.exec();
     }
     if (this.LOG) {
@@ -176,6 +178,7 @@ export class DiscoveryDashboardComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w - 15;
     this.height = dims.h;
+    this.firstLoad = true;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -234,8 +237,8 @@ export class DiscoveryDashboardComponent {
   }
 
   exec() {
-    this.ws = this.warpscript || Utils.unsescape(this.el.innerHTML);
-    if (this.ws && this.ws !== '') {
+    this.ws = this.warpscript ?? Utils.unsescape(this.el.innerHTML);
+    if (this.ws !== undefined && this.ws !== '' && this.ws !== 'undefined' && this.firstLoad) {
       this.loaded = false;
       this.done = {};
       Utils.httpPost(Utils.getUrl(this.url), this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', this.innerOptions.httpHeaders)
@@ -285,9 +288,6 @@ export class DiscoveryDashboardComponent {
         this.statusError.emit(e);
         this.LOG?.error(['exec'], e);
       });
-    } else if (this.inTile) {
-      // TODO: dashboard within a dashboard: this hacky delay ensure to have the right innerOptions to avoid the first requests that will end in 403.
-      setTimeout(() => this.parseResult(), 1000);
     } else {
       this.parseResult();
     }
