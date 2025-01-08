@@ -262,7 +262,7 @@ export class DiscoveryHeatmap {
             : params.value[0]
         }</div>
             ${params.marker}
-            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(params.value[1])}}</span>
+            <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(params.value[1])}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">
             ${params.value[2]}</span>`
       },
