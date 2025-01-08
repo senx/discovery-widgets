@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.2.9
+
+> +  2025/01/08  | v1.2.9 
+> +  2025/01/08  | readmes 
+> +  2025/01/08  | [button] [button:group] Fix individual loading indicator and add labelPosition 
+> +  2025/01/08  | [dashboard] Fix http Headers propagation 
+> +  2025/01/08  | [dashboard] Fix integration issue 
+> +  2025/01/08  | [line] Fix label display issue for custom data 
+> +  2025/01/08  | [heatmap] Fix extra } en tooltip labels 
+> +  2024/12/19  | changelog 
+> +  2024/12/19  | readmes 
+
 ## v1.2.8
 
 > +  2024/12/19  | v1.2.8 
