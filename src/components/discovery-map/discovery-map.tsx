@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ export class DiscoveryMapComponent {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
       this.initial = true;
-      setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true, true));
+      setTimeout(() => this.drawMap(this.result as DataModel ?? new DataModel(), true, true));
     }
   }
 
@@ -112,7 +112,7 @@ export class DiscoveryMapComponent {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      setTimeout(() => this.drawMap(this.result as DataModel || new DataModel(), true, true));
+      setTimeout(() => this.drawMap(this.result as DataModel ?? new DataModel(), true, true));
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
   }
@@ -138,24 +138,24 @@ export class DiscoveryMapComponent {
   @Method()
   async show(regexp: string) {
     GTSLib.flatDeep(((this.result as DataModel ?? new DataModel()).data as any[])).forEach(gts => {
-      const gtsName = ((this.result as DataModel ?? new DataModel()).params || [])[gts.id]?.key ?? GTSLib.serializeGtsMetadata(gts);
+      const gtsName = ((this.result as DataModel ?? new DataModel()).params ?? [])[gts.id]?.key ?? GTSLib.serializeGtsMetadata(gts);
       if (new RegExp(regexp).test(gtsName)) {
         this.hidden[gts.id] = false;
       }
     });
-    this.drawMap(this.result as DataModel || new DataModel(), true);
+    this.drawMap(this.result as DataModel ?? new DataModel(), true);
     return Promise.resolve();
   }
 
   @Method()
   async hide(regexp: string) {
     GTSLib.flatDeep(((this.result as DataModel ?? new DataModel()).data as any[])).forEach(gts => {
-      const gtsName = ((this.result as DataModel ?? new DataModel()).params || [])[gts.id]?.key ?? GTSLib.serializeGtsMetadata(gts);
+      const gtsName = ((this.result as DataModel ?? new DataModel()).params ?? [])[gts.id]?.key ?? GTSLib.serializeGtsMetadata(gts);
       if (new RegExp(regexp).test(gtsName)) {
         this.hidden[gts.id] = true;
       }
     });
-    this.drawMap(this.result as DataModel || new DataModel(), true);
+    this.drawMap(this.result as DataModel ?? new DataModel(), true);
     return Promise.resolve();
   }
 
@@ -166,7 +166,7 @@ export class DiscoveryMapComponent {
         this.hidden[k] = true;
       }
     });
-    this.drawMap(this.result as DataModel || new DataModel(), true);
+    this.drawMap(this.result as DataModel ?? new DataModel(), true);
     return Promise.resolve();
   }
 
@@ -177,7 +177,7 @@ export class DiscoveryMapComponent {
         this.hidden[k] = false;
       }
     });
-    this.drawMap(this.result as DataModel || new DataModel(), true);
+    this.drawMap(this.result as DataModel ?? new DataModel(), true);
     return Promise.resolve();
   }
 
@@ -191,7 +191,7 @@ export class DiscoveryMapComponent {
       this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
@@ -199,12 +199,12 @@ export class DiscoveryMapComponent {
     });
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
-    this.height = dims.h -100;
+    this.height = dims.h - 100;
     this.parsing = false;
   }
 
   componentDidLoad() {
-    this.drawMap(this.result as DataModel || new DataModel());
+    this.drawMap(this.result as DataModel ?? new DataModel());
   }
 
   drawMap(data: DataModel, isRefresh = false, optionUpdate?: boolean) {
@@ -212,12 +212,12 @@ export class DiscoveryMapComponent {
     let zoomPromise: Promise<void>;
     this.tileLayers = [];
     // noinspection JSUnusedAssignment
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     this.LOG?.debug(['drawMap', 'this.options 2 '], { ...data.globalParams });
-    options = Utils.mergeDeep<Param>(options, data.globalParams || {});
+    options = Utils.mergeDeep<Param>(options, data.globalParams ?? {});
     optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
     this.innerOptions = Utils.clone(options);
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
     if (!!this.map) {
       this.map.invalidateSize(true);
     }
@@ -227,7 +227,7 @@ export class DiscoveryMapComponent {
     const dataList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
     data.params = data.params ?? [];
     const params = data.params;
-    this.mapOpts = this.innerOptions.map || {};
+    this.mapOpts = this.innerOptions.map ?? {};
     this.pointslayer = [];
     dataList.forEach(g => {
       if (GTSLib.isGts(g)) {
@@ -240,19 +240,18 @@ export class DiscoveryMapComponent {
       gts: dataList,
       params,
       globalParams: this.innerOptions,
-    }, this.hidden, this.innerOptions.scheme) || [];
+    }, this.hidden, this.innerOptions.scheme) ?? [];
     this.positionData = MapLib.toLeafletMapPositionArray({
       gts: dataList,
       params,
       globalParams: this.innerOptions,
-    }, this.hidden, this.innerOptions.scheme) || [];
+    }, this.hidden, this.innerOptions.scheme) ?? [];
     this.geoJson = MapLib.toGeoJSON({ gts: dataList, params });
-
     if (this.mapOpts.mapType !== 'NONE') {
-      const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'] || MapLib.mapTypes.DEFAULT;
+      const map = MapLib.mapTypes[this.mapOpts.mapType || 'DEFAULT'] ?? MapLib.mapTypes.DEFAULT;
       const mapOpts: TileLayerOptions = {
-        maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
-        maxZoom: this.mapOpts.maxZoom || 40,
+        maxNativeZoom: this.mapOpts.maxNativeZoom ?? 19,
+        maxZoom: this.mapOpts.maxZoom ?? 40,
         edgeBufferTiles: 5,
       };
       if (map.attribution) {
@@ -294,7 +293,7 @@ export class DiscoveryMapComponent {
         maxBoundsViscocity: 1,
         worldCopyJump: true,
         maxBounds: new Leaflet.LatLngBounds(new Leaflet.latLng(-89.98155760646617, -180), new Leaflet.LatLng(89.99346179538875, 180)),
-        maxZoom: this.mapOpts.maxZoom || 19,
+        maxZoom: this.mapOpts.maxZoom ?? 19,
       });
       this.geoJsonLayer.bringToBack();
       Leaflet.control.scale().addTo(this.map);
@@ -312,7 +311,7 @@ export class DiscoveryMapComponent {
         }
       });
     }
-    const pathDataSize = (this.pathData || []).length;
+    const pathDataSize = (this.pathData ?? []).length;
     for (let i = 0; i < pathDataSize; i++) {
       const path = this.pathData[i];
       if (!!path) {
@@ -320,7 +319,7 @@ export class DiscoveryMapComponent {
       }
     }
     this.LOG?.debug(['displayMap'], 'pathData', this.pathData);
-    const positionsSize = (this.positionData || []).length;
+    const positionsSize = (this.positionData ?? []).length;
     for (let i = 0; i < positionsSize; i++) {
       const pData = this.positionData[i];
       if (!!pData) {
@@ -328,25 +327,25 @@ export class DiscoveryMapComponent {
       }
     }
     this.LOG?.debug(['displayMap'], 'positionData', this.positionData);
-    (this.mapOpts.tiles || []).forEach(t => {
+    (this.mapOpts.tiles ?? []).forEach(t => {
       this.LOG?.debug(['displayMap'], t);
       const tile: { url?: string, subdomains: string, maxNativeZoom: number, maxZoom: number } = {
         subdomains: 'abcd',
-        maxNativeZoom: this.mapOpts.maxNativeZoom || 19,
-        maxZoom: this.mapOpts.maxZoom || 19,
+        maxNativeZoom: this.mapOpts.maxNativeZoom ?? 19,
+        maxZoom: this.mapOpts.maxZoom ?? 19,
       };
       if (typeof t === 'string') {
         tile.url = t;
       } else if (typeof t === 'object') {
         tile.url = t.url;
-        tile.maxZoom = this.mapOpts.maxZoom || 19;
-        tile.maxNativeZoom = t.maxNativeZoom || this.mapOpts.maxNativeZoom || 19;
+        tile.maxZoom = this.mapOpts.maxZoom ?? 19;
+        tile.maxNativeZoom = t.maxNativeZoom ?? this.mapOpts.maxNativeZoom ?? 19;
       }
       this.tileLayers.push(tile.url);
       const l = Leaflet.tileLayer(tile.url, {
         subdomains: 'abcd',
-        maxNativeZoom: tile.maxNativeZoom || 19,
-        maxZoom: this.mapOpts.maxZoom || 19,
+        maxNativeZoom: tile.maxNativeZoom ?? 19,
+        maxZoom: this.mapOpts.maxZoom ?? 19,
       });
 
       // eslint-disable-next-line no-underscore-dangle
@@ -363,7 +362,7 @@ export class DiscoveryMapComponent {
       });
     }
 
-    const geoJsonSize = (this.geoJson || []).length;
+    const geoJsonSize = (this.geoJson ?? []).length;
     for (let i = 0; i < geoJsonSize; i++) {
       const m = this.geoJson[i];
       if (!!m) {
@@ -378,7 +377,7 @@ export class DiscoveryMapComponent {
         } as any;
         if (m.geometry.type === 'Point') {
           opts.pointToLayer = (geoJsonPoint: any, latlng: any) => Leaflet.marker(latlng, {
-            icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map || { marker: 'circle' }).marker : 'circle', (data.params && data.params[i]), 0),
+            icon: this.icon(color, (data.params && data.params[i]) ? (data.params[i].map ?? { marker: 'circle' }).marker : 'circle', (data.params && data.params[i]), 0),
             riseOnHover: true,
             opacity: 1,
           });
@@ -394,9 +393,9 @@ export class DiscoveryMapComponent {
     }
     let hasHeatmap = false;
     // HeatMap
-    const size = (dataList || []).length;
+    const size = (dataList ?? []).length;
     for (let i = 0; i < size; i++) {
-      let p = (params || [])[i];
+      let p = (params ?? [])[i];
       if (!p) {
         p = { ...new Param() };
       }
@@ -405,18 +404,18 @@ export class DiscoveryMapComponent {
         let max = Number.MIN_SAFE_INTEGER;
         let min = Number.MAX_SAFE_INTEGER;
         hasHeatmap = true;
-        const hasHeatmapData = g.v.map(v => {
+        const hasHeatmapData = g.v.map((v: any[]) => {
           max = Math.max(max, v[v.length - 1]);
           min = Math.min(min, v[v.length - 1]);
           Leaflet.circleMarker([v[1], v[2]], { radius: 1 }).addTo(this.shadowHeatmapLayer);
           return [v[1], v[2], v[v.length - 1]];
         });
         Leaflet.heatLayer(hasHeatmapData, {
-          radius: p.map?.heatRadius || this.innerOptions.map?.heatRadius || 25,
-          minOpacity: p.map?.heatOpacity || this.innerOptions.map?.heatOpacity || 0.05,
+          radius: p.map?.heatRadius ?? this.innerOptions.map?.heatRadius ?? 25,
+          minOpacity: p.map?.heatOpacity ?? this.innerOptions.map?.heatOpacity ?? 0.05,
           maxZoom: 0,
           max,
-          blur: p.map?.heatBlur || this.innerOptions.map?.heatBlur || 15,
+          blur: p.map?.heatBlur ?? this.innerOptions.map?.heatBlur ?? 15,
         }).addTo(this.heatmapLayer);
       }
     }
@@ -431,16 +430,16 @@ export class DiscoveryMapComponent {
             this.LOG?.debug(['displayMap', 'setView'], 'fitBounds', 'already have bounds');
             if (this.mapOpts.track) {
               this.map.setView({
-                  lat: this.mapOpts.startLat || this.bounds.getCenter().lat || 0,
-                  lng: this.mapOpts.startLong || this.bounds.getCenter().lng || 0,
-                }, this.mapOpts.startZoom || this.map.getBoundsZoom(this.bounds) || 10,
+                  lat: this.mapOpts.startLat ?? this.bounds.getCenter().lat ?? 0,
+                  lng: this.mapOpts.startLong ?? this.bounds.getCenter().lng ?? 0,
+                }, this.mapOpts.startZoom ?? this.map.getBoundsZoom(this.bounds) ?? 10,
                 { animate: true },
               );
             } else {
               this.map.setView({
-                  lat: this.currentLat || this.mapOpts.startLat || 0,
-                  lng: this.currentLong || this.mapOpts.startLong || 0,
-                }, this.currentZoom || this.mapOpts.startZoom || 10,
+                  lat: this.currentLat ?? this.mapOpts.startLat ?? 0,
+                  lng: this.currentLong ?? this.mapOpts.startLong ?? 0,
+                }, this.currentZoom ?? this.mapOpts.startZoom ?? 10,
                 { animate: false });
             }
           } else if (this.map && this.bounds) {
@@ -452,9 +451,9 @@ export class DiscoveryMapComponent {
         } else {
           this.LOG?.debug(['displayMap', 'setView'], 'invalid bounds', { lat: this.currentLat, lng: this.currentLong });
           this.map.setView({
-              lat: this.currentLat || this.mapOpts.startLat || 0,
-              lng: this.currentLong || this.mapOpts.startLong || 0,
-            }, this.currentZoom || this.mapOpts.startZoom || 10,
+              lat: this.currentLat ?? this.mapOpts.startLat ?? 0,
+              lng: this.currentLong ?? this.mapOpts.startLong ?? 0,
+            }, this.currentZoom ?? this.mapOpts.startZoom ?? 10,
             {
               animate: false,
               duration: 0,
@@ -466,16 +465,16 @@ export class DiscoveryMapComponent {
     } else {
       this.LOG?.debug(['displayMap', 'no data'], 'lost', this.currentZoom, this.mapOpts.startZoom);
       if (!this.mapOpts.track) {
-        this.currentLat = this.mapOpts.startLat || 0;
-        this.currentLong = this.mapOpts.startLong || 0;
-        this.currentZoom = this.mapOpts.startZoom || 2;
+        this.currentLat = this.mapOpts.startLat ?? 0;
+        this.currentLong = this.mapOpts.startLong ?? 0;
+        this.currentZoom = this.mapOpts.startZoom ?? 2;
       }
       this.map.setView(
         [
-          this.currentLat || this.mapOpts.startLat || 0,
-          this.currentLong || this.mapOpts.startLong || 0,
+          this.currentLat ?? this.mapOpts.startLat ?? 0,
+          this.currentLong ?? this.mapOpts.startLong ?? 0,
         ],
-        this.currentZoom || this.mapOpts.startZoom || 2,
+        this.currentZoom ?? this.mapOpts.startZoom ?? 2,
         {
           animate: false,
           duration: 0,
@@ -514,7 +513,7 @@ export class DiscoveryMapComponent {
       iconAnchor = [10, 22];
       const margin = 2;
       if (param?.map?.iconSize || this.innerOptions?.map?.iconSize) {
-        const size = param?.map?.iconSize || this.innerOptions?.map?.iconSize || iconSize;
+        const size = param?.map?.iconSize ?? this.innerOptions?.map?.iconSize ?? iconSize;
         iconSize = GTSLib.isArray(size) ? size as number[] : [size as number, size as number];
         iconAnchor = [iconSize[0] / 2, iconSize[1] - margin];
       }
@@ -536,7 +535,7 @@ export class DiscoveryMapComponent {
           if (i < size - 1 || !gts.marker) {
             const marker = Leaflet.circleMarker(
               g, {
-                radius: gts.baseRadius || MapLib.BASE_RADIUS,
+                radius: gts.baseRadius ?? MapLib.BASE_RADIUS,
                 color: gts.color,
                 fillColor: gts.color,
                 fillOpacity: 1,
@@ -557,7 +556,7 @@ export class DiscoveryMapComponent {
         if (!GTSLib.isArray(gts.marker)) {
           icon = this.icon(gts.color, gts.marker, param, 0);
         }
-        size = (gts.path || []).length;
+        size = (gts.path ?? []).length;
         for (let i = 0; i < size; i++) {
           if (GTSLib.isArray(gts.marker)) {
             icon = this.icon(gts.color, gts.marker, param, i);
@@ -569,18 +568,18 @@ export class DiscoveryMapComponent {
         }
         break;
       case 'weightedDots':
-        size = (gts.path || []).length;
+        size = (gts.path ?? []).length;
         for (let i = 0; i < size; i++) {
           const p = gts.path[i];
           let v = parseInt(p.val, 10);
           if (isNaN(v)) {
             v = 0;
           }
-          const radius = 50 * v / ((gts.maxValue || 1) - (gts.minValue || 0));
+          const radius = 50 * v / ((gts.maxValue ?? 1) - (gts.minValue ?? 0));
           const marker = Leaflet.circleMarker(
             p, {
               radius: radius === 0 ? 1 : radius,
-              color: gts.borderColor || 'transparent',
+              color: gts.borderColor ?? 'transparent',
               fillColor: gts.color, fillOpacity: 0.5,
               riseOnHover: true,
               weight: 1,
@@ -591,12 +590,12 @@ export class DiscoveryMapComponent {
         break;
       case 'dots':
       default:
-        size = (gts.path || []).length;
+        size = (gts.path ?? []).length;
         for (let i = 0; i < size; i++) {
           const g = gts.path[i];
           const marker = Leaflet.circleMarker(
             g, {
-              radius: gts.baseRadius || MapLib.BASE_RADIUS,
+              radius: gts.baseRadius ?? MapLib.BASE_RADIUS,
               color: gts.color,
               riseOnHover: true,
               fillColor: gts.color,
@@ -614,20 +613,20 @@ export class DiscoveryMapComponent {
   private updateGtsPath(gts: any, param: Param) {
     const path = MapLib.pathDataToLeaflet(gts.path);
     const group = Leaflet.featureGroup();
-    if ((path || []).length > 1 && !!gts.line && (gts.render === 'dots' || gts.render === 'path')) {
+    if ((path ?? []).length > 1 && !!gts.line && (gts.render === 'dots' || gts.render === 'path')) {
       if (!!this.mapOpts.animate) {
-        group.addLayer(new AntPath(path || [], {
+        group.addLayer(new AntPath(path ?? [], {
           delay: 800, dashArray: [10, 100],
           weight: 5, color: ColorLib.transparentize(gts.color, 0.5),
           pulseColor: gts.color,
           paused: false, reverse: false, hardwareAccelerated: true, hardwareAcceleration: true,
         }));
       } else {
-        group.addLayer(Leaflet.polyline(path || [], { color: gts.color, opacity: 0.5 }));
+        group.addLayer(Leaflet.polyline(path ?? [], { color: gts.color, opacity: 0.5 }));
       }
     }
     const dots = this.getGTSDots(gts, param);
-    const size = (dots || []).length;
+    const size = (dots ?? []).length;
     for (let i = 0; i < size; i++) {
       group.addLayer(dots[i]);
     }
@@ -642,8 +641,8 @@ export class DiscoveryMapComponent {
           .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
       }
       let content = '';
-      content = `${date ? `<p>${date}</p>` : ''}<p><b>${positionData.key}</b>: ${value === 0 ? 0 : value || 'na'}</p>`;
-      Object.keys(positionData.properties || [])
+      content = `${date ? `<p>${date}</p>` : ''}<p><b>${positionData.key}</b>: ${value === 0 ? 0 : value ?? 'na'}</p>`;
+      Object.keys(positionData.properties ?? [])
         .forEach(k => content += `<b>${k}</b>: ${decodeURIComponent(positionData.properties[k])}<br />`);
 
       if (!!positionData.tooltip[ts]) {
@@ -657,7 +656,7 @@ export class DiscoveryMapComponent {
         }
         this.popupTimeout = setTimeout(() => {
           if (marker.isPopupOpen() && !this.markerOver) marker.closePopup();
-        }, this.innerOptions.tooltipDelay || 3000);
+        }, this.innerOptions.tooltipDelay ?? 3000);
         this.dataPointOver.emit({
           date: ts,
           name: positionData.key,
@@ -706,7 +705,7 @@ export class DiscoveryMapComponent {
 
   @Method()
   async setFocus(regexp: string, ts: number) {
-    Object.keys(this.markersRef || {})
+    Object.keys(this.markersRef ?? {})
       .filter(s => new RegExp(regexp).test(s))
       .forEach(k => {
         if (!!this.markersRef[k][ts]) {
@@ -720,7 +719,7 @@ export class DiscoveryMapComponent {
   async unFocus() {
     Object.keys(this.markersRef)
       .forEach(k => {
-        (Object.keys(this.markersRef[k] || {}))
+        (Object.keys(this.markersRef[k] ?? {}))
           .forEach(ts => {
             if (!!this.markersRef[k][ts]) {
               if (this.markersRef[k][ts].isPopupOpen() && !this.markerOver) this.markersRef[k][ts].closePopup();
@@ -760,16 +759,16 @@ export class DiscoveryMapComponent {
       ? Leaflet.markerClusterGroup(opts)
       : Leaflet.featureGroup();
     const path = MapLib.updatePositionArrayToLeaflet(positionData.positions);
-    if ((positionData.positions || []).length > 1 && !!positionData.line) {
+    if ((positionData.positions ?? []).length > 1 && !!positionData.line) {
       if (!!this.mapOpts.animate) {
-        group.addLayer(antPath(path || [], {
+        group.addLayer(antPath(path ?? [], {
           delay: 800, dashArray: [10, 100],
           weight: 5, color: ColorLib.transparentize(positionData.color, 0.5),
           pulseColor: positionData.color,
           paused: false, reverse: false, hardwareAccelerated: true, hardwareAcceleration: true,
         }));
       } else {
-        group.addLayer(Leaflet.polyline(path || [], { color: positionData.color, opacity: 0.5 }));
+        group.addLayer(Leaflet.polyline(path ?? [], { color: positionData.color, opacity: 0.5 }));
       }
     }
     let icon: any;
@@ -780,7 +779,7 @@ export class DiscoveryMapComponent {
 
     switch (positionData.render) {
       case 'marker':
-        size = (positionData.positions || []).length;
+        size = (positionData.positions ?? []).length;
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
           icon = this.icon(GTSLib.isArray(positionData.color) ? positionData.color[i] ?? ColorLib.getColor(dataIndex, this.innerOptions.scheme) : positionData.color, positionData.marker, param,
@@ -799,17 +798,17 @@ export class DiscoveryMapComponent {
           result[j] = 0;
           inStep[j] = 0;
         }
-        size = (positionData.positions || []).length;
+        size = (positionData.positions ?? []).length;
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
-          const radius = (parseInt(p[2], 10) - (positionData.minValue || 0)) * 50 / (positionData.maxValue || 50);
+          const radius = (parseInt(p[2], 10) - (positionData.minValue ?? 0)) * 50 / (positionData.maxValue ?? 50);
 
           this.LOG?.debug(['updatePositionArray', 'coloredWeightedDots', 'radius'], positionData.baseRadius * p[4]);
           const marker = Leaflet.circleMarker(
             { lat: p[0], lng: p[1] },
             {
               radius,
-              color: positionData.borderColor || positionData.color,
+              color: positionData.borderColor ?? positionData.color,
               fillColor: ColorLib.rgb2hex(
                 positionData.colorGradient[p[5]].r,
                 positionData.colorGradient[p[5]].g,
@@ -822,14 +821,14 @@ export class DiscoveryMapComponent {
         }
         break;
       case 'weightedDots':
-        size = (positionData.positions || []).length;
+        size = (positionData.positions ?? []).length;
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
-          const radius = (parseInt(p[2], 10) - (positionData.minValue || 0)) * 50 / (positionData.maxValue || 50);
+          const radius = (parseInt(p[2], 10) - (positionData.minValue ?? 0)) * 50 / (positionData.maxValue ?? 50);
           const marker = Leaflet.circleMarker(
             { lat: p[0], lng: p[1] }, {
               radius,
-              color: positionData.borderColor || positionData.color,
+              color: positionData.borderColor ?? positionData.color,
               fillColor: positionData.color,
               weight: 2,
               riseOnHover: true,
@@ -841,19 +840,19 @@ export class DiscoveryMapComponent {
         break;
       case 'dots':
       default:
-        size = (positionData.positions || []).length;
+        size = (positionData.positions ?? []).length;
         for (let i = 0; i < size; i++) {
           const p = positionData.positions[i];
           const marker = Leaflet.circleMarker(
             { lat: p[0], lng: p[1] }, {
-              radius: positionData.baseRadius || MapLib.BASE_RADIUS,
-              color: positionData.borderColor || positionData.color,
+              radius: positionData.baseRadius ?? MapLib.BASE_RADIUS,
+              color: positionData.borderColor ?? positionData.color,
               fillColor: positionData.color,
               weight: 2,
               riseOnHover: true,
               fillOpacity: 0.7,
             });
-          this.addPopup(positionData, p[2] === 0 ? 0 : p[2] || 'na', undefined, marker, 0);
+          this.addPopup(positionData, p[2] === 0 ? 0 : p[2] ?? 'na', undefined, marker, 0);
           group.addLayer(marker);
         }
         break;

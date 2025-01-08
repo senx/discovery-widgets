@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -126,7 +126,7 @@ export class GTSLib {
     if (GTSLib.isPositionsArrayWithValues(item) || GTSLib.isPositionsArrayWithTwoValues(item)) {
       return true;
     }
-    (item.positions || []).forEach(p => {
+    (item.positions ?? []).forEach((p: any) => {
       if (p.length < 2 || p.length > 3) {
         return false;
       }
@@ -144,7 +144,7 @@ export class GTSLib {
     if ((item === null) || (item.positions === null)) {
       return false;
     }
-    (item.positions || []).forEach(p => {
+    (item.positions ?? []).forEach((p: any) => {
       if (p.length !== 3) {
         return false;
       }
@@ -158,11 +158,11 @@ export class GTSLib {
     return true;
   }
 
-  static isPositionsArrayWithTwoValues(item) {
+  static isPositionsArrayWithTwoValues(item: any) {
     if ((item === null) || (item.positions === null)) {
       return false;
     }
-    (item.positions || []).forEach(p => {
+    (item.positions ?? []).forEach((p: any) => {
       if (p.length !== 4) {
         return false;
       }
@@ -176,14 +176,14 @@ export class GTSLib {
     return true;
   }
 
-  static gtsFromJSON(json, id) {
+  static gtsFromJSON(json: any, id: string | number) {
     return { gts: { c: json.c, l: json.l, a: json.a, v: json.v, id } };
   }
 
-  static gtsFromJSONList(jsonList, prefixId) {
+  static gtsFromJSONList(jsonList: any[], prefixId: string | number) {
     const gtsList = [];
-    let id;
-    (jsonList || []).forEach((item, i) => {
+    let id: string | number;
+    (jsonList ?? []).forEach((item, i) => {
       let gts = item;
       if (item.gts) {
         gts = item.gts;
@@ -218,17 +218,17 @@ export class GTSLib {
     return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(GTSLib.flatDeep(val)) : acc.concat(val), []);
   }
 
-  static flattenGtsIdArray(a: any[], r: number): { res: any[], r: number } {
+  static flattenGtsIdArray(a: any, r: number): { res: any[], r: number } {
     const res = [];
     if (GTSLib.isGts(a)) {
       a = [a];
     }
-    (a ?? []).forEach(d => {
+    (a ?? []).forEach((d: any) => {
       if (GTSLib.isArray(d)) {
         const walk = GTSLib.flattenGtsIdArray(d, r);
         res.push(walk.res);
         r = walk.r;
-      } else if (d && (d.v || d.positions)) {
+      } else if (d) {
         d.id = r;
         res.push(d);
         r++;
@@ -275,7 +275,7 @@ export class GTSLib {
     if (gts.v.length === 0) return true;
     // We look at the first non-null value, if it's a String or Boolean it's an annotation GTS,
     // if it's a number it's a GTS to plot
-    return (gts.v || []).some(v => {
+    return (gts.v ?? []).some((v: any[]) => {
       // noinspection JSPotentiallyInvalidConstructorUsage
       return typeof v[v.length - 1] === 'number' || !!v[v.length - 1].constructor.prototype.toFixed;
     });
@@ -285,7 +285,7 @@ export class GTSLib {
     if (!GTSLib.isGts(gts) || gts.v.length === 0) {
       return false;
     }
-    return (gts.v || []).some(v => v.length >= 3);
+    return (gts.v ?? []).some((v: any) => v.length >= 3);
   }
 
   static isGtsToAnnotate(gts: any) {
@@ -294,7 +294,7 @@ export class GTSLib {
     }
     // We look at the first non-null value, if it's a String or Boolean it's an annotation GTS,
     // if it's a number it's a GTS to plot
-    return (gts.v || []).some(v => {
+    return (gts.v ?? []).some((v: any) => {
       if (v[v.length - 1] !== null) {
         // noinspection JSPotentiallyInvalidConstructorUsage
         return typeof (v[v.length - 1]) !== 'number' &&
@@ -308,13 +308,13 @@ export class GTSLib {
     if (gts.isSorted) {
       return;
     }
-    gts.v = gts.v.sort((a, b) => a[0] - b[0]);
+    gts.v = gts.v.sort((a: number[], b: number[]) => a[0] - b[0]);
     gts.isSorted = true;
   }
 
   static addIdToGTS(data: any) {
     if (GTSLib.isArray(data)) {
-      return data.map(d => GTSLib.addIdToGTS(d));
+      return data.map((d: any) => GTSLib.addIdToGTS(d));
     } else {
       if (GTSLib.isGts(data)) {
         data.uid = v4();
