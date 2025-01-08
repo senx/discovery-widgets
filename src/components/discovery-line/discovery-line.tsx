@@ -318,7 +318,6 @@ export class DiscoveryLineComponent {
         const isStacked = (data.params ?? [])[gts.id]?.stacked !== undefined
           ? (data.params ?? [])[gts.id]?.stacked
           : this.innerOptions?.stacked;
-
         const s = {
           type: type === 'scatter' || gts.v.length <= 1 ? 'scatter' : ['scatter', 'line', 'bar'].includes(type) ? type : 'line',
           name: GTSLib.setName(gts.id, (((data.params ?? [])[gts.id] ?? { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts))),
@@ -424,7 +423,7 @@ export class DiscoveryLineComponent {
         const isBubble = sMax !== sMin;
         const s = {
           type: this.type,
-          name: GTSLib.setName(gts.id, gts.label),
+          name: GTSLib.setName(id, gts.label),
           id: gts.id,
           data: gts.values[0] && gts.values[0].length === 3
             ? (gts.values ?? []).map((v: any[]) => ({
