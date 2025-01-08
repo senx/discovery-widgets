@@ -120,6 +120,7 @@ export namespace Components {
         "getDashboardStructure": () => Promise<Dashboard>;
         "getPDF": (save?: boolean, output?: string) => Promise<any>;
         "getVars": () => Promise<any>;
+        "inTile": boolean;
         "options": Param | string;
         "type": 'scada' | 'dashboard' | 'flex';
         "url": string;
@@ -1187,6 +1188,7 @@ declare namespace LocalJSX {
         "dashboardTitle"?: string;
         "data"?: Dashboard | string;
         "debug"?: boolean;
+        "inTile"?: boolean;
         "onRendered"?: (event: DiscoveryDashboardCustomEvent<void>) => void;
         "onStatusError"?: (event: DiscoveryDashboardCustomEvent<any>) => void;
         "onStatusHeaders"?: (event: DiscoveryDashboardCustomEvent<string[]>) => void;

@@ -15,6 +15,7 @@
 | `dashboardTitle` | `dashboard-title` |             | `string`                           | `undefined`   |
 | `data`           | `data`            |             | `Dashboard \| string`              | `undefined`   |
 | `debug`          | `debug`           |             | `boolean`                          | `false`       |
+| `inTile`         | `in-tile`         |             | `boolean`                          | `false`       |
 | `options`        | `options`         |             | `Param \| string`                  | `new Param()` |
 | `type`           | `type`            |             | `"dashboard" \| "flex" \| "scada"` | `'dashboard'` |
 | `url`            | `url`             |             | `string`                           | `undefined`   |

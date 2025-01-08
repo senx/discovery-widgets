@@ -42,6 +42,7 @@ export class DiscoveryDashboardComponent {
   @Prop() cols = 12;
   @Prop() type: 'scada' | 'dashboard' | 'flex' = 'dashboard';
   @Prop() vars: any = '{}';
+  @Prop() inTile: boolean = false;
 
   @Event() statusHeaders: EventEmitter<string[]>;
   @Event() statusError: EventEmitter;
@@ -284,9 +285,11 @@ export class DiscoveryDashboardComponent {
         this.statusError.emit(e);
         this.LOG?.error(['exec'], e);
       });
-    } else {
+    } else if (this.inTile) {
       // TODO: dashboard within a dashboard: this hacky delay ensure to have the right innerOptions to avoid the first requests that will end in 403.
       setTimeout(() => this.parseResult(), 1000);
+    } else {
+      this.parseResult();
     }
   }
 

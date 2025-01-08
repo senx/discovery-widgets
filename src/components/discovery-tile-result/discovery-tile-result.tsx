@@ -549,8 +549,9 @@ export class DiscoveryTileResultComponent {
           vars={JSON.stringify(this.innerVars)}
           type={dashBoardType as any}
           url={this.url}
+          inTile={true}
           options={JSON.stringify(this.innerOptions)}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onRendered={() => this.draw.emit()}
           debug={this.debug}
           id={this.componentId}
