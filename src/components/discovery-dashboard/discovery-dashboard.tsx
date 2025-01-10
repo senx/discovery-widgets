@@ -175,14 +175,14 @@ export class DiscoveryDashboardComponent {
       this.innerOptions = Utils.clone(this.options as Param);
     }
     this.LOG?.debug(['componentWillLoad'], { url: this.url, options: this.innerOptions });
-    const dims = Utils.getContentBounds(this.el.parentElement);
-    this.width = dims.w - 15;
-    this.height = dims.h;
     this.firstLoad = true;
   }
 
   // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    this.width = dims.w - 15;
+    this.height = dims.h;
     this.exec();
   }
 

@@ -135,7 +135,7 @@ export class Utils {
     if (typeof options === 'string') {
       options = JSON.parse(options);
     }
-    return  Utils.clone({ ...new Param(), ...options as Param, ...options2 });
+    return Utils.clone({ ...new Param(), ...options as Param, ...options2 });
   }
 
   static sanitize(data: string | DataModel) {
@@ -161,14 +161,15 @@ export class Utils {
   }
 
   static getContentBounds(el: HTMLElement): { w: number, h: number } {
-    return {
-      h: el.clientHeight
-        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-top'), 10)
-        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-bottom'), 10),
-      w: el.clientWidth
-        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-left'), 10)
-        - parseInt(getComputedStyle(el, null).getPropertyValue('padding-right'), 10),
-    };
+    return el
+      ? {
+        h: el.clientHeight
+          - parseInt(getComputedStyle(el, null).getPropertyValue('padding-top'), 10)
+          - parseInt(getComputedStyle(el, null).getPropertyValue('padding-bottom'), 10),
+        w: el.clientWidth
+          - parseInt(getComputedStyle(el, null).getPropertyValue('padding-left'), 10)
+          - parseInt(getComputedStyle(el, null).getPropertyValue('padding-right'), 10),
+      } : { h: 100, w: 100 };
   }
 
   static unsescape(str: string) {
@@ -337,10 +338,10 @@ export class Utils {
   }
 
   static deepEqual(object1: any, object2: any) {
-   /* if (object1 == null && object2 != null ||
-      object1 != null && object2 == null) {
-      return false;
-    }*/
+    /* if (object1 == null && object2 != null ||
+       object1 != null && object2 == null) {
+       return false;
+     }*/
     const keys1 = Object.keys(object1 ?? {});
     const keys2 = Object.keys(object2 ?? {});
     if (keys1.length !== keys2.length) {
