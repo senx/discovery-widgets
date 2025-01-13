@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.2.10
+
+> +  2025/01/13  | v1.2.10 
+> +  2025/01/10  | [dashboard] Fix initial resizing 
+> +  2025/01/08  | [map] Fix GeoJSON support 
+> +  2025/01/08  | [button:group] Fix vertical alignement 
+> +  2025/01/08  | changelog 
+
 ## v1.2.9
 
 > +  2025/01/08  | v1.2.9 
