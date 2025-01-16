@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.2.11
+
+> +  2025/01/16  | v1.2.11 
+> +  2025/01/16  | [button:radio] Fix alignment 
+> +  2025/01/16  | copyright 
+> +  2025/01/16  | [dashboard] Add hack on option propagation for inner dashboards 
+> +  2025/01/13  | changelog 
+> +  2025/01/13  | changelog 
+
 ## v1.2.10
 
 > +  2025/01/13  | v1.2.10 
