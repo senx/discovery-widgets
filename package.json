@@ -1,6 +1,6 @@
 {
   "name": "@senx/discovery-widgets",
-  "version": "1.2.13",
+  "version": "1.2.14",
   "description": "Discovery Widgets Elements",
   "keywords": [
     "web",
@@ -38,7 +38,7 @@
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "gen": "stencil generate",
-    "prepublishOnly": "yarn clean && node version.js && git commit -m 'version' . && yarn build",
+    "prepublishOnly": "yarn clean && node version.js && yarn build",
     "clean": "rm -fr ./www && rm -fr ./dist",
     "lint": "eslint -c .eslintrc.js --format html  -o ./out/lint/eslint.html src/**/*.{js,ts,tsx}"
   },
