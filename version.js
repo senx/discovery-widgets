@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 fs.writeFileSync(path.join('src', 'utils', 'package.ts'), `export const packageJson = {
-  version: '${pack.version}',
+  version: '${process.env.npm_package_version ?? pack.version}',
   name: '${pack.name}',
   description: '${pack.description}',
   author: '${pack.author}',
