@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 // noinspection ES6UnusedImports eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch } from '@stencil/core';
 import { GTSLib } from '../../../utils/gts.lib';
+import { Utils } from '../../../utils/utils';
 
 @Component({
   tag: 'discovery-input-chips',
@@ -70,7 +71,10 @@ export class DiscoveryInputChips {
 
   @Watch('chips')
   updateChips() {
-    this.innerChips = (this.chips ?? []).slice();
+    if(!Utils.deepEqual(this.chips, this.innerChips)) {
+      this.innerChips = (this.chips ?? []).slice();
+      this.chipChange.emit(this.innerChips);
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols

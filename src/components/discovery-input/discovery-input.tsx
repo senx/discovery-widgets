@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -78,6 +78,7 @@ export class DiscoveryInputComponent {
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
   private innerStyles: any;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   private oldValue: string | string[] | any;
 
   @Listen('discoveryEvent', { target: 'window' })
@@ -245,7 +246,7 @@ export class DiscoveryInputComponent {
       if (this.delayTimer) {
         window.clearInterval(this.delayTimer);
       }
-      this.delayTimer = window.setTimeout(() => this.handleClickRT(), this.innerOptions.input?.delayRequest);
+      this.delayTimer = setTimeout(() => this.handleClickRT(), this.innerOptions.input?.delayRequest);
     } else {
       this.handleClickRT();
     }
@@ -281,7 +282,6 @@ export class DiscoveryInputComponent {
         }
         if (valid) {
           this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
-
           this.discoveryEvent.emit({ ...e, source: this.el.id });
         } else {
           this.LOG?.debug(['handleClick', 'emit'], 'Invalid value');
@@ -296,7 +296,7 @@ export class DiscoveryInputComponent {
   }
 
   private handleSelect(e: any) {
-    if (this.selectedValue !== e?.target?.value ?? e?.detail) {
+    if (this.selectedValue !== (e?.target?.value ?? e?.detail)) {
       this.selectedValue = e?.target?.value ?? e?.detail;
       if (this.subType === 'chips-autocomplete' || this.subType === 'chips') {
         this.selectedValue = e.detail;

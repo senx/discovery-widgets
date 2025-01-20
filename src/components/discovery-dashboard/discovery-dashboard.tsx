@@ -20,7 +20,7 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { ChartType, Dashboard, DataModel, DiscoveryEvent, Tile } from '../../model/types';
 import { JsonLib } from '../../utils/jsonLib';
-import { v4, v4 as uuidv4 } from 'uuid';
+import { v4 } from 'uuid';
 import { PdfLib } from '../../utils/pdfLib';
 import { LangUtils } from '../../utils/lang-utils';
 import _ from 'lodash';
@@ -222,7 +222,7 @@ export class DiscoveryDashboardComponent {
     for (let i = 0; i < tiles.length; i++) {
       tiles[i].png = res[i]?.dataUrl;
       tiles[i].bgColor = Utils.getCSSColor(this.el, '--warp-view-tile-background', res[i]?.bgColor);
-      tiles[i].uid = uuidv4();
+      tiles[i].uid = v4();
       delete tiles[i].macro;
       delete tiles[i].data;
       delete tiles[i].elem;

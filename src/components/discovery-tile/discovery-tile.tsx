@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -54,8 +54,6 @@ export class DiscoveryTileComponent {
   @State() result = '[]';
   @State() width: number;
   @State() height: number;
-  @State() headers: any;
-  @State() start: number;
   @State() showLoader = false;
   @State() hasError = false;
   @State() errorMessage = '';
@@ -72,6 +70,8 @@ export class DiscoveryTileComponent {
   private socket: WebSocket;
   private componentId: string;
   private firstExec = false;
+  private headers: any;
+  private start: number;
 
   @Watch('options')
   async optionsUpdate(newValue: any, oldValue: any) {
@@ -263,7 +263,7 @@ export class DiscoveryTileComponent {
               if ((this.type ?? '').startsWith('input') || (this.type ?? '').startsWith('svg')) {
                 this.result = '';
               }
-              this.headers = res.headers;
+              this.headers = res?.headers ?? {};
               this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
               this.LOG?.debug(['exec', 'headers'], this.headers);
               this.statusHeaders.emit(this.headers);
@@ -280,7 +280,7 @@ export class DiscoveryTileComponent {
               if (autoRefreshFeedBack < 0) {
                 autoRefreshFeedBack = undefined;
               }
-              if (this.autoRefresh !== this.innerOptions.autoRefresh ?? autoRefreshFeedBack) {
+              if (this.autoRefresh !== this.innerOptions.autoRefresh || autoRefreshFeedBack) {
                 this.autoRefresh = autoRefreshFeedBack ? autoRefreshFeedBack : this.innerOptions.autoRefresh;
                 if (this.timer) {
                   window.clearInterval(this.timer);
@@ -300,7 +300,7 @@ export class DiscoveryTileComponent {
                   }, fadeOutAfter * 1000);
                 }
               }
-              setTimeout(() => {
+              requestAnimationFrame(() => {
                 this.loaded = true;
                 this.showLoader = false;
                 this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);

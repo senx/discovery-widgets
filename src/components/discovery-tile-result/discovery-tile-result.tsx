@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -126,7 +126,7 @@ export class DiscoveryTileResultComponent {
     if (!this.innerOptions?.eventHandler) {
       return;
     }
-    const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler || '', this.componentId);
+    const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler ?? '', this.componentId);
     if (res.hasEvent) {
       this.LOG?.debug(['discoveryEventHandler'], {
         type: event.detail.type,
@@ -596,7 +596,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async show(regexp: string) {
-    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['show']) {
       await (this.tile).show(regexp);
     }
@@ -604,7 +604,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async showById(id: number) {
-    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['showById']) {
       await (this.tile).showById(id);
     }
@@ -612,7 +612,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async hide(regexp: string) {
-    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['hide']) {
       await (this.tile).hide(regexp);
     }
@@ -620,7 +620,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async hideById(id: number) {
-    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['hideById']) {
       await (this.tile).hideById(id);
     }
@@ -628,7 +628,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
-    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['setFocus']) {
       await (this.tile).setFocus(regexp, ts, value);
     }
@@ -636,7 +636,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async unFocus() {
-    /* eslint-disable dot-notation,@typescript-eslint/dot-notation */
+    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
     if (this.tile && this.tile['unFocus']) {
       await (this.tile).unFocus();
     }
@@ -670,7 +670,7 @@ export class DiscoveryTileResultComponent {
           ? <p class="tile-desc" ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription ?? ''}</p>
           : ''}
         {this.ready ? <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}
-                         >
+        >
           {this.getView()}
         </div> : ''}
       </div>,
@@ -687,9 +687,7 @@ export class DiscoveryTileResultComponent {
         if (this.LOG) {
           this.LOG?.debug(['parseEvents', 'emit'], { discoveryEvent: e });
         }
-        if (this.type.startsWith('input') && this.innerOptions?.input?.showButton) {
-          // we skip
-        } else {
+        if (!(this.type.startsWith('input') && this.innerOptions?.input?.showButton)) {
           this.discoveryEvent.emit({ ...e, source: this.el.id });
         }
       }));
