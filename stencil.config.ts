@@ -1,31 +1,25 @@
-import {Config} from '@stencil/core';
-import {sass} from '@stencil/sass';
+import { Config } from '@stencil/core';
+import { sass } from '@stencil/sass';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export const config: Config = {
-  plugins: [
-    sass()
-  ],
+  plugins: [sass()],
   enableCache: true,
   buildEs5: 'prod',
-  rollupPlugins: {
-    after: [
-      nodePolyfills(),
-    ]
-  },
+  rollupPlugins: { after: [nodePolyfills()] },
   namespace: 'discovery',
   globalStyle: './src/styles.css',
   globalScript: './src/discovery.ts',
   outputTargets: [
     {
-      type: 'dist-custom-elements'
+      type: 'dist-custom-elements',
     },
     {
       type: 'dist',
       esmLoaderPath: '../loader',
       copy: [
-        {src: 'scss'}
-      ]
+        { src: 'scss' },
+      ],
     },
     {
       type: 'docs-readme',

@@ -1,5 +1,5 @@
 /*
- *   Copyright 2024 SenX S.A.S.
+ *   Copyright 2023  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -13,11 +13,17 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-import { Logger } from './utils/logger';
-import { packageJson } from './utils/package';
 
-export default () => {
-  const LOG: Logger = new Logger({ name: 'Discovery by SenX' });
-  LOG.info(['Version'], packageJson.version);
-  LOG.info(['Info'], packageJson.homepage);
-}
+const pack = require('./package.json');
+const fs = require('fs');
+const path = require('path');
+
+fs.writeFileSync(path.join('src', 'utils', 'package.ts'), `export const packageJson = {
+  version: '${pack.version}',
+  name: '${pack.name}',
+  description: '${pack.description}',
+  author: '${pack.author}',
+  license: '${pack.license}',
+  homepage: 'https://discovery.warp10.io/'
+}`
+, 'utf-8');
