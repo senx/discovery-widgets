@@ -1,6 +1,27 @@
 Discovery
 ---
 
+## v1.2.14
+
+> +  2025/01/20  | v1.2.14 
+> +  2025/01/20  | version 
+> +  2025/01/20  | Fix build 
+
+## v1.2.13
+
+> +  2025/01/20  | v1.2.13 
+> +  2025/01/20  | Fix build 
+> +  2025/01/20  | Readmes 
+
+## v1.2.12
+
+> +  2025/01/20  | v1.2.12 
+> +  2025/01/20  | Readmes 
+> +  2025/01/20  | Fix tile resizing issue 
+> +  2025/01/20  | [input:chips] Fix event emission on initial state 
+> +  2025/01/20  | Fix Discovery version handling 
+> +  2025/01/16  | changelog 
+
 ## v1.2.11
 
 > +  2025/01/16  | v1.2.11 
