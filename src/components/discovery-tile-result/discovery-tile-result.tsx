@@ -229,7 +229,7 @@ export class DiscoveryTileResultComponent {
   componentDidLoad() {
     this.parseResult();
     elementResizeEvent.unbind(this.tileElem);
-    elementResizeEvent(this.tileElem, () => this.resize());
+    elementResizeEvent(this.tileElem, async () => await this.resize());
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -582,7 +582,7 @@ export class DiscoveryTileResultComponent {
       if (!!this.tile && !!this.tile.resize) {
         (this.tile).resize();
       }
-    });
+    }, 100);
     return Promise.resolve();
   }
 

@@ -18,8 +18,6 @@ import { Logger } from './logger';
 import { JsonLib } from './jsonLib';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import moment from 'moment/min/moment-with-locales';
 import { tz } from 'moment-timezone';
 import { DataModel } from '../model/types';
@@ -27,11 +25,8 @@ import { v4 } from 'uuid';
 
 dayjs.extend(duration);
 
-
-// @dynamic
 export class GTSLib {
   private static LOG: Logger = new Logger(GTSLib);
-
 
   public static getMinMax(values: number[]): { minVal: number, maxVal: number } {
     let minVal = Number.MAX_SAFE_INTEGER;
@@ -228,10 +223,12 @@ export class GTSLib {
         const walk = GTSLib.flattenGtsIdArray(d, r);
         res.push(walk.res);
         r = walk.r;
-      } else if (d) {
+      } else if (this.isGts(d)) {
         d.id = r;
         res.push(d);
         r++;
+      } else {
+        res.push(d);
       }
     });
     return { res, r };

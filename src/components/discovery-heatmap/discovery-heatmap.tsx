@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel, ECharts} from '../../model/types';
-import {Param} from '../../model/param';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel, ECharts } from '../../model/types';
+import { Param } from '../../model/param';
 import * as echarts from 'echarts';
-import {EChartsOption} from 'echarts';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
-import {ColorLib} from '../../utils/color-lib';
+import { EChartsOption } from 'echarts';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
+import { ColorLib } from '../../utils/color-lib';
 
 @Component({
   tag: 'discovery-heatmap',
@@ -51,11 +51,12 @@ export class DiscoveryHeatmap {
 
   private graph: HTMLDivElement;
   private chartOpts: EChartsOption;
-  private defOptions: Param = {...new Param(), timeMode: 'date'};
+  private defOptions: Param = { ...new Param(), timeMode: 'date' };
   private LOG: Logger;
   private divider = 1000;
   private myChart: ECharts;
   private innerWidth: number = 0;
+  private innerHeight: number = 0;
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -63,7 +64,7 @@ export class DiscoveryHeatmap {
       this.chartOpts = this.convert(GTSLib.getData(this.result));
       setTimeout(() => {
         this.myChart.setOption(this.chartOpts || {}, true, false);
-        this.myChart.resize({height: this.height});
+        this.myChart.resize({ height: this.height });
         this.setOpts(true);
       });
     }
@@ -74,7 +75,7 @@ export class DiscoveryHeatmap {
     this.chartOpts = this.convert(GTSLib.getData(this.result));
     setTimeout(() => {
       this.myChart.setOption(this.chartOpts || {}, true, false);
-      this.myChart.resize({height: this.height});
+      this.myChart.resize({ height: this.height });
       this.setOpts(true);
     });
   }
@@ -92,7 +93,7 @@ export class DiscoveryHeatmap {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
           this.myChart.setOption(this.chartOpts || {}, true, false);
-          this.myChart.resize({height: this.height});
+          this.myChart.resize({ height: this.height });
           this.setOpts(true);
         });
       }
@@ -102,10 +103,13 @@ export class DiscoveryHeatmap {
 
   @Method()
   async resize() {
-    const width = Utils.getContentBounds(this.el.parentElement).w - 4;
-    if (this.myChart && this.innerWidth !== width) {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    const width = dims.w - 4;
+    const height = dims.h;
+    if (this.myChart && (this.innerWidth !== width || this.innerHeight !== dims.h)) {
       this.innerWidth = width;
-      this.myChart.resize({ width, silent: true });
+      this.innerHeight = this.innerHeight !== dims.h ? height - this.el.parentElement.offsetTop : this.innerHeight;
+      this.myChart.resize({ width: this.innerWidth, height: this.innerHeight, silent: true });
     }
     return Promise.resolve();
   }
@@ -114,7 +118,7 @@ export class DiscoveryHeatmap {
   async show(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name))),
     });
     return Promise.resolve();
   }
@@ -123,7 +127,7 @@ export class DiscoveryHeatmap {
   async hide(regexp: string) {
     this.myChart.dispatchAction({
       type: 'legendUnSelect',
-      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
+      batch: (this.myChart.getOption().series as any[]).filter(s => new RegExp(regexp).test(GTSLib.getName(s.name))),
     });
     return Promise.resolve();
   }
@@ -134,7 +138,7 @@ export class DiscoveryHeatmap {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -146,7 +150,7 @@ export class DiscoveryHeatmap {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString()))
+          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
       });
     }
     return Promise.resolve();
@@ -167,7 +171,7 @@ export class DiscoveryHeatmap {
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
-      chartOpts: this.chartOpts
+      chartOpts: this.chartOpts,
     });
   }
 
@@ -175,16 +179,16 @@ export class DiscoveryHeatmap {
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
-        textStyle: {color: Utils.getLabelColor(this.el), fontSize: 20},
+        textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
         text: this.innerOptions.noDataLabel || '',
         left: 'center',
-        top: 'center'
+        top: 'center',
       };
-      this.chartOpts.xAxis = {show: false};
-      this.chartOpts.yAxis = {show: false};
-      this.chartOpts.tooltip = {show: false};
+      this.chartOpts.xAxis = { show: false };
+      this.chartOpts.yAxis = { show: false };
+      this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = {...this.chartOpts.title || {}, show: false};
+      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
@@ -196,7 +200,7 @@ export class DiscoveryHeatmap {
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = {...options};
+    this.innerOptions = { ...options };
     let series: any[] = [];
     let min = 0;
     let max = 0;
@@ -215,7 +219,7 @@ export class DiscoveryHeatmap {
       this.LOG?.debug(['convert', 'not array']);
       gtsList = [data.data];
     }
-    this.LOG?.debug(['convert'], {options: this.innerOptions, gtsList});
+    this.LOG?.debug(['convert'], { options: this.innerOptions, gtsList });
     const isGtsToPlot = gtsList.some(g => GTSLib.isGtsToPlot(g));
     const isGtsToAnnotate = gtsList.some(g => GTSLib.isGtsToAnnotate(g));
     const isCustomData = gtsList.some(g => !!g.rows && !!g.columns);
@@ -233,22 +237,22 @@ export class DiscoveryHeatmap {
       min = res.min;
       max = res.max;
     }
-    this.LOG?.debug(['convert', 'series'], {series});
+    this.LOG?.debug(['convert', 'series'], { series });
     const hSeries = series.length > 0 ? [{
       type: 'heatmap',
       data: series,
       progressive: 10000,
-      animation: false
+      animation: false,
     }] : [];
     return {
       grid: {
         left: 10, top: 10, bottom: 10, right: 10,
-        containLabel: true
+        containLabel: true,
       },
       tooltip: {
         trigger: 'item',
         axisPointer: {
-          type: 'shadow'
+          type: 'shadow',
         },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
         hideDelay: this.innerOptions.tooltipDelay || 100,
@@ -257,36 +261,36 @@ export class DiscoveryHeatmap {
             ? GTSLib.toISOString(
               GTSLib.toTimestamp(params.value[0], this.divider, this.innerOptions.timeZone),
               this.divider, this.innerOptions.timeZone,
-              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined
+              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined,
             ).replace('T', ' ').replace('Z', '')
             : params.value[0]
         }</div>
             ${params.marker}
             <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(params.value[1])}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">
-            ${params.value[2]}</span>`
+            ${params.value[2]}</span>`,
       },
       toolbox: {
         show: this.innerOptions.showControls,
         feature: {
-          saveAsImage: {type: 'png', excludeComponents: ['toolbox']}
-        }
+          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
+        },
       },
-      legend: {bottom: 10, left: 'center', show: false},
+      legend: { bottom: 10, left: 'center', show: false },
       visualMap: {
         show: false,
         min, max,
-        inRange: {color: ColorLib.getHeatMap(this.innerOptions.scheme)}
+        inRange: { color: ColorLib.getHeatMap(this.innerOptions.scheme) },
       },
       series: hSeries,
       xAxis: {
         show: !this.innerOptions.hideXAxis,
         type: 'category',
-        splitArea: {show: true},
+        splitArea: { show: true },
         axisLine: {
           lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
+            color: Utils.getGridColor(this.el),
+          },
         },
         axisLabel: {
           hideOverlap: true,
@@ -294,25 +298,28 @@ export class DiscoveryHeatmap {
           formatter: value => this.innerOptions.timeMode === 'date'
             ? GTSLib.toISOString(GTSLib.zonedTimeToUtc(parseInt(value, 10), 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
               .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
-            : value
+            : value,
         },
         axisTick: {
           lineStyle: {
-            color: Utils.getGridColor(this.el)
-          }
-        }
+            color: Utils.getGridColor(this.el),
+          },
+        },
       },
       yAxis: {
         type: 'category',
-        splitArea: {show: true}
+        splitArea: { show: true },
       },
-      ...this.innerOptions?.extra?.chartOpts || {}
+      ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
   }
 
   @Method()
   async export(type: 'png' | 'svg' = 'png') {
-    return Promise.resolve(this.myChart ? this.myChart.getDataURL({type, excludeComponents: ['toolbox']}) : undefined);
+    return Promise.resolve(this.myChart ? this.myChart.getDataURL({
+      type,
+      excludeComponents: ['toolbox'],
+    }) : undefined);
   }
 
   componentDidLoad() {
@@ -322,7 +329,7 @@ export class DiscoveryHeatmap {
       let initial = false;
       this.myChart = echarts.init(this.graph, null, {
         width: this.width,
-        height: this.height ? this.height - 10 : undefined
+        height: this.height ? this.height - 10 : undefined,
       });
       this.myChart.on('rendered', () => {
         this.rendering = false;
@@ -336,7 +343,7 @@ export class DiscoveryHeatmap {
           date: event.value[0],
           name: GTSLib.getName(event.seriesName),
           value: event.value[1],
-          meta: {}
+          meta: {},
         });
       });
       this.el.addEventListener('mouseout', () => this.dataPointOver.emit({}));
@@ -345,7 +352,7 @@ export class DiscoveryHeatmap {
           date: event.value[0],
           name: GTSLib.getName(event.seriesName),
           value: event.value[1],
-          meta: {}
+          meta: {},
         });
       });
       this.myChart.setOption(this.chartOpts || {}, true, false);
@@ -374,15 +381,15 @@ export class DiscoveryHeatmap {
               (this.innerOptions.timeMode || 'date') === 'date'
                 ? GTSLib.utcToZonedTime(v[0], this.divider, this.innerOptions.timeZone)
                 : v[0],
-              ((params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-              val
-            ]
+              ((params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
+              val,
+            ],
           );
         }
       }
     }
     series = series.sort((a, b) => a[0] - b[0]);
-    return {series, min, max};
+    return { series, min, max };
   }
 
   private convertGtsToAnnotate(gtsList, params: Param[]) {
@@ -405,15 +412,15 @@ export class DiscoveryHeatmap {
               (this.innerOptions.timeMode || 'date') === 'date'
                 ? GTSLib.utcToZonedTime(v[0], this.divider, this.innerOptions.timeZone)
                 : v[0],
-              ((params || [])[i] || {key: undefined}).key || GTSLib.serializeGtsMetadata(gts),
-              val
-            ]
+              ((params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
+              val,
+            ],
           );
         }
       }
     }
     series = series.sort((a, b) => a[0] - b[0]);
-    return {series, min, max};
+    return { series, min, max };
   }
 
   private convertCustomData(gtsList) {
@@ -440,7 +447,7 @@ export class DiscoveryHeatmap {
       }
     }
     series = series.sort((a, b) => a[0] - b[0]);
-    return {series, min, max};
+    return { series, min, max };
   }
 
 
@@ -448,7 +455,7 @@ export class DiscoveryHeatmap {
     return <div class="heatmap-wrapper">
       {this.parsing ? <discovery-spinner>Parsing data...</discovery-spinner> : ''}
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
-      <div ref={(el) => this.graph = el}/>
-    </div>
+      <div ref={(el) => this.graph = el} />
+    </div>;
   }
 }

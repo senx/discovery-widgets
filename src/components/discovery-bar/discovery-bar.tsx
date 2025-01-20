@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -69,6 +69,7 @@ export class DiscoveryBarComponent {
   private zoom: { start?: number; end?: number; type?: string };
   private pois: any[] = [];
   private innerWidth: number = 0;
+  private innerHeight: number = 0;
 
   @Watch('result')
   updateRes() {
@@ -95,10 +96,13 @@ export class DiscoveryBarComponent {
 
   @Method()
   async resize() {
-    const width = Utils.getContentBounds(this.el.parentElement).w - 4;
-    if (this.myChart && this.innerWidth !== width) {
+    const dims = Utils.getContentBounds(this.el.parentElement);
+    const width = dims.w - 4;
+    const height = dims.h;
+    if (this.myChart && (this.innerWidth !== width || this.innerHeight !== dims.h)) {
       this.innerWidth = width;
-      this.myChart.resize({ width, silent: true });
+      this.innerHeight = this.innerHeight !== dims.h ? height - this.el.parentElement.offsetTop : this.innerHeight;
+      this.myChart.resize({ width: this.innerWidth, height: this.innerHeight, silent: true });
     }
     return Promise.resolve();
   }
