@@ -38,7 +38,8 @@
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "gen": "stencil generate",
-    "prepublishOnly": "yarn clean && node version.js && yarn build",
+    "version": "node version.js",
+    "prepublishOnly": "yarn clean && yarn build",
     "clean": "rm -fr ./www && rm -fr ./dist",
     "lint": "eslint -c .eslintrc.js --format html  -o ./out/lint/eslint.html src/**/*.{js,ts,tsx}"
   },
