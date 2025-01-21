@@ -327,13 +327,13 @@ export class Utils {
    * @param url
    */
   static getUrl(url: string): string {
-    if (!url.toLowerCase().startsWith('http') && !url.toLowerCase().startsWith('ws')) {
+    if (!(url ?? '').toLowerCase().startsWith('http') && !(url ?? '').toLowerCase().startsWith('ws')) {
       const { host, pathname, port, protocol, search } = window.location;
       let urlComputed = protocol + '//' + host + (port !== '' ? ':' + port : '');
-      urlComputed += url.startsWith('/') ? url : pathname + (pathname.endsWith('/') ? '' : '/') + url;
+      urlComputed += (url ?? '').startsWith('/') ? (url ?? '') : pathname + (pathname.endsWith('/') ? '' : '/') + (url ?? '');
       return urlComputed + search;
     } else {
-      return url;
+      return (url ?? '');
     }
   }
 
