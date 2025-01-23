@@ -359,10 +359,12 @@ export class DiscoveryTileComponent {
   }
 
   private displayError(e: any) {
-    this.statusError.emit(e);
-    this.hasError = !!this.innerOptions.showErrors;
-    this.errorMessage = e.message ?? e.statusText;
-    this.LOG?.error(['exec'], e, this.innerOptions.showErrors, this.errorMessage);
+    requestAnimationFrame(() => {
+      this.statusError.emit(e);
+      this.hasError = !!this.innerOptions.showErrors;
+      this.errorMessage = e.message ?? e.statusText;
+      this.LOG?.error(['exec'], e, this.innerOptions.showErrors, this.errorMessage);
+    });
   }
 
   render() {
