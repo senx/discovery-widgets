@@ -1,6 +1,17 @@
 Discovery
 ---
 
+## v1.2.16
+
+> +  2025/01/24  | v1.2.16 
+> +  2025/01/24  | [input:button] Fix label change with globalVars 
+> +  2025/01/23  | [input:button] Fix error handling 
+> +  2025/01/21  | NPE fix 
+> +  2025/01/20  | Fix build 
+> +  2025/01/20  | Fix build 
+> +  2025/01/20  | changelog 
+> +  2025/01/20  | Fix build 
+
 ## v1.2.14
 
 > +  2025/01/20  | v1.2.14 
