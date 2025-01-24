@@ -388,7 +388,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           debug={this.debug}
           id={this.componentId}
         />;
@@ -400,7 +400,7 @@ export class DiscoveryTileResultComponent {
           url={this.url}
           type={this.innerType}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           vars={JSON.stringify(this.innerVars)}
           language={this.language}
           onExecError={e => this.handleExecError(e)}

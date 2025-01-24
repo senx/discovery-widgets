@@ -235,7 +235,7 @@ export class DiscoveryTileComponent {
         }
         this.ws = LangUtils.prepare(
           Utils.unsescape(this.el.innerHTML),
-          { ...this.innerVars ?? {} },
+          this.innerVars ?? {},
           this.innerOptions?.skippedVars ?? [],
           this.type,
           this.language);
@@ -359,7 +359,7 @@ export class DiscoveryTileComponent {
   }
 
   private displayError(e: any) {
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       this.statusError.emit(e);
       this.hasError = !!this.innerOptions.showErrors;
       this.errorMessage = e.message ?? e.statusText;
