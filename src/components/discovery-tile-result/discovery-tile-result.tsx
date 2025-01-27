@@ -303,7 +303,7 @@ export class DiscoveryTileResultComponent {
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           onPoi={event => this.handlePoi(event)}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           id={this.componentId}
         />;
       case 'annotation':
@@ -312,7 +312,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
@@ -326,7 +326,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
@@ -340,7 +340,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
@@ -366,7 +366,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           debug={this.debug}
           id={this.componentId}
         />;
@@ -375,7 +375,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           onGeoBounds={event => this.handleGeoBounds(event)}
@@ -415,7 +415,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
@@ -427,7 +427,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
           debug={this.debug}
           id={this.componentId}
@@ -440,7 +440,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
@@ -454,7 +454,7 @@ export class DiscoveryTileResultComponent {
           options={this.innerOptions}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           debug={this.debug}
           id={this.componentId}
         />;
@@ -464,7 +464,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           debug={this.debug}
           id={this.componentId}
         />;
@@ -486,7 +486,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           debug={this.debug}
           id={this.componentId}
         />;
@@ -495,7 +495,7 @@ export class DiscoveryTileResultComponent {
           result={this.innerResult}
           type={this.innerType}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           debug={this.debug}
           id={this.componentId}
         />;
@@ -505,7 +505,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
@@ -517,7 +517,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
@@ -529,7 +529,7 @@ export class DiscoveryTileResultComponent {
           type={this.innerType}
           unit={this.unit}
           options={this.innerOptions}
-          ref={el => this.tile = el || this.tile}
+          ref={el => this.tile = el ?? this.tile}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
@@ -582,7 +582,7 @@ export class DiscoveryTileResultComponent {
       if (!!this.tile && !!this.tile.resize) {
         (this.tile).resize();
       }
-    }, 100);
+    }, 500);
     return Promise.resolve();
   }
 
@@ -725,14 +725,11 @@ export class DiscoveryTileResultComponent {
 
   private handleCSSColors() {
     let fontColor = Utils.getCSSColor(this.tileElem, '--warp-view-font-color', '#404040');
-    fontColor = ((this.innerOptions) || { fontColor }).fontColor || fontColor;
+    fontColor = this.innerOptions?.fontColor ?? fontColor;
     let bgColor = Utils.getCSSColor(this.tileElem, '--warp-view-bg-color', 'transparent');
-    bgColor = ((this.innerOptions) || { bgColor }).bgColor || bgColor;
-    const dm: Param = (((this.innerResult as unknown as DataModel) || {
-      globalParams: { bgColor, fontColor },
-    }).globalParams || { bgColor, fontColor }) as Param;
-    this.bgColor = dm.bgColor || bgColor;
-    this.fontColor = dm.fontColor || fontColor;
+    bgColor = this.innerOptions?.bgColor ?? bgColor;
+    this.bgColor = (this.innerResult as unknown as DataModel)?.globalParams?.bgColor ?? bgColor;
+    this.fontColor = (this.innerResult as unknown as DataModel)?.globalParams?.fontColor ?? fontColor;
 
     if (this.tileElem) {
       const rs = getComputedStyle(this.tileElem);

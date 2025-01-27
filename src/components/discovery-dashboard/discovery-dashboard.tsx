@@ -487,7 +487,7 @@ export class DiscoveryDashboardComponent {
                 >
                   <div>
                     {t.macro
-                      ? <discovery-tile url={t.endpoint || this.url}
+                      ? <discovery-tile url={t.endpoint ?? this.url}
                                         type={t.type}
                                         chart-title={t.title}
                                         debug={this.debug}
@@ -523,7 +523,7 @@ export class DiscoveryDashboardComponent {
               {(this.renderedTiles ?? []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
                      style={{
-                       height: `${((this.result.cellHeight ?? this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`,
+                       height: this.getHeight(t),
                        minHeight: '100%',
                        maxWidth: `calc(100% / ${this.result.cols} * ${t.w} - var(--warp-view-dashboard-gap, 10px) * 2)`,
                      }}
@@ -618,5 +618,9 @@ export class DiscoveryDashboardComponent {
         }
       });
     }
+  }
+
+  private getHeight(t: Tile) {
+    return `${((this.result.cellHeight ?? this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`
   }
 }
