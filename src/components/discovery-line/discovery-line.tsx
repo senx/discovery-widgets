@@ -87,6 +87,8 @@ export class DiscoveryLineComponent {
   private pois: any[] = [];
   private innerWidth: number = 0;
   private innerHeight: number = 0;
+  private zoomXInfo: any = {};
+  private zoomYInfo: any = {};
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -136,7 +138,7 @@ export class DiscoveryLineComponent {
       this.innerOptions = { ...this.defOptions, ...this.options };
     }
     this.LOG?.debug(['componentWillLoad'], { type: this.type, options: this.innerOptions });
-    this.chartOpts = this.convert(this.result || new DataModel());
+    this.chartOpts = this.convert(this.result ?? new DataModel());
     this.setOpts();
   }
 
@@ -145,7 +147,7 @@ export class DiscoveryLineComponent {
       this.chartOpts.title = {
         show: true,
         textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
-        text: this.innerOptions.noDataLabel || '',
+        text: this.innerOptions.noDataLabel ?? '',
         left: 'center',
         top: 'center',
       };
@@ -154,16 +156,36 @@ export class DiscoveryLineComponent {
       this.chartOpts.dataZoom = { show: false };
       this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
+      this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     if (this.myChart) {
-      setTimeout(() => this.myChart.setOption(this.chartOpts || {}, notMerge, true));
+      setTimeout(() => {
+        this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
+        const batch = [];
+        if (this.zoomXInfo.start !== undefined) {
+          batch.push({
+            start: this.zoomXInfo.start,
+            end: this.zoomXInfo.end,
+            dataZoomIndex: 0,
+          });
+        }
+        if (this.zoomYInfo.start !== undefined) {
+          batch.push({
+            start: this.zoomYInfo.start,
+            end: this.zoomYInfo.end,
+            dataZoomIndex: 1,
+          });
+        }
+        if (batch.length > 0) {
+          this.myChart.dispatchAction({ type: 'dataZoom', batch });
+        }
+      });
     }
   }
 
   convert(data: DataModel) {
-    this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.innerOptions.timeMode = this.innerOptions.timeMode ?? 'date';
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
     const gtsList = [
       ...GTSLib.flattenGtsIdArray(GTSLib.flatDeep([data.data] as any[]), 0).res,
       ...GTSLib.flatDeep([data.data] as any[]).filter(g => !!g && g.values && g.label),
@@ -247,6 +269,13 @@ export class DiscoveryLineComponent {
           zoomOnMouseWheel: true,
         },
         {
+          type: 'inside',
+          realtime: true,
+          filterMode: 'none',
+          orient: 'vertical',
+          zoomOnMouseWheel: 'ctrl',
+        },
+        {
           type: 'slider',
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
@@ -261,17 +290,10 @@ export class DiscoveryLineComponent {
           yAxisIndex: [0],
           filterMode: 'none',
         },
-        {
-          type: 'inside',
-          realtime: true,
-          filterMode: 'none',
-          orient: 'vertical',
-          zoomOnMouseWheel: 'ctrl',
-        },
       ],
       visualMap: new Array(gtsCount),
       series: [],
-      ...this.innerOptions?.extra?.chartOpts || {},
+      ...this.innerOptions?.extra?.chartOpts ?? {},
     };
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
@@ -281,15 +303,15 @@ export class DiscoveryLineComponent {
       const datasetNoAlpha = (data.params ?? [])[index]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
       if (GTSLib.isGtsToPlot(gts)) {
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
-        const color = ((data.params || [])[gts.id] || { datasetColor: c }).datasetColor || c;
-        const type = ((data.params || [])[gts.id] || { type: this.type }).type || this.type;
-        if (!!data.params && !!data.params[gts.id] && (data.params[gts.id].pieces || []).length > 0) {
+        const color = (data.params ?? [])[gts.id]?.datasetColor ?? c;
+        const type = (data.params ?? [])[gts.id]?.type ?? this.type;
+        if (!!data.params && !!data.params[gts.id] && (data.params[gts.id].pieces ?? []).length > 0) {
           (opts.visualMap as any[])[gts.id] = {
             show: false,
             seriesIndex: gts.id,
             dimension: !!data.params[gts.id].xpieces ? 0 : 1,
             pieces: data.params[gts.id].pieces.map(p => ({
-              color: p.color || '#D81B60',
+              color: p.color ?? '#D81B60',
               lte: data.params[gts.id].xpieces
                 ? this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(p.lte, this.divider, this.innerOptions.timeZone) : p.lte
                 : p.lte,
@@ -667,11 +689,11 @@ export class DiscoveryLineComponent {
     }
     return {
       type: this.innerOptions.yLabelsMapping ? 'category' : 'value',
-      name: unit || this.unit || this.innerOptions.unit,
+      name: unit ?? this.unit ?? this.innerOptions.unit,
       show: !this.innerOptions.hideYAxis,
-      nameTextStyle: { color: color || Utils.getLabelColor(this.el) },
+      nameTextStyle: { color: color ?? Utils.getLabelColor(this.el) },
       splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
-      axisLine: { show: true, lineStyle: { color: color || Utils.getGridColor(this.el) } },
+      axisLine: { show: true, lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       axisLabel: {
         hideOverlap: true,
         color: color || Utils.getLabelColor(this.el),
@@ -691,7 +713,7 @@ export class DiscoveryLineComponent {
       show: !this.innerOptions.hideXAxis,
       splitNumber: this.innerOptions.timeMode === 'date' ? undefined : Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 200) - 1, 1),
       splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
-      axisLine: { lineStyle: { color: color || Utils.getGridColor(this.el) } },
+      axisLine: { lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       axisLabel: {
         hideOverlap: true,
         show: !this.innerOptions.hideXAxis,
@@ -701,9 +723,9 @@ export class DiscoveryLineComponent {
             .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
           : undefined,
       },
-      axisTick: { lineStyle: { color: color || Utils.getGridColor(this.el) } },
+      axisTick: { lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
-      min: this.innerOptions.bounds?.minDate !== undefined
+      min: this.innerOptions.bounds !== undefined
         ? this.innerOptions.timeMode === 'date'
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
           : this.innerOptions.bounds.minDate
@@ -733,23 +755,25 @@ export class DiscoveryLineComponent {
   }
 
   private zoomHandler(start: number, end: number) {
-    this.dataZoom.emit({
+    this.zoomXInfo = {
       start,
       end,
-      min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-      max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
+      min: this.innerOptions.bounds?.minDate ?? this.bounds?.min,
+      max: this.innerOptions.bounds?.maxDate ?? this.bounds?.max,
       orientation: 'x',
-    });
+    };
+    this.dataZoom.emit(this.zoomXInfo);
   }
 
   private zoomYHandler(start: number, end: number) {
-    this.dataZoomY.emit({
+    this.zoomYInfo = {
       start,
       end,
-      min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-      max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
+      min: this.innerOptions.bounds?.minDate ?? this.bounds?.min,
+      max: this.innerOptions.bounds?.maxDate ?? this.bounds?.max,
       orientation: 'y',
-    });
+    };
+    this.dataZoomY.emit(this.zoomYInfo);
   }
 
   // noinspection JSUnusedGlobalSymbols

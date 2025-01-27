@@ -68,6 +68,7 @@ export class DiscoveryBoxPlotComponent {
   private pois: any[] = [];
   private innerWidth: number = 0;
   private innerHeight: number = 0;
+  private zoomXInfo: any = {};
 
   @Watch('result')
   updateRes() {
@@ -155,6 +156,13 @@ export class DiscoveryBoxPlotComponent {
     setTimeout(() => {
       if (this.myChart) {
         this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
+        if (this.zoomXInfo.start !== undefined) {
+          this.myChart.dispatchAction({
+            type: 'dataZoom', start: this.zoomXInfo.start,
+            end: this.zoomXInfo.end,
+            dataZoomIndex: 0,
+          });
+        }
       }
     });
   }
@@ -480,13 +488,15 @@ export class DiscoveryBoxPlotComponent {
     return e ? v + e * (ascArr[h] - v) : v;
   }
 
-  private zoomHandler(start, end) {
-    this.dataZoom.emit({
+  private zoomHandler(start: number, end: number) {
+    this.zoomXInfo = {
       start,
       end,
-      min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-      max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
-    });
+      min: this.innerOptions.bounds?.minDate ?? this.bounds?.min,
+      max: this.innerOptions.bounds?.maxDate ?? this.bounds?.max,
+      orientation: 'x',
+    };
+    this.dataZoom.emit(this.zoomXInfo);
   }
 
   componentDidLoad() {

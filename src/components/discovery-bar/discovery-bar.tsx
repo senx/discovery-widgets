@@ -70,6 +70,7 @@ export class DiscoveryBarComponent {
   private pois: any[] = [];
   private innerWidth: number = 0;
   private innerHeight: number = 0;
+  private zoomXInfo: any = {};
 
   @Watch('result')
   updateRes() {
@@ -158,6 +159,13 @@ export class DiscoveryBarComponent {
     setTimeout(() => {
       if (this.myChart) {
         this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
+        if (this.zoomXInfo.start !== undefined) {
+          this.myChart.dispatchAction({
+            type: 'dataZoom', start: this.zoomXInfo.start,
+            end: this.zoomXInfo.end,
+            dataZoomIndex: 0,
+          });
+        }
       }
     });
   }
@@ -591,12 +599,14 @@ export class DiscoveryBarComponent {
   }
 
   private zoomHandler(start: number, end: number) {
-    this.dataZoom.emit({
+    this.zoomXInfo = {
       start,
       end,
-      min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-      max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
-    });
+      min: this.innerOptions.bounds?.minDate ?? this.bounds?.min,
+      max: this.innerOptions.bounds?.maxDate ?? this.bounds?.max,
+      orientation: 'x',
+    };
+    this.dataZoom.emit(this.zoomXInfo);
   }
 
   // noinspection JSUnusedGlobalSymbols
