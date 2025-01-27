@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.2.17
+
+> +  2025/01/27  | v1.2.17 
+> +  2025/01/27  | [line][area][step][bar][box-plot] Preserve zoom over refreshes. 
+> +  2025/01/27  | Fix initial tile sizing 
+> +  2025/01/27  | Fix PDF export in flex mode 
+> +  2025/01/24  | changelog 
+
 ## v1.2.16
 
 > +  2025/01/24  | v1.2.16 
