@@ -62,6 +62,7 @@ export class DiscoveryDashboardComponent {
   @State() title: string;
   @State() description: string;
   @State() types: any = {};
+  @State() hasError = false;
 
   private LOG: Logger;
   private ws: string;
@@ -80,6 +81,7 @@ export class DiscoveryDashboardComponent {
   private eventState: any = {};
   private refreshTimer: any;
   private firstLoad = false;
+  private errorMessage = '';
 
   @Watch('options')
   optionsUpdate(newValue: any, oldValue: any) {
@@ -238,6 +240,8 @@ export class DiscoveryDashboardComponent {
 
   exec() {
     this.ws = this.warpscript ?? Utils.unsescape(this.el.innerHTML);
+    this.hasError = false;
+    this.errorMessage = '';
     if (this.ws !== undefined && this.ws !== '' && this.ws !== 'undefined' && this.firstLoad) {
       this.loaded = false;
       this.done = {};
@@ -267,11 +271,11 @@ export class DiscoveryDashboardComponent {
             const ws = LangUtils.prepare(
               Utils.unsescape(tmpResult.tiles + ' EVAL'),
               this.innerVars || {},
-              this.innerOptions?.skippedVars || [],
+              this.innerOptions?.skippedVars ?? [],
               'dashboard', 'warpscript');
             Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders).then((t: any) => {
               this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
-              this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
+              this.renderedTiles = new JsonLib().parse(t.data as string)[0] ?? [];
               this.sanitizeTiles();
               this.processResult(tmpResult);
             }).catch(e => {
@@ -285,7 +289,12 @@ export class DiscoveryDashboardComponent {
             this.processResult(tmpResult);
           }
         }).catch(e => {
+        this.loaded = true;
         this.statusError.emit(e);
+        if (!this.inTile) {
+          this.hasError = !!this.innerOptions.showErrors;
+          this.errorMessage = e.message ?? e.statusText;
+        }
         this.LOG?.error(['exec'], e);
       });
     } else if (this.inTile) {
@@ -297,9 +306,7 @@ export class DiscoveryDashboardComponent {
   }
 
   private sanitizeTiles() {
-    this.renderedTiles.forEach(t => {
-      t.data = DiscoveryDashboardComponent.sanitize(t.data);
-    });
+    this.renderedTiles.forEach(t => t.data = DiscoveryDashboardComponent.sanitize(t.data));
   }
 
   private parseResult() {
@@ -576,6 +583,7 @@ export class DiscoveryDashboardComponent {
       {this.loaded
         ? [
           <style>{this.generateStyle(this.innerStyle)}</style>,
+          this.hasError ? <div class="discovery-tile-error">{this.errorMessage}</div> : '',
           <div ref={el => this.dash = el}>{this.getRendering()}</div>,
           this.audioFile ? <audio src={this.audioFile} autoPlay id="song" /> : '',
         ]
@@ -621,6 +629,6 @@ export class DiscoveryDashboardComponent {
   }
 
   private getHeight(t: Tile) {
-    return `${((this.result.cellHeight ?? this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`
+    return `${((this.result.cellHeight ?? this.cellHeight) * t.h + 10 * (t.h - 1) + 5)}px`;
   }
 }
