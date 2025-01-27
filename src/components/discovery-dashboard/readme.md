@@ -44,7 +44,7 @@ Type: `Promise<Dashboard>`
 
 
 
-### `getPDF(save?: boolean, output?: string) => Promise<any>`
+### `getPDF(save?: boolean, output?: string, a4?: boolean) => Promise<any>`
 
 
 
@@ -54,6 +54,7 @@ Type: `Promise<Dashboard>`
 | -------- | --------- | ----------- |
 | `save`   | `boolean` |             |
 | `output` | `string`  |             |
+| `a4`     | `boolean` |             |
 
 #### Returns
 

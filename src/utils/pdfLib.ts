@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,76 +14,67 @@
  *   limitations under the License.
  */
 
-import {jsPDF} from 'jspdf';
-import {Logger} from './logger';
-import {ColorLib} from './color-lib';
-import {Dashboard, Tile} from '../model/types';
+import { jsPDF } from 'jspdf';
+import { Logger } from './logger';
+import { ColorLib } from './color-lib';
+import { Dashboard, Tile } from '../model/types';
 
 export class PdfLib {
 
-  static async generatePDF(width: number, height: number, dashboard: Dashboard, save = true, output = 'blob', LOG: Logger): Promise<any> {
+  static async generatePDF(
+    domRoot: HTMLElement,
+    width: number, height: number, dashboard: Dashboard, save = true, output = 'blob',
+    isA4: boolean,
+    LOG: Logger): Promise<any> {
     try {
-      LOG.debug(['generatePDF'], {width, height, dashboard, save, output});
+      LOG.debug(['generatePDF'], { width, height, dashboard, save, output });
       const doc = new jsPDF({
         unit: 'px',
-        format: [width, height + 40],
+        format: isA4 ? 'a4' : [width + 40, height + 40],
         compress: true,
-        orientation: width > height ? 'landscape' : 'portrait'
+        orientation: width > height ? 'landscape' : 'portrait',
       });
-      const cellSpacing = 5;
       const xMargin = 10;
-      const cellHeight = (dashboard.cellHeight || 220) + 18;
       doc.setFillColor(dashboard.bgColor);
-      doc.rect(0, 0, width, height + 40, 'F');
-      const fontColor = ColorLib.hexToRgb(dashboard.fontColor) || [0, 0, 0];
+      doc.rect(0, 0, width + 40, height + 40, 'F');
+      const fontColor = ColorLib.hexToRgb(dashboard.fontColor) ?? [0, 0, 0];
       doc.setTextColor(fontColor[0], fontColor[1], fontColor[2]);
-      let topSpace = 20;
       if (!!dashboard.title) {
         doc.setFontSize(32);
-        doc.text(dashboard.title, Math.round(width / 2), 30, {align: 'center', lineHeightFactor: 1});
-        topSpace += 42;
+        doc.text(dashboard.title, Math.round(width / 2), 30, { align: 'center', lineHeightFactor: 1 });
       }
       if (!!dashboard.description) {
         doc.setFontSize(16);
-        doc.text(dashboard.description, Math.round(width / 2), 70, {align: 'center', lineHeightFactor: 1});
-        topSpace += 26;
+        doc.text(dashboard.description, Math.round(width / 2), 70, { align: 'center', lineHeightFactor: 1 });
       }
       LOG.debug(['generatePDF'], 'title and desc done');
-      for (const t of (dashboard.tiles as Tile[])) {
+      for (let i = 0; i < (dashboard.tiles ?? []).length; i++) {
+        const t = dashboard.tiles[i] as Tile;
         LOG.debug(['generatePDF'], 'generate tile', t);
-        const bounds = {
-          width: t.w * (width - xMargin * 2) / (dashboard.cols || 12) - cellSpacing * 2,
-          height: t.h * cellHeight - (!!t.title ? 30 : 0) - cellSpacing * 2
-        };
-        const tx = t.x * (width - xMargin * 2) / (dashboard.cols || 12) + bounds.width / 2 + cellSpacing + xMargin;
-        doc.setFontSize(18);
-        doc.text(t.title || '', tx, t.y * cellHeight + topSpace + cellSpacing + 24, {
-          align: 'center',
-          lineHeightFactor: 1
-        });
+        const tElem = t.elem ?? domRoot.querySelector(`#chart-${i}`);
+        const tBounds = tElem.getBoundingClientRect();
+
+        const tx = tBounds.x - xMargin;
+        const ty = tBounds.y - domRoot.getBoundingClientRect().top;
+        // Background
         t.bgColor = t.bgColor === 'transparent' ? '#ffffff' : t.bgColor;
         doc.setFillColor(ColorLib.sanitizeColor(t.bgColor));
-        doc.rect(
-          t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,
-          t.y * cellHeight + topSpace + cellSpacing - 1,
-          bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'F');
-
+        doc.rect(tx, ty, tBounds.width + 2, tBounds.height, 'F');
+        // border
         doc.setDrawColor('#a0a0a0');
-        doc.rect(t.x * (width - xMargin * 2) / (dashboard.cols || 12) + cellSpacing - 1 + xMargin,
-          t.y * cellHeight + topSpace + cellSpacing - 1,
-          bounds.width + 2, bounds.height + (!!t.title ? 30 : 0) + 2, 'S')
+        doc.rect(tx, ty, tBounds.width + 2, tBounds.height, 'S');
+        // title
+        doc.setFontSize(18);
+        doc.text(t.title ?? '', tx + tBounds.width / 2, ty + 24, { align: 'center', lineHeightFactor: 1 });
 
+        // chart
         if (!!t.png && t.png !== 'data:,') {
           let png = t.png;
           if (Array.isArray(t.png)) {
             png = t.png[0];
           }
-          const resized = PdfLib.fitRectIntoBounds(await PdfLib.getImageDimensions(png), bounds);
-          doc.addImage(png,
-            t.x * (width - xMargin * 2) / (dashboard.cols || 12) + (bounds.width - resized.width) / 2 + cellSpacing + xMargin,
-            t.y * cellHeight + topSpace + cellSpacing + (bounds.height - resized.height) / 2 + (!!t.title ? 30 : 0),
-            resized.width, resized.height
-          );
+          const resized = PdfLib.fitRectIntoBounds(await PdfLib.getImageDimensions(png), tBounds);
+          doc.addImage(png, tx, ty + (tBounds.height - resized.height), resized.width, resized.height);
         }
         LOG.debug(['generatePDF'], 'generate tile done', t);
       }
@@ -94,25 +85,25 @@ export class PdfLib {
         return Promise.resolve();
       } else {
         LOG.debug(['generatePDF'], 'out');
-        const data = doc.output(output as any, {filename: dashboard.title + '.pdf'});
+        const data = doc.output(output as any, { filename: dashboard.title + '.pdf' });
         LOG.debug(['generatePDF'], 'out done');
-        return Promise.resolve({data, filename: dashboard.title + '.pdf'})
+        return Promise.resolve({ data, filename: dashboard.title + '.pdf' });
       }
     } catch (e) {
       LOG.error(['generatePDF'], e);
-      return Promise.reject(e);
+      throw e;
     }
   }
 
-  private static async getImageDimensions(file): Promise<any> {
+  private static async getImageDimensions(file: any): Promise<any> {
     return new Promise(resolved => {
       const i = new Image();
-      i.onload = () => resolved({width: i.width, height: i.height});
-      i.src = file
+      i.onload = () => resolved({ width: i.width, height: i.height });
+      i.src = file;
     });
   }
 
-  private static fitRectIntoBounds(rect, bounds) {
+  private static fitRectIntoBounds(rect: any, bounds: any) {
     const rectRatio = rect.width / rect.height;
     const boundsRatio = bounds.width / bounds.height;
     const newDimensions = {} as any;

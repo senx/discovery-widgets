@@ -118,7 +118,7 @@ export namespace Components {
         "data": Dashboard | string;
         "debug": boolean;
         "getDashboardStructure": () => Promise<Dashboard>;
-        "getPDF": (save?: boolean, output?: string) => Promise<any>;
+        "getPDF": (save?: boolean, output?: string, a4?: boolean) => Promise<any>;
         "getVars": () => Promise<any>;
         "inTile": boolean;
         "options": Param | string;

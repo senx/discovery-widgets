@@ -195,12 +195,12 @@ export class DiscoveryDashboardComponent {
   }
 
   @Method()
-  async getPDF(save = true, output = 'blob'): Promise<any> {
+  async getPDF(save = true, output = 'blob', a4: boolean = false): Promise<any> {
     try {
       const win = Utils.getContentBounds(this.dash);
       const struct = await this.getDashboardStructure();
       this.LOG?.debug(['getPDF'], struct);
-      return await PdfLib.generatePDF(win.w, win.h, struct, save, output, this.LOG);
+      return await PdfLib.generatePDF(this.dash, win.w, win.h, struct, save, output, a4, this.LOG);
     } catch (e) {
       this.LOG?.error(['getPDF'], e);
     }
@@ -225,7 +225,7 @@ export class DiscoveryDashboardComponent {
       tiles[i].uid = v4();
       delete tiles[i].macro;
       delete tiles[i].data;
-      delete tiles[i].elem;
+      //  delete tiles[i].elem;
       delete tiles[i].endpoint;
     }
     result.tiles = tiles.filter((t: any) => t.type !== 'hidden');
@@ -377,7 +377,7 @@ export class DiscoveryDashboardComponent {
     this.title = this.dashboardTitle ?? this.result.title;
     this.description = this.result.description;
     this.tiles = [];
-    for (let i = 0; i < { tiles: {}, ...this.result }.tiles.length; i++) {
+    for (let i = 0; i < (this.result?.tiles ?? []).length; i++) {
       this.done[i] = 0;
     }
   }
@@ -419,37 +419,38 @@ export class DiscoveryDashboardComponent {
   }
 
   private getRendering() {
+    this.tiles = [];
     switch (this.innerType) {
       case 'scada':
         return this.result ? <div class="discovery-scada-main">
           {this.title && this.title !== '' ? <h1>{this.title}</h1> : ''}
           {this.description && this.description !== '' ? <p>{this.description}</p> : ''}
           <div class="discovery-scada-wrapper" style={{ height: `${this.scadaHeight}px` }}>
-            {(this.renderedTiles || []).map((t, i) =>
+            {(this.renderedTiles ?? []).map((t, i) =>
               <div class={'discovery-scada-tile ' + this.getType(i, t.type)}
                    style={{
                      left: `${t.x}px`,
                      width: `${t.w}px`,
                      height: `${t.h}px`,
                      top: `${t.y}px`,
-                     zIndex: `${(t.z || 0)}`,
+                     zIndex: `${(t.z ?? 0)}`,
                    }}
               >
                 <div>
                   {t.macro
-                    ? <discovery-tile url={t.endpoint || this.url}
+                    ? <discovery-tile url={t.endpoint ?? this.url}
                                       type={t.type}
                                       chart-title={t.title}
                                       unit={t.unit}
                                       onSelfType={type => this.setActualType(i, type)}
                                       debug={this.debug}
-                                      id={`chart-${i}}`}
+                                      id={`chart-${i}`}
                                       ref={(el) => this.addTile(el, t, i)}
                                       vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
                     >{t.macro + ' EVAL'}</discovery-tile>
                     : <discovery-tile-result
-                      url={t.endpoint || this.url}
+                      url={t.endpoint ?? this.url}
                       result={t.data}
                       type={t.type}
                       onSelfType={type => this.setActualType(i, type)}
@@ -471,10 +472,10 @@ export class DiscoveryDashboardComponent {
             {this.description && this.description !== '' ? <p>{this.description}</p> : ''}
             <div class="discovery-dashboard-wrapper" style={{
               width: '100%',
-              gridAutoRows: `minmax(${(this.result?.cellHeight || this.cellHeight)}px, auto)`,
+              gridAutoRows: `minmax(${(this.result?.cellHeight ?? this.cellHeight)}px, auto)`,
               gridTemplateColumns: `repeat(${this.result.cols}, 1fr)`,
             }}>
-              {(this.renderedTiles || []).map((t, i) =>
+              {(this.renderedTiles ?? []).map((t, i) =>
                 <div class={'discovery-dashboard-tile ' + this.getType(i, t.type)}
                      style={{
                        gridColumn: `${(t.x + 1)} / ${(t.x + t.w + 1)}`,
@@ -491,14 +492,14 @@ export class DiscoveryDashboardComponent {
                                         chart-title={t.title}
                                         debug={this.debug}
                                         unit={t.unit}
-                                        id={`chart-${i}}`}
+                                        id={`chart-${i}`}
                                         ref={(el) => this.addTile(el, t, i)}
                                         onSelfType={type => this.setActualType(i, type)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.innerVars, this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
-                        url={t.endpoint || this.url}
+                        url={t.endpoint ?? this.url}
                         result={t.data}
                         type={t.type}
                         ref={(el) => this.addTile(el, t, i)}
@@ -530,19 +531,19 @@ export class DiscoveryDashboardComponent {
                 >
                   <div>
                     {t.macro
-                      ? <discovery-tile url={t.endpoint || this.url}
+                      ? <discovery-tile url={t.endpoint ?? this.url}
                                         type={t.type}
                                         chart-title={t.title}
                                         debug={this.debug}
                                         unit={t.unit}
-                                        id={`chart-${i}}`}
+                                        id={`chart-${i}`}
                                         onSelfType={type => this.setActualType(i, type)}
                                         ref={(el) => this.addTile(el, t, i)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
                       >{t.macro + ' EVAL'}</discovery-tile>
                       : <discovery-tile-result
-                        url={t.endpoint || this.url}
+                        url={t.endpoint ?? this.url}
                         result={t.data}
                         type={t.type}
                         ref={(el) => this.addTile(el, t, i)}
