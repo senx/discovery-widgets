@@ -39,3 +39,5 @@ export {Utils} from './utils/utils';
 export {GTSLib} from './utils/gts.lib';
 export {PluginDef} from './model/PluginDef';
 export {PluginManager} from './utils/PluginManager';
+export {LangUtils} from './utils/lang-utils';
+export {JsonLib} from './utils/jsonLib';

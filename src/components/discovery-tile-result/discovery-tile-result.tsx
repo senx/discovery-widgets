@@ -567,6 +567,8 @@ export class DiscoveryTileResultComponent {
             options={this.innerOptions}
             height={this.height}
             width={this.width}
+            vars={JSON.stringify(this.innerVars)}
+            url={this.url}
             ref={(el: any) => this.tile = el ?? this.tile}
             debug={this.debug}
             id={this.componentId}
