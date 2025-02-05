@@ -397,11 +397,11 @@ export class DiscoveryTileComponent {
           {this.statusMessage ? <div class="discovery-tile-status">{this.statusMessage}</div> : ''}
         </div>
         : <div class="discovery-tile-spinner">
-          {this.showLoader ? <discovery-spinner>Requesting data...</discovery-spinner> : ''}
+          {this.showLoader ? <discovery-spinner backdrop={true}>Requesting data...</discovery-spinner> : ''}
         </div>
       }
       {this.showLoader ? <div class="discovery-tile-spinner">
-        <discovery-spinner>Requesting data...</discovery-spinner>
+        <discovery-spinner backdrop={true}>Requesting data...</discovery-spinner>
       </div> : ''}
       <pre id="ws"><slot /></pre>
     </div>;

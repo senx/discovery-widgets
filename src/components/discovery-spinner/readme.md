@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type     | Default        |
-| --------- | --------- | ----------- | -------- | -------------- |
-| `message` | `message` |             | `string` | `'Loading...'` |
+| Property   | Attribute  | Description | Type      | Default        |
+| ---------- | ---------- | ----------- | --------- | -------------- |
+| `backdrop` | `backdrop` |             | `boolean` | `false`        |
+| `message`  | `message`  |             | `string`  | `'Loading...'` |
 
 
 ## Dependencies

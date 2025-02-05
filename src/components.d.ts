@@ -321,6 +321,7 @@ export namespace Components {
         "setValue": (value: number | number[]) => Promise<void>;
     }
     interface DiscoverySpinner {
+        "backdrop": boolean;
         "message": string;
     }
     interface DiscoverySvg {
@@ -1393,6 +1394,7 @@ declare namespace LocalJSX {
         "progress"?: boolean;
     }
     interface DiscoverySpinner {
+        "backdrop"?: boolean;
         "message"?: string;
     }
     interface DiscoverySvg {
