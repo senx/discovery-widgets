@@ -72,6 +72,7 @@ export class DiscoveryTileComponent {
   private firstExec = false;
   private headers: any;
   private start: number;
+  private latestRequestTs: number;
 
   @Watch('options')
   async optionsUpdate(newValue: any, oldValue: any) {
@@ -83,7 +84,7 @@ export class DiscoveryTileComponent {
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
       if (Utils.deepEqual(opts.httpHeaders ?? {}, this.innerOptions.httpHeaders ?? {})) {
-        await this.exec(true);
+        this.exec(true);
       }
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
@@ -97,7 +98,7 @@ export class DiscoveryTileComponent {
     }
     if (!Utils.deepEqual(vars, this.innerVars)) {
       this.innerVars = Utils.clone(vars);
-      await this.exec(true);
+      this.exec(true);
     }
     if (this.LOG) {
       this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
@@ -110,7 +111,7 @@ export class DiscoveryTileComponent {
     if (res.vars) {
       this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
       if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-        await this.exec(true);
+        this.exec(true);
       }
     }
     if (res.selected) {
@@ -118,7 +119,7 @@ export class DiscoveryTileComponent {
       if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
         this.innerVars = Utils.clone(vars);
         if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-          await this.exec(true);
+          this.exec(true);
         }
       }
     }
@@ -201,7 +202,7 @@ export class DiscoveryTileComponent {
 
   async componentDidLoad() {
     if (!this.firstExec) {
-      await this.exec();
+      this.exec();
     }
   }
 
@@ -250,6 +251,8 @@ export class DiscoveryTileComponent {
         this.LOG?.debug(['exec'], this.chartTitle, this.ws, this.type);
         this.url = Utils.getUrl(this.url);
         if (this.url.toLowerCase().startsWith('http')) {
+          let thisRequestTs = Date.now();
+          this.latestRequestTs = thisRequestTs;
           setTimeout(() => {
             this.hasError = false;
             this.errorMessage = '';
@@ -259,56 +262,62 @@ export class DiscoveryTileComponent {
 
           Utils.httpPost(this.url, this.ws, this.innerOptions.httpHeaders)
             .then((res: any) => {
-              this.hiddenByWs = false;
-              if ((this.type ?? '').startsWith('input') || (this.type ?? '').startsWith('svg')) {
-                this.result = '';
-              }
-              this.headers = res?.headers ?? {};
-              this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
-              this.LOG?.debug(['exec', 'headers'], this.headers);
-              this.statusHeaders.emit(this.headers);
-              if (this.innerOptions.showStatus) {
-                this.statusMessage = this.headers.statusText;
-              }
-              this.start = window.performance.now();
-              const rws: DataModel = GTSLib.getData(res.data);
-              let autoRefreshFeedBack = rws.globalParams?.autoRefresh ?? -1;
-              const fadeOutAfter = rws.globalParams?.fadeOutAfter;
-              if (rws.localvars) {
-                Utils.mergeDeep(this.innerVars, rws.localvars);
-              }
-              if (autoRefreshFeedBack < 0) {
-                autoRefreshFeedBack = undefined;
-              }
-              if (this.autoRefresh !== this.innerOptions.autoRefresh || autoRefreshFeedBack) {
-                this.autoRefresh = autoRefreshFeedBack ? autoRefreshFeedBack : this.innerOptions.autoRefresh;
-                if (this.timer) {
-                  window.clearInterval(this.timer);
-                }
-                if (this.autoRefresh && this.autoRefresh > 0) {
-                  this.timer = window.setInterval(() => void this.exec(true), this.autoRefresh * 1000);
-                }
-              }
-              if (fadeOutAfter) {
-                if (this.timerFadeOut) {
-                  window.clearInterval(this.timerFadeOut);
-                }
-                if (fadeOutAfter > 0) {
-                  this.timerFadeOut = window.setInterval(() => {
-                    this.hiddenByWs = true;
-                    window.clearInterval(this.timerFadeOut);
-                  }, fadeOutAfter * 1000);
-                }
-              }
-              requestAnimationFrame(() => {
-                this.loaded = true;
-                this.showLoader = false;
-                this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);
-                this.result = res.data;
-                this.execResult.emit(this.result);
-                this.hasError = false;
+              if (this.latestRequestTs != thisRequestTs) {
+                // When requests pile up, the oldests must be ignored.
+                this.LOG?.debug(['exec', 'liloControl'], "This request result arrived later than the latest request, discard result");
                 resolve(true);
-              });
+              } else {
+                  this.hiddenByWs = false;
+                if ((this.type ?? '').startsWith('input') || (this.type ?? '').startsWith('svg')) {
+                  this.result = '';
+                }
+                this.headers = res?.headers ?? {};
+                this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
+                this.LOG?.debug(['exec', 'headers'], this.headers);
+                this.statusHeaders.emit(this.headers);
+                if (this.innerOptions.showStatus) {
+                  this.statusMessage = this.headers.statusText;
+                }
+                this.start = window.performance.now();
+                const rws: DataModel = GTSLib.getData(res.data);
+                let autoRefreshFeedBack = rws.globalParams?.autoRefresh ?? -1;
+                const fadeOutAfter = rws.globalParams?.fadeOutAfter;
+                if (rws.localvars) {
+                  Utils.mergeDeep(this.innerVars, rws.localvars);
+                }
+                if (autoRefreshFeedBack < 0) {
+                  autoRefreshFeedBack = undefined;
+                }
+                if (this.autoRefresh !== this.innerOptions.autoRefresh || autoRefreshFeedBack) {
+                  this.autoRefresh = autoRefreshFeedBack ? autoRefreshFeedBack : this.innerOptions.autoRefresh;
+                  if (this.timer) {
+                    window.clearInterval(this.timer);
+                  }
+                  if (this.autoRefresh && this.autoRefresh > 0) {
+                    this.timer = window.setInterval(() => void this.exec(true), this.autoRefresh * 1000);
+                  }
+                }
+                if (fadeOutAfter) {
+                  if (this.timerFadeOut) {
+                    window.clearInterval(this.timerFadeOut);
+                  }
+                  if (fadeOutAfter > 0) {
+                    this.timerFadeOut = window.setInterval(() => {
+                      this.hiddenByWs = true;
+                      window.clearInterval(this.timerFadeOut);
+                    }, fadeOutAfter * 1000);
+                  }
+                }
+                requestAnimationFrame(() => {
+                  this.loaded = true;
+                  this.showLoader = false;
+                  this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);
+                  this.result = res.data;
+                  this.execResult.emit(this.result);
+                  this.hasError = false;
+                  resolve(true);
+                });
+              }              
             })
             .catch(e => {
               this.displayError(e);
