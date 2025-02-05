@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Component, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { Dashboard, DiscoveryEvent, Tile } from '../../model/types';
 import { Utils } from '../../utils/utils';
 import { Param } from '../../model/param';
@@ -47,10 +47,17 @@ export class DiscoveryModalComponent {
 
   private modal: HTMLDivElement;
   private modalWrapper: HTMLDivElement;
+  private backDrop: HTMLDivElement;
   private tileElem: HTMLDiscoveryTileResultElement | HTMLDiscoveryTileElement;
   private LOG: Logger;
   private title: string;
 
+  @Listen('keydown', { target: 'document' })
+  handleKeyDown(ev: KeyboardEvent) {
+    if (ev.key === 'Escape') {
+      this.closeModal();
+    }
+  }
 
   @Watch('options')
   optionsUpdate(newValue: string, oldValue: string) {
@@ -106,20 +113,32 @@ export class DiscoveryModalComponent {
   }
 
   private async resize() {
-    this.modalWrapper.style.height = Utils.getContentBounds(this.modalWrapper).h + 'px';
-    if (this.tileElem) await this.tileElem.resize();
+    if (this.modalWrapper) {
+      this.modalWrapper.style.height = Utils.getContentBounds(this.modalWrapper).h + 'px';
+      if (this.tileElem) await this.tileElem.resize();
+    }
   }
 
   private closeModal() {
-    this.showModal = false;
-    for (const e of ((this.data as any).events ?? [])) {
-      this.discoveryEvent.emit({ ...e, source: this.parentId });
+    if(this.showModal) {
+      this.showModal = false;
+      for (const e of ((this.data as any)?.events ?? [])) {
+        this.discoveryEvent.emit({ ...e, source: this.parentId });
+      }
+    }
+  }
+
+  private closeModalViaBackDrop(e: MouseEvent) {
+    if (e.target === this.backDrop) {
+      this.closeModal();
     }
   }
 
   render() {
     return <div ref={(el) => this.modal = el}>
       {this.showModal ? <div class="modal"
+                             onClick={e => this.closeModalViaBackDrop(e)}
+                             ref={el => this.backDrop = el}
                              style={{
                                backgroundColor: (this.options as Param)?.popup?.backdropColor
                                  ? ColorLib.sanitizeColor((this.options as Param)?.popup?.backdropColor)
