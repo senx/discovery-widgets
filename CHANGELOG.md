@@ -1,6 +1,22 @@
 Discovery
 ---
 
+## v1.2.18
+
+> +  2025/02/07  | v1.2.18 
+> +  2025/02/07  | deps update 
+> +  2025/02/07  | [display] Fix height and margins 
+> +  2025/02/07  | Fix height in tiles 
+> +  2025/02/07  | wip 
+> +  2025/02/06  | [display] Fix markdown display width 
+> +  2025/02/06  | [display] Fix markdown display width 
+> +  2025/02/05  | fix last executed last displayed problem in tiles 
+> +  2025/02/05  | [spinner] Add backdrop feature 
+> +  2025/02/05  | [popup] Add a close handler on backdrop and Escape key 
+> +  2025/02/03  | wip 
+> +  2025/01/27  | Handle Dashboard WarpScript error 
+> +  2025/01/27  | changelog 
+
 ## v1.2.17
 
 > +  2025/01/27  | v1.2.17 
