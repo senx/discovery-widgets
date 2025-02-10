@@ -68,7 +68,7 @@ export class Utils {
             resHeaders[h[0].trim().toLowerCase()] = h[1].trim().replace('\r', '');
           }
         });
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+        if (xmlHttp.readyState === 4 && xmlHttp.status < 400 && xmlHttp.status !== 0) {
           resolve({
             data: xmlHttp.responseText,
             headers: resHeaders,
@@ -78,7 +78,7 @@ export class Utils {
               fetched: parseInt(resHeaders['x-warp10-fetched'], 10),
             },
           });
-        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 403) {
+        } else if (xmlHttp.readyState === 4 && (xmlHttp.status === 403 || xmlHttp.status === 401)) {
           reject({
             statusText: xmlHttp.statusText,
             status: xmlHttp.status,
@@ -86,7 +86,7 @@ export class Utils {
             headers: resHeaders,
             message: 'Not Authorized',
           });
-        } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 500) {
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
           if (resHeaders['x-warp10-error-line'] && resHeaders['x-warp10-error-message']) {
             reject({
               statusText: xmlHttp.statusText,

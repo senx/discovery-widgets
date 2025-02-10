@@ -84,7 +84,7 @@ export class DiscoveryTileComponent {
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
       if (Utils.deepEqual(opts.httpHeaders ?? {}, this.innerOptions.httpHeaders ?? {})) {
-        this.exec(true);
+        await this.exec(true);
       }
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
@@ -98,7 +98,7 @@ export class DiscoveryTileComponent {
     }
     if (!Utils.deepEqual(vars, this.innerVars)) {
       this.innerVars = Utils.clone(vars);
-      this.exec(true);
+      await this.exec(true);
     }
     if (this.LOG) {
       this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
@@ -111,7 +111,7 @@ export class DiscoveryTileComponent {
     if (res.vars) {
       this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
       if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-        this.exec(true);
+        await this.exec(true);
       }
     }
     if (res.selected) {
@@ -119,7 +119,7 @@ export class DiscoveryTileComponent {
       if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
         this.innerVars = Utils.clone(vars);
         if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-          this.exec(true);
+          await this.exec(true);
         }
       }
     }
@@ -202,7 +202,7 @@ export class DiscoveryTileComponent {
 
   async componentDidLoad() {
     if (!this.firstExec) {
-      this.exec();
+      await this.exec();
     }
   }
 
@@ -251,7 +251,7 @@ export class DiscoveryTileComponent {
         this.LOG?.debug(['exec'], this.chartTitle, this.ws, this.type);
         this.url = Utils.getUrl(this.url);
         if (this.url.toLowerCase().startsWith('http')) {
-          let thisRequestTs = Date.now();
+          const thisRequestTs = Date.now();
           this.latestRequestTs = thisRequestTs;
           setTimeout(() => {
             this.hasError = false;
@@ -262,9 +262,9 @@ export class DiscoveryTileComponent {
 
           Utils.httpPost(this.url, this.ws, this.innerOptions.httpHeaders)
             .then((res: any) => {
-              if (this.latestRequestTs != thisRequestTs) {
+              if (this.latestRequestTs !== thisRequestTs) {
                 // When requests pile up, the oldests must be ignored.
-                this.LOG?.debug(['exec', 'liloControl'], "This request result arrived later than the latest request, discard result");
+                this.LOG?.debug(['exec', 'liloControl'], 'This request result arrived later than the latest request, discard result');
                 resolve(true);
               } else {
                   this.hiddenByWs = false;
@@ -317,7 +317,7 @@ export class DiscoveryTileComponent {
                   this.hasError = false;
                   resolve(true);
                 });
-              }              
+              }
             })
             .catch(e => {
               this.displayError(e);
