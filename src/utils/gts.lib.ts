@@ -326,7 +326,7 @@ export class GTSLib {
       } else {
         return { data: new JsonLib().parse(`[${data}]`) };
       }
-    } else if (data && ((!!data.data || data.data === '') || data.events)) {
+    } else if (data && ((!!data.data || data.data === '' || data.data === 0) || data.events)) {
       if ('' !== data.data) {
         data.data = data.data ?? [];
       }
