@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.2.19
+
+> +  2025/02/10  | v1.2.19 
+> +  2025/02/10  | Better HTTP-statuses support 
+> +  2025/02/07  | changelog 
+
 ## v1.2.18
 
 > +  2025/02/07  | v1.2.18 
