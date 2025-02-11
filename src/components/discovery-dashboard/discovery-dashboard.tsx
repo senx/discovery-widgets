@@ -132,7 +132,13 @@ export class DiscoveryDashboardComponent {
 
   @Listen('discoveryEvent', { target: 'window' })
   async discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
-    this.eventState = Utils.mergeDeep(this.eventState, Utils.parseEventData(event.detail, 'tag=.*,type=.*', this.componentId));
+    this.eventState = {
+      ...this.eventState,
+      vars: {
+        ...this.eventState.vars ?? {},
+        ...Utils.clone(Utils.parseEventData(event.detail, 'tag=.*,type=.*', this.componentId).vars),
+      },
+    };
     const res = Utils.parseEventData(event.detail, this.innerOptions?.eventHandler, this.componentId);
     if (res.vars) {
       this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
@@ -210,7 +216,7 @@ export class DiscoveryDashboardComponent {
 
   @Method()
   async getVars(): Promise<any> {
-    return Promise.resolve({ ...this.innerVars, ...(this.eventState?.vars || {}) });
+    return Promise.resolve(Utils.clone(this.eventState?.vars ?? {}));
   }
 
   @Method()
