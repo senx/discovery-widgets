@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.2.20
+
+> +  2025/02/11  | v1.2.20 
+> +  2025/02/11  | Readme update 
+> +  2025/02/11  | dependencies update 
+> +  2025/02/11  | Readmes 
+> +  2025/02/11  | [dashboard] Fix vars state 
+> +  2025/02/10  | fix a falsy value error, when data is zero 
+> +  2025/02/10  | changelog 
+
 ## v1.2.19
 
 > +  2025/02/10  | v1.2.19 
