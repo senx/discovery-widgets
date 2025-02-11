@@ -1,6 +1,6 @@
 {
   "name": "@senx/discovery-widgets",
-  "version": "1.2.19",
+  "version": "1.2.20",
   "description": "Discovery Widgets Elements",
   "keywords": [
     "web",
@@ -69,12 +69,12 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
-    "@stencil/core": "^4.25.3",
     "@babel/core": "^7.26.7",
     "@babel/plugin-proposal-class-properties": "~7.18.6",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.26.7",
     "@babel/preset-typescript": "^7.26.0",
+    "@stencil/core": "^4.25.3",
     "@stencil/sass": "^3.0.12",
     "@stylistic/eslint-plugin-ts": "^2.13.0",
     "@types/dom-to-image": "^2.6.7",
