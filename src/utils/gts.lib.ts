@@ -401,9 +401,9 @@ export class GTSLib {
     moment.updateLocale(locale.split('-')[0], {});
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     if (timeZone !== 'UTC') {
-      return tz(timestamp / divider, timeZone).format(timeFormat || 'YYYY-MM-DDTHH:mm:ss.SSS');
+      return tz(timestamp / divider, timeZone).format(timeFormat ?? 'YYYY-MM-DDTHH:mm:ss.SSS');
     } else {
-      return moment.utc(timestamp / divider).format(timeFormat || 'YYYY-MM-DDTHH:mm:ss.SSS');
+      return moment.utc(timestamp / divider).format(timeFormat ?? 'YYYY-MM-DDTHH:mm:ss.SSS');
     }
   }
 
