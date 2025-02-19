@@ -45,13 +45,15 @@ export class LangUtils {
   }
 
   private static generateWarpscriptVars(key: string, value: any): string {
-    if (typeof value === 'string') {
+    if(!value) {
+      return `NULL "${key}" STORE`
+    } else if (typeof value === 'string') {
       return `"${encodeURIComponent(value)}" "${key}" STORE`;
     } else if (typeof value === 'number') {
       return `${value} "${key}" STORE`;
     } else {
-      if (value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
-        if (value.type === 'string') {;
+      if (value && value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
+        if (value.type === 'string') {
           return `"${encodeURIComponent(value.value)}" "${key}" STORE`;
         } else {
           return `${value.value} "${key}" STORE`;
