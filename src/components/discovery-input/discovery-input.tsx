@@ -26,6 +26,7 @@ import 'flatpickr/dist/l10n/index';
 import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domToImage from 'dom-to-image';
+import { v4 } from 'uuid';
 
 @Component({
   tag: 'discovery-input',
@@ -434,7 +435,7 @@ export class DiscoveryInputComponent {
           this.values = [data.toString() as string].filter(d => d !== '');
         }
         if (typeof this.values[0] === 'string' || typeof this.values[0] === 'number') {
-          this.values = this.values.map(s => ({ k: s, v: s, h: false }));
+          this.values = this.values.map(s => ({ k: s, v: s, h: false, id: v4().replaceAll('-', '') }));
         }
         let index = 0;
         if (!!(this.innerOptions.input ?? {}).value) {
@@ -652,11 +653,12 @@ export class DiscoveryInputComponent {
               {this.values.map(v => (
                 <div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
                   <input type="checkbox" value={v.k}
+                         id={v.id}
                          checked={(this.value as string[] ?? []).includes(v.k)}
                          onInput={e => this.handleSelect(e)}
                          disabled={this.innerOptions?.input?.disabled}
                          name={v.v} />
-                  <label htmlFor={v.v}>{v.v}</label>
+                  <label htmlFor={v.id}>{v.v}</label>
                 </div>))}
             </div>
           </div>
