@@ -81,6 +81,7 @@ export class DiscoveryInputComponent {
   private innerStyles: any;
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   private oldValue: string | string[] | any;
+  private filter: string;
 
   @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -270,19 +271,23 @@ export class DiscoveryInputComponent {
         if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
           continue;
         }
+        let value = this.selectedValue;
+        if (GTSLib.isArray(value) && this.type === 'input:multi-cb' && this.checkBoxes && this.innerOptions.input?.showFilter) {
+          value = value.filter((v: any) => new RegExp(`.*${(this.filter ?? '')}.*`, 'gi').test(v));
+        }
         if (e.selector) {
           if (!e.value) {
             e.value = {};
           }
-          e.value[e.selector] = this.selectedValue;
+          e.value[e.selector] = value;
         } else {
-          e.value = this.selectedValue;
+          e.value = value;
         }
         if (this.subType === 'number') {
           e.value[e.selector] = parseFloat(e.value[e.selector]);
         }
         if (valid) {
-          this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, this.selectedValue);
+          this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, value);
           this.discoveryEvent.emit({ ...e, source: this.el.id });
         } else {
           this.LOG?.debug(['handleClick', 'emit'], 'Invalid value');
@@ -515,9 +520,10 @@ export class DiscoveryInputComponent {
   private handleFilter(e: any) {
     e.stopPropagation();
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
+      this.filter = e.target.value ?? e.detail ?? '';
       this.values = this.values.map(v => ({
         ...v,
-        h: !new RegExp(`.*${(e.target.value || e.detail || '')}.*`, 'gi').test(v.v),
+        h: !new RegExp(`.*${this.filter}.*`, 'gi').test(v.v),
       }));
     }
   }
