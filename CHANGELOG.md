@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.2.22
+
+> +  2025/02/19  | v1.2.22 
+> +  2025/02/19  | [dashboard] Handle null values for vars 
+> +  2025/02/19  | changelog 
+> +  2025/02/19  | Readmes 
+
 ## v1.2.21
 
 > +  2025/02/19  | v1.2.21 
