@@ -44,7 +44,7 @@ export class DiscoveryPageable {
   @Prop() debug = false;
   @Prop() divider: number;
   @Prop() data: Dataset;
-  @Prop() options: Param = new Param();
+  @Prop() options: Param = {...new Param(), tabular: {stripped: true}};
   @Prop({ mutable: true }) params: Param[] = [];
   @Prop({ mutable: true }) elemsCount = 15;
   @Prop({ mutable: true }) windowed = 5;
@@ -77,7 +77,7 @@ export class DiscoveryPageable {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = Utils.clone({ ...new Param(), ...opts });
+      this.innerOptions = Utils.clone({ ...new Param(), tabular: {stripped: true}, ...opts });
       this.drawGridData();
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
@@ -97,7 +97,7 @@ export class DiscoveryPageable {
   // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryPageable, this.debug);
-    this.innerOptions = Utils.clone({ ...new Param(), ...this.options });
+    this.innerOptions = Utils.clone({ ...new Param(), tabular: {stripped: true}, ...this.options });
     this.drawGridData();
   }
 
@@ -304,11 +304,11 @@ export class DiscoveryPageable {
         </thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
-          <tr class={i % 2 === 0 ? 'odd' : 'even'} onClick={() => this.setSelected(value)}
+          <tr class={this.innerOptions.tabular.stripped ? (i % 2 === 0 ? 'odd' : 'even'): ''} onClick={() => this.setSelected(value)}
               onMouseOver={() => this.setOver(value)}
               style={this.getRowStyle(i)}
           >{value.map((v, j) =>
-            <td style={this.getCellStyle(i, j)}><span innerHTML={v.display + (v.unit || '')} /></td>,
+            <td style={this.getCellStyle(i, j)}><span innerHTML={v.display + (v.unit ?? '')} /></td>,
           )}</tr>,
         )}
         </tbody>
@@ -332,6 +332,8 @@ export class DiscoveryPageable {
   private getCellStyle(row: number, cell: number) {
     const h = this.data.values[row][0];
     const styles: any = {};
+    styles.backgroundColor = this.data.values[row][cell].bgColor;
+    styles.color = this.data.values[row][cell].fontColor;
     if (this.data.params && this.data.params[h]) {
       if (GTSLib.isArray(this.data.params[h]) && this.data.params[h][cell]) {
         styles.backgroundColor = this.data.params[h][cell].bgColor;

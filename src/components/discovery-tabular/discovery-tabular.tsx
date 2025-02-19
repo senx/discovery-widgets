@@ -236,8 +236,8 @@ export class DiscoveryTabular {
       readableStrategy: undefined,  // (optional)
     });
     const writer = fileStream.getWriter();
-    writer.write(uInt8);
-    writer.close();
+    await writer.write(uInt8);
+    await writer.close();
   }
 
   render() {

@@ -138,20 +138,21 @@ export class Param {
     animate?: boolean,
   };
   button?: {
-    label: string,
+    label?: string,
     vertical?: boolean,
     labelPosition?: 'start' | 'end' | 'center',
   };
   tabular?: {
-    fixedWidth: boolean,
-    sortable: boolean,
-    filterable: boolean,
-    onTop: boolean,
-    stickyHeader: boolean
+    fixedWidth?: boolean,
+    sortable?: boolean,
+    filterable?: boolean,
+    onTop?: boolean,
+    stickyHeader?: boolean,
+    stripped?: boolean
   };
   gauge?: {
-    horizontal: boolean,
-    showTicks: false,
+    horizontal?: boolean,
+    showTicks?: false,
     decimals?: number,
     color?: any[][] | HeatMaps,
     pointer?: boolean,

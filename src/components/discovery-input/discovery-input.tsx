@@ -652,7 +652,7 @@ export class DiscoveryInputComponent {
               {this.values.map(v => (
                 <div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
                   <input type="checkbox" value={v.k}
-                         checked={(this.value as string[] || []).includes(v.k)}
+                         checked={(this.value as string[] ?? []).includes(v.k)}
                          onInput={e => this.handleSelect(e)}
                          disabled={this.innerOptions?.input?.disabled}
                          name={v.v} />

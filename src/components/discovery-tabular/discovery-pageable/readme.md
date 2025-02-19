@@ -7,15 +7,15 @@
 
 ## Properties
 
-| Property     | Attribute     | Description | Type      | Default       |
-| ------------ | ------------- | ----------- | --------- | ------------- |
-| `data`       | --            |             | `Dataset` | `undefined`   |
-| `debug`      | `debug`       |             | `boolean` | `false`       |
-| `divider`    | `divider`     |             | `number`  | `undefined`   |
-| `elemsCount` | `elems-count` |             | `number`  | `15`          |
-| `options`    | --            |             | `Param`   | `new Param()` |
-| `params`     | --            |             | `Param[]` | `[]`          |
-| `windowed`   | `windowed`    |             | `number`  | `5`           |
+| Property     | Attribute     | Description | Type      | Default                                       |
+| ------------ | ------------- | ----------- | --------- | --------------------------------------------- |
+| `data`       | --            |             | `Dataset` | `undefined`                                   |
+| `debug`      | `debug`       |             | `boolean` | `false`                                       |
+| `divider`    | `divider`     |             | `number`  | `undefined`                                   |
+| `elemsCount` | `elems-count` |             | `number`  | `15`                                          |
+| `options`    | --            |             | `Param`   | `{...new Param(), tabular: {stripped: true}}` |
+| `params`     | --            |             | `Param[]` | `[]`                                          |
+| `windowed`   | `windowed`    |             | `number`  | `5`                                           |
 
 
 ## Events

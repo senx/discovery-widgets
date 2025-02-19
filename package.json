@@ -82,6 +82,7 @@
     "@types/lodash": "^4.17.15",
     "@types/node": "^22.13.1",
     "@types/showdown": "^2.0.6",
+    "@types/streamsaver": "^2.0.5",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/eslint-plugin-tslint": "^7.0.2",
