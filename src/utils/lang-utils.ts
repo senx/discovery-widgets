@@ -45,7 +45,7 @@ export class LangUtils {
   }
 
   private static generateWarpscriptVars(key: string, value: any): string {
-    if(!value) {
+    if(value === null || value === undefined) {
       return `NULL "${key}" STORE`
     } else if (typeof value === 'string') {
       return `"${encodeURIComponent(value)}" "${key}" STORE`;
