@@ -1,6 +1,18 @@
 Discovery
 ---
 
+## v1.2.21
+
+> +  2025/02/19  | v1.2.21 
+> +  2025/02/19  | [input:multi-cb] Fix only filtered selected values are sent 
+> +  2025/02/19  | [input:line] Fix hidden XAxis values when yRanges is set 
+> +  2025/02/19  | [input:multi-cb] Make label clickable 
+> +  2025/02/19  | copyright 
+> +  2025/02/19  | [dashboard] Handle null values for vars 
+> +  2025/02/19  | [tabular] Add bgColor and fontColor support for custom data, add stripped option 
+> +  2025/02/14  | small refactoring 
+> +  2025/02/11  | changelog 
+
 ## v1.2.20
 
 > +  2025/02/11  | v1.2.20 
