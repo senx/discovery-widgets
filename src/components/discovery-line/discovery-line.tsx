@@ -696,14 +696,14 @@ export class DiscoveryLineComponent {
       axisLine: { show: true, lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       axisLabel: {
         hideOverlap: true,
-        color: color || Utils.getLabelColor(this.el),
+        color: color ?? Utils.getLabelColor(this.el),
         show: !this.innerOptions.hideYAxis,
       },
-      axisTick: { show: true, lineStyle: { color: color || Utils.getGridColor(this.el) } },
+      axisTick: { show: true, lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       data: this.innerOptions.yLabelsMapping ? Object.keys(this.innerOptions.yLabelsMapping).map(k => this.innerOptions.yLabelsMapping[k]) : undefined,
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
-      min: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[0] : undefined,
-      max: this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0 ? this.innerOptions.bounds.yRanges[1] : undefined,
+      min: (this.innerOptions?.bounds?.yRanges ?? [] )[0],
+      max: (this.innerOptions?.bounds?.yRanges ?? [] )[1],
     };
   }
 
@@ -717,15 +717,15 @@ export class DiscoveryLineComponent {
       axisLabel: {
         hideOverlap: true,
         show: !this.innerOptions.hideXAxis,
-        color: color || Utils.getLabelColor(this.el),
+        color: color ?? Utils.getLabelColor(this.el),
         formatter: this.innerOptions.fullDateDisplay
           ? (value: number) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
             .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
           : undefined,
       },
       axisTick: { lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
-      scale: !(this.innerOptions.bounds && (!!this.innerOptions.bounds.minDate || !!this.innerOptions.bounds.maxDate)),
-      min: this.innerOptions.bounds !== undefined
+      scale: !(this.innerOptions.bounds && (this.innerOptions.bounds.minDate || this.innerOptions.bounds.maxDate)),
+      min: this.innerOptions.bounds?.minDate !== undefined
         ? this.innerOptions.timeMode === 'date'
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
           : this.innerOptions.bounds.minDate
