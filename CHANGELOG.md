@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.2.23
+
+> +  2025/02/24  | v1.2.23 
+> +  2025/02/24  | [tabular] Fix in case of null value 
+> +  2025/02/19  | changelog 
+
 ## v1.2.22
 
 > +  2025/02/19  | v1.2.22 
