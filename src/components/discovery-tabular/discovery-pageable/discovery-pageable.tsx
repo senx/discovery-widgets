@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -332,8 +332,10 @@ export class DiscoveryPageable {
   private getCellStyle(row: number, cell: number) {
     const h = this.data.values[row][0];
     const styles: any = {};
-    styles.backgroundColor = this.data.values[row][cell].bgColor;
-    styles.color = this.data.values[row][cell].fontColor;
+    if(this.data.values[row][cell]) {
+      styles.backgroundColor = this.data.values[row][cell].bgColor;
+      styles.color = this.data.values[row][cell].fontColor;
+    }
     if (this.data.params && this.data.params[h]) {
       if (GTSLib.isArray(this.data.params[h]) && this.data.params[h][cell]) {
         styles.backgroundColor = this.data.params[h][cell].bgColor;
