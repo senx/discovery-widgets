@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.2.24
+
+> +  2025/03/03  | v1.2.24 
+> +  2025/03/03  | [tabular] Fix custom cell color when sortable 
+> +  2025/03/03  | [line][area][pie][box-plot][annotation][bar][bar-polar][heatmap][calendar][profile] Add custom action support 
+> +  2025/03/03  | #SENX-375 : Handle discontinue bucketized curves 
+> +  2025/02/24  | changelog 
+
 ## v1.2.23
 
 > +  2025/02/24  | v1.2.23 
