@@ -7,15 +7,18 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                  | Default                                |
-| --------- | --------- | ----------- | --------------------- | -------------------------------------- |
-| `debug`   | `debug`   |             | `boolean`             | `false`                                |
-| `height`  | `height`  |             | `number`              | `undefined`                            |
-| `options` | `options` |             | `Param \| string`     | `{ ...new Param(), timeMode: 'date' }` |
-| `result`  | `result`  |             | `DataModel \| string` | `undefined`                            |
-| `type`    | `type`    |             | `string`              | `undefined`                            |
-| `unit`    | `unit`    |             | `string`              | `undefined`                            |
-| `width`   | `width`   |             | `number`              | `undefined`                            |
+| Property   | Attribute  | Description | Type                      | Default                                |
+| ---------- | ---------- | ----------- | ------------------------- | -------------------------------------- |
+| `debug`    | `debug`    |             | `boolean`                 | `false`                                |
+| `height`   | `height`   |             | `number`                  | `undefined`                            |
+| `language` | `language` |             | `"flows" \| "warpscript"` | `'warpscript'`                         |
+| `options`  | `options`  |             | `Param \| string`         | `{ ...new Param(), timeMode: 'date' }` |
+| `result`   | `result`   |             | `DataModel \| string`     | `undefined`                            |
+| `type`     | `type`     |             | `string`                  | `undefined`                            |
+| `unit`     | `unit`     |             | `string`                  | `undefined`                            |
+| `url`      | `url`      |             | `string`                  | `undefined`                            |
+| `vars`     | `vars`     |             | `string`                  | `'{}'`                                 |
+| `width`    | `width`    |             | `number`                  | `undefined`                            |
 
 
 ## Events
@@ -25,7 +28,9 @@
 | `dataPointOver`      |             | `CustomEvent<any>`                                                                          |
 | `dataPointSelected`  |             | `CustomEvent<any>`                                                                          |
 | `dataZoom`           |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; type?: string; }>` |
+| `discoveryEvent`     |             | `CustomEvent<DiscoveryEvent>`                                                               |
 | `draw`               |             | `CustomEvent<void>`                                                                         |
+| `execError`          |             | `CustomEvent<any>`                                                                          |
 | `leftMarginComputed` |             | `CustomEvent<number>`                                                                       |
 | `poi`                |             | `CustomEvent<any>`                                                                          |
 | `timeBounds`         |             | `CustomEvent<any>`                                                                          |

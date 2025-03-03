@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, DataModel, ECharts } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
@@ -26,6 +26,7 @@ import { Utils } from '../../utils/utils';
 import { ColorLib } from '../../utils/color-lib';
 import { SeriesOption } from 'echarts/lib/util/types';
 import _ from 'lodash';
+import { v4 } from 'uuid';
 
 @Component({
   tag: 'discovery-bar-polar',
@@ -40,6 +41,9 @@ export class DiscoveryBarPolarComponent {
   @Prop({ mutable: true }) height: number;
   @Prop() debug = false;
   @Prop() unit: string;
+  @Prop() url: string;
+  @Prop() language: 'warpscript' | 'flows' = 'warpscript';
+  @Prop() vars = '{}';
 
   @Element() el: HTMLElement;
 
@@ -49,6 +53,11 @@ export class DiscoveryBarPolarComponent {
   @Event() dataPointOver: EventEmitter;
   @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
+  @Event({
+    eventName: 'discoveryEvent',
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
+  @Event() execError: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -68,6 +77,19 @@ export class DiscoveryBarPolarComponent {
   private categories: string[];
   private innerWidth: number = 0;
   private innerHeight: number = 0;
+  private innerVars: any = {};
+
+  @Watch('vars')
+  varsUpdate(newValue: any, oldValue: any) {
+    let vars = this.vars;
+    if (!!this.vars && typeof this.vars === 'string') {
+      vars = JSON.parse(this.vars);
+    }
+    if (!Utils.deepEqual(vars, this.innerVars)) {
+      this.innerVars = Utils.clone(vars as any);
+    }
+    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
+  }
 
   @Watch('result')
   updateRes() {
@@ -139,6 +161,11 @@ export class DiscoveryBarPolarComponent {
   }
 
   private setOpts(notMerge = false) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    } else if (!!this.vars) {
+      this.innerVars = this.vars;
+    }
     if ((this.chartOpts?.series as any[] ?? []).length === 0) {
       this.chartOpts.title = {
         show: true,
@@ -162,7 +189,7 @@ export class DiscoveryBarPolarComponent {
 
   private getCommonSeriesParam(color: string) {
     const datasetNoAlpha = this.innerOptions.datasetNoAlpha;
-    return {
+    const opts = {
       coordinateSystem: 'polar',
       showBackground: !!this.innerOptions?.bar?.track,
       animation: !!this.innerOptions?.bar?.animate,
@@ -209,6 +236,17 @@ export class DiscoveryBarPolarComponent {
         },
       },
     } as SeriesOption;
+    (this.innerOptions.actions ?? []).forEach((action) => {
+      if (action.macro) {
+        (opts.toolbox as any).feature['my' + v4().replaceAll('-', '')] = {
+          title: action.title ?? '',
+          show: true,
+          icon: action.icon ?? Utils.DEFICON,
+          onclick: () => Utils.execAction(action.macro, this),
+        };
+      }
+    });
+    return opts;
   }
 
   convert(data: DataModel) {

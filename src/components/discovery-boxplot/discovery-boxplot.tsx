@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, DataModel, ECharts } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
 import * as echarts from 'echarts';
 import { BoxplotSeriesOption, EChartsOption, SeriesOption } from 'echarts';
@@ -25,6 +25,7 @@ import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import { ColorLib } from '../../utils/color-lib';
 import _ from 'lodash';
+import { v4 } from 'uuid';
 
 @Component({
   tag: 'discovery-boxplot',
@@ -39,6 +40,9 @@ export class DiscoveryBoxPlotComponent {
   @Prop({ mutable: true }) height: number;
   @Prop() debug = false;
   @Prop() unit: string;
+  @Prop() url: string;
+  @Prop() language: 'warpscript' | 'flows' = 'warpscript';
+  @Prop() vars = '{}';
 
   @Element() el: HTMLElement;
 
@@ -49,6 +53,11 @@ export class DiscoveryBoxPlotComponent {
   @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
   @Event() poi: EventEmitter;
+  @Event({
+    eventName: 'discoveryEvent',
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
+  @Event() execError: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -65,10 +74,22 @@ export class DiscoveryBoxPlotComponent {
   private bounds: { min: number; max: number };
   private isGTS = false;
   private zoom: { start?: number; end?: number };
-  private pois: any[] = [];
   private innerWidth: number = 0;
   private innerHeight: number = 0;
   private zoomXInfo: any = {};
+  private innerVars: any = {};
+
+  @Watch('vars')
+  varsUpdate(newValue: any, oldValue: any) {
+    let vars = this.vars;
+    if (!!this.vars && typeof this.vars === 'string') {
+      vars = JSON.parse(this.vars);
+    }
+    if (!Utils.deepEqual(vars, this.innerVars)) {
+      this.innerVars = Utils.clone(vars as any);
+    }
+    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
+  }
 
   @Watch('result')
   updateRes() {
@@ -118,6 +139,7 @@ export class DiscoveryBoxPlotComponent {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryBoxPlotComponent, this.debug);
@@ -139,6 +161,11 @@ export class DiscoveryBoxPlotComponent {
   }
 
   private setOpts(notMerge = false) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    } else if (!!this.vars) {
+      this.innerVars = this.vars;
+    }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
@@ -278,6 +305,16 @@ export class DiscoveryBoxPlotComponent {
       series: [],
       ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
+    (this.innerOptions.actions ?? []).forEach((action) => {
+      if (action.macro) {
+        (opts.toolbox as any).feature['my' + v4().replaceAll('-', '')] = {
+          title: action.title ?? '',
+          show: true,
+          icon: action.icon ?? Utils.DEFICON,
+          onclick: () => Utils.execAction(action.macro, this),
+        };
+      }
+    });
     let minVal = Number.MAX_SAFE_INTEGER;
     let maxVal = Number.MIN_SAFE_INTEGER;
     let minTS = Number.MAX_SAFE_INTEGER;

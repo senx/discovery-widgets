@@ -60,6 +60,11 @@ export class Param {
   autoRefresh?: number;
   showControls = false;
   discontinue = false;
+  actions?: {
+    title?: string,
+    icon?: string,
+    macro?: string,
+  }[];
   thresholds?: {
     color?: string;
     fill?: boolean,

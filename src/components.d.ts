@@ -16,6 +16,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -26,6 +27,8 @@ export namespace Components {
         "type": ChartType;
         "unFocus": () => Promise<void>;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryBar {
@@ -34,6 +37,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -44,6 +48,8 @@ export namespace Components {
         "type": ChartType;
         "unFocus": () => Promise<void>;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryBarPolar {
@@ -52,6 +58,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -62,6 +69,8 @@ export namespace Components {
         "type": ChartType;
         "unFocus": () => Promise<void>;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryBoxplot {
@@ -70,6 +79,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -80,6 +90,8 @@ export namespace Components {
         "type": ChartType;
         "unFocus": () => Promise<void>;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryButton {
@@ -101,6 +113,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -108,6 +121,8 @@ export namespace Components {
         "showById": (id: number | string) => Promise<void>;
         "type": ChartType;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryDashboard {
@@ -159,6 +174,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -166,6 +182,8 @@ export namespace Components {
         "showById": (id: number | string) => Promise<void>;
         "type": ChartType;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryHidden {
@@ -217,6 +235,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -227,6 +246,8 @@ export namespace Components {
         "type": ChartType;
         "unFocus": () => Promise<void>;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryLinearGauge {
@@ -285,6 +306,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -292,6 +314,8 @@ export namespace Components {
         "showById": (id: number | string) => Promise<void>;
         "type": ChartType;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoveryProfile {
@@ -300,6 +324,7 @@ export namespace Components {
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
+        "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
         "result": DataModel | string;
@@ -310,6 +335,8 @@ export namespace Components {
         "type": ChartType;
         "unFocus": () => Promise<void>;
         "unit": string;
+        "url": string;
+        "vars": string;
         "width": number;
     }
     interface DiscoverySlider {
@@ -515,6 +542,8 @@ declare global {
         "timeBounds": any;
         "leftMarginComputed": number;
         "poi": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryAnnotationElement extends Components.DiscoveryAnnotation, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryAnnotationElementEventMap>(type: K, listener: (this: HTMLDiscoveryAnnotationElement, ev: DiscoveryAnnotationCustomEvent<HTMLDiscoveryAnnotationElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -538,6 +567,8 @@ declare global {
         "dataPointSelected": any;
         "timeBounds": any;
         "poi": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryBarElement extends Components.DiscoveryBar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryBarElementEventMap>(type: K, listener: (this: HTMLDiscoveryBarElement, ev: DiscoveryBarCustomEvent<HTMLDiscoveryBarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -560,6 +591,8 @@ declare global {
         "dataPointOver": any;
         "dataPointSelected": any;
         "timeBounds": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryBarPolarElement extends Components.DiscoveryBarPolar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryBarPolarElementEventMap>(type: K, listener: (this: HTMLDiscoveryBarPolarElement, ev: DiscoveryBarPolarCustomEvent<HTMLDiscoveryBarPolarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -583,6 +616,8 @@ declare global {
         "dataPointSelected": any;
         "timeBounds": any;
         "poi": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryBoxplotElement extends Components.DiscoveryBoxplot, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryBoxplotElementEventMap>(type: K, listener: (this: HTMLDiscoveryBoxplotElement, ev: DiscoveryBoxplotCustomEvent<HTMLDiscoveryBoxplotElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -623,6 +658,8 @@ declare global {
         "draw": void;
         "dataPointOver": any;
         "dataPointSelected": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryCalendarElement extends Components.DiscoveryCalendar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryCalendarElementEventMap>(type: K, listener: (this: HTMLDiscoveryCalendarElement, ev: DiscoveryCalendarCustomEvent<HTMLDiscoveryCalendarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -697,6 +734,8 @@ declare global {
         "draw": void;
         "dataPointOver": any;
         "dataPointSelected": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryHeatmapElement extends Components.DiscoveryHeatmap, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryHeatmapElementEventMap>(type: K, listener: (this: HTMLDiscoveryHeatmapElement, ev: DiscoveryHeatmapCustomEvent<HTMLDiscoveryHeatmapElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -826,6 +865,8 @@ declare global {
         "dataPointSelected": any;
         "poi": any;
         "timeBounds": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryLineElement extends Components.DiscoveryLine, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryLineElementEventMap>(type: K, listener: (this: HTMLDiscoveryLineElement, ev: DiscoveryLineCustomEvent<HTMLDiscoveryLineElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -919,6 +960,8 @@ declare global {
         "draw": void;
         "dataPointOver": any;
         "dataPointSelected": any;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryPieElement extends Components.DiscoveryPie, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryPieElementEventMap>(type: K, listener: (this: HTMLDiscoveryPieElement, ev: DiscoveryPieCustomEvent<HTMLDiscoveryPieElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -941,6 +984,8 @@ declare global {
         "dataPointSelected": any;
         "timeBounds": any;
         "leftMarginComputed": number;
+        "discoveryEvent": DiscoveryEvent;
+        "execError": any;
     }
     interface HTMLDiscoveryProfileElement extends Components.DiscoveryProfile, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryProfileElementEventMap>(type: K, listener: (this: HTMLDiscoveryProfileElement, ev: DiscoveryProfileCustomEvent<HTMLDiscoveryProfileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1094,10 +1139,13 @@ declare namespace LocalJSX {
     interface DiscoveryAnnotation {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryAnnotationCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryAnnotationCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryAnnotationCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryAnnotationCustomEvent<number>) => void;
         "onPoi"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
         "onTimeBounds"?: (event: DiscoveryAnnotationCustomEvent<any>) => void;
@@ -1105,15 +1153,20 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryBar {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryBarCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryBarCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryBarCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBarCustomEvent<number>) => void;
         "onPoi"?: (event: DiscoveryBarCustomEvent<any>) => void;
         "onTimeBounds"?: (event: DiscoveryBarCustomEvent<any>) => void;
@@ -1121,30 +1174,40 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryBarPolar {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryBarPolarCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryBarPolarCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryBarPolarCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryBarPolarCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryBarPolarCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryBarPolarCustomEvent<any>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBarPolarCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryBarPolarCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryBoxplot {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryBoxplotCustomEvent<{ start?: number, end?: number, min?: number, max?: number, type?: string }>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryBoxplotCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryBoxplotCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryBoxplotCustomEvent<number>) => void;
         "onPoi"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
         "onTimeBounds"?: (event: DiscoveryBoxplotCustomEvent<any>) => void;
@@ -1152,6 +1215,8 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryButton {
@@ -1173,13 +1238,18 @@ declare namespace LocalJSX {
     interface DiscoveryCalendar {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryCalendarCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryCalendarCustomEvent<any>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryCalendarCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryCalendarCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryCalendarCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryDashboard {
@@ -1224,13 +1294,18 @@ declare namespace LocalJSX {
     interface DiscoveryHeatmap {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryHeatmapCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryHeatmapCustomEvent<any>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryHeatmapCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryHeatmapCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryHeatmapCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryHidden {
@@ -1286,6 +1361,7 @@ declare namespace LocalJSX {
     interface DiscoveryLine {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryLineCustomEvent<{
@@ -1304,7 +1380,9 @@ declare namespace LocalJSX {
     orientation?: string,
     type?: string
   }>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryLineCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryLineCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryLineCustomEvent<number>) => void;
         "onPoi"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onTimeBounds"?: (event: DiscoveryLineCustomEvent<any>) => void;
@@ -1312,6 +1390,8 @@ declare namespace LocalJSX {
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryLinearGauge {
@@ -1361,28 +1441,38 @@ declare namespace LocalJSX {
     interface DiscoveryPie {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryPieCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryPieCustomEvent<any>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryPieCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryPieCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryPieCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoveryProfile {
         "debug"?: boolean;
         "height"?: number;
+        "language"?: 'warpscript' | 'flows';
         "onDataPointOver"?: (event: DiscoveryProfileCustomEvent<any>) => void;
         "onDataPointSelected"?: (event: DiscoveryProfileCustomEvent<any>) => void;
         "onDataZoom"?: (event: DiscoveryProfileCustomEvent<{ start: number, end: number, min: number, max: number }>) => void;
+        "onDiscoveryEvent"?: (event: DiscoveryProfileCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryProfileCustomEvent<void>) => void;
+        "onExecError"?: (event: DiscoveryProfileCustomEvent<any>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryProfileCustomEvent<number>) => void;
         "onTimeBounds"?: (event: DiscoveryProfileCustomEvent<any>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;
         "type"?: ChartType;
         "unit"?: string;
+        "url"?: string;
+        "vars"?: string;
         "width"?: number;
     }
     interface DiscoverySlider {

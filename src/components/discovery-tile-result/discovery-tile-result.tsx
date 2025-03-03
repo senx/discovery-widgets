@@ -301,6 +301,10 @@ export class DiscoveryTileResultComponent {
           unit={this.unit}
           options={this.innerOptions}
           debug={this.debug}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
           onDataZoom={event => this.handleZoom(event)}
           onDataPointOver={event => this.handleDataPointOver(event)}
           onDataPointSelected={event => this.handleDataSelected(event)}
@@ -321,6 +325,10 @@ export class DiscoveryTileResultComponent {
           onPoi={event => this.handlePoi(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'bar':
         return <discovery-bar
@@ -335,6 +343,10 @@ export class DiscoveryTileResultComponent {
           onPoi={event => this.handlePoi(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'bar-polar':
         return <discovery-bar-polar
@@ -348,6 +360,10 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'boxplot':
         return <discovery-boxplot
@@ -361,6 +377,10 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'display':
         return <discovery-display
@@ -447,6 +467,10 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'tabular':
         return <discovery-tabular
@@ -512,6 +536,10 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'heatmap':
         return <discovery-heatmap
@@ -524,6 +552,10 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'profile':
         return <discovery-profile
@@ -537,6 +569,10 @@ export class DiscoveryTileResultComponent {
           onDataPointSelected={event => this.handleDataSelected(event)}
           debug={this.debug}
           id={this.componentId}
+          vars={JSON.stringify(this.innerVars)}
+          language={this.language}
+          url={this.url}
+          onExecError={e => this.handleExecError(e)}
         />;
       case 'dashboard':
       case 'dashboard:flex':
@@ -574,6 +610,7 @@ export class DiscoveryTileResultComponent {
             ref={(el: any) => this.tile = el ?? this.tile}
             debug={this.debug}
             id={this.componentId}
+            onExecError={e => this.handleExecError(e)}
           />;
         }
         return '';

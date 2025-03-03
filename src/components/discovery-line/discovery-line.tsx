@@ -23,7 +23,7 @@ import { ColorLib } from '../../utils/color-lib';
 import { Utils } from '../../utils/utils';
 import { Param } from '../../model/param';
 import { Logger } from '../../utils/logger';
-import { ChartType, DataModel, ECharts } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { CartesianAxisOption } from 'echarts/lib/coord/cartesian/AxisModel';
 import { GridOption } from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
@@ -44,6 +44,9 @@ export class DiscoveryLineComponent {
   @State() @Prop() height: number;
   @Prop() debug = false;
   @Prop() unit = '';
+  @Prop() url: string;
+  @Prop() language: 'warpscript' | 'flows' = 'warpscript';
+  @Prop() vars = '{}';
 
   @Element() el: HTMLElement;
 
@@ -69,6 +72,11 @@ export class DiscoveryLineComponent {
   @Event() dataPointSelected: EventEmitter;
   @Event() poi: EventEmitter;
   @Event() timeBounds: EventEmitter;
+  @Event({
+    eventName: 'discoveryEvent',
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
+  @Event() execError: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -89,6 +97,7 @@ export class DiscoveryLineComponent {
   private innerHeight: number = 0;
   private zoomXInfo: any = {};
   private zoomYInfo: any = {};
+  private innerVars: any = {};
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -127,6 +136,18 @@ export class DiscoveryLineComponent {
     }
   }
 
+  @Watch('vars')
+  varsUpdate(newValue: any, oldValue: any) {
+    let vars = this.vars;
+    if (!!this.vars && typeof this.vars === 'string') {
+      vars = JSON.parse(this.vars);
+    }
+    if (!Utils.deepEqual(vars, this.innerVars)) {
+      this.innerVars = Utils.clone(vars as any);
+    }
+    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
+  }
+
   // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
@@ -143,6 +164,11 @@ export class DiscoveryLineComponent {
   }
 
   setOpts(notMerge = false) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    } else if (!!this.vars) {
+      this.innerVars = this.vars;
+    }
     if ((this.chartOpts.series as SeriesOption[]).length === 0) {
       this.chartOpts.title = {
         show: true,
@@ -298,6 +324,16 @@ export class DiscoveryLineComponent {
     let min = Number.MAX_SAFE_INTEGER;
     let max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
+    (this.innerOptions.actions ?? []).forEach((action) => {
+      if (action.macro) {
+        (opts.toolbox as any).feature['my' + v4().replaceAll('-', '')] = {
+          title: action.title ?? '',
+          show: true,
+          icon: action.icon ?? Utils.DEFICON,
+          onclick: () => Utils.execAction(action.macro, this),
+        };
+      }
+    });
     for (let index = 0; index < gtsCount; index++) {
       const gts = gtsList[index];
       const datasetNoAlpha = (data.params ?? [])[index]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
@@ -703,8 +739,8 @@ export class DiscoveryLineComponent {
       axisTick: { show: true, lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       data: this.innerOptions.yLabelsMapping ? Object.keys(this.innerOptions.yLabelsMapping).map(k => this.innerOptions.yLabelsMapping[k]) : undefined,
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
-      min: (this.innerOptions?.bounds?.yRanges ?? [] )[0],
-      max: (this.innerOptions?.bounds?.yRanges ?? [] )[1],
+      min: (this.innerOptions?.bounds?.yRanges ?? [])[0],
+      max: (this.innerOptions?.bounds?.yRanges ?? [])[1],
     };
   }
 

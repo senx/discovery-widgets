@@ -17,7 +17,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // noinspection ES6UnusedImports
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, DataModel, ECharts } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
 import {
   CustomSeriesRenderItemAPI,
@@ -31,6 +31,7 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import { ColorLib } from '../../utils/color-lib';
+import { v4 } from 'uuid';
 
 @Component({
   tag: 'discovery-profile',
@@ -46,6 +47,9 @@ export class DiscoveryProfile {
   @State() @Prop() height: number;
   @Prop() debug = false;
   @Prop() unit: string;
+  @Prop() url: string;
+  @Prop() language: 'warpscript' | 'flows' = 'warpscript';
+  @Prop() vars = '{}';
 
   @Element() el: HTMLElement;
 
@@ -55,6 +59,11 @@ export class DiscoveryProfile {
   @Event() dataPointSelected: EventEmitter;
   @Event() timeBounds: EventEmitter;
   @Event() leftMarginComputed: EventEmitter<number>;
+  @Event({
+    eventName: 'discoveryEvent',
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
+  @Event() execError: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -75,6 +84,7 @@ export class DiscoveryProfile {
   private bounds: { min: number; max: number };
   private innerWidth: number = 0;
   private innerHeight: number = 0;
+  private innerVars: any = {};
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -94,6 +104,18 @@ export class DiscoveryProfile {
         style: api.style({}),
       });
   };
+
+  @Watch('vars')
+  varsUpdate(newValue: any, oldValue: any) {
+    let vars = this.vars;
+    if (!!this.vars && typeof this.vars === 'string') {
+      vars = JSON.parse(this.vars);
+    }
+    if (!Utils.deepEqual(vars, this.innerVars)) {
+      this.innerVars = Utils.clone(vars as any);
+    }
+    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
+  }
 
   @Watch('result')
   updateRes() {
@@ -179,6 +201,7 @@ export class DiscoveryProfile {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryProfile, this.debug);
@@ -195,6 +218,11 @@ export class DiscoveryProfile {
   }
 
   private setOpts(notMerge = false) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    } else if (!!this.vars) {
+      this.innerVars = this.vars;
+    }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,
@@ -209,9 +237,7 @@ export class DiscoveryProfile {
     } else {
       this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
-    setTimeout(() => {
-      this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
-    });
+    setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, notMerge, true));
   }
 
   convert(data: DataModel) {
@@ -421,7 +447,7 @@ export class DiscoveryProfile {
       linesCount,
       opts: this.innerOptions,
     });
-    return {
+    const opts = {
       animation: false,
       grid: {
         height: this.height - (!!this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
@@ -571,6 +597,17 @@ export class DiscoveryProfile {
       series,
       ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
+    (this.innerOptions.actions ?? []).forEach((action) => {
+      if (action.macro) {
+        (opts.toolbox as any).feature['my' + v4().replaceAll('-', '')] = {
+          title: action.title ?? '',
+          show: true,
+          icon: action.icon ?? Utils.DEFICON,
+          onclick: () => Utils.execAction(action.macro, this),
+        };
+      }
+    });
+    return opts;
   }
 
   componentDidLoad() {

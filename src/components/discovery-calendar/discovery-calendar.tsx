@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, DataModel, ECharts } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
 import * as echarts from 'echarts';
 import { EChartsOption, SeriesOption } from 'echarts';
@@ -24,6 +24,7 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import { ColorLib } from '../../utils/color-lib';
+import { v4 } from 'uuid';
 
 @Component({
   tag: 'discovery-calendar',
@@ -38,12 +39,20 @@ export class DiscoveryCalendar {
   @Prop() height: number;
   @Prop() debug = false;
   @Prop() unit: string;
+  @Prop() url: string;
+  @Prop() language: 'warpscript' | 'flows' = 'warpscript';
+  @Prop() vars = '{}';
 
   @Element() el: HTMLElement;
 
   @Event() draw: EventEmitter<void>;
   @Event() dataPointOver: EventEmitter;
   @Event() dataPointSelected: EventEmitter;
+  @Event({
+    eventName: 'discoveryEvent',
+    bubbles: true,
+  }) discoveryEvent: EventEmitter<DiscoveryEvent>;
+  @Event() execError: EventEmitter;
 
   @State() parsing = false;
   @State() rendering = false;
@@ -58,6 +67,19 @@ export class DiscoveryCalendar {
   private CAL_SIZE = 150;
   private innerWidth: number = 0;
   private innerHeight: number = 0;
+  private innerVars: any = {};
+
+  @Watch('vars')
+  varsUpdate(newValue: any, oldValue: any) {
+    let vars = this.vars;
+    if (!!this.vars && typeof this.vars === 'string') {
+      vars = JSON.parse(this.vars);
+    }
+    if (!Utils.deepEqual(vars, this.innerVars)) {
+      this.innerVars = Utils.clone(vars as any);
+    }
+    this.LOG?.debug(['varsUpdate'], { vars: this.vars, newValue, oldValue });
+  }
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -274,7 +296,7 @@ export class DiscoveryCalendar {
     }
     this.height = this.CAL_SIZE * cal + titles.length * 20 + 40;
     this.LOG?.debug(['convert', 'series'], { series, calendar, visualMap, titles });
-    return {
+    const opts = {
       title: titles,
       grid: {
         left: 10, top: 10, bottom: 10, right: 10,
@@ -312,6 +334,17 @@ export class DiscoveryCalendar {
       calendar,
       ...this.innerOptions?.extra?.chartOpts || {},
     } as EChartsOption;
+    (this.innerOptions.actions ?? []).forEach((action) => {
+      if (action.macro) {
+        (opts.toolbox as any).feature['my' + v4().replaceAll('-', '')] = {
+          title: action.title ?? '',
+          show: true,
+          icon: action.icon ?? Utils.DEFICON,
+          onclick: () => Utils.execAction(action.macro, this),
+        };
+      }
+    });
+    return opts;
   }
 
   @Method()
@@ -323,6 +356,11 @@ export class DiscoveryCalendar {
   }
 
   private setOpts(notMerge = false) {
+    if (!!this.vars && typeof this.vars === 'string') {
+      this.innerVars = JSON.parse(this.vars);
+    } else if (!!this.vars) {
+      this.innerVars = this.vars;
+    }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
       this.chartOpts.title = {
         show: true,

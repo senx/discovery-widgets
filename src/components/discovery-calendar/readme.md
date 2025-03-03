@@ -7,24 +7,29 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                  | Default       |
-| --------- | --------- | ----------- | --------------------- | ------------- |
-| `debug`   | `debug`   |             | `boolean`             | `false`       |
-| `height`  | `height`  |             | `number`              | `undefined`   |
-| `options` | `options` |             | `Param \| string`     | `new Param()` |
-| `result`  | `result`  |             | `DataModel \| string` | `undefined`   |
-| `type`    | `type`    |             | `string`              | `undefined`   |
-| `unit`    | `unit`    |             | `string`              | `undefined`   |
-| `width`   | `width`   |             | `number`              | `undefined`   |
+| Property   | Attribute  | Description | Type                      | Default        |
+| ---------- | ---------- | ----------- | ------------------------- | -------------- |
+| `debug`    | `debug`    |             | `boolean`                 | `false`        |
+| `height`   | `height`   |             | `number`                  | `undefined`    |
+| `language` | `language` |             | `"flows" \| "warpscript"` | `'warpscript'` |
+| `options`  | `options`  |             | `Param \| string`         | `new Param()`  |
+| `result`   | `result`   |             | `DataModel \| string`     | `undefined`    |
+| `type`     | `type`     |             | `string`                  | `undefined`    |
+| `unit`     | `unit`     |             | `string`                  | `undefined`    |
+| `url`      | `url`      |             | `string`                  | `undefined`    |
+| `vars`     | `vars`     |             | `string`                  | `'{}'`         |
+| `width`    | `width`    |             | `number`                  | `undefined`    |
 
 
 ## Events
 
-| Event               | Description | Type                |
-| ------------------- | ----------- | ------------------- |
-| `dataPointOver`     |             | `CustomEvent<any>`  |
-| `dataPointSelected` |             | `CustomEvent<any>`  |
-| `draw`              |             | `CustomEvent<void>` |
+| Event               | Description | Type                          |
+| ------------------- | ----------- | ----------------------------- |
+| `dataPointOver`     |             | `CustomEvent<any>`            |
+| `dataPointSelected` |             | `CustomEvent<any>`            |
+| `discoveryEvent`    |             | `CustomEvent<DiscoveryEvent>` |
+| `draw`              |             | `CustomEvent<void>`           |
+| `execError`         |             | `CustomEvent<any>`            |
 
 
 ## Methods
