@@ -152,7 +152,7 @@ export class DiscoveryPageable {
         }
       });
     }
-    this.filteredDataset = dataset;
+    this.filteredDataset = Utils.clone(dataset);
     for (let i = 0; i < dataset.length / this.elemsCount; i++) {
       this.pages.push(i);
     }
@@ -250,7 +250,7 @@ export class DiscoveryPageable {
         break;
       case 'date':
         if (res !== undefined && !isNaN(parseInt(res, 10))) {
-          const format = v.format || (this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
+          const format = v.format ?? (this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
           res = GTSLib.toISOString(parseInt(res, 10), this.divider, this.innerOptions.timeZone, format)
             .replace('T', ' ')
             .replace(/\+[0-9]{2}:[0-9]{2}$/gi, '');
@@ -259,7 +259,7 @@ export class DiscoveryPageable {
         }
         break;
       case 'duration':
-        const format = v.format || (this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
+        const format = v.format ?? (this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
         if (res !== undefined && !isNaN(parseInt(res, 10))) {
           res = dayjs.duration(parseInt(res, 10) / this.divider).format(format);
         } else {
@@ -332,9 +332,9 @@ export class DiscoveryPageable {
   private getCellStyle(row: number, cell: number) {
     const h = this.data.values[row][0];
     const styles: any = {};
-    if(this.data.values[row][cell]) {
-      styles.backgroundColor = this.data.values[row][cell].bgColor;
-      styles.color = this.data.values[row][cell].fontColor;
+    if(this.filteredDataset[row][cell]) {
+      styles.backgroundColor = (this.filteredDataset[row][cell] as any).bgColor;
+      styles.color = (this.filteredDataset[row][cell] as any).fontColor;
     }
     if (this.data.params && this.data.params[h]) {
       if (GTSLib.isArray(this.data.params[h]) && this.data.params[h][cell]) {
