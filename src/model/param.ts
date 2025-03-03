@@ -59,6 +59,7 @@ export class Param {
   responsive?: boolean;
   autoRefresh?: number;
   showControls = false;
+  discontinue = false;
   thresholds?: {
     color?: string;
     fill?: boolean,

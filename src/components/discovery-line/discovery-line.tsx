@@ -348,6 +348,7 @@ export class DiscoveryLineComponent {
           id: gts.id,
           animation: false,
           large: true,
+          connectNulls: !this.innerOptions.discontinue,
           showSymbol: this.type === 'scatter' || this.innerOptions.showDots || this.innerOptions.showValues,
           symbolSize: this.innerOptions.dotSize ?? 10,
           smooth: type === 'spline' || type === 'spline-area' ? 0.2 : undefined,

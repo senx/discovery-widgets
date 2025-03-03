@@ -213,6 +213,7 @@ export class DiscoveryTileResultComponent {
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
       options: this.innerOptions,
+      result: this.result,
     });
     this.innerResult = GTSLib.getData(this.result);
     this.innerVars = JSON.parse(this.vars ?? '{}');
@@ -221,6 +222,7 @@ export class DiscoveryTileResultComponent {
     this.LOG?.debug(['componentWillLoad 2'], {
       type: this.innerType,
       options: this.innerOptions,
+      result: this.innerResult,
     });
     this.ready = true;
   }
