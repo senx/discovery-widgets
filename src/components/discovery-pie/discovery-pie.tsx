@@ -63,7 +63,6 @@ export class DiscoveryPieComponent {
   private chartOpts: EChartsOption;
   private defOptions: Param = new Param();
   private LOG: Logger;
-  private divider = 1000;
   private myChart: ECharts;
   private innerWidth: number = 0;
   private innerHeight: number = 0;
@@ -119,7 +118,7 @@ export class DiscoveryPieComponent {
     const height = dims.h;
     if (this.myChart && (this.innerWidth !== width || this.innerHeight !== dims.h)) {
       this.innerWidth = width;
-      this.innerHeight = this.innerHeight !== dims.h ? height - this.el.parentElement.offsetTop : this.innerHeight;
+      this.innerHeight = this.innerHeight !== dims.h ? height : this.innerHeight;
       this.myChart.resize({ width: this.innerWidth, height: this.innerHeight, silent: true });
     }
     return Promise.resolve();
@@ -177,8 +176,7 @@ export class DiscoveryPieComponent {
       this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(this.result || new DataModel());
+    this.chartOpts = this.convert(this.result ?? new DataModel());
     this.setOpts();
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
@@ -192,11 +190,11 @@ export class DiscoveryPieComponent {
     } else if (!!this.vars) {
       this.innerVars = this.vars;
     }
-    if ((this.chartOpts?.series as any[] || []).length === 0) {
+    if ((this.chartOpts?.series as any[] ?? []).length === 0) {
       this.chartOpts.title = {
         show: true,
         textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
-        text: this.innerOptions.noDataLabel || '',
+        text: this.innerOptions.noDataLabel ?? '',
         left: 'center',
         top: 'center',
       };
@@ -204,11 +202,11 @@ export class DiscoveryPieComponent {
       this.chartOpts.yAxis = { show: false };
       this.chartOpts.tooltip = { show: false };
     } else {
-      this.chartOpts.title = { ...this.chartOpts.title || {}, show: false };
+      this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     setTimeout(() => {
       if (this.myChart) {
-        this.myChart.setOption(this.chartOpts || {}, notMerge, true);
+        this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
       }
     });
   }
@@ -259,8 +257,8 @@ export class DiscoveryPieComponent {
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
+    options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
     this.innerOptions = { ...options };
     const series: any[] = [];
     let gtsList: any[];
@@ -283,11 +281,11 @@ export class DiscoveryPieComponent {
     const dataStruct = [];
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
-      const c = ColorLib.getColor(gts.id || i, this.innerOptions.scheme);
-      const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
+      const c = ColorLib.getColor(gts.id ?? i, this.innerOptions.scheme);
+      const color = (data.params ?? [])[i]?.datasetColor ?? c;
       if (GTSLib.isGtsToPlot(gts)) {
-        const values = (gts.v || []);
-        const val = values[values.length - 1] || [];
+        const values = (gts.v ?? []);
+        const val = values[values.length - 1] ?? [];
         let value = 0;
         if (val.length > 0) {
           value = val[val.length - 1];
@@ -295,20 +293,20 @@ export class DiscoveryPieComponent {
         dataStruct.push({
           ...this.getCommonDataParam(color),
           id: gts.id,
-          name: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
+          name: (data.params ?? [])[i]?.key ?? GTSLib.serializeGtsMetadata(gts),
           value,
         });
       } else if (!GTSLib.isGts(gts)) {
         if (gts.hasOwnProperty('key')) {
           dataStruct.push({
             ...this.getCommonDataParam(color),
-            name: gts.key || '',
-            value: gts.value || Number.MIN_VALUE,
+            name: gts.key ?? '',
+            value: gts.value ?? Number.MIN_VALUE,
           });
         } else {
           Object.keys(gts).forEach((k, j) => {
             const schemeColor = ColorLib.getColor(j, this.innerOptions.scheme);
-            const datasetColor = ((data.params || [])[i] || { datasetColor: schemeColor }).datasetColor || schemeColor;
+            const datasetColor = (data.params ?? [])[i]?.datasetColor ?? schemeColor;
             dataStruct.push({
               ...this.getCommonDataParam(datasetColor),
               name: k,
@@ -319,10 +317,7 @@ export class DiscoveryPieComponent {
       }
     }
     if (dataStruct.length > 0) {
-      series.push({
-        ...this.getCommonSeriesParam(),
-        data: dataStruct,
-      } as SeriesOption);
+      series.push({ ...this.getCommonSeriesParam(), data: dataStruct } as SeriesOption);
     }
     this.LOG?.debug(['convert', 'series'], series);
     const opts = {
@@ -332,11 +327,9 @@ export class DiscoveryPieComponent {
       },
       tooltip: {
         trigger: 'item',
-        axisPointer: {
-          type: 'shadow',
-        },
+        axisPointer: { type: 'shadow' },
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
-        hideDelay: this.innerOptions.tooltipDelay || 100,
+        hideDelay: this.innerOptions.tooltipDelay !== undefined ? this.innerOptions.tooltipDelay : 100,
       },
       toolbox: {
         show: this.innerOptions.showControls,
@@ -350,7 +343,7 @@ export class DiscoveryPieComponent {
         show: false,
       },
       series,
-      ...this.innerOptions?.extra?.chartOpts || {},
+      ...this.innerOptions?.extra?.chartOpts ?? {},
     } as EChartsOption;
     (this.innerOptions.actions ?? []).forEach((action) => {
       if (action.macro) {
@@ -386,7 +379,11 @@ export class DiscoveryPieComponent {
       this.myChart.on('rendered', () => {
         this.rendering = false;
         if (initial) {
-          setTimeout(() => this.draw.emit());
+          setTimeout(() => {
+            this.draw.emit();
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            setTimeout(async () => await this.resize(), 200);
+          });
           initial = false;
         }
       });
@@ -397,7 +394,7 @@ export class DiscoveryPieComponent {
       this.myChart.on('click', (event: any) => {
         this.dataPointSelected.emit({ date: event.value[0], name: event.seriesName, value: event.value[1], meta: {} });
       });
-      this.myChart.setOption(this.chartOpts || {}, true, false);
+      this.myChart.setOption(this.chartOpts ?? {}, true, false);
       initial = true;
     });
   }
