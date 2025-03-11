@@ -130,6 +130,7 @@ export class Param {
 // components specific params
   bar?: {
     horizontal?: boolean,
+    groupedTooltip?: boolean,
     animate?: boolean,
     stacked?: boolean,
     startAngle?: number,
