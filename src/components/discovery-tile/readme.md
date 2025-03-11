@@ -15,6 +15,7 @@
 | `debug`            | `debug`             |             | `boolean`                 | `false`        |
 | `language`         | `language`          |             | `"flows" \| "warpscript"` | `'warpscript'` |
 | `options`          | `options`           |             | `Param \| string`         | `new Param()`  |
+| `script`           | `script`            |             | `string`                  | `undefined`    |
 | `type`             | `type`              |             | `string`                  | `undefined`    |
 | `unit`             | `unit`              |             | `string`                  | `''`           |
 | `url`              | `url`               |             | `string`                  | `undefined`    |
@@ -58,7 +59,7 @@ Type: `Promise<unknown>`
 
 | Name   | Type             | Description |
 | ------ | ---------------- | ----------- |
-| `type` | `"svg" \| "png"` |             |
+| `type` | `"png" \| "svg"` |             |
 
 #### Returns
 

@@ -388,6 +388,7 @@ export namespace Components {
         "language": 'warpscript' | 'flows';
         "options": Param | string;
         "resize": () => Promise<void>;
+        "script": string;
         "setFocus": (regexp: string, ts: number, value?: number) => Promise<void>;
         "setZoom": (dataZoom: { start: number; end: number; }) => Promise<void>;
         "show": (regexp: string) => Promise<void>;
@@ -1526,6 +1527,7 @@ declare namespace LocalJSX {
         "onStatusError"?: (event: DiscoveryTileCustomEvent<any>) => void;
         "onStatusHeaders"?: (event: DiscoveryTileCustomEvent<string[]>) => void;
         "options"?: Param | string;
+        "script"?: string;
         "type"?: ChartType;
         "unit"?: string;
         "url"?: string;

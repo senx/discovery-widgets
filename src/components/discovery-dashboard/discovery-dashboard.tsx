@@ -233,7 +233,6 @@ export class DiscoveryDashboardComponent {
       tiles[i].uid = v4();
       delete tiles[i].macro;
       delete tiles[i].data;
-      //  delete tiles[i].elem;
       delete tiles[i].endpoint;
     }
     result.tiles = tiles.filter((t: any) => t.type !== 'hidden');
@@ -458,10 +457,11 @@ export class DiscoveryDashboardComponent {
                                       onSelfType={type => this.setActualType(i, type)}
                                       debug={this.debug}
                                       id={`chart-${i}`}
+                                      script={t.macro + ' EVAL'}
                                       ref={(el) => this.addTile(el, t, i)}
                                       vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                       options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
-                    >{t.macro + ' EVAL'}</discovery-tile>
+                    ></discovery-tile>
                     : <discovery-tile-result
                       url={t.endpoint ?? this.url}
                       result={t.data}
@@ -506,11 +506,12 @@ export class DiscoveryDashboardComponent {
                                         debug={this.debug}
                                         unit={t.unit}
                                         id={`chart-${i}`}
+                                        script={t.macro + ' EVAL'}
                                         ref={(el) => this.addTile(el, t, i)}
                                         onSelfType={type => this.setActualType(i, type)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.innerVars, this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
-                      >{t.macro + ' EVAL'}</discovery-tile>
+                      ></discovery-tile>
                       : <discovery-tile-result
                         url={t.endpoint ?? this.url}
                         result={t.data}
@@ -549,12 +550,13 @@ export class DiscoveryDashboardComponent {
                                         chart-title={t.title}
                                         debug={this.debug}
                                         unit={t.unit}
+                                        script={t.macro + ' EVAL'}
                                         id={`chart-${i}`}
                                         onSelfType={type => this.setActualType(i, type)}
                                         ref={(el) => this.addTile(el, t, i)}
                                         vars={JSON.stringify(DiscoveryDashboardComponent.mergeVars([this.result.vars, t.vars]))}
                                         options={JSON.stringify(DiscoveryDashboardComponent.merge(this.innerOptions, t.options))}
-                      >{t.macro + ' EVAL'}</discovery-tile>
+                      ></discovery-tile>
                       : <discovery-tile-result
                         url={t.endpoint ?? this.url}
                         result={t.data}

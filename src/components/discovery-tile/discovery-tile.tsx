@@ -33,6 +33,7 @@ export class DiscoveryTileComponent {
   @Prop({ mutable: true }) url: string;
   @Prop() chartTitle: string;
   @Prop() chartDescription: string;
+  @Prop() script: string;
   @Prop() type: ChartType;
   @Prop({ mutable: true, reflect: true }) options: Param | string = new Param();
   @Prop() language: 'warpscript' | 'flows' = 'warpscript';
@@ -88,6 +89,12 @@ export class DiscoveryTileComponent {
       }
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
+  }
+
+  @Watch('script')
+  async scriptUpdate(newValue: any, oldValue: any) {
+    this.LOG?.debug(['scriptUpdate'], newValue, oldValue);
+    await this.exec(true);
   }
 
   @Watch('vars')
@@ -230,12 +237,13 @@ export class DiscoveryTileComponent {
   @Method()
   async exec(refresh = false) {
     return new Promise(resolve => {
-      if (this.el?.innerHTML !== undefined) {
+      const script = this.script ?? this.el?.innerHTML;
+      if (script !== undefined) {
         if (!refresh) {
           setTimeout(() => this.loaded = false);
         }
         this.ws = LangUtils.prepare(
-          Utils.unsescape(this.el.innerHTML),
+          Utils.unsescape(script),
           this.innerVars ?? {},
           this.innerOptions?.skippedVars ?? [],
           this.type,
@@ -267,7 +275,7 @@ export class DiscoveryTileComponent {
                 this.LOG?.debug(['exec', 'liloControl'], 'This request result arrived later than the latest request, discard result');
                 resolve(true);
               } else {
-                  this.hiddenByWs = false;
+                this.hiddenByWs = false;
                 if ((this.type ?? '').startsWith('input') || (this.type ?? '').startsWith('svg')) {
                   this.result = '';
                 }
