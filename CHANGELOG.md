@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.2.25
+
+> +  2025/03/11  | v1.2.25 
+> +  2025/03/11  | readmes 
+> +  2025/03/11  | [bar] Allow grouped or separated tooltip 
+> +  2025/03/11  | [Pie] Fix overflow 
+> +  2025/03/11  | [inner dashboard] Fix WarpScript update 
+> +  2025/03/03  | changelog 
+
 ## v1.2.24
 
 > +  2025/03/03  | v1.2.24 

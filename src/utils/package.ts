@@ -1,5 +1,5 @@
 export const packageJson = {
-  version: '1.2.24',
+  version: '1.2.25',
   name: '@senx/discovery-widgets',
   description: 'Discovery Widgets Elements',
   author: 'SenX <contact@senx.io>',
