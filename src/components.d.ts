@@ -854,7 +854,7 @@ declare global {
         new (): HTMLDiscoveryInputChipsChipElement;
     };
     interface HTMLDiscoveryInputDateRangeElementEventMap {
-        "valueChanged": number[];
+        "valueChanged": number[] | number;
     }
     interface HTMLDiscoveryInputDateRangeElement extends Components.DiscoveryInputDateRange, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryInputDateRangeElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputDateRangeElement, ev: DiscoveryInputDateRangeCustomEvent<HTMLDiscoveryInputDateRangeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1390,7 +1390,7 @@ declare namespace LocalJSX {
     interface DiscoveryInputDateRange {
         "dateRange"?: number[];
         "disabled"?: boolean;
-        "onValueChanged"?: (event: DiscoveryInputDateRangeCustomEvent<number[]>) => void;
+        "onValueChanged"?: (event: DiscoveryInputDateRangeCustomEvent<number[] | number>) => void;
         "options"?: Param;
         "required"?: boolean;
     }

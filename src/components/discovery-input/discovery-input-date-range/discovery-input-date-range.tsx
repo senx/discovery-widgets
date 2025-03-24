@@ -18,7 +18,7 @@ export class DiscoveryInputDateRange {
   @Prop() required: boolean;
   @Prop() disabled: boolean;
 
-  @Event() valueChanged: EventEmitter<number[]>;
+  @Event() valueChanged: EventEmitter<number[] | number>;
 
   private input: HTMLInputElement;
   private wrapper: HTMLDivElement;
@@ -57,15 +57,15 @@ export class DiscoveryInputDateRange {
           GTSLib.toTimestamp(end.toISOString(true), this.divider, this.options.timeZone, undefined),
         ]);
       } else if ((this.dateRange ?? []).length === 1) {
-        this.valueChanged.emit([GTSLib.toTimestamp(start.toISOString(true), this.divider, this.options.timeZone, undefined)]);
+        this.valueChanged.emit(GTSLib.toTimestamp(start.toISOString(true), this.divider, this.options.timeZone, undefined));
       }
     }
   }
 
   private setOptions() {
     this.divider = GTSLib.getDivider(this.options.timeUnit ?? 'us');
-    if(!GTSLib.isArray(this.dateRange)) return;
-    if(!this.dateRange[0]) return;
+    if (!GTSLib.isArray(this.dateRange)) return;
+    if (!this.dateRange[0]) return;
     this.opts = {
       ...this.opts,
       parentEl: this.wrapper,
@@ -126,7 +126,9 @@ export class DiscoveryInputDateRange {
     if ((this.dateRange ?? []).length === 1) {
       this.opts.singleDatePicker = true;
       this.previousStart = this.toMoment(this.dateRange[0]);
+      this.previousEnd = this.toMoment(this.dateRange[0]);
       this.opts.startDate = this.previousStart.clone();
+      this.opts.endDate = this.previousEnd.clone();
     }
     if (this.drp) {
       this.drp.remove();

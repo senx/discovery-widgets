@@ -17,9 +17,9 @@
 
 ## Events
 
-| Event          | Description | Type                    |
-| -------------- | ----------- | ----------------------- |
-| `valueChanged` |             | `CustomEvent<number[]>` |
+| Event          | Description | Type                              |
+| -------------- | ----------- | --------------------------------- |
+| `valueChanged` |             | `CustomEvent<number \| number[]>` |
 
 
 ## Dependencies
