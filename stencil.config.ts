@@ -3,7 +3,9 @@ import { sass } from '@stencil/sass';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export const config: Config = {
-  plugins: [sass()],
+  plugins: [sass({
+    silenceDeprecations: ['import']
+  })],
   enableCache: true,
   buildEs5: 'prod',
   rollupPlugins: { after: [nodePolyfills()] },

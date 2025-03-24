@@ -376,8 +376,9 @@ export class DiscoveryPageable {
           : ''}
       </span>) : ''}
         {this.page + this.windowed < this.pages.length ? <div class="index disabled">...</div> : ''}
-        {this.page < this.pages.length - 1 ?
-          <div class="next hoverable" onClick={() => this.next()}>&gt;</div> : ''}
+        {this.page < this.pages.length - 1
+          ? <div class="next hoverable" onClick={() => this.next()}>&gt;</div>
+          : ''}
       </div>
     </div>;
   }
