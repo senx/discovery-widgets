@@ -164,6 +164,8 @@ export class DiscoveryPageable {
       windowed: this.windowed,
       elemsCount: this.elemsCount,
       displayedValues: this.displayedValues,
+      page: this.page,
+      pages: this.pages,
     });
     this.updateCounter++;
     this.innerOptions = Utils.clone({ ...options, extra: this.updateCounter }); // cleaner way to force a render ?
@@ -374,7 +376,7 @@ export class DiscoveryPageable {
           : ''}
       </span>) : ''}
         {this.page + this.windowed < this.pages.length ? <div class="index disabled">...</div> : ''}
-        {this.page + this.elemsCount < (this.filteredDataset ?? []).length - 1 ?
+        {this.page < this.pages.length - 1 ?
           <div class="next hoverable" onClick={() => this.next()}>&gt;</div> : ''}
       </div>
     </div>;
