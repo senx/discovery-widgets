@@ -28,7 +28,7 @@ export class DiscoveryInputDateRange {
   private drp: DateRangePicker;
   private divider: number;
 
-  private cbProxy = (start: Moment, end: Moment, label: string) => this.selected(start, end, label);
+  private cbProxy = (start: Moment, end: Moment) => this.selected(start, end);
 
   @Watch('dateRange')
   onDateRangeChange() {
@@ -47,7 +47,7 @@ export class DiscoveryInputDateRange {
     }
   }
 
-  private selected(start: Moment, end: Moment, label: string) {
+  private selected(start: Moment, end: Moment) {
     if (!start.isSame(this.previousStart) && !end.isSame(this.previousEnd)) {
       if ((this.dateRange ?? []).length > 1) {
         this.previousStart = start;
