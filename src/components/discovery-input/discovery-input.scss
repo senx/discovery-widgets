@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-@import "../../scss/vars";
-@import '../../../node_modules/@tarekraafat/autocomplete.js/dist/css/autoComplete.02.css';
+@use "../../scss/vars";
+@use '../../../node_modules/@tarekraafat/autocomplete.js/dist/css/autoComplete.02.css';
 
 :host {
   display: block;
@@ -46,18 +46,18 @@
     position: relative;
     font-size: var(--warp-view-input-font-size, 1rem);
     border-radius: var(--warp-view-input-border-radius, 0.25rem);
-    border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
-    color: var(--warp-view-input-label-color, $w10-charcoal);
-    background-color: var(--warp-view-input-bg-color, $w10-white);
+    border: 1px solid var(--warp-view-input-border-color, vars.$w10-lightgrey);
+    color: var(--warp-view-input-label-color, vars.$w10-charcoal);
+    background-color: var(--warp-view-input-bg-color, vars.$w10-white);
     vertical-align: middle;
     width: 100%;
     height: 34px;
     padding: 1px 5px;
 
     &[disabled] {
-      background-color: var(--warp-view-input-disabled-bg-color, $w10-lightgrey);
-      color: var(--warp-view-input-disabled-label-color, $w10-charcoal);
-      border: 1px solid var(--warp-view-input-disabled-border-color, $w10-lightgrey);
+      background-color: var(--warp-view-input-disabled-bg-color, vars.$w10-lightgrey);
+      color: var(--warp-view-input-disabled-label-color, vars.$w10-charcoal);
+      border: 1px solid var(--warp-view-input-disabled-border-color, vars.$w10-lightgrey);
     }
   }
 
@@ -67,7 +67,7 @@
   }
 
   input.validation:invalid {
-    outline: 1px solid $w10-danger !important;
+    outline: 1px solid vars.$w10-danger !important;
     padding-right: calc(1.5em + .75rem);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
@@ -75,13 +75,13 @@
     background-size: calc(.75em + .375rem) calc(.75em + .375rem);
 
     &:focus {
-      border-color: $w10-danger;
+      border-color: vars.$w10-danger;
       box-shadow: 0 0 0 .25rem rgba(220, 53, 69, .25);
     }
   }
 
   input.validation:valid {
-    outline: 1px solid $w10-success !important;
+    outline: 1px solid vars.$w10-success !important;
     padding-right: calc(1.5em + .75rem);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
@@ -89,7 +89,7 @@
     background-size: calc(.75em + .375rem) calc(.75em + .375rem);
 
     &:focus {
-      border-color: $w10-success;
+      border-color: vars.$w10-success;
       box-shadow: 0 0 0 .25rem rgba(25, 135, 84, .25);
     }
   }
@@ -104,9 +104,9 @@
     height: fit-content;
 
     &.disabled {
-      background-color: var(--warp-view-input-disabled-bg-color, $w10-lightgrey);
-      color: var(--warp-view-input-disabled-label-color, $w10-charcoal);
-      border: 1px solid var(--warp-view-input-disabled-border-color, $w10-lightgrey);
+      background-color: var(--warp-view-input-disabled-bg-color, vars.$w10-lightgrey);
+      color: var(--warp-view-input-disabled-label-color, vars.$w10-charcoal);
+      border: 1px solid var(--warp-view-input-disabled-border-color, vars.$w10-lightgrey);
     }
   }
 
@@ -206,24 +206,24 @@
     vertical-align: middle;
     cursor: pointer;
     font-size: var(--warp-view-button-font-size, 1rem);
-    border: 1px solid var(--warp-view-button-border-color, $w10-blue);
+    border: 1px solid var(--warp-view-button-border-color, vars.$w10-blue);
     padding: var(--warp-view-button-padding, .375rem .75rem);
-    color: var(--warp-view-button-label-color, $w10-white);
-    background-color: var(--warp-view-button-bg-color, $w10-blue);
+    color: var(--warp-view-button-label-color, vars.$w10-white);
+    background-color: var(--warp-view-button-bg-color, vars.$w10-blue);
     min-width: var(--warp-view-button-width, auto);
     border-radius: var(--warp-view-button-border-radius, 0.25rem);
 
     &.secondary {
-      border: 1px solid var(--warp-view-button-secondary-border-color, $w10-grey);
-      background-color: var(--warp-view-button-secondary-bg-color, $w10-grey);
-      color: var(--warp-view-button-secondary-label-color, $w10-white);
+      border: 1px solid var(--warp-view-button-secondary-border-color, vars.$w10-grey);
+      background-color: var(--warp-view-button-secondary-bg-color, vars.$w10-grey);
+      color: var(--warp-view-button-secondary-label-color, vars.$w10-white);
     }
   }
 
   button:disabled, input[type=file][disabled]::file-selector-button {
-    background-color: var(--warp-view-button-disabled-bg-color, $w10-lightgrey);
-    color: var(--warp-view-button-disabled-label-color, $w10-charcoal);
-    border: 1px solid var(--warp-view-button-disabled-border-color, $w10-lightgrey);
+    background-color: var(--warp-view-button-disabled-bg-color, vars.$w10-lightgrey);
+    color: var(--warp-view-button-disabled-label-color, vars.$w10-charcoal);
+    border: 1px solid var(--warp-view-button-disabled-border-color, vars.$w10-lightgrey);
   }
 
   input[type=file]::file-selector-button {
@@ -246,9 +246,9 @@
     margin: .25rem .125rem;
     font-size: var(--warp-view-input-font-size, 1rem);
     border-radius: var(--warp-view-input-border-radius, 0.25rem);
-    border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
-    color: var(--warp-view-input-label-color, $w10-charcoal);
-    background-color: var(--warp-view-input-bg-color, $w10-white);
+    border: 1px solid var(--warp-view-input-border-color, vars.$w10-lightgrey);
+    color: var(--warp-view-input-label-color, vars.$w10-charcoal);
+    background-color: var(--warp-view-input-bg-color, vars.$w10-white);
     height: 34px;
 
     .flatpickr-wrapper {
@@ -275,9 +275,9 @@
     }
 
     &.disabled {
-      background-color: var(--warp-view-input-disabled-bg-color, $w10-lightgrey);
-      color: var(--warp-view-input-disabled-label-color, $w10-charcoal);
-      border: 1px solid var(--warp-view-input-disabled-border-color, $w10-lightgrey);
+      background-color: var(--warp-view-input-disabled-bg-color, vars.$w10-lightgrey);
+      color: var(--warp-view-input-disabled-label-color, vars.$w10-charcoal);
+      border: 1px solid var(--warp-view-input-disabled-border-color, vars.$w10-lightgrey);
     }
   }
 

@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-@import "../../scss/vars";
+@use "../../scss/vars";
 
 :host {
   display: block;
@@ -52,7 +52,7 @@
     justify-items: stretch;
     display: flex;
     overflow: hidden;
-    color: var(--warp-view-font-color, $w10-charcoal);
+    color: var(--warp-view-font-color, vars.$w10-charcoal);
     width: 100%;
     height: 100%;
     z-index: 2;
@@ -146,15 +146,15 @@
 
       table, th, td {
         border: 1px solid;
-        border-color: var(--warp-view-font-color, #404040);
+        border-color: var(--warp-view-font-color, vars.$w10-charcoal);
         border-collapse: collapse;
         padding: var(--warp-view-datagrid-cell-padding, 5px);
       }
 
       pre {
         font-size: 0.8rem;
-        background-color: var(--warp-view-font-color, #404040);
-        color: var(--warp-view-tile-background, #ffffff);
+        background-color: var(--warp-view-font-color, vars.$w10-charcoal);
+        color: var(--warp-view-tile-background, vars.$w10-white);
         padding: 10px;
         margin-right: 10px;
       }
@@ -163,7 +163,5 @@
     img {
       max-width: 100% !important;
     }
-
-
   }
 }

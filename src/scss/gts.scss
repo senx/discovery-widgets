@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-@import "./vars";
+@use "./vars";
 
 .gts-classname {
   font-size: var(--warp-view-font-size, 1rem);
-  color: var(--gts-classname-font-color, $w10-blue);
+  color: var(--gts-classname-font-color, vars.$w10-blue);
 }
 
 .gts-labelname {
@@ -32,17 +32,17 @@
 
 .gts-separator {
   font-size: var(--warp-view-font-size, 1rem);
-  color: var(--gts-separator-font-color, $w10-grey);
+  color: var(--gts-separator-font-color, vars.$w10-grey);
 }
 
 .gts-labelvalue {
   font-size: var(--warp-view-font-size, 1rem);
-  color: var(--gts-labelvalue-font-color, $w10-black);
+  color: var(--gts-labelvalue-font-color, vars.$w10-black);
   font-style: italic;
 }
 
 .gts-attrvalue {
   font-size: var(--warp-view-font-size, 1rem);
-  color: var(--gts-attrvalue-font-color, $w10-black);
+  color: var(--gts-attrvalue-font-color, vars.$w10-black);
   font-style: italic;
 }

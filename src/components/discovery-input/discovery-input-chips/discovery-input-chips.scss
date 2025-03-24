@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-@import "../../../scss/vars";
+@use "../../../scss/vars";
 
 :host {
   position: relative;
@@ -21,20 +21,20 @@
   --chip-input-border-radius: 0;
   --chip-input-border-color: transparent;
   --chip-input-border-width: 1px;
-  --chip-input-autocomplete-background: var(--warp-view-input-bg-color, #{$w10-white});
+  --chip-input-autocomplete-background: var(--warp-view-input-bg-color, #{vars.$w10-white});
   --chip-input-autocomplete-font-size: var(--warp-view-input-font-size, 1rem);
-  --chip-input-autocomplete-hover-background-color: var(--warp-view-autocomplete-hover-background-color, #{$w10-lightgrey});
-  --chip-background-color: var(--warp-view-chip-background-color, #{$w10-lightgrey});
+  --chip-input-autocomplete-hover-background-color: var(--warp-view-autocomplete-hover-background-color, #{vars.$w10-lightgrey});
+  --chip-background-color: var(--warp-view-chip-background-color, #{vars.$w10-lightgrey});
   --chip-height: 20px;
-  --chip-border-color: var(--warp-view-input-border-color, #{$w10-lightgrey});
+  --chip-border-color: var(--warp-view-input-border-color, #{vars.$w10-lightgrey});
   --chip-border-width: 1px;
   --chip-font-size: var(--warp-view-input-font-size, 1rem);
   --chip-icon-height: 15px;
   --chip-icon-width: 15px;
   --chip-close-icon-height: var(--warp-view-input-font-size, 1rem);
   --chip-close-icon-width: var(--warp-view-input-font-size, 1rem);
-  --chip-close-icon-fill: var(--warp-view-chip-close-icon-fill, #{$w10-charcoal-trans});
-  --chip-close-icon-hover-fill: var(--warp-view-chip-hover-fill, #{$w10-charcoal});
+  --chip-close-icon-fill: var(--warp-view-chip-close-icon-fill, #{vars.$w10-charcoal-trans});
+  --chip-close-icon-hover-fill: var(--warp-view-chip-hover-fill, #{vars.$w10-charcoal});
 
   .wrapper {
     position: relative;
@@ -56,7 +56,7 @@
     display: none;
     position: absolute;
     background-color: var(--chip-input-autocomplete-background-color, white);
-    border: 1px solid var(--warp-view-input-border-color, #{$w10-lightgrey});
+    border: 1px solid var(--warp-view-input-border-color, #{vars.$w10-lightgrey});
     border-radius: var(--warp-view-input-border-radius, 0.25rem);
     font-size: var(--chip-input-autocomplete-font-size, 24px);
     padding: var(--chip-input-autocomplete-padding, 5px 10px);

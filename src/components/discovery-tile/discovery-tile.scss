@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-@import "../../scss/vars";
+@use "../../scss/vars";
 
 :host {
   width: 100%;
@@ -43,13 +43,13 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: $w10-white;
+    color: vars.$w10-white;
     font-weight: bold;
   }
 
   .discovery-tile-error {
-    background-color: var(--warp-view-error-bg-color, $w10-danger);
-    color: var(--warp-view-error-color, $w10-white);
+    background-color: var(--warp-view-error-bg-color, vars.$w10-danger);
+    color: var(--warp-view-error-color, vars.$w10-white);
     text-align: center;
     position: absolute;
     width: calc(100% - 40px);
@@ -61,8 +61,8 @@
   }
 
   .discovery-tile-status {
-    background-color: var(--warp-view-status-bg-color, $w10-lightblue);
-    color: var(--warp-view-status-color, $w10-darkblue);
+    background-color: var(--warp-view-status-bg-color, vars.$w10-lightblue);
+    color: var(--warp-view-status-color, vars.$w10-darkblue);
     text-align: center;
     position: relative;
     padding: 5px 10px;

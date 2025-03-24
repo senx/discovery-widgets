@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2023  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-@import "../../../scss/vars";
-@import "../../../scss/gts";
+@use "../../../scss/vars";
+@use "../../../scss/gts";
 
 :host {
 
@@ -25,16 +25,16 @@
 
   table {
     width: 100%;
-    color: var(--warp-view-font-color, $w10-charcoal);
+    color: var(--warp-view-font-color, vars.$w10-charcoal);
     table-layout: auto;
 
     input[type=text].discovery-input {
       display: inline-block;
       font-size: var(--warp-view-input-font-size, 1rem);
       border-radius: var(--warp-view-input-border-radius, 0.25rem);
-      border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
-      color: var(--warp-view-input-label-color, $w10-charcoal);
-      background-color: var(--warp-view-input-bg-color, $w10-white);
+      border: 1px solid var(--warp-view-input-border-color, vars.$w10-lightgrey);
+      color: var(--warp-view-input-label-color, vars.$w10-charcoal);
+      background-color: var(--warp-view-input-bg-color, vars.$w10-white);
       vertical-align: middle;
       width: calc(100% - var(--warp-view-datagrid-cell-padding, 5px));
       height: 34px;
@@ -72,13 +72,13 @@
     }
 
     .odd {
-      background-color: var(--warp-view-datagrid-odd-bg-color, $w10-white);
-      color: var(--warp-view-datagrid-odd-color, $w10-charcoal);
+      background-color: var(--warp-view-datagrid-odd-bg-color, vars.$w10-white);
+      color: var(--warp-view-datagrid-odd-color, vars.$w10-charcoal);
     }
 
     .even {
-      background-color: var(--warp-view-datagrid-even-bg-color, $w10-lightgrey);
-      color: var(--warp-view-datagrid-even-color, $w10-black);
+      background-color: var(--warp-view-datagrid-even-bg-color, vars.$w10-lightgrey);
+      color: var(--warp-view-datagrid-even-color, vars.$w10-black);
     }
   }
 
@@ -89,31 +89,31 @@
       display: inline-block;
 
       .index, .next, .prev {
-        color: var(--warp-view-font-color, $w10-charcoal);
+        color: var(--warp-view-font-color, vars.$w10-charcoal);
         float: left;
         padding: 8px 16px;
         text-decoration: none;
         transition: background-color .3s;
-        border: 1px solid var(--warp-view-pagination-border-color, $w10-lightgrey);
+        border: 1px solid var(--warp-view-pagination-border-color, vars.$w10-lightgrey);
         margin: 0;
         cursor: pointer;
-        background-color: var(--warp-view-pagination-bg-color, $w10-white);
+        background-color: var(--warp-view-pagination-bg-color, vars.$w10-white);
 
         &.active {
           background-color: var(--warp-view-pagination-active-bg-color, #4CAF50);
-          color: var(--warp-view-pagination-active-color, $w10-white);
+          color: var(--warp-view-pagination-active-color, vars.$w10-white);
           border: 1px solid var(--warp-view-pagination-active-border-color, #4CAF50);
         }
 
         &.hoverable:hover {
-          background-color: var(--warp-view-pagination-hover-bg-color, $w10-lightgrey);
-          color: var(--warp-view-pagination-hover-color, $w10-black);
-          border: 1px solid var(--warp-view-pagination-hover-border-color, $w10-lightgrey);
+          background-color: var(--warp-view-pagination-hover-bg-color, vars.$w10-lightgrey);
+          color: var(--warp-view-pagination-hover-color, vars.$w10-black);
+          border: 1px solid var(--warp-view-pagination-hover-border-color, vars.$w10-lightgrey);
         }
 
         &.disabled {
           cursor: auto;
-          color: var(--warp-view-pagination-disabled-color, $w10-lightgrey);
+          color: var(--warp-view-pagination-disabled-color, vars.$w10-lightgrey);
         }
       }
     }
@@ -135,7 +135,7 @@
   .stickyHeader {
     position: sticky;
     top: -10px;
-    background-color: var(--warp-view-bg-color, $w10-white);
+    background-color: var(--warp-view-bg-color, vars.$w10-white);
   }
 
   .nospace {

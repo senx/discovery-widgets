@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-@import "../../scss/vars";
+@use "../../scss/vars";
 
 :host {
   width: 100%;
@@ -30,14 +30,14 @@
     background-color: var(--warp-view-modal-backdrop-color, #00000066);
     padding: 20px;
     justify-content: center;
-    --warp-view-font-color: #{$w10-white};
+    --warp-view-font-color: #{vars.$w10-white};
     --warp-view-spinner-size: 50px;
     font-weight: bold;
     height: calc(100% - 40px);
   }
 
   span.message {
-    color: var(--warp-view-font-color, $w10-charcoal);
+    color: var(--warp-view-font-color, vars.$w10-charcoal);
     padding-left: 10px;
   }
 
@@ -52,7 +52,7 @@
     width: var(--warp-view-spinner-size, 12px);
     height: var(--warp-view-spinner-size, 12px);
     border: calc(var(--warp-view-spinner-size, 12px) / 10) solid transparent;
-    border-bottom-color: var(--warp-view-spinner-color, $w10-orange);
+    border-bottom-color: var(--warp-view-spinner-color, vars.$w10-orange);
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;

@@ -59,7 +59,7 @@ Type: `Promise<unknown>`
 
 | Name   | Type             | Description |
 | ------ | ---------------- | ----------- |
-| `type` | `"png" \| "svg"` |             |
+| `type` | `"svg" \| "png"` |             |
 
 #### Returns
 
