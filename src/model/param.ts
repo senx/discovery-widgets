@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -188,14 +188,17 @@ export class Param {
     caseSensitive?: boolean,
     onlyFromAutocomplete?: boolean,
     locale?: string,
-    fromLabel?: string,
-    toLabel?: string,
     delayRequest?: number,
     accept?: string,
     validation?: boolean,
     disabled?: boolean,
     allLabel?: string,
     noneLabel?: string,
+    ranges?: any,
+    disableTime?: boolean
+    customRangeLabel?: string,
+    applyLabel?: string,
+    cancelLabel?: string,
   };
   map?: MapParams;
   svg?: {
