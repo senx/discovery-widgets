@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2025 SenX S.A.S.
+ *   Copyright 2022-2024 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-@use '~nouislider/dist/nouislider.css';
-@use "../../scss/vars";
+@import '~nouislider/dist/nouislider.css';
+@import "../../scss/vars";
 
 :host {
   display: block;
@@ -60,13 +60,13 @@
     }
 
     .noUi-tooltip {
-      background: var(--warp-view-tooltip-bg-color, vars.$w10-white);
+      background: var(--warp-view-tooltip-bg-color, $w10-white);
       color: var(--warp-view-tooltip-label-color, rgb(102, 102, 102));
       border-radius: 4px;
       font: 14px / 21px sans-serif;
       padding-left: 10px;
       padding-right: 10px;
-      border: 1px solid var(--warp-view-tooltip-border-color, vars.$w10-lightgrey);
+      border: 1px solid var(--warp-view-tooltip-border-color, $w10-lightgrey);
       margin-bottom: 3px;
 
       &:after, &:before {
@@ -82,14 +82,14 @@
 
       &:after {
         border-color: rgba(213, 0, 156, 0);
-        border-top-color: var(--warp-view-tooltip-bg-color, vars.$w10-white);
+        border-top-color: var(--warp-view-tooltip-bg-color, $w10-white);
         border-width: 5px;
         margin-left: -5px;
       }
 
       &:before {
         border-color: rgba(217, 217, 217, 0);
-        border-top-color: var(--warp-view-tooltip-border-color, vars.$w10-lightgrey);
+        border-top-color: var(--warp-view-tooltip-border-color, $w10-lightgrey);
         border-width: 6px;
         margin-left: -6px;
       }
@@ -97,28 +97,28 @@
 
     &.noUi-target {
       border-radius: 4px;
-      background: var(--warp-view-input-bg-color, vars.$w10-white);
-      border: 1px solid var(--warp-view-input-border-color, vars.$w10-lightgrey);
+      background: var(--warp-view-input-bg-color, $w10-white);
+      border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
     }
 
     .noUi-base {
       border-radius: 3px;
       border-width: 0;
-      background: var(--warp-view-input-bg-color, vars.$w10-white);
+      background: var(--warp-view-input-bg-color, $w10-white);
     }
 
     .noUi-connect {
       border-radius: 3px;
-      background: var(--warp-view-active-input-bg-color, vars.$w10-blue);
+      background: var(--warp-view-active-input-bg-color, $w10-blue);
     }
 
     .noUi-value {
       font: 14px / 21px sans-serif;
-      color: var(--warp-view-chart-label-color, vars.$w10-charcoal);
+      color: var(--warp-view-chart-label-color, $w10-charcoal);
     }
 
     .noUi-marker, .noUi-marker-sub, .noUi-marker-large {
-      background: var(--warp-view-chart-grid-color, vars.$w10-charcoal);
+      background: var(--warp-view-chart-grid-color, $w10-charcoal);
     }
 
     .noUi-handle {
@@ -126,9 +126,9 @@
       width: 18px;
       top: -5px;
       right: -9px; /* half the width */
-      border: 1px solid var(--warp-view-input-border-color, vars.$w10-lightgrey);
+      border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
       border-radius: 9px;
-      background-color: var(--warp-view-handle-bg-color, vars.$w10-white);
+      background-color: var(--warp-view-handle-bg-color, $w10-white);
     }
 
     .noUi-handle:before, .noUi-handle:after {
@@ -137,11 +137,11 @@
 
     &[disabled] {
       .noUi-connect {
-        background: var(--warp-view-input-disabled-bg-color, vars.$w10-lightgrey);
+        background: var(--warp-view-input-disabled-bg-color, $w10-lightgrey);
       }
 
       .noUi-handle {
-        background-color: var(--warp-view-handle-disabled-bg-color, vars.$w10-lightgrey);
+        background-color: var(--warp-view-handle-disabled-bg-color, $w10-lightgrey);
       }
     }
   }

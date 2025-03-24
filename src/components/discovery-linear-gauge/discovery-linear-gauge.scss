@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2025 SenX S.A.S.
+ *   Copyright 2022  SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-@use "../../scss/vars";
-@use "../../scss/gts";
+@import "../../scss/vars";
+@import "../../scss/gts";
 
 :host {
   width: 100%;
@@ -110,7 +110,7 @@
     h3.discovery-legend {
       margin: 0;
       text-align: center;
-      color: var(--warp-view-font-color, vars.$w10-charcoal);
+      color: var(--warp-view-font-color, $w10-charcoal);
     }
 
     .discovery-progress-container-horizontal {
