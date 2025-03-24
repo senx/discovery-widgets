@@ -229,6 +229,12 @@ export namespace Components {
         "disabled": boolean;
         "label": string;
     }
+    interface DiscoveryInputDateRange {
+        "dateRange": number[];
+        "disabled": boolean;
+        "options": Param;
+        "required": boolean;
+    }
     interface DiscoveryLine {
         "debug": boolean;
         "export": (type?: "png" | "svg") => Promise<string>;
@@ -485,6 +491,10 @@ export interface DiscoveryInputChipsCustomEvent<T> extends CustomEvent<T> {
 export interface DiscoveryInputChipsChipCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscoveryInputChipsChipElement;
+}
+export interface DiscoveryInputDateRangeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDiscoveryInputDateRangeElement;
 }
 export interface DiscoveryLineCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -843,6 +853,23 @@ declare global {
         prototype: HTMLDiscoveryInputChipsChipElement;
         new (): HTMLDiscoveryInputChipsChipElement;
     };
+    interface HTMLDiscoveryInputDateRangeElementEventMap {
+        "valueChanged": number[];
+    }
+    interface HTMLDiscoveryInputDateRangeElement extends Components.DiscoveryInputDateRange, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscoveryInputDateRangeElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputDateRangeElement, ev: DiscoveryInputDateRangeCustomEvent<HTMLDiscoveryInputDateRangeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscoveryInputDateRangeElementEventMap>(type: K, listener: (this: HTMLDiscoveryInputDateRangeElement, ev: DiscoveryInputDateRangeCustomEvent<HTMLDiscoveryInputDateRangeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLDiscoveryInputDateRangeElement: {
+        prototype: HTMLDiscoveryInputDateRangeElement;
+        new (): HTMLDiscoveryInputDateRangeElement;
+    };
     interface HTMLDiscoveryLineElementEventMap {
         "draw": void;
         "dataZoom": {
@@ -1121,6 +1148,7 @@ declare global {
         "discovery-input": HTMLDiscoveryInputElement;
         "discovery-input-chips": HTMLDiscoveryInputChipsElement;
         "discovery-input-chips-chip": HTMLDiscoveryInputChipsChipElement;
+        "discovery-input-date-range": HTMLDiscoveryInputDateRangeElement;
         "discovery-line": HTMLDiscoveryLineElement;
         "discovery-linear-gauge": HTMLDiscoveryLinearGaugeElement;
         "discovery-map": HTMLDiscoveryMapElement;
@@ -1359,6 +1387,13 @@ declare namespace LocalJSX {
         "label"?: string;
         "onRemoveChip"?: (event: DiscoveryInputChipsChipCustomEvent<string>) => void;
     }
+    interface DiscoveryInputDateRange {
+        "dateRange"?: number[];
+        "disabled"?: boolean;
+        "onValueChanged"?: (event: DiscoveryInputDateRangeCustomEvent<number[]>) => void;
+        "options"?: Param;
+        "required"?: boolean;
+    }
     interface DiscoveryLine {
         "debug"?: boolean;
         "height"?: number;
@@ -1569,6 +1604,7 @@ declare namespace LocalJSX {
         "discovery-input": DiscoveryInput;
         "discovery-input-chips": DiscoveryInputChips;
         "discovery-input-chips-chip": DiscoveryInputChipsChip;
+        "discovery-input-date-range": DiscoveryInputDateRange;
         "discovery-line": DiscoveryLine;
         "discovery-linear-gauge": DiscoveryLinearGauge;
         "discovery-map": DiscoveryMap;
@@ -1603,6 +1639,7 @@ declare module "@stencil/core" {
             "discovery-input": LocalJSX.DiscoveryInput & JSXBase.HTMLAttributes<HTMLDiscoveryInputElement>;
             "discovery-input-chips": LocalJSX.DiscoveryInputChips & JSXBase.HTMLAttributes<HTMLDiscoveryInputChipsElement>;
             "discovery-input-chips-chip": LocalJSX.DiscoveryInputChipsChip & JSXBase.HTMLAttributes<HTMLDiscoveryInputChipsChipElement>;
+            "discovery-input-date-range": LocalJSX.DiscoveryInputDateRange & JSXBase.HTMLAttributes<HTMLDiscoveryInputDateRangeElement>;
             "discovery-line": LocalJSX.DiscoveryLine & JSXBase.HTMLAttributes<HTMLDiscoveryLineElement>;
             "discovery-linear-gauge": LocalJSX.DiscoveryLinearGauge & JSXBase.HTMLAttributes<HTMLDiscoveryLinearGaugeElement>;
             "discovery-map": LocalJSX.DiscoveryMap & JSXBase.HTMLAttributes<HTMLDiscoveryMapElement>;

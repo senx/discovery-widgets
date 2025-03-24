@@ -21,9 +21,6 @@ import { Param } from '../../model/param';
 import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/l10n/index';
-import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domToImage from 'dom-to-image';
 import { v4 } from 'uuid';
@@ -74,7 +71,6 @@ export class DiscoveryInputComponent {
   private delayTimer: any;
 
   private root: HTMLDivElement;
-  private flatpickrInstance: flatpickr.Instance;
   private autoCompleteJS: any;
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
@@ -172,41 +168,11 @@ export class DiscoveryInputComponent {
   componentDidLoad() {
     switch (this.subType) {
       case 'date':
+        if (!GTSLib.isArray(this.value)) {
+          this.value = [this.value];
+        }
+        break;
       case 'date-range':
-        const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-        const opts = {
-          enableTime: true,
-          positionElement: this.inputField,
-          static: true,
-          enableSeconds: true,
-          time_24hr: true,
-          plugins: [],
-          formatDate: (d: Date) => GTSLib.toISOString(GTSLib.zonedTimeToUtc(d.valueOf(), 1) * divider, divider, undefined,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined),
-        } as any;
-        if (this.subType === 'date-range') {
-          opts.plugins = [rangePlugin({ input: this.inputField2 })];
-        }
-        if (!!this.innerOptions.input && !!this.innerOptions.input.min) {
-          opts.minDate = GTSLib.toISOString(this.innerOptions.input.min, divider, undefined,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
-        }
-        if (!!this.innerOptions.input && !!this.innerOptions.input.max) {
-          opts.maxDate = GTSLib.toISOString(this.innerOptions.input.max, divider, undefined,
-            this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined);
-        }
-        this.flatpickrInstance = flatpickr(this.inputField as HTMLInputElement, opts);
-        this.flatpickrInstance.config.onClose.push(() => {
-          if (this.subType === 'date-range') {
-            this.selectedValue = this.flatpickrInstance.selectedDates
-              .map(date => GTSLib.zonedTimeToUtc(date.valueOf(), 1, this.innerOptions.timeZone) * divider);
-          } else {
-            this.selectedValue = GTSLib.zonedTimeToUtc(this.flatpickrInstance.selectedDates[0].valueOf(), 1, this.innerOptions.timeZone) * divider;
-          }
-          if (!this.innerOptions.input?.showButton) {
-            this.handleClick();
-          }
-        });
         break;
       case 'autocomplete':
         // noinspection JSPotentiallyInvalidConstructorUsage
@@ -376,44 +342,18 @@ export class DiscoveryInputComponent {
         this.selectedValue = this.value;
         break;
       case 'date':
-        if (GTSLib.isArray(data) && !!data[0]) {
-          this.value = data[0].toString();
+        if (GTSLib.isArray(data) && data[0] !== undefined) {
+          this.value = [data[0]];
         } else {
-          this.value = (data.toString() as string);
+          this.value = [data];
         }
-        this.selectedValue = this.value;
-        if (this.flatpickrInstance) {
-          this.flatpickrInstance.set('plugins', []);
-          if (this.innerOptions.input?.locale) {
-            let locale = this.innerOptions.input?.locale ?? 'default';
-            if (locale === 'AUTO') {
-              locale = Utils.getNavigatorLanguage();
-            }
-            this.flatpickrInstance.set('locale', flatpickr.l10ns[locale]);
-          }
-          this.flatpickrInstance.setDate(this.formatDateTime(`${this.value}`), true);
-        }
+        this.selectedValue = this.value[0];
         break;
       case 'date-range':
         if (GTSLib.isArray(data) && data.length >= 2) {
           this.value = (data as any[]).sort();
         }
         this.selectedValue = this.value;
-        if (this.flatpickrInstance) {
-          if (this.innerOptions.input?.locale) {
-            let locale = this.innerOptions.input?.locale ?? 'default';
-            if (locale === 'AUTO') {
-              locale = Utils.getNavigatorLanguage();
-            }
-            this.flatpickrInstance.set('locale', flatpickr.l10ns[locale]);
-          }
-          this.flatpickrInstance.setDate(
-            [
-              this.formatDateTime(`${this.value[0]}`),
-              this.formatDateTime(`${this.value[1]}`),
-            ], true,
-          );
-        }
         break;
       case 'slider':
         this.innerOptions.input = this.innerOptions.input ?? {};
@@ -598,24 +538,14 @@ export class DiscoveryInputComponent {
                       ref={el => this.inputField = el}
         />;
       case 'date':
-        return <input type="text" class={this.getClass()}
-                      required={this.innerOptions?.input?.validation}
-                      disabled={this.innerOptions?.input?.disabled}
-                      ref={el => this.inputField = el}
-        />;
       case 'date-range':
-        return <div class={{ 'range': true, 'disabled': this.innerOptions?.input?.disabled }}>
-          <span>{this.innerOptions.input?.fromLabel ?? 'from'}</span>
-          <input type="text" class={this.getClass()}
-                 required={this.innerOptions?.input?.validation}
-                 disabled={this.innerOptions?.input?.disabled}
-                 ref={el => this.inputField = el} />
-          <span>{this.innerOptions.input?.toLabel ?? 'to'}</span>
-          <input type="text" class={this.getClass()}
-                 required={this.innerOptions?.input?.validation}
-                 disabled={this.innerOptions?.input?.disabled}
-                 ref={el => this.inputField2 = el} />
-        </div>;
+        return <discovery-input-date-range
+          dateRange={this.value as number[]}
+          onValueChanged={e => this.handleSelect(e)}
+          options={this.innerOptions}
+          required={this.innerOptions?.input?.validation}
+          disabled={this.innerOptions?.input?.disabled}
+        ></discovery-input-date-range>;
       case 'autocomplete':
         return <input type="text" class={this.getClass()}
                       required={this.innerOptions?.input?.validation}

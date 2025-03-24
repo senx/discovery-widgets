@@ -38,7 +38,7 @@
 
 | Name   | Type             | Description |
 | ------ | ---------------- | ----------- |
-| `type` | `"svg" \| "png"` |             |
+| `type` | `"png" \| "svg"` |             |
 
 #### Returns
 
@@ -65,12 +65,14 @@ Type: `Promise<void>`
 
 ### Depends on
 
+- [discovery-input-date-range](discovery-input-date-range)
 - [discovery-slider](../discovery-slider)
 - [discovery-input-chips](discovery-input-chips)
 
 ### Graph
 ```mermaid
 graph TD;
+  discovery-input --> discovery-input-date-range
   discovery-input --> discovery-slider
   discovery-input --> discovery-input-chips
   discovery-input-chips --> discovery-input-chips-chip

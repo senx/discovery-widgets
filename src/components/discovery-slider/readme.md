@@ -33,7 +33,7 @@
 
 | Name      | Type             | Description |
 | --------- | ---------------- | ----------- |
-| `type`    | `"svg" \| "png"` |             |
+| `type`    | `"png" \| "svg"` |             |
 | `bgColor` | `string`         |             |
 
 #### Returns

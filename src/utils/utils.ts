@@ -158,8 +158,13 @@ export class Utils {
   }
 
   static getCSSColor(el: HTMLElement, property: string, defColor: string) {
-    const color = getComputedStyle(el).getPropertyValue(property).trim();
-    return color === '' ? defColor : color;
+    try {
+      const color = getComputedStyle(el).getPropertyValue(property).trim();
+      return color === '' ? defColor : color;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      return defColor;
+    }
   }
 
   static getContentBounds(el: HTMLElement): { w: number, h: number } {

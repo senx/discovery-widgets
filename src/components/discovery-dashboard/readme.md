@@ -111,6 +111,7 @@ graph TD;
   discovery-tabular --> discovery-spinner
   discovery-tabular --> discovery-pageable
   discovery-svg --> discovery-spinner
+  discovery-input --> discovery-input-date-range
   discovery-input --> discovery-slider
   discovery-input --> discovery-input-chips
   discovery-input-chips --> discovery-input-chips-chip
