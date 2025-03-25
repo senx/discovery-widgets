@@ -165,11 +165,11 @@
   }
 
   .daterangepicker.opensleft:before {
-    right: 9px;
+    right: var(--pos, 9px);
   }
 
   .daterangepicker.opensleft:after {
-    right: 10px;
+    right: calc(var(--pos, 9px) + 1);
   }
 
   .daterangepicker.openscenter:before {
@@ -189,11 +189,11 @@
   }
 
   .daterangepicker.opensright:before {
-    left: 9px;
+    left: var(--pos, 9px);
   }
 
   .daterangepicker.opensright:after {
-    left: 10px;
+    left: calc(var(--pos, 9px) + 1px);
   }
 
   .daterangepicker.drop-up {

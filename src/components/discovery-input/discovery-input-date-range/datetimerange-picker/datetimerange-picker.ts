@@ -1005,7 +1005,8 @@ export class DateRangePicker {
     let parentOffset = { top: 0, left: 0 };
     let containerTop: string | number;
     let drops = this.options.drops;
-    let parentRightEdge = window.innerWidth;
+    const rect = this.parentEl.getBoundingClientRect();
+    let parentRightEdge = rect.x + rect.width ;
     if (!(this.parentEl.tagName === 'BODY')) {
       const parentElOffset = this.jq.offset(this.parentEl);
       parentOffset = {
@@ -1069,10 +1070,11 @@ export class DateRangePicker {
       }
     } else {
       containerLeft = elementOffset.left - parentOffset.left;
-      if (containerLeft + containerWidth > window.innerWidth) {
+      if (rect.x + containerWidth > window.innerWidth) {
         this.container.style.top = containerTop + 'px';
         this.container.style.left = 'auto';
-        this.container.style.right = '0';
+        this.container.style.right = (rect.right - window.innerWidth + 10) + 'px';
+        this.container.style.setProperty('--pos', rect.x - this.container.getBoundingClientRect().x + this.element.offsetLeft + 'px');
       } else {
         this.container.style.top = containerTop + 'px';
         this.container.style.left = containerLeft + 'px';

@@ -78,6 +78,7 @@ export class DiscoveryInputDateRange {
       alwaysShowCalendars: true,
       autoUpdateInput: true,
       // opens: 'left',
+      // drops: 'auto',
       ranges: this.options.input?.ranges
         ? this.convertRange(this.options.input?.ranges ?? {})
         : {
