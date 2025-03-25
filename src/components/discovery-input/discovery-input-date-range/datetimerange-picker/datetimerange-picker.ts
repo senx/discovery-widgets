@@ -185,7 +185,7 @@ export class DateRangePicker {
         this.options.locale.weekLabel = options.locale.weekLabel;
       }
       if (typeof options.locale.customRangeLabel === 'string') {
-        // Support unicode chars in the custom range name.
+        // Support Unicode chars in the custom range name.
         elem = document.createElement('textarea');
         elem.innerHTML = options.locale.customRangeLabel;
         rangeHtml = elem.value;
@@ -351,7 +351,7 @@ export class DateRangePicker {
           || (maxDate && start.isAfter(maxDate, this.timepicker ? 'minute' : 'day'))) {
           continue;
         }
-        // Support unicode chars in the range names.
+        // Support Unicode chars in the range names.
         elem = document.createElement('textarea');
         elem.innerHTML = range;
         rangeHtml = elem.value;
@@ -676,7 +676,7 @@ export class DateRangePicker {
     const lastYear = moment(firstDay).subtract(1, 'month').year();
     const daysInLastMonth = moment([lastYear, lastMonth]).daysInMonth();
     const dayOfWeek = firstDay.day();
-    // initialize a 6 rows x 7 columns array for the calendar
+    // initialize 6 rows x 7 columns array for the calendar
     calendar = [];
     calendar.firstDay = firstDay;
     calendar.lastDay = lastDay;
@@ -867,7 +867,7 @@ export class DateRangePicker {
     let disabled: boolean;
     let time: Moment;
 // Don't bother updating the time picker if it's currently disabled
-    let i;
+    let i: number;
 // because an end date hasn't been clicked yet
     if (side === 'right' && !this.endDate) return;
     let html: string;
@@ -920,7 +920,7 @@ export class DateRangePicker {
       if (maxDate && time.minute(0).isAfter(maxDate)) {
         disabled = true;
       }
-      padded = i < 10 ? '0' + i : i;
+      padded = i < 10 ? `0${i}` : `${i}`;
       if (i_in_24 === selected.hour() && !disabled) {
         html += `<option value="${i}" selected="selected">${padded}</option>`;
       } else if (disabled) {
@@ -935,7 +935,7 @@ export class DateRangePicker {
     //
     html += ': <select class="minuteselect">';
     for (i = 0; i < 60; i += this.options.timePickerIncrement) {
-      padded = i < 10 ? '0' + i : i;
+      padded = i < 10 ? `0${i}` : `${i}`;
       time = selected.clone().minute(i);
       disabled = !!(minDate && time.second(59).isBefore(minDate));
       if (maxDate && time.second(0).isAfter(maxDate)) {
@@ -956,7 +956,7 @@ export class DateRangePicker {
     if (this.options.timePickerSeconds) {
       html += ': <select class="secondselect">';
       for (i = 0; i < 60; i++) {
-        padded = i < 10 ? '0' + i : i;
+        padded = i < 10 ? `0${i}` : `${i}`;
         time = selected.clone().second(i);
         disabled = minDate && time.isBefore(minDate);
         if (maxDate && time.isAfter(maxDate)) {
@@ -1006,7 +1006,7 @@ export class DateRangePicker {
     let containerTop: string | number;
     let drops = this.options.drops;
     const rect = this.parentEl.getBoundingClientRect();
-    let parentRightEdge = rect.x + rect.width ;
+    let parentRightEdge = rect.x + rect.width;
     if (!(this.parentEl.tagName === 'BODY')) {
       const parentElOffset = this.jq.offset(this.parentEl);
       parentOffset = {
@@ -1032,7 +1032,7 @@ export class DateRangePicker {
         containerTop = elementOffset.top + this.element.offsetHeight - parentOffset.top;
         break;
     }
-    // Force the container to it's actual width
+    // Force the container to its actual width
     this.container.style.top = '0';
     this.container.style.left = '0';
     this.container.style.right = 'auto';
@@ -1091,7 +1091,7 @@ export class DateRangePicker {
     // also support mobile devices
     document.addEventListener('touchend', this.outsideClickProxy);
     this.jq.on(document, 'click', '[data-toggle=dropdown]', this.outsideClickProxy);
-    // and also close when focus changes to outside the picker (eg. tabbing between controls)
+    // and also close when focus changes to outside the picker (e.g. tabbing between controls)
     document.addEventListener('focusin', this.outsideClickProxy);
     // Reposition the picker if the window is resized while it's open
     window.addEventListener('resize', this.moveProxy);
@@ -1510,7 +1510,7 @@ export class DateRangePicker {
     // also support mobile devices
     document.removeEventListener('touchend', this.outsideClickProxy);
     this.jq.off(document, 'click', '[data-toggle=dropdown]', this.outsideClickProxy);
-    // and also close when focus changes to outside the picker (eg. tabbing between controls)
+    // and also close when focus changes to outside the picker (e.g. tabbing between controls)
     document.removeEventListener('focusin', this.outsideClickProxy);
     delete this.outsideClickProxy;
     window.addEventListener('resize', this.moveProxy);
@@ -1591,7 +1591,7 @@ export class DateRangePicker {
           || (maxDate && start.isAfter(maxDate, this.timepicker ? 'minute' : 'day'))) {
           continue;
         }
-        // Support unicode chars in the range names.
+        // Support Unicode chars in the range names.
         const elem = document.createElement('textarea');
         elem.innerHTML = range;
         const rangeHtml = elem.value;
