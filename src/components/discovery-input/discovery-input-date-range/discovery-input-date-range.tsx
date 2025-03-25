@@ -48,16 +48,16 @@ export class DiscoveryInputDateRange {
   }
 
   private selected(start: Moment, end: Moment) {
-    if (!start.isSame(this.previousStart) && !end.isSame(this.previousEnd)) {
-      if ((this.dateRange ?? []).length > 1) {
-        this.previousStart = start;
-        this.previousEnd = end;
+    if (!start.isSame(this.previousStart) && !end.isSame(this.previousEnd) && (this.dateRange ?? []).length > 0) {
+      this.previousStart = start.clone();
+      this.previousEnd = end.clone();
+      if (!this.opts.singleDatePicker) {
         this.valueChanged.emit([
-          GTSLib.toTimestamp(start.toISOString(true), this.divider, this.options.timeZone, undefined),
-          GTSLib.toTimestamp(end.toISOString(true), this.divider, this.options.timeZone, undefined),
+          GTSLib.toTimestamp(this.previousStart.toISOString(true), this.divider, this.options.timeZone, undefined),
+          GTSLib.toTimestamp(this.previousEnd.toISOString(true), this.divider, this.options.timeZone, undefined),
         ]);
-      } else if ((this.dateRange ?? []).length === 1) {
-        this.valueChanged.emit(GTSLib.toTimestamp(start.toISOString(true), this.divider, this.options.timeZone, undefined));
+      } else if (this.opts.singleDatePicker) {
+        this.valueChanged.emit(GTSLib.toTimestamp(this.previousStart.toISOString(true), this.divider, this.options.timeZone, undefined));
       }
     }
   }
@@ -155,12 +155,46 @@ export class DiscoveryInputDateRange {
 
   render() {
     return <div ref={el => this.wrapper = el} class="wrapper">
+      <button class="discovery-btn prev" onClick={() => this.previousPeriod()}>&lt;</button>
       <input type="text"
              ref={el => this.input = el}
              required={this.required}
              disabled={this.disabled}
              class="discovery-input"
       />
+      <button class="discovery-btn next" onClick={() => this.nextPeriod()}>&gt;</button>
     </div>;
+  }
+
+  private previousPeriod() {
+    let start: Moment;
+    let end: Moment;
+    if (this.opts.singleDatePicker) {
+      start = this.previousStart.clone().subtract(1, 'd');
+      end = this.previousEnd.clone().subtract(1, 'd');
+    } else {
+      const diff = this.previousEnd.diff(this.previousStart);
+      start = this.previousStart.clone().subtract(diff, 'ms');
+      end = this.previousEnd.clone().subtract(diff, 'ms');
+    }
+    this.selected(start, end);
+    this.drp.setStartDate(start);
+    this.drp.setEndDate(end);
+  }
+
+  private nextPeriod() {
+    let start: Moment;
+    let end: Moment;
+    if (this.opts.singleDatePicker) {
+      start = this.previousStart.clone().add(1, 'd');
+      end = this.previousEnd.clone().add(1, 'd');
+    } else {
+      const diff = this.previousEnd.diff(this.previousStart);
+      start = this.previousStart.clone().add(diff, 'ms');
+      end = this.previousEnd.clone().add(diff, 'ms');
+    }
+    this.selected(start, end);
+    this.drp.setStartDate(start);
+    this.drp.setEndDate(end);
   }
 }

@@ -6,13 +6,22 @@
   width: 100%;
   height: 100%;
 
+  .wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
+  }
+
   input.discovery-input {
-    margin: .25rem .125rem;
+    margin: .25rem 0;
     display: inline-block;
     position: relative;
     font-size: var(--warp-view-input-font-size, 1rem);
-    border-radius: var(--warp-view-input-border-radius, 0.25rem);
-    border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
+    border-bottom: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
     color: var(--warp-view-input-label-color, $w10-charcoal);
     background-color: var(--warp-view-input-bg-color, $w10-white);
     vertical-align: middle;
@@ -49,6 +58,32 @@
       border: 1px solid var(--warp-view-button-secondary-border-color, $w10-grey);
       background-color: var(--warp-view-button-secondary-bg-color, $w10-grey);
       color: var(--warp-view-button-secondary-label-color, $w10-white);
+    }
+    &.prev {
+      margin: .25rem 0;
+      border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
+      color: var(--warp-view-input-label-color, $w10-charcoal);
+      background-color: var(--warp-view-input-bg-color, $w10-white);
+      border-radius: var(--warp-view-button-border-radius, 0.25rem);
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+
+      &:hover {
+        background-color: var(--warp-view-button-secondary-bg-color, $w10-lightgrey);
+      }
+    }
+    &.next {
+      margin: .25rem 0;
+      border: 1px solid var(--warp-view-input-border-color, $w10-lightgrey);
+      color: var(--warp-view-input-label-color, $w10-charcoal);
+      background-color: var(--warp-view-input-bg-color, $w10-white);
+      border-radius: var(--warp-view-button-border-radius, 0.25rem);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+
+      &:hover {
+        background-color: var(--warp-view-button-secondary-bg-color, $w10-lightgrey);
+      }
     }
   }
 
