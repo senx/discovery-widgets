@@ -81,10 +81,10 @@ export class DiscoverySlider {
     } else {
       this.innerOptions = this.options;
     }
-    const options = Utils.mergeDeep<Param>({ ...this.defOptions }, this.innerOptions || {});
+    const options = Utils.mergeDeep<Param>({ ...this.defOptions }, this.innerOptions ?? {});
     this.innerOptions = Utils.clone(options);
     this.LOG?.debug(['componentWillLoad'], this.innerOptions);
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
   }
 
 
@@ -127,9 +127,9 @@ export class DiscoverySlider {
   }
 
   private getSliderOptions() {
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
     const minmax = {
-      min: this.innerOptions.input?.min || 0,
+      min: this.innerOptions.input?.min ?? 0,
       max: (!!this.innerOptions.input?.max || this.innerOptions.input?.max === 0)
         ? this.innerOptions.input?.max
         : 100,
@@ -145,10 +145,10 @@ export class DiscoverySlider {
       ,
       from: Number,
     };
-    if (this.innerOptions.timeMode === 'date') {
-      this.sliderDiv.classList.add('discovery-date');
-    } else {
+    if (this.innerOptions.timeMode !== 'date' || !this.innerOptions.input?.showTicks) {
       this.sliderDiv.classList.remove('discovery-date');
+    } else {
+      this.sliderDiv.classList.add('discovery-date');
     }
     let connect: boolean | boolean[] | string | string[] = this.innerOptions.input?.progress || this.progress ? 'lower' : false;
     if (GTSLib.isArray(this.innerValue)) {
