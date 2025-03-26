@@ -32,7 +32,7 @@ export class LangUtils {
     } else if (typeof value === 'number') {
       return `${key} = "${value}"`;
     } else {
-      if (value.hasOwn('type') && value.hasOwn('value')) {
+      if (value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
         if (value.type === 'string') {
           return `${key} = "${value.value}"`;
         } else {
@@ -52,7 +52,7 @@ export class LangUtils {
     } else if (typeof value === 'number') {
       return `${value} "${key}" STORE`;
     } else {
-      if (value && value.hasOwn('type') && value.hasOwn('value')) {
+      if (value && value.hasOwnProperty('type') && value.hasOwnProperty('value')) {
         if (value.type === 'string') {
           return `"${encodeURIComponent(value.value)}" "${key}" STORE`;
         } else {

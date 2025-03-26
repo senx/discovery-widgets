@@ -296,7 +296,7 @@ export class DiscoveryPieComponent {
           value,
         });
       } else if (!GTSLib.isGts(gts)) {
-        if (gts.hasOwn('key')) {
+        if (gts.hasOwnProperty('key')) {
           dataStruct.push({
             ...this.getCommonDataParam(color),
             name: gts.key ?? '',

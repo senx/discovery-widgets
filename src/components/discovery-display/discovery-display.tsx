@@ -233,8 +233,8 @@ export class DiscoveryDisplayComponent {
       }
       display = v;
     }
-    if (display && display.hasOwn('text')) {
-      if (display.hasOwn('url')) {
+    if (display && display.hasOwnProperty('text')) {
+      if (display.hasOwnProperty('url')) {
         display = `<a href="${display.url}" target="_blank">${display.text}</a>`;
       } else {
         display = display.text;

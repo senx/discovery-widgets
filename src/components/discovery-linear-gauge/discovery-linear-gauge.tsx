@@ -268,7 +268,7 @@ export class DiscoveryLinearGauge {
           }
         }
         let value = 0;
-        if (gts.hasOwn('value')) {
+        if (gts.hasOwnProperty('value')) {
           value = gts.value ?? 0;
         } else {
           value = gts ?? 0;

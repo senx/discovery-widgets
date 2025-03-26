@@ -166,7 +166,7 @@ export class MapLib {
           if (!!params.marker || data?.globalParams?.map?.marker) {
             path.marker = params.marker ?? data?.globalParams?.map?.marker;
           }
-          path.line = params.hasOwn('line') ? params.line : true;
+          path.line = params.hasOwnProperty('line') ? params.line : true;
           path.render = path.render ?? 'dots';
           if (path.render === 'weightedDots') {
             MapLib.validateWeightedDotsPositionArray(path, params);
@@ -282,17 +282,17 @@ export class MapLib {
     for (let i = 0; i < size; i++) {
       const gts = data.gts[i];
       gts.id = gts.id || i;
-      const globalParams = (data.params || [])[i] || {};
-      gts.tooltip = globalParams.map?.tooltip || {};
+      const globalParams = (data.params ?? [])[i] ?? {};
+      gts.tooltip = globalParams.map?.tooltip ?? {};
       if (GTSLib.isPositionArray(gts) && !hiddenData[gts.id] && !globalParams.map?.heatmap) {
         this.LOG?.debug(['toLeafletMapPositionArray'], gts, data.params ? data.params[i] : '');
         const posArray = gts;
-        const gtsParam = data.params ? data.params[i] || {} : {};
+        const gtsParam = data.params ? data.params[i] ?? {} : {};
         MapLib.extractCommonParameters(posArray, gtsParam, i, scheme);
-        posArray.render = gtsParam.render || globalParams?.map?.render || 'dots';
-        posArray.maxValue = gtsParam.maxValue || 0;
-        posArray.minValue = gtsParam.minValue || 0;
-        posArray.line = gtsParam.hasOwn('line') ? gtsParam.line : false;
+        posArray.render = gtsParam.render ?? globalParams?.map?.render ?? 'dots';
+        posArray.maxValue = gtsParam.maxValue ?? 0;
+        posArray.minValue = gtsParam.minValue ?? 0;
+        posArray.line = gtsParam.hasOwnProperty('line') ? gtsParam.line : false;
         if (posArray.render === 'weightedDots') {
           MapLib.validateWeightedDotsPositionArray(posArray, gtsParam);
         }
@@ -300,7 +300,7 @@ export class MapLib {
           MapLib.validateWeightedColoredDotsPositionArray(posArray, gtsParam);
         }
         if (posArray.render === 'marker') {
-          posArray.marker = gtsParam.marker || data?.globalParams?.map?.marker;
+          posArray.marker = gtsParam.marker ?? data?.globalParams?.map?.marker;
         }
         if (data.params && data.params[i] && data.params[i].color) {
           posArray.color = data.params[i].color;

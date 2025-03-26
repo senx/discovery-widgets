@@ -279,14 +279,14 @@ export class DiscoveryGauge {
           max = data.params[i].maxValue;
           overallMax = Math.max(max, overallMax);
         } else {
-          overallMax = Math.max((gts.hasOwn('value') ? gts.value : gts) ?? Number.MIN_VALUE, overallMax);
+          overallMax = Math.max((gts.hasOwnProperty('value') ? gts.value : gts) ?? Number.MIN_VALUE, overallMax);
         }
         let min = 0;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
         let value = 0;
-        if (gts.hasOwn('value')) {
+        if (gts.hasOwnProperty('value')) {
           value = gts.value ?? 0;
         } else {
           value = gts ?? 0;

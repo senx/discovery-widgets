@@ -214,7 +214,7 @@ export class JsonLib {
         key = this.parseString();
         this.white();
         this.check(':');
-        if (Object.hasOwnProperty.call(object, key)) {
+        if (object.hasOwnProperty(key)) {
           this.error(`Duplicate key '${key}'`);
         }
         object[key] = this.value();
@@ -263,7 +263,7 @@ export class JsonLib {
         const value = holder[key];
         if (value !== undefined && typeof value === 'object') {
           for (k in value) {
-            if (Object.prototype.hasOwnProperty.call(value, k)) {
+            if (value.hasOwnProperty(k)) {
               v = walk(value, k);
               if (v !== undefined) {
                 value[k] = v;

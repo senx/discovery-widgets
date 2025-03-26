@@ -29,6 +29,7 @@ export default defineConfig([
       'react/react-in-jsx-scope': 'off',
       'react/jsx-key': 'off',
       'no-undef': 'off',
+      'no-prototype-builtins': 'off',
       'no-case-declarations': 'off',
       'react/no-unknown-property': ['error', { ignore: ['class', 'innerHTML', 'xmlns:xlink', 'enable-background', 'xml:space'] }],
       'no-unused-vars': ['error', {  argsIgnorePattern: "^_", varsIgnorePattern: 'h' }]
