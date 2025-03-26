@@ -153,11 +153,8 @@ export class DateRangePicker {
     templateWrapEl.innerHTML = options.template.trim();
     this.container = templateWrapEl.firstElementChild as HTMLElement;
     this.parentEl.insertAdjacentElement('beforeend', this.container);
-    //
     // handle all the possible options overriding defaults
-    //
     if (typeof options.locale === 'object') {
-      moment.locale(options.locale.locale ?? 'en');
       this.options.locale.locale = options.locale.locale ?? 'en';
       const loc = moment.localeData(options.locale.locale ?? 'en');
       this.options.locale.timeZone = options.locale.timeZone ?? 'UTC';
