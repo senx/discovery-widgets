@@ -25,7 +25,7 @@
 
 ## Methods
 
-### `export(type: "png" | "svg", bgColor: string) => Promise<string>`
+### `export(_type: "png" | "svg", bgColor: string) => Promise<string>`
 
 
 
@@ -33,7 +33,7 @@
 
 | Name      | Type             | Description |
 | --------- | ---------------- | ----------- |
-| `type`    | `"svg" \| "png"` |             |
+| `_type`   | `"svg" \| "png"` |             |
 | `bgColor` | `string`         |             |
 
 #### Returns

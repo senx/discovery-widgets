@@ -1,5 +1,5 @@
 /*!
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -58,6 +58,11 @@
       background-color: var(--warp-view-input-disabled-bg-color, $w10-lightgrey);
       color: var(--warp-view-input-disabled-label-color, $w10-charcoal);
       border: 1px solid var(--warp-view-input-disabled-border-color, $w10-lightgrey);
+    }
+
+    &:focus {
+      outline: 0;
+      box-shadow: 0 0 0 .25rem var(--warp-view-input-focus-outline-color, rgba(13, 110, 253, .25));
     }
   }
 

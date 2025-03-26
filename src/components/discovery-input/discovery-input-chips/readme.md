@@ -7,14 +7,14 @@
 
 ## Properties
 
-| Property          | Attribute         | Description | Type                                  | Default     |
-| ----------------- | ----------------- | ----------- | ------------------------------------- | ----------- |
-| `autocomplete`    | --                |             | `(value: string) => Promise<any>`     | `undefined` |
-| `chips`           | --                |             | `string[]`                            | `[]`        |
-| `constrain_input` | `constrain_input` |             | `boolean`                             | `false`     |
-| `containsFn`      | --                |             | `(value: string) => Promise<boolean>` | `undefined` |
-| `disabled`        | `disabled`        |             | `boolean`                             | `false`     |
-| `value`           | `value`           |             | `string`                              | `undefined` |
+| Property          | Attribute         | Description | Type                                   | Default     |
+| ----------------- | ----------------- | ----------- | -------------------------------------- | ----------- |
+| `autocomplete`    | --                |             | `(_value: string) => Promise<any>`     | `undefined` |
+| `chips`           | --                |             | `string[]`                             | `[]`        |
+| `constrain_input` | `constrain_input` |             | `boolean`                              | `false`     |
+| `containsFn`      | --                |             | `(_value: string) => Promise<boolean>` | `undefined` |
+| `disabled`        | `disabled`        |             | `boolean`                              | `false`     |
+| `value`           | `value`           |             | `string`                               | `undefined` |
 
 
 ## Events

@@ -41,7 +41,8 @@
     "version": "node version.js",
     "prepublishOnly": "yarn clean && yarn build",
     "clean": "rm -fr ./www && rm -fr ./dist",
-    "lint": "eslint  --format html  -o ./out/lint/eslint.html"
+    "lint": "eslint  --format html  -o ./out/lint/eslint.html",
+    "css": "node css.js > CSS_VARS.md"
   },
   "dependencies": {
     "@tarekraafat/autocomplete.js": "^10.2.9",

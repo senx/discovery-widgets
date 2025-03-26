@@ -1026,6 +1026,7 @@ export class DateRangePicker {
         break;
     }
     // Force the container to its actual width
+    if(!this.container) return;
     this.container.style.top = '0';
     this.container.style.left = '0';
     this.container.style.right = 'auto';

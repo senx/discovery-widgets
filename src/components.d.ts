@@ -96,7 +96,7 @@ export namespace Components {
     }
     interface DiscoveryButton {
         "debug": boolean;
-        "export": (type?: "png" | "svg") => Promise<string>;
+        "export": (_type?: "png" | "svg") => Promise<string>;
         "height": number;
         "language": 'warpscript' | 'flows';
         "options": Param | string;
@@ -144,7 +144,7 @@ export namespace Components {
     }
     interface DiscoveryDisplay {
         "debug": boolean;
-        "export": (type?: "png" | "svg") => Promise<string>;
+        "export": (_type?: "png" | "svg") => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -198,7 +198,7 @@ export namespace Components {
     }
     interface DiscoveryImage {
         "debug": boolean;
-        "export": (type?: "png" | "svg") => Promise<string[]>;
+        "export": (_type?: "png" | "svg") => Promise<string[]>;
         "height": number;
         "options": Param | string;
         "result": DataModel | string;
@@ -218,10 +218,10 @@ export namespace Components {
         "width": number;
     }
     interface DiscoveryInputChips {
-        "autocomplete": (value: string) => Promise<any>;
+        "autocomplete": (_value: string) => Promise<any>;
         "chips": string[];
         "constrain_input": boolean;
-        "containsFn": (value: string) => Promise<boolean>;
+        "containsFn": (_value: string) => Promise<boolean>;
         "disabled": boolean;
         "value": string;
     }
@@ -258,7 +258,7 @@ export namespace Components {
     }
     interface DiscoveryLinearGauge {
         "debug": boolean;
-        "export": (type?: "png" | "svg") => Promise<string>;
+        "export": (_type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number | string) => Promise<void>;
@@ -274,7 +274,7 @@ export namespace Components {
     }
     interface DiscoveryMap {
         "debug": boolean;
-        "export": (type?: "png" | "svg") => Promise<string>;
+        "export": (_type?: "png" | "svg") => Promise<string>;
         "height": number;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number) => Promise<void>;
@@ -348,7 +348,7 @@ export namespace Components {
     interface DiscoverySlider {
         "debug": boolean;
         "disabled": boolean;
-        "export": (type: "png" | "svg", bgColor: string) => Promise<string>;
+        "export": (_type: "png" | "svg", bgColor: string) => Promise<string>;
         "options": Param | string;
         "progress": boolean;
         "setValue": (value: number | number[]) => Promise<void>;
@@ -373,7 +373,7 @@ export namespace Components {
     }
     interface DiscoveryTabular {
         "debug": boolean;
-        "export": (type?: "png" | "svg") => Promise<string>;
+        "export": (_type?: "png" | "svg") => Promise<string>;
         "height": number;
         "options": Param | string;
         "resize": () => Promise<void>;
@@ -403,7 +403,7 @@ export namespace Components {
         "unFocus": () => Promise<void>;
         "unit": string;
         "url": string;
-        "vars": any | string;
+        "vars": any;
     }
     interface DiscoveryTileResult {
         "chartDescription": string;
@@ -1371,10 +1371,10 @@ declare namespace LocalJSX {
         "width"?: number;
     }
     interface DiscoveryInputChips {
-        "autocomplete"?: (value: string) => Promise<any>;
+        "autocomplete"?: (_value: string) => Promise<any>;
         "chips"?: string[];
         "constrain_input"?: boolean;
-        "containsFn"?: (value: string) => Promise<boolean>;
+        "containsFn"?: (_value: string) => Promise<boolean>;
         "disabled"?: boolean;
         "onChipChange"?: (event: DiscoveryInputChipsCustomEvent<string[]>) => void;
         "onChipClick"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
@@ -1566,7 +1566,7 @@ declare namespace LocalJSX {
         "type"?: ChartType;
         "unit"?: string;
         "url"?: string;
-        "vars"?: any | string;
+        "vars"?: any;
     }
     interface DiscoveryTileResult {
         "chartDescription"?: string;

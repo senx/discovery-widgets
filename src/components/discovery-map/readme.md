@@ -30,15 +30,15 @@
 
 ## Methods
 
-### `export(type?: "png" | "svg") => Promise<string>`
+### `export(_type?: "png" | "svg") => Promise<string>`
 
 
 
 #### Parameters
 
-| Name   | Type             | Description |
-| ------ | ---------------- | ----------- |
-| `type` | `"svg" \| "png"` |             |
+| Name    | Type             | Description |
+| ------- | ---------------- | ----------- |
+| `_type` | `"svg" \| "png"` |             |
 
 #### Returns
 
