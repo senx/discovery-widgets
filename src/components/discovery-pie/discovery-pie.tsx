@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -103,7 +102,7 @@ export class DiscoveryPieComponent {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
@@ -187,7 +186,7 @@ export class DiscoveryPieComponent {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] ?? []).length === 0) {
@@ -297,7 +296,7 @@ export class DiscoveryPieComponent {
           value,
         });
       } else if (!GTSLib.isGts(gts)) {
-        if (gts.hasOwnProperty('key')) {
+        if (gts.hasOwn('key')) {
           dataStruct.push({
             ...this.getCommonDataParam(color),
             name: gts.key ?? '',
@@ -366,6 +365,7 @@ export class DiscoveryPieComponent {
     }) : undefined);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     setTimeout(() => {
       this.height = Utils.getContentBounds(this.el.parentElement).h - 30;
@@ -381,7 +381,7 @@ export class DiscoveryPieComponent {
         if (initial) {
           setTimeout(() => {
             this.draw.emit();
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+             
             setTimeout(async () => await this.resize(), 200);
           });
           initial = false;

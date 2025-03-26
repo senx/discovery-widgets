@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,13 +14,12 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
-import {ChartType, DataModel} from '../../model/types';
-import {Param} from '../../model/param';
-import {Logger} from '../../utils/logger';
-import {GTSLib} from '../../utils/gts.lib';
-import {Utils} from '../../utils/utils';
+import { Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch } from '@stencil/core';
+import { ChartType, DataModel } from '../../model/types';
+import { Param } from '../../model/param';
+import { Logger } from '../../utils/logger';
+import { GTSLib } from '../../utils/gts.lib';
+import { Utils } from '../../utils/utils';
 
 @Component({
   tag: 'discovery-image',
@@ -50,7 +49,7 @@ export class DiscoveryImageComponent {
   updateRes(newValue: DataModel | string, oldValue: DataModel | string) {
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       this.result = GTSLib.getData(this.result);
-      this.toDisplay = this.convert(this.result || new DataModel())
+      this.toDisplay = this.convert(this.result || new DataModel());
       this.draw.emit();
     }
   }
@@ -64,12 +63,12 @@ export class DiscoveryImageComponent {
         this.options = JSON.parse(this.options);
       }
       this.result = GTSLib.getData(this.result);
-      this.toDisplay = this.convert(this.result || new DataModel())
+      this.toDisplay = this.convert(this.result || new DataModel());
       this.LOG?.debug(['componentWillLoad'], {
         type: this.type,
         options: this.options,
         toDisplay: this.toDisplay,
-        result: this.result
+        result: this.result,
       });
       this.parsing = false;
       if (this.initial) {
@@ -83,13 +82,13 @@ export class DiscoveryImageComponent {
     const toDisplay = [];
     let options = Utils.mergeDeep<Param>(this.defOptions, this.options || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.options = {...options};
+    this.options = { ...options };
     if (GTSLib.isArray(data.data)) {
       (data.data as any[] || []).forEach(img => {
         if (GTSLib.isEmbeddedImage(img)) {
           toDisplay.push(img);
         }
-      })
+      });
     } else if (data.data && GTSLib.isEmbeddedImage(data.data)) {
       toDisplay.push(data.data as string);
     }
@@ -98,19 +97,18 @@ export class DiscoveryImageComponent {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(_type: 'png' | 'svg' = 'png') {
     return Promise.resolve(this.toDisplay);
   }
 
   render() {
     return (
       <Host>
-        <div class="images-wrapper" style={{width: '100%', height: '100%'}}>
+        <div class="images-wrapper" style={{ width: '100%', height: '100%' }}>
           {this.parsing
             ? <discovery-spinner>Parsing data...</discovery-spinner>
             : this.toDisplay.length > 0
-              ? this.toDisplay.map((img) => <img src={img} class="responsive" alt="Result"/>)
+              ? this.toDisplay.map((img) => <img src={img} class="responsive" alt="Result" />)
               : ''
           }</div>
       </Host>

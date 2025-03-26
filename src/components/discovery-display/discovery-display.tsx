@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
 import { Param } from '../../model/param';
@@ -110,7 +109,7 @@ export class DiscoveryDisplayComponent {
     const dims = Utils.getContentBounds(this.el.parentElement);
     this.width = dims.w;
     this.height = dims.h;
-    if (!!this.wrapper) {
+    if (this.wrapper) {
       const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
       if (height !== this.innerHeight) {
         this.innerHeight = height;
@@ -122,8 +121,7 @@ export class DiscoveryDisplayComponent {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(_type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.innerOptions) || { bgColor }).bgColor || bgColor;
     const dm: Param = (((this.result as unknown as DataModel) || {
@@ -152,12 +150,13 @@ export class DiscoveryDisplayComponent {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     setTimeout(() => {
       this.height = Utils.getContentBounds(this.el.parentElement).h;
       this.initial = true;
       this.parsing = false;
-      if (!!this.wrapper) {
+      if (this.wrapper) {
         const height = Utils.getContentBounds(this.wrapper.parentElement).h - 20;
         if (height !== this.innerHeight) {
           this.innerHeight = height;
@@ -184,7 +183,7 @@ export class DiscoveryDisplayComponent {
       }
       this.fitties.fit();
     } else {
-      if (!!this.fitties) {
+      if (this.fitties) {
         this.fitties.unsubscribe();
         this.fitties = null;
         this.wrapper.style.fontSize = ''; // unsubscribe do not exactly restore the previous state
@@ -203,7 +202,7 @@ export class DiscoveryDisplayComponent {
   }
 
   private convert(dataModel: DataModel): string {
-    if (!!this.timer) {
+    if (this.timer) {
       clearInterval(this.timer);
     }
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
@@ -234,8 +233,8 @@ export class DiscoveryDisplayComponent {
       }
       display = v;
     }
-    if (display && display.hasOwnProperty('text')) {
-      if (display.hasOwnProperty('url')) {
+    if (display && display.hasOwn('text')) {
+      if (display.hasOwn('url')) {
         display = `<a href="${display.url}" target="_blank">${display.text}</a>`;
       } else {
         display = display.text;

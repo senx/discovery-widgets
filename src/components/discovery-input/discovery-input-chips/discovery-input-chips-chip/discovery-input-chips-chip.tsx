@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// noinspection ES6UnusedImports
 import { Component, Event, EventEmitter, h, Host, Prop } from '@stencil/core';
 
 @Component({
@@ -38,8 +36,7 @@ export class DiscoveryInputChipsChip {
       <span id="label" innerHTML={this.label}></span>
       {this.disabled ? '' : <div id="close_icon" onClick={() => this.handleClose()}>
         <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"
-          /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-          /* @ts-ignore */
+          // @ts-ignore
              xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
              x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
       <path id="close_icon_stroke"

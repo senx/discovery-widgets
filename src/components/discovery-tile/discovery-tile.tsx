@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { Utils } from '../../utils/utils';
 import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
@@ -40,8 +39,7 @@ export class DiscoveryTileComponent {
   @Prop() debug = false;
   @Prop() unit = '';
   @Prop({ mutable: true }) autoRefresh = -1;
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  @Prop() vars: any | string = '{}';
+  @Prop() vars: any = '{}';
 
   @Event({ bubbles: true }) statusHeaders: EventEmitter<string[]>;
   @Event({ bubbles: true }) statusError: EventEmitter;
@@ -220,7 +218,7 @@ export class DiscoveryTileComponent {
       window.clearInterval(this.timer);
       window.clearInterval(this.timerFadeOut);
     }
-    if (!!this.socket) {
+    if (this.socket) {
       this.socket.close();
     }
   }
@@ -248,7 +246,7 @@ export class DiscoveryTileComponent {
           this.innerOptions?.skippedVars ?? [],
           this.type,
           this.language);
-        if (!!window) {
+        if (window) {
           const win = window as any;
           let registry = win.DiscoveryPluginRegistry;
           registry = registry ?? {};
@@ -335,7 +333,7 @@ export class DiscoveryTileComponent {
             });
         } else if (this.url.toLowerCase().startsWith('ws')) {
           // Web Socket
-          if (!!this.socket) {
+          if (this.socket) {
             this.socket.close();
           }
           this.socket = new WebSocket(this.url);

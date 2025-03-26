@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars,max-classes-per-file
 import { Component, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { Logger } from '../../../utils/logger';
 import { Param } from '../../../model/param';
@@ -280,9 +279,9 @@ export class DiscoveryPageable {
   render() {
     return <div>
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)} />
-      {!!this.innerOptions?.tabular?.onTop ? this.getPagination() : ''}
-      <table class={!!this.innerOptions?.tabular?.stickyHeader ? 'sortable nospace' : 'sortable'}>
-        <thead class={!!this.innerOptions?.tabular?.stickyHeader ? 'stickyHeader' : ''}>
+      {this.innerOptions?.tabular?.onTop ? this.getPagination() : ''}
+      <table class={this.innerOptions?.tabular?.stickyHeader ? 'sortable nospace' : 'sortable'}>
+        <thead class={this.innerOptions?.tabular?.stickyHeader ? 'stickyHeader' : ''}>
         <tr>
           {this.data.headers.map((header, i) =>
             <th
@@ -295,7 +294,7 @@ export class DiscoveryPageable {
           }
         </tr>
         <tr>
-          {this.innerOptions?.tabular?.filterable ? this.data.headers.map((header, i) =>
+          {this.innerOptions?.tabular?.filterable ? this.data.headers.map((_header, i) =>
               <th
                 data-filter={i} style={{
                 width: this.innerOptions.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto',

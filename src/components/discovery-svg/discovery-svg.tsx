@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
 import { Param } from '../../model/param';
@@ -152,13 +151,13 @@ export class DiscoverySvgComponent {
   }
 
   private wrapFunction(fn: {
-    apply: (arg0: any, arg1: any) => any;
+    apply: (_arg0: any, _arg1: any) => any;
   }, context: this, params: CustomEvent<DiscoveryEvent>[]) {
     return () => fn.apply(context, params);
   }
 
   private processQueue() {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    // eslint-disable-next-line no-async-promise-executor
     void new Promise(async resolve => {
       while (this.funqueue.length > 0) await (this.funqueue.shift())();
       resolve(true);
@@ -192,7 +191,7 @@ export class DiscoverySvgComponent {
     try {
       const svgDoc = Utils.parseXML(svg, 'image/svg+xml');
       const el = svgDoc.getElementsByTagName('svg').item(0);
-      if (!!xpath) {
+      if (xpath) {
         let nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
         if (!nsXpath.startsWith('svg:svg')) {
           nsXpath = '//' + nsXpath;
@@ -223,12 +222,12 @@ export class DiscoverySvgComponent {
       }
 
       if (!el.getAttribute('width')?.endsWith('px') && !!el.getAttribute('viewBox')) {
-        const vb =  el.getAttribute('viewBox').split(' ');
+        const vb = el.getAttribute('viewBox').split(' ');
         el.setAttribute('width', vb[2] + 'px');
       }
 
       if (!el.getAttribute('height')?.endsWith('px') && !!el.getAttribute('viewBox')) {
-        const vb =  el.getAttribute('viewBox').split(' ');
+        const vb = el.getAttribute('viewBox').split(' ');
         el.setAttribute('height', vb[3] + 'px');
       }
 
@@ -262,6 +261,7 @@ export class DiscoverySvgComponent {
     return Object.keys(innerStyle || {}).map(k => k + ' { ' + innerStyle[k] + ' }').join('\n');
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidRender() {
     this.addHandlers();
   }
@@ -286,16 +286,16 @@ export class DiscoverySvgComponent {
     if (!this.listenersAdded) {
       for (const svgWrapper of this.refs) {
         for (const h of this.innerOptions.svg?.handlers ?? []) {
-          if (!!h.selector) {
+          if (h.selector) {
             for (const elem of svgWrapper.querySelectorAll(h.selector)) {
               elem.classList.add('hoverable');
-              if (!!h.click) {
+              if (h.click) {
                 elem.addEventListener('click', e => {
                   this.triggerEvent(h.event);
                   e.stopImmediatePropagation();
                 });
               }
-              if (!!h.hover) {
+              if (h.hover) {
                 elem.addEventListener('mouseover', e => {
                   this.triggerEvent(h.event);
                   e.stopImmediatePropagation();

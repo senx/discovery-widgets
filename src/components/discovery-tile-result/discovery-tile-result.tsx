@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
 import { Param } from '../../model/param';
@@ -70,10 +69,7 @@ export class DiscoveryTileResultComponent {
   @Event() execError: EventEmitter<any[]>;
 
   private LOG: Logger;
-  private wrapper: HTMLDivElement;
   private tileElem: HTMLDivElement;
-  private title: HTMLDivElement;
-  private desc: HTMLDivElement;
   private innerStyles: any;
   private tile: any;
   private innerVars = {};
@@ -145,7 +141,7 @@ export class DiscoveryTileResultComponent {
         });
       }
       if (res.focus) {
-        if (!!res.focus.date) {
+        if (res.focus.date) {
           void this.setFocus(res.focus.name, res.focus.date, res.focus.value).then(() => {
             // empty
           });
@@ -174,8 +170,8 @@ export class DiscoveryTileResultComponent {
   @Listen('draw', { capture: false })
   @Listen('rendered', { capture: false })
   onDrawHandler() {
-    if (!!this.tile) {
-      if (!!this.tile.resize) {
+    if (this.tile) {
+      if (this.tile.resize) {
         (this.tile).resize();
       }
     }
@@ -610,7 +606,7 @@ export class DiscoveryTileResultComponent {
             ref={(el: any) => this.tile = el ?? this.tile}
             debug={this.debug}
             id={this.componentId}
-            onExecError={e => this.handleExecError(e)}
+            onExecError={(e: any) => this.handleExecError(e)}
           />;
         }
         return '';
@@ -637,7 +633,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async show(regexp: string) {
-    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
+
     if (this.tile && this.tile['show']) {
       await (this.tile).show(regexp);
     }
@@ -645,7 +641,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async showById(id: number) {
-    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
+
     if (this.tile && this.tile['showById']) {
       await (this.tile).showById(id);
     }
@@ -653,7 +649,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async hide(regexp: string) {
-    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
+
     if (this.tile && this.tile['hide']) {
       await (this.tile).hide(regexp);
     }
@@ -661,7 +657,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async hideById(id: number) {
-    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
+
     if (this.tile && this.tile['hideById']) {
       await (this.tile).hideById(id);
     }
@@ -669,7 +665,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async setFocus(regexp: string, ts: number, value?: number) {
-    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
+
     if (this.tile && this.tile['setFocus']) {
       await (this.tile).setFocus(regexp, ts, value);
     }
@@ -677,7 +673,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async unFocus() {
-    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
+
     if (this.tile && this.tile['unFocus']) {
       await (this.tile).unFocus();
     }
@@ -685,7 +681,7 @@ export class DiscoveryTileResultComponent {
 
   @Method()
   async export(type: 'png' | 'svg' = 'png'): Promise<{ dataUrl: string, bgColor: string }> {
-    /* eslint-disable dot-notation, @typescript-eslint/dot-notation */
+
     if (this.tile && this.tile['export']) {
       const dataUrl = await (this.tile).export(type);
       return { dataUrl, bgColor: Utils.getCSSColor(this.tileElem, '--warp-view-tile-background', '#fff') };
@@ -705,13 +701,12 @@ export class DiscoveryTileResultComponent {
              height: '100%', width: '100%',
            }}>
         {this.innerTitle && this.innerTitle !== ''
-          ? <h2 class="tile-title" ref={el => this.title = el as HTMLDivElement}>{this.innerTitle ?? ''}</h2>
+          ? <h2 class="tile-title">{this.innerTitle ?? ''}</h2>
           : ''}
         {this.chartDescription && this.chartDescription !== ''
-          ? <p class="tile-desc" ref={el => this.desc = el as HTMLDivElement}>{this.chartDescription ?? ''}</p>
+          ? <p class="tile-desc">{this.chartDescription ?? ''}</p>
           : ''}
-        {this.ready ? <div class="discovery-chart-wrapper" ref={(el) => this.wrapper = el}
-        >
+        {this.ready ? <div class="discovery-chart-wrapper">
           {this.getView()}
         </div> : ''}
       </div>,

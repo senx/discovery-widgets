@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+/* eslint-disable no-unused-vars */
 import cssColorNames from 'css-color-names'
 import isCssColorName from 'is-css-color-name'
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export enum Colors {
   // noinspection JSUnusedGlobalSymbols
   COHESIVE = 'COHESIVE',
@@ -245,17 +245,13 @@ export class ColorLib {
   private static hsvGradient(c1: any, c2: any, steps: any) {
     const gradient = new Array(steps);
     // determine clockwise and counter-clockwise distance between hues
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     const distCCW = (c1.h >= c2.h) ? c1.h - c2.h : 1 + c1.h - c2.h;
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     const distCW = (c1.h >= c2.h) ? 1 + c2.h - c1.h : c2.h - c1.h;
     // make gradient for this part
     for (let i = 0; i < steps; i++) {
       // interpolate h, s, b
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       let h = (distCW <= distCCW) ? c1.h + (distCW * i / (steps - 1)) : c1.h - (distCCW * i / (steps - 1));
       if (h < 0) {
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         h = 1 + h;
       }
       if (h > 1) {

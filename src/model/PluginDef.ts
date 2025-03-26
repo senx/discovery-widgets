@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ export class PluginDef {
   author: string;
   description: string;
   version: string;
-  scriptWrapper: (n: string) => string;
+  scriptWrapper: (_n: string) => string;
 
   constructor(def: any) {
     this.type = def.type;

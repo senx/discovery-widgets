@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -73,8 +72,8 @@ export class DiscoveryGauge {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...opts };
-      if (!!this.myChart) {
-        this.chartOpts = this.convert(this.result as DataModel || new DataModel());
+      if (this.myChart) {
+        this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
@@ -267,27 +266,27 @@ export class DiscoveryGauge {
         }
         dataStruct.push({
           id: gts.id,
-          name: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
-          key: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
+          name: ((data.params ?? [])[i] || { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts),
+          key: ((data.params ?? [])[i] || { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts),
           value,
           max,
           min,
         });
       } else {
         // custom data format
-        let max: number = this.innerOptions.maxValue || Number.MIN_VALUE;
+        let max: number = this.innerOptions.maxValue ?? Number.MIN_VALUE;
         if (!!data.params && !!data.params[i] && !!data.params[i].maxValue) {
           max = data.params[i].maxValue;
           overallMax = Math.max(max, overallMax);
         } else {
-          overallMax = Math.max((gts.hasOwnProperty('value') ? gts.value : gts) || Number.MIN_VALUE, overallMax);
+          overallMax = Math.max((gts.hasOwn('value') ? gts.value : gts) ?? Number.MIN_VALUE, overallMax);
         }
         let min = 0;
         if (!!data.params && !!data.params[i] && !!data.params[i].minValue) {
           min = data.params[i].minValue;
         }
         let value = 0;
-        if (gts.hasOwnProperty('value')) {
+        if (gts.hasOwn('value')) {
           value = gts.value ?? 0;
         } else {
           value = gts ?? 0;
@@ -306,12 +305,14 @@ export class DiscoveryGauge {
         floor++;
       }
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
-      const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
+      const color = (data.params ?? [])[i]?.datasetColor ?? c;
       let axisLineColor: any[][] | HeatMaps;
-      if ((data.params || [])[i]?.gauge?.color || this.innerOptions.gauge?.color) {
-        if (GTSLib.isArray((data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color)) {
-          axisLineColor = (data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color;
-        } else if (ColorLib.heatMaps[((data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color).toString()]) {
+      if ((data.params ?? [])[i]?.gauge?.color || this.innerOptions.gauge?.color) {
+        if (GTSLib.isArray((data.params ?? [])[i]?.gauge?.color || this.innerOptions.gauge?.color)) {
+          axisLineColor = (data.params ?? [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color;
+          // eslint-disable-next-line no-unsafe-optional-chaining
+        } else if (ColorLib.heatMaps[((data.params ?? [])[i]?.gauge?.color || this.innerOptions.gauge?.color).toString()]) {
+          // eslint-disable-next-line no-unsafe-optional-chaining
           const heatMap = ColorLib.heatMaps[((data.params || [])[i]?.gauge?.color ?? this.innerOptions.gauge?.color).toString()];
           axisLineColor = heatMap.map((c: string, i: number) => [(i + 1) / heatMap.length, c]);
         }

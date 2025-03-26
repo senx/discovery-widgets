@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -112,7 +111,7 @@ export class DiscoveryCalendar {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
           this.myChart.setOption(this.chartOpts || {}, true, false);
@@ -161,7 +160,7 @@ export class DiscoveryCalendar {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
+          .filter((s, i) => new RegExp(id.toString()).test((s.id ?? i).toString())),
       });
     }
     return Promise.resolve();
@@ -173,12 +172,13 @@ export class DiscoveryCalendar {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
+          .filter((s, i) => new RegExp(id.toString()).test((s.id ?? i).toString())),
       });
     }
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryCalendar, this.debug);
@@ -188,8 +188,8 @@ export class DiscoveryCalendar {
       this.innerOptions = this.options;
     }
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    this.chartOpts = this.convert(this.result || new DataModel());
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
+    this.chartOpts = this.convert(this.result ?? new DataModel());
     this.setOpts();
     this.LOG?.debug(['componentWillLoad'], {
       type: this.type,
@@ -206,7 +206,7 @@ export class DiscoveryCalendar {
     const calendar: any[] = [];
     const titles: any[] = [];
     const visualMap: any[] = [];
-    let gtsList;
+    let gtsList: any[];
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG?.debug(['convert', 'isArray']);
@@ -249,7 +249,7 @@ export class DiscoveryCalendar {
           const y = d.split('-')[0];
           dataStruct[y] = dataStruct[y] || {};
           // Aggregation
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+           
           dataStruct[y][d] = dataStruct[y][d] + value || value;
           min = Math.min(min, dataStruct[y][d]);
           max = Math.max(max, dataStruct[y][d]);
@@ -358,7 +358,7 @@ export class DiscoveryCalendar {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
@@ -382,6 +382,7 @@ export class DiscoveryCalendar {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     setTimeout(() => {
       this.parsing = false;

@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -106,7 +105,7 @@ export class DiscoveryBoxPlotComponent {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
@@ -129,7 +128,7 @@ export class DiscoveryBoxPlotComponent {
 
   @Method()
   async setZoom(dataZoom: { start?: number, end?: number }) {
-    if (!!this.myChart) {
+    if (this.myChart) {
       dataZoom.start = dataZoom.start || 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
@@ -163,7 +162,7 @@ export class DiscoveryBoxPlotComponent {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
@@ -265,7 +264,7 @@ export class DiscoveryBoxPlotComponent {
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
         top: !this.innerOptions.box?.horizontal && !!(this.unit || this.innerOptions.unit) ? 30 : 10,
-        bottom: !!this.innerOptions.showLegend
+        bottom: this.innerOptions.showLegend
           ? this.innerOptions.box?.horizontal && !!(this.unit || this.innerOptions.unit)
             ? 50
             : 30
@@ -431,8 +430,8 @@ export class DiscoveryBoxPlotComponent {
     this.LOG?.debug(['convert', 'series'], series);
     const markArea = [...(this.innerOptions.thresholds || [])
       .map(t => {
-        const m = [{ itemStyle: { color: ColorLib.transparentize(t.color || '#f44336', !!t.fill ? 0.3 : 0) } }, {}] as any[];
-        if (!!this.innerOptions.box?.horizontal) {
+        const m = [{ itemStyle: { color: ColorLib.transparentize(t.color || '#f44336', t.fill ? 0.3 : 0) } }, {}] as any[];
+        if (this.innerOptions.box?.horizontal) {
           m[0].xAxis = t.value || 0;
           m[1].xAxis = 0;
           m[0].name = `${t.value || 0}`;
@@ -448,7 +447,7 @@ export class DiscoveryBoxPlotComponent {
         .map(t => {
           return [{
             itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+              color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
               borderType: t.type || 'dashed',
             },
             label: { color: t.color || '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name },
@@ -458,10 +457,10 @@ export class DiscoveryBoxPlotComponent {
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+                color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed',
               },
-              yAxis: !!this.innerOptions.box?.horizontal ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+              yAxis: this.innerOptions.box?.horizontal ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
               xAxis: !this.innerOptions.box?.horizontal ? ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
             }];
         })];
@@ -473,7 +472,7 @@ export class DiscoveryBoxPlotComponent {
           label: { color: t.color || '#f44336', position: 'insideEndTop' },
           lineStyle: { color: t.color || '#f44336', type: 'dashed' },
         } as any;
-        if (!!this.innerOptions.box?.horizontal) {
+        if (this.innerOptions.box?.horizontal) {
           m.xAxis = t.value || 0;
           m.label.show = false;
         } else {
@@ -493,7 +492,7 @@ export class DiscoveryBoxPlotComponent {
               show: !!t.name,
             },
             lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
-            yAxis: !!this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+            yAxis: this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
             xAxis: !this.innerOptions.box?.horizontal ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
           };
         })];
@@ -605,7 +604,7 @@ export class DiscoveryBoxPlotComponent {
       this.myChart.on('dataZoom', (event: any) => {
         let start;
         let end;
-        if (!!event.batch) {
+        if (event.batch) {
           const batch = (event.batch || [])[0] || {};
           start = batch.start || batch.startValue;
           end = batch.end || batch.endValue;
@@ -716,7 +715,7 @@ export class DiscoveryBoxPlotComponent {
       : ts ?? 0;
     let seriesIndex = 0;
     let dataIndex = 0;
-    if (!!regexp) {
+    if (regexp) {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
         .forEach(s => {

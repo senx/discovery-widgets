@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, init } from 'echarts';
 import { GTSLib } from '../../utils/gts.lib';
@@ -128,7 +127,7 @@ export class DiscoveryLineComponent {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = { ...this.defOptions, ...opts };
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         this.setOpts(true);
       }
@@ -166,7 +165,7 @@ export class DiscoveryLineComponent {
   setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts.series as SeriesOption[]).length === 0) {
@@ -226,8 +225,8 @@ export class DiscoveryLineComponent {
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
         top: 30,
-        bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (!!this.innerOptions.showRangeSelector ? 40 : 0),
-        right: 10 + (!!this.innerOptions.showYRangeSelector ? 40 : 0),
+        bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.showRangeSelector ? 40 : 0),
+        right: 10 + (this.innerOptions.showYRangeSelector ? 40 : 0),
         containLabel: true,
       },
       responsive: true,
@@ -257,14 +256,14 @@ export class DiscoveryLineComponent {
             : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor
               ? 'line'
               : 'none',
-          axis: !!this.innerOptions.yAxisFocus ? 'y' : 'x',
+          axis: this.innerOptions.yAxisFocus ? 'y' : 'x',
           animation: false,
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
             ? undefined
             : {
               color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
             },
-          crossStyle: !!this.innerOptions.yCursor
+          crossStyle: this.innerOptions.yCursor
             ? {
               color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
             }
@@ -305,7 +304,7 @@ export class DiscoveryLineComponent {
           type: 'slider',
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
-          bottom: !!this.innerOptions.showLegend ? 30 : 20,
+          bottom: this.innerOptions.showLegend ? 30 : 20,
           xAxisIndex: [0],
           filterMode: 'none',
         },
@@ -345,7 +344,7 @@ export class DiscoveryLineComponent {
           (opts.visualMap as any[])[gts.id] = {
             show: false,
             seriesIndex: gts.id,
-            dimension: !!data.params[gts.id].xpieces ? 0 : 1,
+            dimension: data.params[gts.id].xpieces ? 0 : 1,
             pieces: data.params[gts.id].pieces.map(p => ({
               color: p.color ?? '#D81B60',
               lte: data.params[gts.id].xpieces
@@ -427,7 +426,7 @@ export class DiscoveryLineComponent {
             },
           } : { color },
         } as SeriesOption;
-        if (!!data.params) {
+        if (data.params) {
           // multi Y
           if (data.params[gts.id]?.yAxis !== undefined) {
             multiY = true;
@@ -514,7 +513,7 @@ export class DiscoveryLineComponent {
               : color,
           } : { color },
         } as SeriesOption;
-        if (!!data.params) {
+        if (data.params) {
           // multi Y
           if (data.params[gts.id]?.yAxis !== undefined) {
             multiY = true;
@@ -585,7 +584,7 @@ export class DiscoveryLineComponent {
                   : p[0], p[1]])),
             },
             style: api.style({
-              fill: !!polygon.fill ? ColorLib.transparentize(color) : undefined,
+              fill: polygon.fill ? ColorLib.transparentize(color) : undefined,
               stroke: color,
             }),
           };
@@ -637,14 +636,14 @@ export class DiscoveryLineComponent {
       .map(t => {
         return [{
           itemStyle: {
-            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+            color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? 0.5 : 0),
             borderType: t.type || 'dashed',
             name: t.name || t.value || 0,
           },
           yAxis: t.value || 0,
         }, {
           itemStyle: t.from ? {
-            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+            color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? 0.5 : 0),
             borderType: t.type || 'dashed',
             name: t.name || t.value || 0,
           } : undefined,
@@ -656,7 +655,7 @@ export class DiscoveryLineComponent {
         .map(t => {
           return [{
             itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+              color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
               borderType: t.type || 'dashed',
             },
             label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
@@ -665,7 +664,7 @@ export class DiscoveryLineComponent {
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+                color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed',
               },
               xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
@@ -967,7 +966,7 @@ export class DiscoveryLineComponent {
 
   @Method()
   async setZoom(dataZoom: { start?: number, end?: number }) {
-    if (!!this.myChart) {
+    if (this.myChart) {
       dataZoom.start = dataZoom.start ?? 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
@@ -1037,7 +1036,7 @@ export class DiscoveryLineComponent {
       : ts || 0;
     let seriesIndex = 0;
     let dataIndex = 0;
-    if (!!regexp) {
+    if (regexp) {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(s.name))
         .forEach(s => {

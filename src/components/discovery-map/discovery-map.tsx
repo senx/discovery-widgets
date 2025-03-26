@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, MapParams } from '../../model/types';
 import { Param } from '../../model/param';
@@ -66,12 +65,10 @@ export class DiscoveryMapComponent {
   private LOG: Logger;
   private mapElement: HTMLDivElement;
   private map: Leaflet.Map;
-  private pointslayer = [];
   private bounds: Leaflet.LatLngBounds;
   private currentZoom: number;
   private currentLat: number;
   private currentLong: number;
-  private popupAnchor: Leaflet.PointExpression = [0, -50];
   private pathData: any[] = [];
   private positionData: any[] = [];
   private geoJson: any[] = [];
@@ -128,10 +125,8 @@ export class DiscoveryMapComponent {
     return Promise.resolve();
   }
 
-  // noinspection JSUnusedLocalSymbols
   @Method()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(_type: 'png' | 'svg' = 'png') {
     return await domtoimage.toPng(this.mapElement, { height: this.height, width: this.width });
   }
 
@@ -203,6 +198,7 @@ export class DiscoveryMapComponent {
     this.parsing = false;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.drawMap(this.result as DataModel ?? new DataModel());
   }
@@ -211,14 +207,13 @@ export class DiscoveryMapComponent {
     let tilesPromise: Promise<void>;
     let zoomPromise: Promise<void>;
     this.tileLayers = [];
-    // noinspection JSUnusedAssignment
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     this.LOG?.debug(['drawMap', 'this.options 2 '], { ...data.globalParams });
     options = Utils.mergeDeep<Param>(options, data.globalParams ?? {});
     optionUpdate = JSON.stringify(options) !== JSON.stringify(this.innerOptions);
     this.innerOptions = Utils.clone(options);
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
-    if (!!this.map) {
+    if (this.map) {
       this.map.invalidateSize(true);
     }
     this.LOG?.debug(['drawMap', 'data'], data);
@@ -228,7 +223,6 @@ export class DiscoveryMapComponent {
     data.params = data.params ?? [];
     const params = data.params;
     this.mapOpts = this.innerOptions.map ?? {};
-    this.pointslayer = [];
     dataList.forEach(g => {
       if (GTSLib.isGts(g)) {
         if (!this.hidden[g.id]) {
@@ -264,7 +258,6 @@ export class DiscoveryMapComponent {
       if (!isRefresh || optionUpdate) {
         this.LOG?.debug(['displayMap'], 'map', map);
         this.tileLayers.push(map.link);
-        // eslint-disable-next-line no-underscore-dangle
         if (!!this.tilesLayer && this.tilesLayer._url !== map.link) {
           this.tileLayerGroup.removeLayer(this.tilesLayer);
           this.tilesLayer = undefined;
@@ -276,7 +269,7 @@ export class DiscoveryMapComponent {
         }
       }
     }
-    if (!!this.map) {
+    if (this.map) {
       this.LOG?.debug(['displayMap'], 'map exists');
       this.pathDataLayer.clearLayers();
       this.positionDataLayer.clearLayers();
@@ -314,7 +307,7 @@ export class DiscoveryMapComponent {
     const pathDataSize = (this.pathData ?? []).length;
     for (let i = 0; i < pathDataSize; i++) {
       const path = this.pathData[i];
-      if (!!path) {
+      if (path) {
         this.updateGtsPath(path, data.params[i]);
       }
     }
@@ -322,7 +315,7 @@ export class DiscoveryMapComponent {
     const positionsSize = (this.positionData ?? []).length;
     for (let i = 0; i < positionsSize; i++) {
       const pData = this.positionData[i];
-      if (!!pData) {
+      if (pData) {
         this.updatePositionArray(pData, data.params[i], i);
       }
     }
@@ -348,14 +341,14 @@ export class DiscoveryMapComponent {
         maxZoom: this.mapOpts.maxZoom ?? 19,
       });
 
-      // eslint-disable-next-line no-underscore-dangle
+
       if (!this.tileLayerGroup.getLayers().find((l: any) => l._url === t.url)) {
         this.tileLayerGroup.addLayer(l);
       }
     });
     if (!isRefresh || optionUpdate) {
       this.tileLayerGroup.getLayers().forEach((l: any) => {
-        // eslint-disable-next-line no-underscore-dangle
+
         if (!this.tileLayers.includes(l._url)) {
           this.tileLayerGroup.removeLayer(l);
         }
@@ -365,7 +358,7 @@ export class DiscoveryMapComponent {
     const geoJsonSize = (this.geoJson ?? []).length;
     for (let i = 0; i < geoJsonSize; i++) {
       const m = this.geoJson[i];
-      if (!!m) {
+      if (m) {
         const color = ColorLib.getColor(i, this.innerOptions.scheme);
         const opts = {
           style: () => ({
@@ -614,7 +607,7 @@ export class DiscoveryMapComponent {
     const path = MapLib.pathDataToLeaflet(gts.path);
     const group = Leaflet.featureGroup();
     if ((path ?? []).length > 1 && !!gts.line && (gts.render === 'dots' || gts.render === 'path')) {
-      if (!!this.mapOpts.animate) {
+      if (this.mapOpts.animate) {
         group.addLayer(new AntPath(path ?? [], {
           delay: 800, dashArray: [10, 100],
           weight: 5, color: ColorLib.transparentize(gts.color, 0.5),
@@ -634,7 +627,7 @@ export class DiscoveryMapComponent {
   }
 
   private addPopup(positionData: any, value: any, ts: any, marker: any, offset: number) {
-    if (!!positionData) {
+    if (positionData) {
       let date = ts;
       if (ts && (this.innerOptions.timeMode ?? 'date') === 'date') {
         date = (GTSLib.toISOString(ts ?? 0, this.divider, this.innerOptions.timeZone, this.innerOptions.timeFormat) ?? '')
@@ -645,13 +638,13 @@ export class DiscoveryMapComponent {
       Object.keys(positionData.properties ?? [])
         .forEach(k => content += `<b>${k}</b>: ${decodeURIComponent(positionData.properties[k])}<br />`);
 
-      if (!!positionData.tooltip[ts]) {
+      if (positionData.tooltip[ts]) {
         content += positionData.tooltip[ts];
       }
       marker.on('mouseover', () => {
         marker.openPopup();
         this.markerOver = true;
-        if (!!this.popupTimeout) {
+        if (this.popupTimeout) {
           clearTimeout(this.popupTimeout);
         }
         this.popupTimeout = setTimeout(() => {
@@ -708,7 +701,7 @@ export class DiscoveryMapComponent {
     Object.keys(this.markersRef ?? {})
       .filter(s => new RegExp(regexp).test(s))
       .forEach(k => {
-        if (!!this.markersRef[k][ts]) {
+        if (this.markersRef[k][ts]) {
           this.markersRef[k][ts].openPopup();
         }
       });
@@ -721,7 +714,7 @@ export class DiscoveryMapComponent {
       .forEach(k => {
         (Object.keys(this.markersRef[k] ?? {}))
           .forEach(ts => {
-            if (!!this.markersRef[k][ts]) {
+            if (this.markersRef[k][ts]) {
               if (this.markersRef[k][ts].isPopupOpen() && !this.markerOver) this.markersRef[k][ts].closePopup();
             }
           });
@@ -760,7 +753,7 @@ export class DiscoveryMapComponent {
       : Leaflet.featureGroup();
     const path = MapLib.updatePositionArrayToLeaflet(positionData.positions);
     if ((positionData.positions ?? []).length > 1 && !!positionData.line) {
-      if (!!this.mapOpts.animate) {
+      if (this.mapOpts.animate) {
         group.addLayer(antPath(path ?? [], {
           delay: 800, dashArray: [10, 100],
           weight: 5, color: ColorLib.transparentize(positionData.color, 0.5),

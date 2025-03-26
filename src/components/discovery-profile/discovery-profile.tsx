@@ -14,8 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// noinspection ES6UnusedImports
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -122,7 +120,7 @@ export class DiscoveryProfile {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     this.LOG?.debug(['updateRes'], { chartOpts: this.chartOpts });
     setTimeout(() => {
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.myChart.resize({ width: this.width, height: this.height });
         this.setOpts(true);
       }
@@ -138,7 +136,7 @@ export class DiscoveryProfile {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
@@ -220,7 +218,7 @@ export class DiscoveryProfile {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
@@ -257,8 +255,8 @@ export class DiscoveryProfile {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts)) {
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
+        min = Math.min(min, ...gts.v.map((v: any[]) => v[0]));
+        max = Math.max(max, ...gts.v.map((v: any[]) => v[0]));
       }
     }
     if (max <= 1000 && min >= -1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
@@ -288,7 +286,7 @@ export class DiscoveryProfile {
             position: 'inside',
             textStyle: { color: Utils.getLabelColor(this.el), fontSize: 14 },
           },
-          data: gts.v.map(d => {
+          data: gts.v.map((d: any[]) => {
             let startTS = +d[0];
             startTS = this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
@@ -381,7 +379,7 @@ export class DiscoveryProfile {
       .map(t => {
         return [{
           itemStyle: {
-            color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? 0.5 : 0),
+            color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? 0.5 : 0),
             borderType: t.type || 'dashed',
             name: t.name || t.value || 0,
           },
@@ -393,7 +391,7 @@ export class DiscoveryProfile {
         .map(t => {
           return [{
             itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+              color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
               borderType: t.type || 'dashed',
             },
             label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
@@ -402,7 +400,7 @@ export class DiscoveryProfile {
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', !!t.fill ? t.alpha || 0.5 : 0),
+                color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
                 borderType: t.type || 'dashed',
               },
               xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
@@ -439,7 +437,7 @@ export class DiscoveryProfile {
       this.timeBounds.emit({ min, max });
     }
 
-    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
+    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
     this.LOG?.debug(['convert'], {
       expanded: this.expanded,
       series,
@@ -450,10 +448,10 @@ export class DiscoveryProfile {
     const opts = {
       animation: false,
       grid: {
-        height: this.height - (!!this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
+        height: this.height - (this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
         right: 10,
         top: 20,
-        bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
+        bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
         left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
@@ -540,7 +538,7 @@ export class DiscoveryProfile {
         axisLabel: {
           hideOverlap: true,
           color: Utils.getLabelColor(this.el),
-          formatter: this.innerOptions.fullDateDisplay ? value =>
+          formatter: this.innerOptions.fullDateDisplay ? (value: number) =>
               GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
                 .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
             : undefined,
@@ -610,6 +608,7 @@ export class DiscoveryProfile {
     return opts;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
@@ -712,12 +711,12 @@ export class DiscoveryProfile {
       : ts || 0;
     let seriesIndex = 0;
     let dataIndex = 0;
-    if (!!regexp) {
+    if (regexp) {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
         .forEach(s => {
           seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
-          const data = s.data.filter(d => d[1] === date);
+          const data = s.data.filter((d: number[]) => d[1] === date);
           if (data && data[0]) {
             dataIndex = s.data.indexOf(data[0]);
             s.markPoint = {
@@ -788,7 +787,7 @@ export class DiscoveryProfile {
       maxHeight: `${(this.height + (this.expanded ? 50 : 30))}px`,
     }}>
       <div class="chart-wrapper">
-        {!!this.displayExpander
+        {this.displayExpander
           ?
           <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
           : ''}
@@ -796,7 +795,7 @@ export class DiscoveryProfile {
              style={{
                width: `${this.width}
           px`,
-               height: `${(this.height + (!!this.innerOptions.showLegend ? 50 : 0) + (!!this.innerOptions.fullDateDisplay ? 50 : 0))}
+               height: `${(this.height + (this.innerOptions.showLegend ? 50 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0))}
           px`,
              }}>
           {this.parsing ? <div class="discovery-chart-spinner">

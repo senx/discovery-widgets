@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
 import { Param } from '../../model/param';
@@ -120,8 +119,7 @@ export class DiscoveryButtonComponent {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(_type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.options as Param) || { bgColor }).bgColor || bgColor;
     const dm: Param = ((this.innerResult || {
@@ -131,6 +129,7 @@ export class DiscoveryButtonComponent {
     return await domtoimage.toPng(this.root, { height: this.height, width: this.width, bgcolor: bgColor });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryButtonComponent, this.debug);
     this.parsing = true;
@@ -159,7 +158,7 @@ export class DiscoveryButtonComponent {
 
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions?.customStyles ?? {} });
@@ -191,7 +190,7 @@ export class DiscoveryButtonComponent {
         this.LOG?.debug(['handleClick', 'res.data'], res.data);
         const result = GTSLib.getData(res.data);
         this.LOG?.debug(['handleClick', 'getData'], result);
-        if (!!result) {
+        if (result) {
           for (const e of (result.events ?? [])) {
             this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e });
             if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {

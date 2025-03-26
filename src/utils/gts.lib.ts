@@ -70,7 +70,7 @@ export class GTSLib {
 
   static isArray(value: any) {
     return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
-      && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
+      && typeof value.splice === 'function' && !(Object.prototype.propertyIsEnumerable.call(value, 'length'));
   }
 
   static formatElapsedTime(elapsed: number) {
@@ -257,7 +257,6 @@ export class GTSLib {
         serializedAttributes.push(this.sanitizeNames(`${key}=${gts.a[key]}`));
       });
     }
-    // eslint-disable-next-line max-len
     return `${this.sanitizeNames(gts.c)}{${serializedLabels.join(',')}${serializedAttributes.length > 0 ? ',' : ''}${serializedAttributes.join(',')}}`;
   }
 
@@ -377,7 +376,7 @@ export class GTSLib {
     }
     if (serializedGTS.length > 2) {
       display += '<span class=\'gts-separator\'>{</span>';
-      const labels = serializedGTS[2].substr(0, serializedGTS[2].length - 1).split(',');
+      const labels = serializedGTS[2].substring(0, serializedGTS[2].length - 1).split(',');
       if (labels.length > 0) {
         labels.forEach((l, i) => {
           const label = l.split('=');
@@ -410,7 +409,7 @@ export class GTSLib {
   static toTimestamp(date: string, divider: number, timeZone: string, format?: string): number {
     timeZone = timeZone === 'AUTO' ? tz.guess() : timeZone;
     if (timeZone !== 'UTC') {
-      if (!!format) {
+      if (format) {
         return tz(date, format, timeZone).utc().valueOf() * divider;
       } else {
         return tz(date, timeZone).utc().valueOf() * divider;
@@ -452,7 +451,6 @@ export class GTSLib {
     const seconds = Math.floor(distance / 1000);
     distance -= seconds * 60000;
     const ms = distance / 1000.0;
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     return `${hours}h ${('0' + minutes).slice(-2)}m ${('0' + seconds).slice(-2)}s ${('0' + ms).slice(-2)}ms`;
   }
 

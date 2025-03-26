@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
 import { Param } from '../../model/param';
@@ -58,8 +57,7 @@ export class DiscoveryInputComponent {
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label = 'Ok';
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  @State() selectedValue: string | string[] | any;
+  @State() selectedValue:  any;
   @State() values = [];
 
   private defOptions: Param = { ...new Param(), input: { caseSensitive: true, onlyFromAutocomplete: true } };
@@ -75,8 +73,7 @@ export class DiscoveryInputComponent {
   private checkBoxes: HTMLDivElement;
   private pngWrapper: HTMLDivElement;
   private innerStyles: any;
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  private oldValue: string | string[] | any;
+  private oldValue: any;
   private filter: string;
 
   @Listen('discoveryEvent', { target: 'window' })
@@ -383,10 +380,10 @@ export class DiscoveryInputComponent {
           this.values = this.values.map(s => ({ k: s, v: s, h: false, id: v4().replaceAll('-', '') }));
         }
         let index = 0;
-        if (!!(this.innerOptions.input ?? {}).value) {
+        if ((this.innerOptions.input ?? {}).value) {
           index = this.values.map(o => o.v).indexOf((this.innerOptions.input || {}).value);
         }
-        if (!!this.inputField) {
+        if (this.inputField) {
           (this.inputField as HTMLSelectElement).selectedIndex = index;
         }
         setTimeout(() => {
@@ -433,12 +430,6 @@ export class DiscoveryInputComponent {
     }
   }
 
-  private formatDateTime(timestamp: string): string {
-    const divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
-    return GTSLib.toISOString(parseInt(timestamp, 10), divider, this.innerOptions.timeZone,
-      undefined).replace('Z', '');
-  }
-
   private selectAll(e: any) {
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
@@ -481,8 +472,8 @@ export class DiscoveryInputComponent {
   private handleContains(input: string) {
     if (this.subType === 'chips-autocomplete') {
       return this.values
-        .map(v => !!this.innerOptions.input?.caseSensitive ? v.k.toLowerCase() : v.k)
-        .includes(!!this.innerOptions.input?.caseSensitive ? input.toLowerCase() : input);
+        .map(v => this.innerOptions.input?.caseSensitive ? v.k.toLowerCase() : v.k)
+        .includes(this.innerOptions.input?.caseSensitive ? input.toLowerCase() : input);
     } else {
       return false;
     }
@@ -499,8 +490,8 @@ export class DiscoveryInputComponent {
                       value={this.value as string}
                       onInput={e => this.handleSelect(e)}
                       required={this.innerOptions?.input?.validation}
-                      minlength={this.innerOptions?.input?.min}
-                      maxlength={this.innerOptions?.input?.max}
+                      minLength={this.innerOptions?.input?.min}
+                      maxLength={this.innerOptions?.input?.max}
                       disabled={this.innerOptions?.input?.disabled}
                       ref={el => this.inputField = el}
         />;
@@ -585,7 +576,7 @@ export class DiscoveryInputComponent {
               : ''
             }
             <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el}>
-              {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
+              { }
               {this.values.map(v => (
                 <div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
                   <input type="checkbox" value={v.k}

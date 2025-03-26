@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { Logger } from '../../utils/logger';
 import noUiSlider from 'nouislider';
@@ -58,7 +57,6 @@ export class DiscoverySlider {
     }
     this.innerOptions = Utils.clone({ ...this.defOptions, ...opts });
     this.innerValue = this.innerOptions.input?.value as number | number[] || this.innerValue || this.innerOptions.input?.min || 0;
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout(async () => {
       await this.setValue(this.innerValue);
       if (this.LOG) {
@@ -66,7 +64,7 @@ export class DiscoverySlider {
       }
       return Promise.resolve();
     });
-    if(this.innerOptions?.input?.disabled) {
+    if (this.innerOptions?.input?.disabled) {
       this.slider?.disable();
     } else {
       this.slider?.enable();
@@ -94,7 +92,7 @@ export class DiscoverySlider {
   componentDidLoad() {
     this.innerValue = this.innerValue ?? this.innerOptions.input?.value as number | number[] ?? this.innerOptions.input?.min ?? 0;
     this.slider = noUiSlider.create(this.sliderDiv, this.getSliderOptions());
-    if(this.innerOptions?.input?.disabled) {
+    if (this.innerOptions?.input?.disabled) {
       this.slider?.disable();
     } else {
       this.slider?.enable();
@@ -113,8 +111,7 @@ export class DiscoverySlider {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async export(type: 'png' | 'svg' = 'png', bgColor: string) {
+  async export(_type: 'png' | 'svg' = 'png', bgColor: string) {
     const dims = Utils.getContentBounds(this.sliderDiv);
     const width = dims.w - 15;
     const height = dims.h;

@@ -345,7 +345,7 @@ export class DiscoveryDashboardComponent {
         this.renderedTiles = new JsonLib().parse(t.data as string)[0] || [];
         this.sanitizeTiles();
         this.processResult(tmpResult);
-        if (this.innerOptions.autoRefresh || 0 > 0 && !!this.data) {
+        if ((this.innerOptions.autoRefresh ?? 0) > 0 && !!this.data) {
           this.refreshTimer = setTimeout(() => this.processMacroTiles(tmpResult), this.innerOptions.autoRefresh * 1000);
         }
       }).catch(e => {
@@ -417,11 +417,11 @@ export class DiscoveryDashboardComponent {
   }
 
   private getType(id: number, type: string): string {
-    return ((this.types[id] || type || '').replace(/:/gi, '-') as string) + (!!this.renderedTiles[id]?.options?.responsive ? ' auto-height' : '');
+    return ((this.types[id] ?? type ?? '').replace(/:/gi, '-') as string) + (this.renderedTiles[id]?.options?.responsive ? ' auto-height' : '');
   }
 
   private getRowSpan(id: number, span: number): string {
-    return !!this.renderedTiles[id]?.options?.responsive ? `span ${span - 1}` : `${span}`;
+    return this.renderedTiles[id]?.options?.responsive ? `span ${span - 1}` : `${span}`;
   }
 
   private setActualType(id: number, type: CustomEvent<ChartType>) {
@@ -607,11 +607,11 @@ export class DiscoveryDashboardComponent {
   }
 
   private addTile(el: HTMLDiscoveryTileElement | HTMLDiscoveryTileResultElement, t: Tile, i: number) {
-    if (!!el) {
+    if (el) {
       t.elem = el;
       this.tiles.push(t);
       el.addEventListener('draw', () => {
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+         
         this.done[i] = (this.done[i] || 0) + 1;
         const res = Object.keys(this.done).map(s => {
           switch (this.tiles[i]?.type) {

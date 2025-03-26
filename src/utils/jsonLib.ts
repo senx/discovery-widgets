@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022  SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 // adapted from Canop's JSON,parseMore https://github.com/Canop/JSON.parseMore/
 export class JsonLib {
-  at;	 // The index of the current character
-  ch;	 // The current character
+  at: number;	 // The index of the current character
+  ch: string;	 // The current character
   escapee = {
     '"': '"',
     '\\': '\\',
@@ -31,7 +31,6 @@ export class JsonLib {
   text: string;
 
   private error(m: string) {
-    // eslint-disable-next-line no-throw-literal
     throw {
       name: 'SyntaxError',
       message: m,
@@ -81,6 +80,7 @@ export class JsonLib {
     if (this.ch === 'e' || this.ch === 'E') {
       str += this.ch;
       this.next();
+      // @ts-ignore
       if (this.ch === '-' || this.ch === '+') {
         str += this.ch;
         this.next();
@@ -94,9 +94,9 @@ export class JsonLib {
   }
 
   private parseString() {
-    let hex;
+    let hex: number;
     let str = '';
-    let uffff;
+    let uffff: number;
     if (this.ch === '"') {
       while (this.next()) {
         if (this.ch === '"') {
@@ -112,7 +112,6 @@ export class JsonLib {
               if (!isFinite(hex)) {
                 break;
               }
-              // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
               uffff = uffff * 16 + hex;
             }
             str += String.fromCharCode(uffff);
@@ -180,6 +179,7 @@ export class JsonLib {
     if (this.ch === '[') {
       this.check('[');
       this.white();
+      // @ts-ignore
       if (this.ch === ']') {
         this.check(']');
         return array;   // empty array
@@ -187,6 +187,7 @@ export class JsonLib {
       while (this.ch !== undefined) {
         array.push(this.value());
         this.white();
+        // @ts-ignore
         if (this.ch === ']') {
           this.check(']');
           return array;
@@ -199,11 +200,12 @@ export class JsonLib {
   }
 
   private object() {
-    let key;
+    let key: string;
     const object = {};
     if (this.ch === '{') {
       this.check('{');
       this.white();
+      // @ts-ignore
       if (this.ch === '}') {
         this.check('}');
         return object;   // empty object
@@ -217,6 +219,7 @@ export class JsonLib {
         }
         object[key] = this.value();
         this.white();
+        // @ts-ignore
         if (this.ch === '}') {
           this.check('}');
           return object;
@@ -254,10 +257,9 @@ export class JsonLib {
       this.error('Syntax error');
     }
     return typeof reviver === 'function'
-      // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
       ? (function walk(holder, key) {
-        let k;
-        let v;
+        let k: string;
+        let v: any;
         const value = holder[key];
         if (value !== undefined && typeof value === 'object') {
           for (k in value) {

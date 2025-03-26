@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2023 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -19,8 +19,9 @@ import {ColorLib} from './color-lib';
 import {Logger} from './logger';
 import {Param} from '../model/param';
 
-// noinspection JSUnusedGlobalSymbols
+/* eslint-disable no-unused-vars */
 export enum MapTypes {
+  // noinspection JSUnusedGlobalSymbols
   NONE = 'NONE',
   DEFAULT = 'DEFAULT',
   HOT = 'HOT',
@@ -160,13 +161,13 @@ export class MapLib {
           MapLib.extractCommonParameters(path, params, i, scheme);
           path.path = MapLib.gtsToPath(gts);
           if (!!params.render || data.globalParams?.map?.render) {
-            path.render = params.render || data.globalParams?.map?.render;
+            path.render = params.render ?? data.globalParams?.map?.render;
           }
           if (!!params.marker || data?.globalParams?.map?.marker) {
-            path.marker = params.marker || data?.globalParams?.map?.marker;
+            path.marker = params.marker ?? data?.globalParams?.map?.marker;
           }
-          path.line = params.hasOwnProperty('line') ? params.line : true;
-          path.render = path.render || 'dots';
+          path.line = params.hasOwn('line') ? params.line : true;
+          path.render = path.render ?? 'dots';
           if (path.render === 'weightedDots') {
             MapLib.validateWeightedDotsPositionArray(path, params);
           }
@@ -181,7 +182,7 @@ export class MapLib {
 
           path.color = ColorLib.getColor(gts.id, scheme);
           if (data.params && data.params[i]) {
-            path.color = data.params[i].datasetColor || data.params[i].color || path.color;
+            path.color = data.params[i].datasetColor ?? data.params[i].color ?? path.color;
           }
           paths.push(path);
         } else {
@@ -263,7 +264,6 @@ export class MapLib {
       const pos = posArray[i];
       const value = pos[2];
       pos[4] = posArray.numSteps - 1;
-      // eslint-disable-next-line @typescript-eslint/no-for-in-array
       for (const k in steps) {
         if (value <= steps[k]) {
           pos[4] = k;
@@ -292,7 +292,7 @@ export class MapLib {
         posArray.render = gtsParam.render || globalParams?.map?.render || 'dots';
         posArray.maxValue = gtsParam.maxValue || 0;
         posArray.minValue = gtsParam.minValue || 0;
-        posArray.line = gtsParam.hasOwnProperty('line') ? gtsParam.line : false;
+        posArray.line = gtsParam.hasOwn('line') ? gtsParam.line : false;
         if (posArray.render === 'weightedDots') {
           MapLib.validateWeightedDotsPositionArray(posArray, gtsParam);
         }

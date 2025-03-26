@@ -14,8 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// noinspection ES6UnusedImports eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch } from '@stencil/core';
 import { GTSLib } from '../../../utils/gts.lib';
 import { Utils } from '../../../utils/utils';
@@ -28,8 +26,8 @@ import { Utils } from '../../../utils/utils';
 export class DiscoveryInputChips {
 
   @Prop() chips: string[] = [];
-  @Prop() autocomplete: (value: string) => Promise<any>;
-  @Prop() containsFn: (value: string) => Promise<boolean>;
+  @Prop() autocomplete: (_value: string) => Promise<any>;
+  @Prop() containsFn: (_value: string) => Promise<boolean>;
   @Prop() constrain_input = false;
   @Prop({ mutable: true }) value: string;
   @Prop() disabled: boolean = false;
@@ -64,7 +62,6 @@ export class DiscoveryInputChips {
   private highlighted_autocomplete_index: number;
   private autocomplete_select_default: any;
   private autocomplete_debounce_key: any;
-  private caret_position: { x: number, y: number };
   private caret_position_tracker: HTMLDivElement;
   private autocomplete_dismiss_target: any;
   private autocompleteContainer: HTMLDivElement;
@@ -187,7 +184,7 @@ export class DiscoveryInputChips {
       let value = this.real_input.value;
       value += key;
       this.highlighted_autocomplete_index = null;
-      if (!!this.autocomplete) {
+      if (this.autocomplete) {
         autocomplete_items = await this.autocomplete(value);
       }
       if (!autocomplete_items.length) {
@@ -241,12 +238,6 @@ export class DiscoveryInputChips {
   private updateCaretPosition() {
     const selection_start = this.real_input.selectionStart;
     this.caret_position_tracker.textContent = this.real_input.value.substring(0, selection_start).replace(/\s/g, '\u00a0');
-    const pos_rect = this.caret_position_tracker.getBoundingClientRect();
-    const input_rect = this.real_input.getBoundingClientRect();
-    this.caret_position = {
-      x: input_rect.x + pos_rect.width,
-      y: input_rect.y + pos_rect.height,
-    };
   }
 
   private closeAutoComplete(force: boolean) {

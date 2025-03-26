@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -106,7 +105,7 @@ export class DiscoveryBarPolarComponent {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
@@ -129,7 +128,7 @@ export class DiscoveryBarPolarComponent {
 
   @Method()
   async setZoom(dataZoom: { start?: number, end?: number }) {
-    if (!!this.myChart) {
+    if (this.myChart) {
       dataZoom.start = dataZoom.start || 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
@@ -163,7 +162,7 @@ export class DiscoveryBarPolarComponent {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] ?? []).length === 0) {
@@ -254,7 +253,7 @@ export class DiscoveryBarPolarComponent {
     options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
     this.innerOptions = Utils.clone(options);
     const series: any[] = [];
-    let gtsList;
+    let gtsList: any[];
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG?.debug(['convert', 'isArray']);
@@ -280,8 +279,8 @@ export class DiscoveryBarPolarComponent {
         this.isGTS = true;
         const c = ColorLib.getColor(gts.id ?? i, this.innerOptions.scheme);
         const color = ((data.params ?? [])[i] ?? { datasetColor: c }).datasetColor ?? c;
-        min = Math.min(min, ...gts.v.map(v => v[0]));
-        max = Math.max(max, ...gts.v.map(v => v[0]));
+        min = Math.min(min, ...gts.v.map((v: any[]) => v[0]));
+        max = Math.max(max, ...gts.v.map((v: any[]) => v[0]));
         hasTimeBounds = true;
         let type = ((data.params ?? [])[i] ?? { type: 'bar' }).type || 'bar';
         const datasetNoAlpha = (data.params ?? [])[i]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
@@ -345,7 +344,7 @@ export class DiscoveryBarPolarComponent {
           const color = ((data.params ?? [])[index] ?? { datasetColor: c }).datasetColor ?? c;
           let type = ((data.params ?? [])[index] ?? { type: 'bar' }).type ?? 'bar';
           const datasetNoAlpha = (data.params ?? [])[index]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
-          let areaStyle;
+          let areaStyle: any;
           if (type === 'area') {
             type = 'line';
             areaStyle = {
@@ -403,7 +402,7 @@ export class DiscoveryBarPolarComponent {
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
         top: 10,
-        bottom: !!this.innerOptions.showLegend ? 30 : 10,
+        bottom: this.innerOptions.showLegend ? 30 : 10,
         right: 10,
         containLabel: true,
       },
@@ -430,7 +429,7 @@ export class DiscoveryBarPolarComponent {
           hideOverlap: true,
           color: Utils.getLabelColor(this.el),
           formatter: this.innerOptions?.bar?.circular ? undefined : this.innerOptions.timeMode === 'date'
-            ? this.innerOptions.fullDateDisplay ? value =>
+            ? this.innerOptions.fullDateDisplay ? (value: number) =>
                 GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
                   .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
               : undefined
@@ -443,7 +442,7 @@ export class DiscoveryBarPolarComponent {
         },
       },
       angleAxis: {
-        startAngle: !!this.innerOptions.bar?.startAngle ? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories ?? []).length, 1)) * -1.5 + 180,
+        startAngle: this.innerOptions.bar?.startAngle ? this.innerOptions.bar?.startAngle : this.isGTS ? 0 : (360 / Math.max((this.categories ?? []).length, 1)) * -1.5 + 180,
         type: this.innerOptions?.bar?.circular ? 'value' : this.isGTS ? this.innerOptions.timeMode === 'date' ? 'time' : 'value' : 'category',
         data: this.innerOptions?.bar?.circular ? undefined : this.isGTS ? undefined : this.categories,
         axisLine: {
@@ -456,7 +455,7 @@ export class DiscoveryBarPolarComponent {
           show: !this.innerOptions.hideXAxis,
           color: Utils.getLabelColor(this.el),
           formatter: this.innerOptions?.bar?.circular ? this.innerOptions.timeMode === 'date'
-              ? this.innerOptions.fullDateDisplay ? value =>
+              ? this.innerOptions.fullDateDisplay ? (value: number) =>
                   GTSLib.toISOString(GTSLib.zonedTimeToUtc(value, 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone, this.innerOptions.timeFormat)
                     .replace('T', '\n').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
                 : undefined
@@ -488,14 +487,14 @@ export class DiscoveryBarPolarComponent {
         transitionDuration: 0,
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor ? 'cross' : !!this.innerOptions.yCursor || !!this.innerOptions.xCursor ? 'line' : 'none',
-          axis: !!this.innerOptions.yAxisFocus ? 'angle' : 'radius',
+          axis: this.innerOptions.yAxisFocus ? 'angle' : 'radius',
           animation: false,
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
             ? undefined
             : {
               color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
             },
-          crossStyle: !!this.innerOptions.yCursor
+          crossStyle: this.innerOptions.yCursor
             ? {
               color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
             }
@@ -532,7 +531,7 @@ export class DiscoveryBarPolarComponent {
     return opts;
   }
 
-  private zoomHandler(start, end) {
+  private zoomHandler(start: number, end: number) {
     this.dataZoom.emit({
       start,
       end,
@@ -552,12 +551,12 @@ export class DiscoveryBarPolarComponent {
         if (this.hasFocus) {
           switch (type) {
             case 'mouseover':
-              const c = event.data.coord || event.data;
+              const c = event.data.coord ?? event.data;
               this.dataPointOver.emit({ date: c[0], name: GTSLib.getName(event.seriesName), value: c[1], meta: {} });
               break;
             case 'highlight':
               let ts: number;
-              (event.batch || []).forEach(b => {
+              (event.batch ?? []).forEach((b: any) => {
                 const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
                 ts = s.data[b.dataIndex][0];
                 ts = this.innerOptions.timeMode === 'date'
@@ -603,7 +602,7 @@ export class DiscoveryBarPolarComponent {
       this.myChart.on('dataZoom', (event: any) => {
         let start: number;
         let end: number;
-        if (!!event.batch) {
+        if (event.batch) {
           const batch = (event.batch || [])[0] || {};
           start = batch.start || batch.startValue;
           end = batch.end || batch.endValue;
@@ -704,11 +703,11 @@ export class DiscoveryBarPolarComponent {
       : ts || 0;
     let seriesIndex = 0;
     let dataIndex = 0;
-    if (!!regexp) {
+    if (regexp) {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(s.name))
         .forEach(s => {
-          const data = s.data.filter(d => d[0] === date);
+          const data = s.data.filter((d: number[]) => d[0] === date);
           if (data && data.length > 0 && data[0]) {
             seriesIndex = (this.chartOpts.series as any[]).indexOf(s);
             dataIndex = s.data.indexOf(data[0]);

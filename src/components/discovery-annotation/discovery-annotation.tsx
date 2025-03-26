@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -117,7 +116,7 @@ export class DiscoveryAnnotation {
   updateRes() {
     this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
     setTimeout(() => {
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.myChart.resize({ width: this.width, height: this.height });
         this.setOpts(true);
       }
@@ -133,7 +132,7 @@ export class DiscoveryAnnotation {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
@@ -218,7 +217,7 @@ export class DiscoveryAnnotation {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
@@ -308,7 +307,7 @@ export class DiscoveryAnnotation {
       this.bounds = { min, max };
     }
 
-    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (!!this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
+    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
     this.LOG?.debug(['convert'], {
       expanded: this.expanded,
       height: this.height,
@@ -318,25 +317,25 @@ export class DiscoveryAnnotation {
     const opts = {
       animation: false,
       grid: {
-        height: this.height - (!!this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
+        height: this.height - (this.innerOptions.showLegend ? 60 : 30) - (this.innerOptions.fullDateDisplay ? 40 : 0),
         right: 10,
         top: 20,
-        bottom: (!!this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
+        bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
         left: (this.innerOptions.leftMargin !== undefined && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin
-          : this.leftMargin || 10,
+          : this.leftMargin ?? 10,
         containLabel: true,
       },
       throttle: 70,
       tooltip: {
         trigger: 'axis',
         transitionDuration: 0,
-        formatter: (params) => {
+        formatter: (params: any[]) => {
           return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${
             this.innerOptions.timeMode !== 'date'
               ? params[0].value[1]
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-                this.innerOptions.timeFormat) || '')
+                this.innerOptions.timeFormat) ?? '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
             return `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
@@ -466,6 +465,7 @@ export class DiscoveryAnnotation {
     this.dataZoom.emit({ type: 'restore' });
   }, 100, { 'trailing': false });
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     const zoomHandler = _.throttle((start: number, end: number) => this.zoomHandler(start, end),
       16, { leading: true, trailing: true });
@@ -474,7 +474,7 @@ export class DiscoveryAnnotation {
         if (this.hasFocus) {
           switch (type) {
             case 'mouseover':
-              const c = event.data.coord || event.data;
+              const c = event.data.coord ?? event.data;
               this.dataPointSelected.emit({
                 date: c[0],
                 name: GTSLib.getName(event.seriesName),
@@ -483,8 +483,8 @@ export class DiscoveryAnnotation {
               });
               break;
             case 'highlight':
-              let ts;
-              (event.batch || []).forEach(b => {
+              let ts: number;
+              (event.batch ?? []).forEach(b => {
                 const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
                 ts = s.data[b.dataIndex][0];
                 ts = this.innerOptions.timeMode === 'date'
@@ -589,7 +589,7 @@ export class DiscoveryAnnotation {
     this.myChart.on('dataZoom', (event: any) => {
       let start;
       let end;
-      if (!!event.batch) {
+      if (event.batch) {
         const batch = (event.batch || [])[0] || {};
         start = batch.start || batch.startValue;
         end = batch.end || batch.endValue;
@@ -650,7 +650,7 @@ export class DiscoveryAnnotation {
       : ts || 0;
     let seriesIndex = 0;
     let dataIndex = 0;
-    if (!!regexp) {
+    if (regexp) {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
         .forEach(s => {
@@ -726,11 +726,10 @@ export class DiscoveryAnnotation {
         ?
         <button class="expander" onClick={() => this.toggle()} title="collapse/expand">+/-</button>
         : ''}
-      <div class="chart-area"
-           style={{
-             width: `${this.width}px`,
-             height: `${(this.height + (!!this.innerOptions.showLegend ? 50 : 0) + (!!this.innerOptions.fullDateDisplay ? 50 : 0))}px`,
-           }}>
+      <div class="chart-area" style={{
+        width: `${this.width}px`,
+        height: `${(this.height + (this.innerOptions.showLegend ? 50 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0))}px`,
+      }}>
         {this.parsing ? <div class="discovery-chart-spinner">
           <discovery-spinner>Parsing data...</discovery-spinner>
         </div> : ''}

@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -160,6 +159,7 @@ export class DiscoveryLinearGauge {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryLinearGauge, this.debug);
@@ -268,7 +268,7 @@ export class DiscoveryLinearGauge {
           }
         }
         let value = 0;
-        if (gts.hasOwnProperty('value')) {
+        if (gts.hasOwn('value')) {
           value = gts.value ?? 0;
         } else {
           value = gts ?? 0;
@@ -306,6 +306,7 @@ export class DiscoveryLinearGauge {
     this.dataStruct = dataStruct;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     this.parsing = false;
     this.rendering = true;
@@ -315,8 +316,7 @@ export class DiscoveryLinearGauge {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(_type: 'png' | 'svg' = 'png') {
     let bgColor = Utils.getCSSColor(this.el, '--warp-view-bg-color', 'transparent');
     bgColor = ((this.options as Param) ?? { bgColor }).bgColor ?? bgColor;
     const res = this.result as DataModel;

@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -108,7 +107,7 @@ export class DiscoveryBarComponent {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
       }
@@ -131,7 +130,7 @@ export class DiscoveryBarComponent {
 
   @Method()
   async setZoom(dataZoom: { start?: number, end?: number }) {
-    if (!!this.myChart) {
+    if (this.myChart) {
       dataZoom.start = dataZoom.start ?? 0;
       if (this.zoom?.start !== dataZoom.start || this.zoom?.end !== dataZoom.end) {
         this.zoom = dataZoom;
@@ -165,7 +164,7 @@ export class DiscoveryBarComponent {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
@@ -293,14 +292,14 @@ export class DiscoveryBarComponent {
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10,
         top: !this.innerOptions?.bar?.horizontal && !!(this.unit || this.innerOptions.unit) ? 30 : 10,
-        bottom: !!this.innerOptions.showLegend
+        bottom: this.innerOptions.showLegend
           ? this.innerOptions?.bar?.horizontal && !!(this.unit || this.innerOptions.unit)
             ? 50
             : 30
           : this.innerOptions?.bar?.horizontal && !!(this.unit || this.innerOptions.unit)
             ? 20
             : 10
-            + (!!this.innerOptions.showRangeSelector ? 40 : 0),
+            + (this.innerOptions.showRangeSelector ? 40 : 0),
         right: 10,
         containLabel: true,
       },
@@ -342,7 +341,7 @@ export class DiscoveryBarComponent {
           type: 'slider',
           height: '20px',
           show: !!this.innerOptions.showRangeSelector,
-          bottom: !!this.innerOptions.showLegend ? 30 : 20,
+          bottom: this.innerOptions.showLegend ? 30 : 20,
         },
         {
           type: 'inside',
@@ -368,7 +367,7 @@ export class DiscoveryBarComponent {
           show: false,
           seriesIndex: i,
           borderColor: color,
-          dimension: !!data.params[i].xpieces
+          dimension: data.params[i].xpieces
             ? !this.innerOptions.bar?.horizontal ? 0 : 1
             : !this.innerOptions.bar?.horizontal ? 1 : 0,
           pieces: data.params[gts.id].pieces.map(p => ({ color: p.color ?? '#D81B60', lte: p.lte, gte: p.gte })),
@@ -409,7 +408,7 @@ export class DiscoveryBarComponent {
               const ts = this.innerOptions.timeMode === 'date'
                 ? GTSLib.utcToZonedTime(d[0], this.divider, this.innerOptions.timeZone)
                 : d[0];
-              if (!!this.innerOptions.bar?.horizontal) {
+              if (this.innerOptions.bar?.horizontal) {
                 return [d[d.length - 1], ts];
               } else {
                 return [ts, d[d.length - 1]];
@@ -442,7 +441,7 @@ export class DiscoveryBarComponent {
             ...this.getCommonSeriesParam(color, (data.params || [])[index]),
             name: label,
             type, areaStyle,
-            data: gts.rows.map((r: any[]) => !!this.innerOptions.bar?.horizontal ? [r[index + 1], r[0]] : [r[0], r[index + 1]]),
+            data: gts.rows.map((r: any[]) => this.innerOptions.bar?.horizontal ? [r[index + 1], r[0]] : [r[0], r[index + 1]]),
           } as SeriesOption);
         });
       }
@@ -544,11 +543,11 @@ export class DiscoveryBarComponent {
     this.LOG?.debug(['convert', 'series'], series);
     const markArea = [...(this.innerOptions.thresholds ?? [])
       .map(t => {
-        const m = [{ itemStyle: { color: ColorLib.transparentize(t.color ?? '#f44336', !!t.fill ? 0.3 : 0) } }, {}] as any[];
-        if (!!this.innerOptions.bar?.horizontal) {
+        const m = [{ itemStyle: { color: ColorLib.transparentize(t.color ?? '#f44336', t.fill ? 0.3 : 0) } }, {}] as any[];
+        if (this.innerOptions.bar?.horizontal) {
           m[0].xAxis = t.value ?? 0;
           m[1] = {
-            itemStyle: t.from ? { color: ColorLib.transparentize(t.color ?? '#f44336', !!t.fill ? 0.3 : 0) } : undefined,
+            itemStyle: t.from ? { color: ColorLib.transparentize(t.color ?? '#f44336', t.fill ? 0.3 : 0) } : undefined,
             xAxis: t.from ?? 0,
           };
           m[0].name = `${t.value ?? 0}`;
@@ -556,7 +555,7 @@ export class DiscoveryBarComponent {
         } else {
           m[0].yAxis = t.value ?? 0;
           m[1] = {
-            itemStyle: t.from ? { color: ColorLib.transparentize(t.color ?? '#f44336', !!t.fill ? 0.3 : 0) } : undefined,
+            itemStyle: t.from ? { color: ColorLib.transparentize(t.color ?? '#f44336', t.fill ? 0.3 : 0) } : undefined,
             yAxis: t.from ?? 0,
           };
         }
@@ -567,20 +566,20 @@ export class DiscoveryBarComponent {
         .map(t => {
           return [{
             itemStyle: {
-              color: ColorLib.transparentize(t.color ?? '#D81B60', !!t.fill ? t.alpha ?? 0.5 : 0),
+              color: ColorLib.transparentize(t.color ?? '#D81B60', t.fill ? t.alpha ?? 0.5 : 0),
               borderType: t.type ?? 'dashed',
             },
             label: { color: t.color ?? '#D81B60', position: 'insideTopRight', distance: 5, show: !!t.name },
             name: t.name ?? t.value ?? 0,
-            yAxis: !!this.innerOptions?.bar?.horizontal ? (t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) : undefined,
+            yAxis: this.innerOptions?.bar?.horizontal ? (t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) : undefined,
             xAxis: !this.innerOptions?.bar?.horizontal ? (t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) : undefined,
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color ?? '#D81B60', !!t.fill ? t.alpha ?? 0.5 : 0),
+                color: ColorLib.transparentize(t.color ?? '#D81B60', t.fill ? t.alpha ?? 0.5 : 0),
                 borderType: t.type ?? 'dashed',
               },
-              yAxis: !!this.innerOptions?.bar?.horizontal ? (t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) : undefined,
+              yAxis: this.innerOptions?.bar?.horizontal ? (t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) : undefined,
               xAxis: !this.innerOptions?.bar?.horizontal ? (t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) : undefined,
             }];
         })];
@@ -592,7 +591,7 @@ export class DiscoveryBarComponent {
           label: { color: t.color || '#f44336', position: 'insideEndTop' },
           lineStyle: { color: t.color || '#f44336', type: 'dashed' },
         } as any;
-        if (!!(this.innerOptions.bar || { horizontal: false }).horizontal) {
+        if ((this.innerOptions.bar || { horizontal: false }).horizontal) {
           m.xAxis = t.value || 0;
           m.label.show = false;
         } else {
@@ -607,7 +606,7 @@ export class DiscoveryBarComponent {
             name: t.name || t.value || 0,
             label: { color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name },
             lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
-            yAxis: (!!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
+            yAxis: ((this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
             xAxis: (!(this.innerOptions.bar || { horizontal: false }).horizontal) ? ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0) : undefined,
           };
         })];
@@ -702,7 +701,7 @@ export class DiscoveryBarComponent {
       this.myChart.on('dataZoom', (event: any) => {
         let start: number;
         let end: number;
-        if (!!event.batch) {
+        if (event.batch) {
           const batch = (event.batch || [])[0] || {};
           start = batch.start || batch.startValue;
           end = batch.end || batch.endValue;
@@ -845,7 +844,7 @@ export class DiscoveryBarComponent {
       : ts ?? 0;
     let seriesIndex = 0;
     let dataIndex = 0;
-    if (!!regexp) {
+    if (regexp) {
       (this.chartOpts.series as any[])
         .filter(s => new RegExp(regexp).test(GTSLib.getName(s.name)))
         .forEach(s => {

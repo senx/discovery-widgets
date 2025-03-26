@@ -39,11 +39,11 @@ export class PdfLib {
       doc.rect(0, 0, width + 40, height + 40, 'F');
       const fontColor = ColorLib.hexToRgb(dashboard.fontColor) ?? [0, 0, 0];
       doc.setTextColor(fontColor[0], fontColor[1], fontColor[2]);
-      if (!!dashboard.title) {
+      if (dashboard.title) {
         doc.setFontSize(32);
         doc.text(dashboard.title, Math.round(width / 2), 30, { align: 'center', lineHeightFactor: 1 });
       }
-      if (!!dashboard.description) {
+      if (dashboard.description) {
         doc.setFontSize(16);
         doc.text(dashboard.description, Math.round(width / 2), 70, { align: 'center', lineHeightFactor: 1 });
       }
@@ -78,7 +78,7 @@ export class PdfLib {
         }
         LOG.debug(['generatePDF'], 'generate tile done', t);
       }
-      if (!!save) {
+      if (save) {
         LOG.debug(['generatePDF'], 'save');
         doc.save(dashboard.title + '.pdf');
         LOG.debug(['generatePDF'], 'save done');

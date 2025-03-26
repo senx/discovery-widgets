@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 /*
  *   Copyright 2025 SenX S.A.S.
  *
@@ -28,14 +27,13 @@ export class DateRangePicker {
   private readonly element: HTMLInputElement;
   private options: DTPickerOptions;
   private isShowing: boolean;
-  private readonly callback: (start: Moment, end: Moment, label: string) => void;
+  private readonly callback: (_start: Moment, _end: Moment, _label: string) => void;
   private readonly rightCalendar: any;
   private readonly leftCalendar: any;
   private container: HTMLElement;
   private timepicker: 'year' | 'years' | 'y' | 'month' | 'months' | 'M' | 'week' | 'weeks' | 'w' | 'day' | 'days' | 'd' | 'hour' | 'hours' | 'h' | 'minute' | 'minutes' | 'm' | 'second' | 'seconds' | 's' | 'millisecond' | 'milliseconds' | 'ms' | 'quarter' | 'quarters' | 'Q' | 'isoWeek' | 'isoWeeks' | 'W' | 'date' | 'dates' | 'D';
   private startDate: Moment = moment();
   private endDate: Moment = moment();
-  private previousRightTime: Moment = moment();
   private oldStartDate: Moment = moment();
   private oldEndDate: Moment = moment();
   private chosenLabel: string;
@@ -55,7 +53,7 @@ export class DateRangePicker {
   private monthOrYearChangedProxy = (e: Event) => this.monthOrYearChanged(e);
   private timeChangedProxy = (e: Event) => this.timeChanged(e);
 
-  constructor(element: string | HTMLInputElement, options: DTPickerOptions | null, cb: (start: Moment, end: Moment, label: string) => void) {
+  constructor(element: string | HTMLInputElement, options: DTPickerOptions | null, cb: (_start: Moment, _end: Moment) => void) {
     let rangeHtml: string;
     let elem: HTMLTextAreaElement;
 // default settings for options
@@ -500,20 +498,16 @@ export class DateRangePicker {
     if (this.options.maxSpan && this.startDate.clone().add(this.options.maxSpan).isBefore(this.endDate)) {
       this.endDate = this.startDate.clone().add(this.options.maxSpan);
     }
-    this.previousRightTime = this.endDate.clone();
-    // this.jq.html(this.container.querySelector('.drp-selected'), this.startDate.format(this.options.locale.format) + this.options.locale.separator + this.endDate.format(this.options.locale.format));
     if (!this.isShowing) {
       this.updateElement();
     }
     this.updateMonthsInView();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isInvalidDate(_a: any) {
     return false;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isCustomDate(_a: any) {
     return false;
   }
@@ -999,7 +993,6 @@ export class DateRangePicker {
     (this.container.querySelector('button.applyBtn') as HTMLButtonElement).disabled = !(this.options.singleDatePicker || (this.endDate && (this.startDate.isBefore(this.endDate) || this.startDate.isSame(this.endDate))));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   move(_e?: Event) {
     let containerLeft: string | number;
     let parentOffset = { top: 0, left: 0 };
@@ -1083,7 +1076,6 @@ export class DateRangePicker {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   show(_e?: Event) {
     if (this.isShowing) return;
     // Bind global datepicker mousedown for hiding and
@@ -1097,7 +1089,6 @@ export class DateRangePicker {
     window.addEventListener('resize', this.moveProxy);
     this.oldStartDate = this.startDate.clone();
     this.oldEndDate = this.endDate.clone();
-    this.previousRightTime = this.endDate.clone();
     this.updateView();
     this.container.style.display = 'block';
     this.move();
@@ -1105,7 +1096,6 @@ export class DateRangePicker {
     this.isShowing = true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   hide(_e?: Event) {
     if (!this.isShowing) return;
     // incomplete date selection, revert to last values
@@ -1209,8 +1199,8 @@ export class DateRangePicker {
     if (!(target.classList.contains('available'))) return;
 
     let title = target.dataset.title;
-    let row = title.substr(1, 1);
-    let col = title.substr(3, 1);
+    let row = title.substring(1, 2);
+    let col = title.substring(3, 4);
     let cal = target.closest('.drp-calendar'); // Note: original use parents not closest.
     const date = cal.classList.contains('left') ? this.leftCalendar.calendar[row][col] : this.rightCalendar.calendar[row][col];
     // highlight the dates between the start date and the date being hovered as a potential end date
@@ -1223,8 +1213,8 @@ export class DateRangePicker {
         // skip week numbers, only look at dates
         if (td.classList.contains('week')) return;
         title = (td as HTMLElement).dataset.title;
-        row = title.substr(1, 1);
-        col = title.substr(3, 1);
+        row = title.substring(1, 2);
+        col = title.substring(3, 4);
         cal = td.closest('.drp-calendar'); // Note: original use parents not closest.
         const dt = cal.classList.contains('left') ? leftCalendar.calendar[row][col] : rightCalendar.calendar[row][col];
         if ((dt.isAfter(startDate) && dt.isBefore(date)) || dt.isSame(date, 'day')) {
@@ -1244,8 +1234,8 @@ export class DateRangePicker {
     const target = e.target as HTMLElement;
     if (!target.classList.contains('available')) return;
     const title = target.dataset.title;
-    const row = title.substr(1, 1);
-    const col = title.substr(3, 1);
+    const row = title.substring(1, 2);
+    const col = title.substring(3, 4);
     const cal = target.closest('.drp-calendar');  // Note: original use parents not closest.
     let date = cal.classList.contains('left') ? this.leftCalendar.calendar[row][col] : this.rightCalendar.calendar[row][col];
     //
@@ -1457,7 +1447,6 @@ export class DateRangePicker {
     this.jq.on(drpCalendarElList, 'change', 'select.hourselect,select.minuteselect,select.secondselect,select.ampmselect', (e: Event) => this.timeChanged(e));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   elementChanged(_e?: Event) {
     if (!(this.element.tagName === 'INPUT')) return;
     if (!this.element.value || !this.element.value.length) return;
@@ -1480,11 +1469,11 @@ export class DateRangePicker {
 
   keydown(e: KeyboardEvent) {
     // hide on tab or enter
-    if ((e.keyCode === 9) || (e.keyCode === 13)) {
+    if ((e.key === 'Tab') || (e.key === 'Enter')) {
       this.hide(e);
     }
     // hide on esc and prevent propagation
-    if (e.keyCode === 27) {
+    if (e.key === 'Escape') {
       e.preventDefault();
       e.stopPropagation();
       this.hide(e);
@@ -1552,9 +1541,9 @@ export class DateRangePicker {
     this.jq.off(drpCalendarElList, 'change', 'select.hourselect,select.minuteselect,select.secondselect,select.ampmselect', this.timeChangedProxy);
     delete this.timeChangedProxy;
     delete this.container;
-    // delete (this.element as HTMLElement).dataset;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   updateRanges(newRanges: any) {
     if (typeof newRanges === 'object') {
       this.jq.off(this.container.querySelector('.ranges'), 'click', 'li', this.clickRangeProxy);

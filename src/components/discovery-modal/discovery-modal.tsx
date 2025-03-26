@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { Dashboard, DiscoveryEvent, Tile } from '../../model/types';
 import { Utils } from '../../utils/utils';
@@ -87,6 +86,7 @@ export class DiscoveryModalComponent {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryModalComponent, this.debug);
     this.parseData();
@@ -120,7 +120,7 @@ export class DiscoveryModalComponent {
   }
 
   private closeModal() {
-    if(this.showModal) {
+    if (this.showModal) {
       this.showModal = false;
       for (const e of ((this.data as any)?.events ?? [])) {
         this.discoveryEvent.emit({ ...e, source: this.parentId });
@@ -169,7 +169,7 @@ export class DiscoveryModalComponent {
                   onClick={() => this.closeModal()}>&times;</span>
           </div>
           <div class="modal-wrapper" ref={(el) => this.modalWrapper = el}>
-            {!!this.tile
+            {this.tile
               ? this.tile.macro
                 ? <discovery-tile url={this.tile.endpoint ?? this.url}
                                   type={this.tile.type}
@@ -191,7 +191,7 @@ export class DiscoveryModalComponent {
                   chart-title={this.tile.title}
                 />
               : ''}
-            {!!this.dashboard
+            {this.dashboard
               ? <discovery-dashboard url={this.url} dashboard-title={this.dashboard.title}
                                      cols={this.dashboard.cols} cell-height={this.dashboard.cellHeight}
                                      debug={this.debug} options={this.options}

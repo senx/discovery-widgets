@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
 import { Param } from '../../model/param';
@@ -111,7 +110,7 @@ export class DiscoveryHeatmap {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
-      if (!!this.myChart) {
+      if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel || new DataModel());
         setTimeout(() => {
           this.myChart.setOption(this.chartOpts || {}, true, false);
@@ -178,6 +177,7 @@ export class DiscoveryHeatmap {
     return Promise.resolve();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.parsing = true;
     this.LOG = new Logger(DiscoveryHeatmap, this.debug);
@@ -200,7 +200,7 @@ export class DiscoveryHeatmap {
   private setOpts(notMerge = false) {
     if (!!this.vars && typeof this.vars === 'string') {
       this.innerVars = JSON.parse(this.vars);
-    } else if (!!this.vars) {
+    } else if (this.vars) {
       this.innerVars = this.vars;
     }
     if ((this.chartOpts?.series as any[] || []).length === 0) {
@@ -231,7 +231,7 @@ export class DiscoveryHeatmap {
     let series: any[] = [];
     let min = 0;
     let max = 0;
-    let gtsList;
+    let gtsList: any[];
     if (GTSLib.isArray(data.data)) {
       data.data = GTSLib.flatDeep(data.data as any[]);
       this.LOG?.debug(['convert', 'isArray']);
@@ -250,7 +250,7 @@ export class DiscoveryHeatmap {
     const isGtsToPlot = gtsList.some(g => GTSLib.isGtsToPlot(g));
     const isGtsToAnnotate = gtsList.some(g => GTSLib.isGtsToAnnotate(g));
     const isCustomData = gtsList.some(g => !!g.rows && !!g.columns);
-    let res;
+    let res: any;
     if (isGtsToPlot) {
       res = this.convertGtsToPlot(gtsList, data.params);
     } else if (isGtsToAnnotate) {
@@ -259,7 +259,7 @@ export class DiscoveryHeatmap {
       this.innerOptions.timeMode = 'custom';
       res = this.convertCustomData(gtsList);
     }
-    if (!!res) {
+    if (res) {
       series = res.series;
       min = res.min;
       max = res.max;
@@ -360,6 +360,7 @@ export class DiscoveryHeatmap {
     }) : undefined);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   componentDidLoad() {
     setTimeout(() => {
       this.parsing = false;
@@ -398,7 +399,7 @@ export class DiscoveryHeatmap {
     });
   }
 
-  private convertGtsToPlot(gtsList, params: Param[]) {
+  private convertGtsToPlot(gtsList: any[], params: Param[]) {
     let series: any[] = [];
     let min = Number.MAX_VALUE;
     let max = Number.MIN_VALUE;
@@ -430,7 +431,7 @@ export class DiscoveryHeatmap {
     return { series, min, max };
   }
 
-  private convertGtsToAnnotate(gtsList, params: Param[]) {
+  private convertGtsToAnnotate(gtsList: any[], params: Param[]) {
     let series: any[] = [];
     const min = 0;
     const max = 1;
@@ -461,7 +462,7 @@ export class DiscoveryHeatmap {
     return { series, min, max };
   }
 
-  private convertCustomData(gtsList) {
+  private convertCustomData(gtsList: any[]) {
     let series: any[] = [];
     let min = 0;
     let max = 1;
@@ -469,7 +470,7 @@ export class DiscoveryHeatmap {
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (!!gts.rows && !!gts.columns) {
-        gts.rows.forEach(r => {
+        gts.rows.forEach((r: any[]) => {
           const l = r.length;
           for (let j = 1; j < l; j++) {
             const val = r[j];

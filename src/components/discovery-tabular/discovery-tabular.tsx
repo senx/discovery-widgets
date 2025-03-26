@@ -1,5 +1,5 @@
 /*
- *   Copyright 2022-2024 SenX S.A.S.
+ *   Copyright 2022-2025 SenX S.A.S.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  *   limitations under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 import { ChartType, DataModel, Dataset, DiscoveryEvent } from '../../model/types';
 import { Param } from '../../model/param';
@@ -75,8 +74,7 @@ export class DiscoveryTabular {
 
   // noinspection JSUnusedLocalSymbols
   @Method()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async export(type: 'png' | 'svg' = 'png') {
+  async export(_type: 'png' | 'svg' = 'png') {
     return (await html2canvas(this.pngWrapper, {
       allowTaint: true,
       backgroundColor: (this.options as Param).bgColor || Utils.getCSSColor(this.el, '--warp-view-tile-background', '#fff'),
