@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.2.27
+
+> +  2025/03/26  | v1.2.27 
+> +  2025/03/26  | [input:date] [input:date-range] Fix locale setting 
+> +  2025/03/26  | [input:date] [input:date-range] Fix disabled state 
+> +  2025/03/26  | Changelog 
+
 ## v1.2.26
 
 > +  2025/03/26  | v1.2.26 
