@@ -26,7 +26,7 @@ import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types
 import { CartesianAxisOption } from 'echarts/lib/coord/cartesian/AxisModel';
 import { GridOption } from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
-import { throttle } from 'lodash';
+import { throttle, uniq } from 'lodash';
 import { v4 } from 'uuid';
 
 @Component({
@@ -216,8 +216,6 @@ export class DiscoveryLineComponent {
       ...GTSLib.flatDeep([data.data] as any[]).filter(g => !!g && g.values && g.label),
     ];
     const gtsCount = gtsList.length;
-    let multiY = false;
-    let multiX = false;
     const opts: EChartsOption = {
       animation: false,
       grid: {
@@ -333,6 +331,14 @@ export class DiscoveryLineComponent {
         };
       }
     });
+
+    const multiY = uniq((data.params ?? [])
+      .filter(p => p.yAxis !== null && p.yAxis !== undefined)
+      .map(p => p.yAxis)).length > 1;
+    const multiX = uniq((data.params ?? [])
+      .filter(p => p.xAxis !== null && p.xAxis !== undefined)
+      .map(p => p.xAxis)).length > 1;
+
     for (let index = 0; index < gtsCount; index++) {
       const gts = gtsList[index];
       const datasetNoAlpha = (data.params ?? [])[index]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
@@ -428,8 +434,7 @@ export class DiscoveryLineComponent {
         } as SeriesOption;
         if (data.params) {
           // multi Y
-          if (data.params[gts.id]?.yAxis !== undefined) {
-            multiY = true;
+          if (data.params[gts.id]?.yAxis !== undefined && multiY) {
             const y: CartesianAxisOption = this.getYAxis(color, data.params[gts.id].unit);
             if (data.params[gts.id].yAxis > 0) {
               s.yAxisIndex = data.params[gts.id].yAxis;
@@ -449,8 +454,7 @@ export class DiscoveryLineComponent {
           }
 
           // multi X
-          if (data.params[gts.id]?.xAxis !== undefined) {
-            multiX = true;
+          if (data.params[gts.id]?.xAxis !== undefined && multiX) {
             if (data.params[gts.id].xAxis > 0) {
               (s as any).xAxisIndex = data.params[gts.id].xAxis;
               const x = this.getXAxis(color);
@@ -515,8 +519,7 @@ export class DiscoveryLineComponent {
         } as SeriesOption;
         if (data.params) {
           // multi Y
-          if (data.params[gts.id]?.yAxis !== undefined) {
-            multiY = true;
+          if (data.params[gts.id]?.yAxis !== undefined && multiY) {
             const y: CartesianAxisOption = this.getYAxis(color, data.params[gts.id].unit);
             if (data.params[gts.id].yAxis > 0) {
               s.yAxisIndex = data.params[gts.id].yAxis;
@@ -536,8 +539,7 @@ export class DiscoveryLineComponent {
           }
 
           // multi X
-          if (data.params[gts.id]?.xAxis !== undefined) {
-            multiX = true;
+          if (data.params[gts.id]?.xAxis !== undefined && multiX) {
             if (data.data[gts.id].length > 0) {
               if (data.params[gts.id].xAxis > 0) {
                 (s as any).xAxisIndex = data.params[gts.id].xAxis;
