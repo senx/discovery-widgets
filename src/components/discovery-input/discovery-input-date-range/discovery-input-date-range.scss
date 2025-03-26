@@ -87,6 +87,8 @@
       border-radius: var(--warp-view-button-border-radius, 0.25rem);
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
+      width: auto !important;
+      line-height: 27px;
 
       &:hover {
         background-color: var(--warp-view-button-secondary-bg-color, $w10-lightgrey);
@@ -100,6 +102,8 @@
       border-radius: var(--warp-view-button-border-radius, 0.25rem);
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+      width: auto !important;
+      line-height: 27px;
 
       &:hover {
         background-color: var(--warp-view-button-secondary-bg-color, $w10-lightgrey);
@@ -107,10 +111,10 @@
     }
   }
 
-  button:disabled, input[type=file][disabled]::file-selector-button {
-    background-color: var(--warp-view-button-disabled-bg-color, $w10-lightgrey);
-    color: var(--warp-view-button-disabled-label-color, $w10-charcoal);
-    border: 1px solid var(--warp-view-button-disabled-border-color, $w10-lightgrey);
+  button:disabled {
+    background-color: var(--warp-view-button-disabled-bg-color, $w10-lightgrey) !important;
+    color: var(--warp-view-button-disabled-label-color, $w10-charcoal) !important;
+    border: 1px solid var(--warp-view-button-disabled-border-color, $w10-lightgrey) !important;
   }
 
   /**
@@ -126,7 +130,7 @@
 
   .daterangepicker {
     position: absolute;
-    color: var(--warp-view-font-color, $w10-charcoal);
+    color: var(--warp-view-tooltip-label-color, $w10-charcoal);
     background-color: var(--warp-view-tooltip-bg-color, $w10-white);
     border-radius: 4px;
     border: 1px solid var(--warp-view-tooltip-border-color, $w10-lightgrey);
@@ -301,7 +305,6 @@
     font-size: 12px;
     border-radius: 4px;
     border: 1px solid transparent;
-    white-space: nowrap;
     cursor: pointer;
   }
 
