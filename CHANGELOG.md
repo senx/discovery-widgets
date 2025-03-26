@@ -1,6 +1,25 @@
 Discovery
 ---
 
+## v1.2.26
+
+> +  2025/03/26  | v1.2.26 
+> +  2025/03/26  | [input:*] Fix outline focus style 
+> +  2025/03/26  | lints 
+> +  2025/03/25  | typo 
+> +  2025/03/25  | [input:date] [input:date-range] Fix popup placement 
+> +  2025/03/25  | [input:date] [input:date-range] Add navigation buttons 
+> +  2025/03/24  | [input:date] Fix initial state 
+> +  2025/03/24  | Revert dep update 
+> +  2025/03/24  | Code style 
+> +  2025/03/24  | Revert "SaaS 3 migration" 
+> +  2025/03/24  | Fix #SENX-453 [tabular] Pagination navigation issue 
+> +  2025/03/24  | SaaS 3 migration 
+> +  2025/03/24  | [input:date] [input:date-range] Small fix 
+> +  2025/03/24  | [input:date] [input:date-range] Widget complete refactoring with a new look and feel and more options 
+> +  2025/03/24  | [input:date] [input:date-range] Widget complete refactoring with a new look and feel and more options 
+> +  2025/03/11  | Changelog 
+
 ## v1.2.25
 
 > +  2025/03/11  | v1.2.25 
