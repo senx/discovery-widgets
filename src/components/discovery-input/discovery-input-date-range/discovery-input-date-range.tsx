@@ -156,14 +156,14 @@ export class DiscoveryInputDateRange {
 
   render() {
     return <div ref={el => this.wrapper = el} class="wrapper">
-      <button class="discovery-btn prev" onClick={() => this.previousPeriod()}>&lt;</button>
+      <button class="discovery-btn prev" onClick={() => this.previousPeriod()} disabled={this.disabled}>&lt;</button>
       <input type="text"
              ref={el => this.input = el}
              required={this.required}
              disabled={this.disabled}
              class="discovery-input"
       />
-      <button class="discovery-btn next" onClick={() => this.nextPeriod()}>&gt;</button>
+      <button class="discovery-btn next" onClick={() => this.nextPeriod()} disabled={this.disabled}>&gt;</button>
     </div>;
   }
 
