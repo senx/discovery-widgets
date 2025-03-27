@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.2.29
+
+> +  2025/03/27  | v1.2.29 
+> +  2025/03/26  | [line] [area] Fix Multi-axis side effect when just an axis is specified 
+> +  2025/03/26  | Fix slider def values 
+> +  2025/03/26  | [input:date] [input:date-range] Fix style 
+> +  2025/03/26  | changelog 
+
 ## v1.2.28
 
 > +  2025/03/26  | v1.2.28 
