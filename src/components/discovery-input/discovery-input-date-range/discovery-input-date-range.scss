@@ -24,7 +24,7 @@
   .wrapper {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     justify-content: stretch;
   }
 
@@ -88,7 +88,6 @@
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
       width: auto !important;
-      line-height: 27px;
 
       &:hover {
         background-color: var(--warp-view-button-secondary-bg-color, $w10-lightgrey);
@@ -103,7 +102,6 @@
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       width: auto !important;
-      line-height: 27px;
 
       &:hover {
         background-color: var(--warp-view-button-secondary-bg-color, $w10-lightgrey);
