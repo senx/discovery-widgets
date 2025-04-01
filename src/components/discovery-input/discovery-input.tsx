@@ -57,7 +57,7 @@ export class DiscoveryInputComponent {
   @State() innerStyle: { [k: string]: string; };
   @State() innerResult: DataModel;
   @State() label = 'Ok';
-  @State() selectedValue:  any;
+  @State() selectedValue: any;
   @State() values = [];
 
   private defOptions: Param = { ...new Param(), input: { caseSensitive: true, onlyFromAutocomplete: true } };
@@ -230,6 +230,7 @@ export class DiscoveryInputComponent {
       }
     }
     for (const e of (this.innerResult?.events ?? [])) {
+      console.log(this.selectedValue);
       if (this.selectedValue !== undefined) {
         if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
           continue;
@@ -280,10 +281,10 @@ export class DiscoveryInputComponent {
           .filter((o: HTMLInputElement) => o.checked)
           .map((o: HTMLInputElement) => o.value);
       }
-      if (this.subType !== 'file' && !this.innerOptions.input?.showButton) {
-        if (this.selectedValue !== undefined) {
-          this.handleClick();
-        }
+      if (this.subType !== 'file' && !this.innerOptions.input?.showButton && this.selectedValue !== undefined) {
+        this.handleClick();
+      } else if (['date', 'date-range'].includes(this.subType) && this.selectedValue !== undefined) {
+        this.handleClick();
       }
     }
   }
@@ -576,7 +577,7 @@ export class DiscoveryInputComponent {
               : ''
             }
             <div class="multi-cb-list-wrapper" ref={el => this.checkBoxes = el}>
-              { }
+              {}
               {this.values.map(v => (
                 <div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
                   <input type="checkbox" value={v.k}

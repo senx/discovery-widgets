@@ -48,15 +48,18 @@ export class DiscoveryInputDateRange {
   }
 
   private selected(start: Moment, end: Moment) {
-    if (!start.isSame(this.previousStart) && !end.isSame(this.previousEnd) && (this.dateRange ?? []).length > 0) {
-      this.previousStart = start.clone();
-      this.previousEnd = end.clone();
-      if (!this.opts.singleDatePicker) {
+    if (!this.opts.singleDatePicker) {
+      if ((!start.isSame(this.previousStart) || !end.isSame(this.previousEnd))) {
+        this.previousStart = start.clone();
+        this.previousEnd = end.clone();
         this.valueChanged.emit([
           GTSLib.toTimestamp(this.previousStart.toISOString(true), this.divider, this.options.timeZone, undefined),
           GTSLib.toTimestamp(this.previousEnd.toISOString(true), this.divider, this.options.timeZone, undefined),
         ]);
-      } else if (this.opts.singleDatePicker) {
+      }
+    } else {
+      if ((!start.isSame(this.previousStart))) {
+        this.previousStart = start.clone();
         this.valueChanged.emit(GTSLib.toTimestamp(this.previousStart.toISOString(true), this.divider, this.options.timeZone, undefined));
       }
     }
