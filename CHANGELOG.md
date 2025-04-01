@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.2.30
+
+> +  2025/04/01  | v1.2.30 
+> +  2025/04/01  | [input:date] [input:date-range] Fix event emission 
+> +  2025/03/28  | [input:date] [input:date-range] Fix style 
+> +  2025/03/27  | changelog 
+
 ## v1.2.29
 
 > +  2025/03/27  | v1.2.29 
