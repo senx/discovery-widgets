@@ -340,15 +340,12 @@ export class DiscoveryMapComponent {
         maxNativeZoom: tile.maxNativeZoom ?? 19,
         maxZoom: this.mapOpts.maxZoom ?? 19,
       });
-
-
       if (!this.tileLayerGroup.getLayers().find((l: any) => l._url === t.url)) {
         this.tileLayerGroup.addLayer(l);
       }
     });
     if (!isRefresh || optionUpdate) {
       this.tileLayerGroup.getLayers().forEach((l: any) => {
-
         if (!this.tileLayers.includes(l._url)) {
           this.tileLayerGroup.removeLayer(l);
         }
