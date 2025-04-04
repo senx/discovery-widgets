@@ -21,8 +21,8 @@ A tile is an atomic dataviz component representing a line chart, a pie, a value,
 #### With CDN
 
 ```html
-<script nomodule src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
-<script type="module" src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
 ```
 
 #### Usage
@@ -57,8 +57,8 @@ A tile is an atomic dataviz component representing a line chart, a pie, a value,
   ]
 }
 </discovery-dashboard>
-<script nomodule src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
-<script type="module" src="https://unpkg.com/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@senx/discovery-widgets/dist/discovery/discovery.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@senx/discovery-widgets/dist/discovery/discovery.esm.js"></script>
 </body>
 </html>
 ```
