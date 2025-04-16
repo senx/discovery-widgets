@@ -136,6 +136,8 @@ export class DiscoveryProfile {
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
+      this.expanded = !!this.innerOptions.expandAnnotation;
+      this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
       if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
         this.setOpts(true);
