@@ -57,7 +57,8 @@ export class DiscoveryInputChips {
   private autocomplete_highlight = true;
   private delimiters = [' '];
   private boundClickHandler = this.handleDocumentClick.bind(this);
-  private real_input: HTMLInputElement;
+  private real_input: HTMLInputElement = null;
+  private real_input_handler = null;
   private show_autocomplete_on_focus: boolean;
   private highlighted_autocomplete_index: number;
   private autocomplete_select_default: any;
@@ -86,17 +87,7 @@ export class DiscoveryInputChips {
   }
 
   private handleChipClose(event: any) {
-    const chipLabel = event.detail;
-    let index = -1;
-    for (let i = 0; i < (this.innerChips ?? []).length; i++) {
-      if (this.innerChips[i] === chipLabel) {
-        index = i;
-        break;
-      }
-    }
-    if (index >= 0) {
-      void this.deleteChip(index);
-    }
+    void this.deleteChip(parseInt(event.detail));
   }
 
   @Listen('document:click')
@@ -365,18 +356,21 @@ export class DiscoveryInputChips {
         class={{'wrapper': true, 'disabled': this.disabled}}>
         {
           GTSLib.isArray(this.innerChips)
-          ? this.innerChips.map(chip => <discovery-input-chips-chip
+          ? this.innerChips.map((chip, idx) => <discovery-input-chips-chip
             onClick={event => this.handleChipClick(event, chip)}
             disabled={this.disabled}
             label={chip}
+            position={idx.toString()}
             onRemoveChip={this.handleChipClose.bind(this)}></discovery-input-chips-chip>)
             : ''
         }
         <div class="caret_position_tracker" ref={el => this.caret_position_tracker = el}></div>
         <input class="real_input" type="text"
                ref={e => {
+                 if (this.real_input) { this.real_input.removeEventListener('beforeinput', this.real_input_handler); }
                  this.real_input = e;
-                 e.addEventListener('beforeinput', this.handleBeforeInput.bind(this));
+                 this.real_input_handler = this.handleBeforeInput.bind(this)
+                 e.addEventListener('beforeinput', this.real_input_handler);
                }}
                onInput={this.handleInput.bind(this)}
                disabled={this.disabled}

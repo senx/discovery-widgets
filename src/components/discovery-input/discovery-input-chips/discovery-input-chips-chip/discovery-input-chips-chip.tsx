@@ -23,6 +23,7 @@ import { Component, Event, EventEmitter, h, Host, Prop } from '@stencil/core';
 })
 export class DiscoveryInputChipsChip {
   @Prop() label: string;
+  @Prop() position: string;
   @Prop() disabled: boolean = false;
 
   @Event({
@@ -48,7 +49,7 @@ export class DiscoveryInputChipsChip {
 
   private handleClose() {
     if (!this.disabled) {
-      this.removeChip.emit(this.label);
+      this.removeChip.emit(this.position);
     }
   }
 }
