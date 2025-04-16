@@ -129,11 +129,15 @@ export class DiscoveryInputChips {
           if (this.autocomplete) {
             autocomplete_items = await this.autocomplete(value);
           }
-          if (!autocomplete_items.length) {
+          if (autocomplete_items.length == 0) {
             this.closeAutoComplete(false);
             return;
           } else {
             this.showAutoComplete(autocomplete_items, value);
+            if (this.constrain_input) {
+              this.highlighted_autocomplete_index=0;   
+              this.highLightSelectedAutoCompleteItem(); 
+            }
           }
         })().then(() => resolve()).catch(e => console.error(e));
       }, this.autocomplete_debounce);
@@ -178,7 +182,7 @@ export class DiscoveryInputChips {
       if (this.autocomplete) {
         autocomplete_items = await this.autocomplete(value);
       }
-      if (!autocomplete_items.length) {
+      if (autocomplete_items.length == 0) {
         event.preventDefault();
         event.stopImmediatePropagation();
       }
@@ -213,15 +217,17 @@ export class DiscoveryInputChips {
       navigating = true;
     }
 
-    if (navigating) {
-      const items = this.autocompleteContainer.children;
-      for (let i = 0; i < items.length; i++) {
-        const item = items.item(i) as HTMLElement;
-        item.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
-        if (this.highlighted_autocomplete_index === i) {
-          item.style.backgroundColor = 'var(--chip-input-autocomplete-hover-background-color, lightblue)';
-          item.scrollIntoView();
-        }
+    if (navigating) { this.highLightSelectedAutoCompleteItem(); }
+  }
+
+  private highLightSelectedAutoCompleteItem() {
+    const items = this.autocompleteContainer.children;
+    for (let i = 0; i < items.length; i++) {
+      const item = items.item(i) as HTMLElement;
+      item.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
+      if (this.highlighted_autocomplete_index === i) {
+        item.style.backgroundColor = 'var(--chip-input-autocomplete-hover-background-color, lightblue)';
+        item.scrollIntoView();
       }
     }
   }
