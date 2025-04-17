@@ -218,6 +218,11 @@ export class DiscoveryInputChips {
       navigating = true;
     }
 
+    if (key === 'Escape') {
+      this.real_input.value = '';
+      this.closeAutoComplete(false);
+    }
+
     if (navigating) { this.highLightSelectedAutoCompleteItem(); }
   }
 
@@ -228,7 +233,7 @@ export class DiscoveryInputChips {
       item.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
       if (this.highlighted_autocomplete_index === i) {
         item.style.backgroundColor = 'var(--chip-input-autocomplete-hover-background-color, lightblue)';
-        item.scrollIntoView();
+        item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
       }
     }
   }
