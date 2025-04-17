@@ -68,6 +68,7 @@ export class DiscoveryInputComponent {
   private inputField2: HTMLInputElement;
   private disabled = false;
   private delayTimer: any;
+  private initialValues = [];
 
   private root: HTMLDivElement;
   private autoCompleteJS: any;
@@ -231,13 +232,12 @@ export class DiscoveryInputComponent {
       }
     }
     for (const e of (this.innerResult?.events ?? [])) {
-      console.log(this.selectedValue);
       if (this.selectedValue !== undefined) {
         if (this.subType === 'date-range' && this.selectedValue.length !== 2) {
           continue;
         }
         let value = this.selectedValue;
-        if (GTSLib.isArray(value) && this.type === 'input:multi-cb' && this.checkBoxes && this.innerOptions.input?.showFilter) {
+        if (GTSLib.isArray(value) && this.type === 'input:multi-cb' && this.checkBoxes && !(this.innerOptions.input?.showFilter)) {
           value = value.filter((v: any) => new RegExp(`.*${(this.filter ?? '')}.*`, 'gi').test(v));
         }
         if (e.selector) {
@@ -278,9 +278,19 @@ export class DiscoveryInputComponent {
           .map((o: HTMLOptionElement) => o.value);
       }
       if (this.subType === 'multi-cb' && this.checkBoxes) {
-        this.selectedValue = Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
-          .filter((o: HTMLInputElement) => o.checked)
-          .map((o: HTMLInputElement) => o.value);
+        if (this.innerOptions?.input?.fuzzySearch) {
+          for (const o of this.initialValues) {
+            if (o.v == this.selectedValue) {
+              o.checked = e.target.checked;
+              break;
+            }
+          }
+          this.selectedValue = this.initialValues.filter(o => o.checked).map(o => o.v)
+        } else {
+          this.selectedValue = Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+            .filter((o: HTMLInputElement) => o.checked)
+            .map((o: HTMLInputElement) => o.value);
+        }
       }
       if (this.subType !== 'file' && !this.innerOptions.input?.showButton && this.selectedValue !== undefined) {
         this.handleClick();
@@ -388,6 +398,7 @@ export class DiscoveryInputComponent {
         if (this.inputField) {
           (this.inputField as HTMLSelectElement).selectedIndex = index;
         }
+        this.initialValues = [ ...this.values ]; // keep a copy, fuzzy selection will break the list, need to save the original order.
         setTimeout(() => {
           let value: string | number | number[] | string[] = this.innerOptions?.input?.value;
           if (this.subType === 'multi' || this.subType === 'multi-cb' || this.subType === 'chips' || this.subType === 'chips-autocomplete') {
@@ -402,8 +413,12 @@ export class DiscoveryInputComponent {
             this.value = this.innerOptions?.input?.value !== undefined ? this.innerOptions?.input?.value : '';
           }
           if (this.subType === 'multi-cb' && this.checkBoxes) {
-            Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+            if (this.innerOptions?.input?.fuzzySearch) {
+              this.initialValues.map(o => o.checked = (this.value as any[]).includes(o.v))
+            } else {
+              Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
               .forEach((o: HTMLInputElement) => o.checked = (this.value as any[]).includes(o.value));
+            }
           }
           if (this.selectedValue !== undefined && this.selectedValue !== this.oldValue) {
             this.handleSelect({ detail: this.selectedValue });
@@ -437,6 +452,9 @@ export class DiscoveryInputComponent {
       Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
         .filter((o: HTMLInputElement) => !o.checked)
         .forEach((o: HTMLInputElement) => o.checked = true);
+        if (this.innerOptions?.input?.fuzzySearch) {
+          this.initialValues.map(o => o.checked = true)
+        }
       this.handleSelect(e);
     }
   }
@@ -446,6 +464,9 @@ export class DiscoveryInputComponent {
       Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
         .filter((o: HTMLInputElement) => o.checked)
         .forEach((o: HTMLInputElement) => o.checked = false);
+      if (this.innerOptions?.input?.fuzzySearch) {
+        this.initialValues.map(o => o.checked = false)
+      }
       this.handleSelect(e);
     }
   }
@@ -454,10 +475,20 @@ export class DiscoveryInputComponent {
     e.stopPropagation();
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       this.filter = e.target.value ?? e.detail ?? '';
-      this.values = this.values.map(v => ({
-        ...v,
-        h: !new RegExp(`.*${this.filter}.*`, 'gi').test(v.v),
-      }));
+      if (this.innerOptions?.input?.fuzzySearch) {
+        if (this.filter == '') {
+          this.values = this.initialValues;
+        } else {
+          let r = fuzzysort.go(this.filter, this.initialValues, { key: 'v' }).toSorted((a, b) => b.score - a.score).map(r => r.obj);
+          r.push(...this.initialValues);
+          this.values = r;
+        }
+      } else {
+        this.values = this.values.map(v => ({
+          ...v,
+          h: !new RegExp(`.*${this.filter}.*`, 'gi').test(v.v),
+        }));
+      }
     }
   }
 
@@ -587,7 +618,7 @@ export class DiscoveryInputComponent {
                 <div class={{ 'multi-cb-item-wrapper': true, hidden: v.h }}>
                   <input type="checkbox" value={v.k}
                          id={v.id}
-                         checked={(this.value as string[] ?? []).includes(v.k)}
+                         checked={this.innerOptions?.input?.fuzzySearch ? v.checked : (this.value as string[] ?? []).includes(v.k)}
                          onInput={e => this.handleSelect(e)}
                          disabled={this.innerOptions?.input?.disabled}
                          name={v.v} />

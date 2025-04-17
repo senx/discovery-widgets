@@ -219,15 +219,18 @@ export namespace Components {
     }
     interface DiscoveryInputChips {
         "autocomplete": (_value: string) => Promise<any>;
+        "chipDelimiters": string[];
         "chips": string[];
         "constrain_input": boolean;
         "containsFn": (_value: string) => Promise<boolean>;
         "disabled": boolean;
+        "fuzzy_search": boolean;
         "value": string;
     }
     interface DiscoveryInputChipsChip {
         "disabled": boolean;
         "label": string;
+        "position": string;
     }
     interface DiscoveryInputDateRange {
         "dateRange": number[];
@@ -1372,10 +1375,12 @@ declare namespace LocalJSX {
     }
     interface DiscoveryInputChips {
         "autocomplete"?: (_value: string) => Promise<any>;
+        "chipDelimiters"?: string[];
         "chips"?: string[];
         "constrain_input"?: boolean;
         "containsFn"?: (_value: string) => Promise<boolean>;
         "disabled"?: boolean;
+        "fuzzy_search"?: boolean;
         "onChipChange"?: (event: DiscoveryInputChipsCustomEvent<string[]>) => void;
         "onChipClick"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
         "onChipCreate"?: (event: DiscoveryInputChipsCustomEvent<any>) => void;
@@ -1386,6 +1391,7 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "label"?: string;
         "onRemoveChip"?: (event: DiscoveryInputChipsChipCustomEvent<string>) => void;
+        "position"?: string;
     }
     interface DiscoveryInputDateRange {
         "dateRange"?: number[];
