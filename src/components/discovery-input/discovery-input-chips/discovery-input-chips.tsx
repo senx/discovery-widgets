@@ -29,6 +29,7 @@ export class DiscoveryInputChips {
   @Prop() autocomplete: (_value: string) => Promise<any>;
   @Prop() containsFn: (_value: string) => Promise<boolean>;
   @Prop() constrain_input = false;
+  @Prop() fuzzy_search = false;
   @Prop({ mutable: true }) value: string;
   @Prop() disabled: boolean = false;
 
@@ -283,7 +284,22 @@ export class DiscoveryInputChips {
     this.autocompleteContainer.style.left = `${this.real_input.offsetLeft}px`;
     this.autocompleteContainer.innerHTML = '';
     autocomplete_items.map((item: any) => {
-        let label: string;
+      let label: string;
+      const div = document.createElement('DIV');
+      div.addEventListener('focus', (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      });
+      div.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
+      div.style.borderBottom = '1px solid lightgrey';
+      div.style.padding = '3px';
+      div.style.cursor = 'pointer';
+
+      if (this.fuzzy_search) {
+        // autocomplete_items is an array of result object
+        label = item.obj.v
+        div.innerHTML = item.highlight("<span style='font-weight: bold'>", "</span>")
+      } else {
         if (typeof item == 'string') {
           label = item;
         } else {
@@ -293,27 +309,20 @@ export class DiscoveryInputChips {
         const prefix = label.substring(0, start_index);
         const match = label.slice(start_index, start_index + value.length);
         const postfix = label.slice(start_index + value.length);
-        const div = document.createElement('DIV');
-        div.addEventListener('focus', (event) => {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-        });
-        div.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
-        div.style.borderBottom = '1px solid lightgrey';
-        div.style.padding = '3px';
-        div.style.cursor = 'pointer';
         if (this.autocomplete_highlight) {
           div.innerHTML = `${prefix}<span style='font-weight: bold'>${match}</span>${postfix}`;
         } else {
           div.innerHTML = label;
         }
-        div.dataset.value = label;
-        div.onmouseover = () => div.style.backgroundColor = 'var(--chip-input-autocomplete-hover-background-color, lightblue)';
-        div.onmouseout = () => div.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
-        div.onclick = () => void this.handleAutoCompleteItemSelected(div);
-        this.autocompleteContainer.appendChild(div);
-      },
-    );
+      }
+
+      div.dataset.value = label;
+      div.onmouseover = () => div.style.backgroundColor = 'var(--chip-input-autocomplete-hover-background-color, lightblue)';
+      div.onmouseout = () => div.style.backgroundColor = 'var(--chip-input-autocomplete-background-color, white)';
+      div.onclick = () => void this.handleAutoCompleteItemSelected(div);
+      this.autocompleteContainer.appendChild(div);
+    });
+    
     let autocomplete_dismiss_target = this.autocompleteContainer;
     let element: HTMLDivElement;
     if (this.autocomplete_dismiss_target) {

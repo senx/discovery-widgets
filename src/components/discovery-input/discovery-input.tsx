@@ -23,6 +23,7 @@ import { Utils } from '../../utils/utils';
 import autoComplete from '@tarekraafat/autocomplete.js/dist/autoComplete.js';
 import domToImage from 'dom-to-image';
 import { v4 } from 'uuid';
+import fuzzysort from 'fuzzysort';
 
 @Component({
   tag: 'discovery-input',
@@ -462,9 +463,13 @@ export class DiscoveryInputComponent {
 
   private handleAutoComplete(input: string) {
     if (this.subType === 'chips-autocomplete') {
-      return this.values
+      if (this.innerOptions?.input?.fuzzySearch) {
+        return fuzzysort.go(input, this.values, { key: 'v' }).toSorted((a, b) => b.score - a.score)
+      } else {
+        return this.values
         .filter(v => v.k.match(new RegExp(input, this.innerOptions.input?.caseSensitive ? 'g' : 'gi')))
         .map(v => v.k);
+      }
     } else {
       return [];
     }
@@ -617,6 +622,7 @@ export class DiscoveryInputComponent {
             autocomplete={this.handleAutoComplete.bind(this)}
             containsFn={this.handleContains.bind(this)}
             disabled={this.innerOptions?.input?.disabled}
+            fuzzy_search={this.innerOptions?.input?.fuzzySearch}
             onChipChange={e => this.handleSelect(e)}
             constrain_input={!!this.innerOptions.input?.onlyFromAutocomplete}
           ></discovery-input-chips>

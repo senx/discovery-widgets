@@ -187,6 +187,7 @@ export class Param {
     immediate?: boolean,
     caseSensitive?: boolean,
     onlyFromAutocomplete?: boolean,
+    fuzzySearch?:boolean,
     locale?: string,
     delayRequest?: number,
     accept?: string,

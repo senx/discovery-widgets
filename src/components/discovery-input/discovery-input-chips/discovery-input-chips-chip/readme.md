@@ -11,6 +11,7 @@
 | ---------- | ---------- | ----------- | --------- | ----------- |
 | `disabled` | `disabled` |             | `boolean` | `false`     |
 | `label`    | `label`    |             | `string`  | `undefined` |
+| `position` | `position` |             | `string`  | `undefined` |
 
 
 ## Events

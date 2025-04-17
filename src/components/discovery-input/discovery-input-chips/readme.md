@@ -14,6 +14,7 @@
 | `constrain_input` | `constrain_input` |             | `boolean`                              | `false`     |
 | `containsFn`      | --                |             | `(_value: string) => Promise<boolean>` | `undefined` |
 | `disabled`        | `disabled`        |             | `boolean`                              | `false`     |
+| `fuzzy_search`    | `fuzzy_search`    |             | `boolean`                              | `false`     |
 | `value`           | `value`           |             | `string`                               | `undefined` |
 
 
