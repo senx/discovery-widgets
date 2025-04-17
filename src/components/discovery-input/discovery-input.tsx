@@ -623,6 +623,7 @@ export class DiscoveryInputComponent {
             containsFn={this.handleContains.bind(this)}
             disabled={this.innerOptions?.input?.disabled}
             fuzzy_search={this.innerOptions?.input?.fuzzySearch}
+            chipDelimiters={this.innerOptions?.input?.chipDelimiters}
             onChipChange={e => this.handleSelect(e)}
             constrain_input={!!this.innerOptions.input?.onlyFromAutocomplete}
           ></discovery-input-chips>

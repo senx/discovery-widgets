@@ -30,6 +30,7 @@ export class DiscoveryInputChips {
   @Prop() containsFn: (_value: string) => Promise<boolean>;
   @Prop() constrain_input = false;
   @Prop() fuzzy_search = false;
+  @Prop() chipDelimiters: string[] = [];
   @Prop({ mutable: true }) value: string;
   @Prop() disabled: boolean = false;
 
@@ -56,7 +57,6 @@ export class DiscoveryInputChips {
   private change_handler_enabled = true;
   private autocomplete_debounce = 200;
   private autocomplete_highlight = true;
-  private delimiters = [' '];
   private boundClickHandler = this.handleDocumentClick.bind(this);
   private real_input: HTMLInputElement = null;
   private real_input_handler = null;
@@ -110,7 +110,7 @@ export class DiscoveryInputChips {
     let autocomplete_items = [];
     this.value = this.real_input.value;
     const key = event ? event.data ?? '' : '';
-    if (this.delimiters.includes(key)) {
+    if (this.chipDelimiters.includes(key)) {
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!this.constrain_input)

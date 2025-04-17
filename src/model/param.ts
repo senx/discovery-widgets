@@ -200,6 +200,7 @@ export class Param {
     customRangeLabel?: string,
     applyLabel?: string,
     cancelLabel?: string,
+    chipDelimiters?: string[]
   };
   map?: MapParams;
   svg?: {
