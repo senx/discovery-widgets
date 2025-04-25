@@ -214,7 +214,7 @@ export class Utils {
           type = eh.split('=')[1];
         }
       }
-      const tagRex = new RegExp(`^${tag}$`);
+      const tagRex = new RegExp(`^(${tag})$`);
       if (evt.tags && typeof evt.tags === 'string') {
         evt.tags = [evt.tags];
       }
