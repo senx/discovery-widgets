@@ -10,6 +10,7 @@
 | Property          | Attribute         | Description | Type                                   | Default     |
 | ----------------- | ----------------- | ----------- | -------------------------------------- | ----------- |
 | `autocomplete`    | --                |             | `(_value: string) => Promise<any>`     | `undefined` |
+| `chipDelimiters`  | --                |             | `string[]`                             | `[]`        |
 | `chips`           | --                |             | `string[]`                             | `[]`        |
 | `constrain_input` | `constrain_input` |             | `boolean`                              | `false`     |
 | `containsFn`      | --                |             | `(_value: string) => Promise<boolean>` | `undefined` |

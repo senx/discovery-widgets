@@ -21,7 +21,6 @@ import { Logger } from '../../utils/logger';
 import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import html2canvas from 'html2canvas';
-import streamSaver from 'streamsaver';
 
 @Component({
   tag: 'discovery-tabular',
@@ -228,14 +227,16 @@ export class DiscoveryTabular {
     const csvTxt = headers.join(';') + '\n' +
       csv.map(line => headers.map(h => line[h] ?? '').join(';')).join('\n');
     const uInt8 = new TextEncoder().encode(csvTxt);
-    const fileStream = streamSaver.createWriteStream(((this.options as Param).title ?? 'export') + '.csv', {
-      size: uInt8.byteLength, // (optional filesize) Will show progress
-      writableStrategy: undefined, // (optional)
-      readableStrategy: undefined,  // (optional)
-    });
-    const writer = fileStream.getWriter();
-    await writer.write(uInt8);
-    await writer.close();
+    let a: HTMLAnchorElement = document.querySelector('a#discovery-filesaver');
+    if (a === undefined || a == null) {
+      a = document.createElement('a');
+      a.id = 'discovery-filesaver';
+    }
+    const file = new Blob([uInt8], { type: 'text/csv' });
+    a.href = URL.createObjectURL(file);
+    a.download = ((this.options as Param).title ?? 'export') + '.csv';
+    a.click();
+    a.remove();
   }
 
   render() {
