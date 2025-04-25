@@ -1,6 +1,26 @@
 Discovery
 ---
 
+## v1.2.33
+
+> +  2025/04/25  | v1.2.33 
+> +  2025/04/25  | Fix popup firing issue on equals selected values 
+> +  2025/04/25  | Fix StreamServer SW registration issue by replacing StreamSaver by a more native mechanism. 
+> +  2025/04/25  | Fix regexp handling for Event mechanism 
+> +  2025/04/17  | v1.2.32 
+> +  2025/04/17  | fix scrolling bug with chips 
+> +  2025/04/17  | auto reordered deps 
+> +  2025/04/17  | v1.2.31 
+> +  2025/04/17  | fuzzy search available in list multi cb too. fuzzy filter do not filter out events. 
+> +  2025/04/17  | delimiters configurable, space delimiter no more default 
+> +  2025/04/17  | introduce fuzzy search for chips autocomplete 
+> +  2025/04/16  | chip select first found when constrained 
+> +  2025/04/16  | fix chip component deletion 
+> +  2025/04/16  | fix the expand option in profile tile 
+> +  2025/04/04  | Migrate from unpkg to jsdelivr 
+> +  2025/04/03  | Fixes 
+> +  2025/04/01  | changelog 
+
 ## v1.2.30
 
 > +  2025/04/01  | v1.2.30 
