@@ -258,7 +258,7 @@ export class DiscoveryTileResultComponent {
       .filter(e => e.type === 'selected')
       .forEach(e => {
         e.value = event.detail;
-        this.discoveryEvent.emit({ ...e, source: this.el.id });
+        this.discoveryEvent.emit({ ...e, source: this.el.id, eventId: v4()}); // the eventId allow the user to be sure to filter out events, or be sure to refire a popup, for example
       });
   }
 

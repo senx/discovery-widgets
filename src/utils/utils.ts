@@ -292,6 +292,9 @@ export class Utils {
           case 'selected':
             parsed.selected = parsed.selected || {};
             parsed.selected[evt.selector] = evt.value;
+            if (evt.eventId) {
+              parsed.selected["eventID"] = evt.eventId; // if evendId is present, add a eventID variable to the context
+            }
             parsed.hasEvent = true;
             break;
           case 'poi':

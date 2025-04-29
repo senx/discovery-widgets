@@ -127,6 +127,7 @@ export class DiscoveryEvent {
   value: any;
   selector?: string;
   source: string;
+  eventId?: string;  // uuid, put it if two successive same events must fire.
 }
 
 export class DataModel {
