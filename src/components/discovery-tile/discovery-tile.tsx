@@ -121,9 +121,11 @@ export class DiscoveryTileComponent {
     }
     if (res.selected) {
       const vars = Utils.clone({ ...(this.innerVars ?? {}), ...res.selected });
-      this.innerVars = Utils.clone(vars);
-      if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-        await this.exec(true);
+      if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
+        this.innerVars = Utils.clone(vars);
+        if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
+          await this.exec(true);
+        }
       }
     }
   }
@@ -316,13 +318,10 @@ export class DiscoveryTileComponent {
                   this.loaded = true;
                   this.showLoader = false;
                   this.LOG?.debug(['exec', 'result'], this.chartTitle, this.result);
-                  this.result = '[]';
-                  requestAnimationFrame(() => {
-                    this.result = res.data;
-                    this.execResult.emit(this.result);
-                    this.hasError = false;
-                    resolve(true);
-                  });
+                  this.result = res.data;
+                  this.execResult.emit(this.result);
+                  this.hasError = false;
+                  resolve(true);
                 });
               }
             })
