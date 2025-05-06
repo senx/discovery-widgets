@@ -1,6 +1,15 @@
 Discovery
 ---
 
+## v1.2.35
+
+> +  2025/05/06  | v1.2.35 
+> +  2025/05/06  | changelog 
+> +  2025/05/06  | [gauge] [circle] [compass] Allow to use a custom display instead of the value 
+> +  2025/05/06  | [tabular] Pagination widget should start at 1, not 0 
+> +  2025/05/05  | [input:date] Fix calendar days of week 
+> +  2025/05/05  | Fix markdown color style 
+
 ## v1.2.34
 
 > +  2025/04/29  | v1.2.34 
