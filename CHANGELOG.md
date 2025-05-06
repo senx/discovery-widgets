@@ -1,6 +1,13 @@
 Discovery
 ---
 
+## v1.2.34
+
+> +  2025/04/29  | v1.2.34 
+> +  2025/04/29  | select event set a eventUUID variable 
+> +  2025/04/29  | Revert "Fix popup firing issue on equals selected values" 
+> +  2025/04/25  | Changelog 
+
 ## v1.2.33
 
 > +  2025/04/25  | v1.2.33 
