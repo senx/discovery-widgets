@@ -18,6 +18,7 @@ import { JQ } from './jq';
 import { DTPickerOptions } from './options';
 import { tz } from 'moment-timezone';
 import moment from 'moment/min/moment-with-locales';
+import { Utils } from '../../../../utils/utils';
 
 // IE browser doesn't support "class"
 export class DateRangePicker {
@@ -156,7 +157,7 @@ export class DateRangePicker {
     // handle all the possible options overriding defaults
     if (typeof options.locale === 'object') {
       this.options.locale.locale = options.locale.locale ?? 'en';
-      const loc = moment.localeData(options.locale.locale ?? 'en');
+      const loc = Utils.clone(moment.localeData(options.locale.locale ?? 'en'));
       this.options.locale.timeZone = options.locale.timeZone ?? 'UTC';
       if (typeof options.locale.direction === 'string') {
         this.options.locale.direction = options.locale.direction;

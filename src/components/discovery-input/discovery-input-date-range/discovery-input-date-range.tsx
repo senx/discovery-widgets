@@ -108,7 +108,7 @@ export class DiscoveryInputDateRange {
       this.opts.maxDate = this.toMoment(this.options.input.max);
     }
     let locale = this.options.input?.locale ?? 'default';
-    if (locale === 'AUTO') {
+    if (this.options.timeZone === 'AUTO') {
       locale = Utils.getNavigatorLanguage();
     }
     const timeZone = this.options.timeZone === 'AUTO' ? tz.guess() : this.options.timeZone;

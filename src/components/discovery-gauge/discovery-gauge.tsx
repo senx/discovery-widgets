@@ -266,8 +266,8 @@ export class DiscoveryGauge {
         }
         dataStruct.push({
           id: gts.id,
-          name: ((data.params ?? [])[i] || { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts),
-          key: ((data.params ?? [])[i] || { key: undefined }).key ?? GTSLib.serializeGtsMetadata(gts),
+          name: (data.params ?? [])[i]?.key ?? GTSLib.serializeGtsMetadata(gts),
+          key: (data.params ?? [])[i]?.key ?? GTSLib.serializeGtsMetadata(gts),
           value,
           max,
           min,
@@ -295,7 +295,7 @@ export class DiscoveryGauge {
           const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
           value = Math.round(parseFloat(value + '') * dec) / dec;
         }
-        dataStruct.push({ key: gts.key ?? '', value, max, min });
+        dataStruct.push({ key: gts.key ?? '', value, label: gts.label, max, min });
       }
     }
     const radius = Math.round(100 / Math.ceil(gtsCount / 2)) * (this.type === 'compass' ? 0.8 : 0.8);
@@ -394,7 +394,7 @@ export class DiscoveryGauge {
           },
         radius: `${radius}%`,
         detail: {
-          formatter: '{value}' + unit,
+          formatter: d.label ?? ('{value}' + unit),
           fontSize: 12,
           offsetCenter: [0, this.type === 'gauge' ? '-20%' : this.type === 'compass' ? 40 : 0],
           color: Utils.getLabelColor(this.el),
