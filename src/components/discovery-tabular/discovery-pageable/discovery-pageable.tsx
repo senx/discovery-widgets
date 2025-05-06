@@ -371,7 +371,7 @@ export class DiscoveryPageable {
           ? this.pages.map(c => <span>
         {c >= this.page - this.windowed && c <= this.page + this.windowed
           ? <span class={{ index: true, hoverable: this.page !== c, active: this.page === c }}
-                  onClick={() => this.goto(c)}>{c}</span>
+                  onClick={() => this.goto(c)}>{c + 1}</span>
           : ''}
       </span>) : ''}
         {this.page + this.windowed < this.pages.length ? <div class="index disabled">...</div> : ''}
