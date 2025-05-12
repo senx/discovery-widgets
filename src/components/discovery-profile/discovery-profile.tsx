@@ -80,8 +80,6 @@ export class DiscoveryProfile {
   private gtsList = [];
   private focusDate: number;
   private bounds: { min: number; max: number };
-  private innerWidth: number = 0;
-  private innerHeight: number = 0;
   private innerVars: any = {};
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
@@ -117,14 +115,11 @@ export class DiscoveryProfile {
 
   @Watch('result')
   updateRes() {
-    this.chartOpts = this.convert(GTSLib.getData(this.result) || new DataModel());
+    this.chartOpts = this.convert(GTSLib.getData(this.result) ?? new DataModel());
     this.LOG?.debug(['updateRes'], { chartOpts: this.chartOpts });
-    setTimeout(() => {
-      if (this.myChart) {
-        this.myChart.resize({ width: this.width, height: this.height });
-        this.setOpts(true);
-      }
-    });
+    if (this.myChart) {
+      setTimeout(() => this.setOpts(true));
+    }
   }
 
   @Watch('options')
@@ -137,10 +132,10 @@ export class DiscoveryProfile {
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
       this.expanded = !!this.innerOptions.expandAnnotation;
-      this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+      this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
       if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
-        this.setOpts(true);
+        setTimeout(() => this.setOpts(true));
       }
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
@@ -148,14 +143,7 @@ export class DiscoveryProfile {
 
   @Method()
   async resize() {
-    const dims = Utils.getContentBounds(this.el.parentElement);
-    const width = dims.w - 4;
-    const height = dims.h;
-    if (this.myChart && (this.innerWidth !== width || this.innerHeight !== dims.h)) {
-      this.innerWidth = width;
-      this.innerHeight = this.innerHeight !== dims.h ? height - this.el.parentElement.offsetTop : this.innerHeight;
-      this.myChart.resize({ width: this.innerWidth, height: this.innerHeight, silent: true });
-    }
+    this.myChart.resize({ width: this.width, height: this.height });
     return Promise.resolve();
   }
 
@@ -183,7 +171,7 @@ export class DiscoveryProfile {
       this.myChart.dispatchAction({
         type: 'legendUnSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
+          .filter((s, i) => new RegExp(id.toString()).test((s.id ?? i).toString())),
       });
     }
     return Promise.resolve();
@@ -195,7 +183,7 @@ export class DiscoveryProfile {
       this.myChart.dispatchAction({
         type: 'legendSelect',
         batch: (this.myChart.getOption().series as any[])
-          .filter((s, i) => new RegExp(id.toString()).test((s.id || i).toString())),
+          .filter((s, i) => new RegExp(id.toString()).test((s.id ?? i).toString())),
       });
     }
     return Promise.resolve();
@@ -212,9 +200,9 @@ export class DiscoveryProfile {
     }
     this.expanded = !!this.innerOptions.expandAnnotation;
     this.result = GTSLib.getData(this.result);
-    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
+    this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
     this.LOG?.debug(['componentWillLoad'], { type: this.type, options: this.innerOptions });
-    this.chartOpts = this.convert(this.result || new DataModel());
+    this.chartOpts = this.convert(this.result ?? new DataModel());
   }
 
   private setOpts(notMerge = false) {
@@ -223,11 +211,11 @@ export class DiscoveryProfile {
     } else if (this.vars) {
       this.innerVars = this.vars;
     }
-    if ((this.chartOpts?.series as any[] || []).length === 0) {
+    if ((this.chartOpts?.series as any[] ?? []).length === 0) {
       this.chartOpts.title = {
         show: true,
         textStyle: { color: Utils.getLabelColor(this.el), fontSize: 20 },
-        text: this.innerOptions.noDataLabel || '',
+        text: this.innerOptions.noDataLabel ?? '',
         left: 'center',
         top: 'center',
       };
@@ -237,14 +225,17 @@ export class DiscoveryProfile {
     } else {
       this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
-    setTimeout(() => this.myChart.setOption(this.chartOpts ?? {}, notMerge, true));
+    setTimeout(() => {
+      this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
+      this.myChart.resize({ width: this.width, height: this.height });
+    });
   }
 
   convert(data: DataModel) {
-    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
-    options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
+    let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
+    options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
     this.innerOptions = Utils.clone(options);
-    this.innerOptions.timeMode = this.innerOptions.timeMode || 'date';
+    this.innerOptions.timeMode = this.innerOptions.timeMode ?? 'date';
     const series: any[] = [];
     const categories: any[] = [];
     const gtsList = GTSLib.flatDeep(GTSLib.flattenGtsIdArray(data.data as any[], 0).res);
@@ -271,9 +262,9 @@ export class DiscoveryProfile {
       const datasetNoAlpha = (data.params ?? [])[i]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
       if (GTSLib.isGts(gts) && !!gts.v) {
         this.gtsList.push(gts);
-        const name = ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts);
+        const name = (data.params ?? [])[i]?.key ?? GTSLib.serializeGtsMetadata(gts);
         const c = ColorLib.getColor(gts.id, this.innerOptions.scheme);
-        const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
+        const color = (data.params ?? [])[i]?.datasetColor ?? c;
         if (this.expanded) {
           linesCount++;
           categories.push(name);
@@ -323,9 +314,9 @@ export class DiscoveryProfile {
     }
     if (gtsList.length === 0) {
       // custom data
-      (data.data || []).forEach((d: any, i: number) => {
+      (data.data ?? []).forEach((d: any, i: number) => {
         const datasetNoAlpha = (data.params ?? [])[i]?.datasetNoAlpha ?? this.innerOptions.datasetNoAlpha;
-        const values: any = d.values || {};
+        const values: any = d.values ?? {};
         for (const key of Object.keys(values)) {
           const id = Object.keys(values).indexOf(key);
           const c = ColorLib.getColor(id, this.innerOptions.scheme);
@@ -333,7 +324,7 @@ export class DiscoveryProfile {
             linesCount++;
             categories.push(key);
           }
-          const color = ((values.params || [])[id] || { datasetColor: c }).datasetColor || c;
+          const color = (values.params ?? [])[id]?.datasetColor ?? c;
           series.push({
             type: 'custom',
             name: key,
@@ -376,47 +367,47 @@ export class DiscoveryProfile {
         }
       });
     }
-    const markArea = [...(this.innerOptions.thresholds || [])
+    const markArea = [...(this.innerOptions.thresholds ?? [])
       .filter(t => !!t.fill)
       .map(t => {
         return [{
           itemStyle: {
-            color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? 0.5 : 0),
-            borderType: t.type || 'dashed',
-            name: t.name || t.value || 0,
+            color: ColorLib.transparentize(t.color ?? '#D81B60', t.fill ? 0.5 : 0),
+            borderType: t.type ?? 'dashed',
+            name: t.name ?? t.value ?? 0,
           },
-          yAxis: t.value || 0,
+          yAxis: t.value ?? 0,
         }, { yAxis: 0 }];
       }),
-      ...(this.innerOptions.markers || [])
+      ...(this.innerOptions.markers ?? [])
         .filter(t => !!t.fill)
         .map(t => {
           return [{
             itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
-              borderType: t.type || 'dashed',
+              color: ColorLib.transparentize(t.color ?? '#D81B60', t.fill ? t.alpha ?? 0.5 : 0),
+              borderType: t.type ?? 'dashed',
             },
-            label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
-            name: t.name || t.value || 0,
+            label: { color: t.color ?? '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
+            name: t.name ?? t.value ?? 0,
             xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
           },
             {
               itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
-                borderType: t.type || 'dashed',
+                color: ColorLib.transparentize(t.color ?? '#D81B60', t.fill ? t.alpha ?? 0.5 : 0),
+                borderType: t.type ?? 'dashed',
               },
               xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
             }];
         }),
     ];
     const markLine = [
-      ...(this.innerOptions.markers || [])
+      ...(this.innerOptions.markers ?? [])
         .filter(t => !t.fill)
         .map(t => {
           return {
-            name: t.name || t.value || 0,
-            label: { color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name },
-            lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
+            name: t.name ?? t.value ?? 0,
+            label: { color: t.color ?? '#D81B60', position: 'insideEndTop', formatter: '{b}', show: !!t.name },
+            lineStyle: { color: t.color ?? '#D81B60', type: t.type ?? 'dashed' },
             xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
           };
         })];
@@ -439,7 +430,7 @@ export class DiscoveryProfile {
       this.timeBounds.emit({ min, max });
     }
 
-    this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
+    this.height = 50 + (linesCount * (this.expanded ? 26 : 35)) + (this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
     this.LOG?.debug(['convert'], {
       expanded: this.expanded,
       series,
@@ -463,14 +454,14 @@ export class DiscoveryProfile {
       tooltip: {
         trigger: 'axis',
         backgroundColor: Utils.getCSSColor(this.el, '--warp-view-tooltip-bg-color', 'white'),
-        hideDelay: this.innerOptions.tooltipDelay || 100,
+        hideDelay: this.innerOptions.tooltipDelay ?? 100,
         formatter: (params: any[]) => {
           if ('profile' === this.type) {
             return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
             ${this.innerOptions.timeMode === 'timestamp'
               ? params[0].value[1]
               : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[1], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-                this.innerOptions.timeFormat) || '')
+                this.innerOptions.timeFormat) ?? '')
                 .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
            </div>
            ${params[0].marker}
@@ -485,7 +476,7 @@ export class DiscoveryProfile {
               this.innerOptions.timeMode === 'timestamp'
                 ? params[0].value[0]
                 : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-                  this.innerOptions.timeFormat) || '')
+                  this.innerOptions.timeFormat) ?? '')
                   .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => {
               const value = this.gtsList[s.seriesIndex].v[s.dataIndex];
@@ -595,7 +586,7 @@ export class DiscoveryProfile {
         },
       ],
       series,
-      ...this.innerOptions?.extra?.chartOpts || {},
+      ...this.innerOptions?.extra?.chartOpts ?? {},
     } as EChartsOption;
     (this.innerOptions.actions ?? []).forEach((action) => {
       if (action.macro) {
@@ -639,13 +630,13 @@ export class DiscoveryProfile {
       });
     });
     this.myChart.on('dataZoom', (event: any) => {
-      const { start, end } = (event.batch || [])[0] || {};
+      const { start, end } = (event.batch ?? [])[0] ?? {};
       if (start && end) {
         this.dataZoom.emit({
           start,
           end,
-          min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-          max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
+          min: this.innerOptions.bounds?.minDate ?? this.bounds?.min,
+          max: this.innerOptions.bounds?.maxDate ?? this.bounds?.max,
         });
       }
     });
@@ -653,8 +644,8 @@ export class DiscoveryProfile {
       this.dataZoom.emit({
         start: 0,
         end: 100,
-        min: this.innerOptions.bounds?.minDate || this.bounds?.min,
-        max: this.innerOptions.bounds?.maxDate || this.bounds?.max,
+        min: this.innerOptions.bounds?.minDate ?? this.bounds?.min,
+        max: this.innerOptions.bounds?.maxDate ?? this.bounds?.max,
       });
     });
     this.el.addEventListener('dblclick', () => this.myChart.dispatchAction({
@@ -709,8 +700,8 @@ export class DiscoveryProfile {
     if (typeof ts === 'string') ts = parseInt(ts, 10);
     let ttp = [];
     const date = this.innerOptions.timeMode === 'date'
-      ? GTSLib.utcToZonedTime(ts || 0, this.divider, this.innerOptions.timeZone)
-      : ts || 0;
+      ? GTSLib.utcToZonedTime(ts ?? 0, this.divider, this.innerOptions.timeZone)
+      : ts ?? 0;
     let seriesIndex = 0;
     let dataIndex = 0;
     if (regexp) {
@@ -745,7 +736,7 @@ export class DiscoveryProfile {
       });
     }
     (this.chartOpts.xAxis as any).axisPointer = {
-      ...(this.chartOpts.xAxis as any).axisPointer || {},
+      ...(this.chartOpts.xAxis as any).axisPointer ?? {},
       value: date,
       status: 'show',
     };
@@ -764,12 +755,12 @@ export class DiscoveryProfile {
     if (!this.myChart) return;
     (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
     (this.chartOpts.xAxis as any).axisPointer = {
-      ...(this.chartOpts.xAxis as any).axisPointer || {},
+      ...(this.chartOpts.xAxis as any).axisPointer ?? {},
       status: 'hide',
     };
 
     (this.chartOpts.yAxis as any).axisPointer = {
-      ...(this.chartOpts.yAxis as any).axisPointer || {},
+      ...(this.chartOpts.yAxis as any).axisPointer ?? {},
       status: 'hide',
     };
     this.myChart.dispatchAction({ type: 'hideTip' });
@@ -787,6 +778,7 @@ export class DiscoveryProfile {
     return <div style={{
       width: `${this.width}px`,
       maxHeight: `${(this.height + (this.expanded ? 50 : 30))}px`,
+      height: `${(this.height + (this.expanded ? 50 : 30))}px`,
     }}>
       <div class="chart-wrapper">
         {this.displayExpander
@@ -795,10 +787,10 @@ export class DiscoveryProfile {
           : ''}
         <div class="chart-area"
              style={{
-               width: `${this.width}
-          px`,
-               height: `${(this.height + (this.innerOptions.showLegend ? 50 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0))}
-          px`,
+               width: `${this.width}px`,
+               height: `${(this.height + (this.innerOptions.showLegend ? 50 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0))}px`,
+               maxHeight: `${(this.height + (this.innerOptions.showLegend ? 50 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0))}px`,
+               // maxHeight: `${(this.height + (this.expanded ? 50 : 30))}px`,
              }}>
           {this.parsing ? <div class="discovery-chart-spinner">
             <discovery-spinner>Parsing data...</discovery-spinner>
@@ -814,14 +806,7 @@ export class DiscoveryProfile {
 
   private toggle() {
     this.expanded = !this.expanded;
-    this.chartOpts = this.convert(this.result as DataModel || new DataModel());
-    setTimeout(() => {
-      this.myChart.resize({
-        width: this.width,
-        height: this.height,
-      });
-      this.setOpts();
-    });
+    this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
+    setTimeout(() => this.setOpts(true));
   }
-
 }
