@@ -1,6 +1,14 @@
 Discovery
 ---
 
+## v1.2.36
+
+> +  2025/05/13  | v1.2.36 
+> +  2025/05/13  | Readmes 
+> +  2025/05/12  | [calendar] Fix overflow 
+> +  2025/05/12  | [annotation] [profile] Fix overflow 
+> +  2025/05/06  | changelog 
+
 ## v1.2.35
 
 > +  2025/05/06  | v1.2.35 
