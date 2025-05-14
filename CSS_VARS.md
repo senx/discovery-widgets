@@ -48,6 +48,8 @@
 - --warp-view-input-focus-outline-color
 - --warp-view-input-font-size
 - --warp-view-input-label-color
+- --warp-view-md-code-bg
+- --warp-view-md-code-font-color
 - --warp-view-modal-backdrop-color
 - --warp-view-modal-bg-color
 - --warp-view-pagination-active-bg-color
