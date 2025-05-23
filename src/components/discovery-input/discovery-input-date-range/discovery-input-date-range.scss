@@ -275,7 +275,7 @@
 
   .daterangepicker .calendar-table .next span, .daterangepicker .calendar-table .prev span {
     color: var(--warp-view-tooltip-bg-color, $w10-white);
-    border: solid var(--warp-view-font-color, $w10-charcoal);
+    border: solid var(--warp-view-input-label-color, $w10-charcoal);
     border-width: 0 2px 2px 0;
     border-radius: 0;
     display: inline-block;
