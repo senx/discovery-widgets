@@ -98,6 +98,7 @@ export class Param {
     minDate?: number;
     maxDate?: number;
     yRanges?: [number, number];
+    xRanges?: [number, number];
   };
   isRefresh?: boolean;
   elemsCount?: number;
@@ -213,4 +214,9 @@ export class Param {
     monthLabel?: string[],
   };
   extra?: any;
+  hideOverlap?: boolean;
+  xUnit?: string;
+  xUnitPosition: string;
+  unitPosition: string;
+  hideTooltip: boolean;
 }

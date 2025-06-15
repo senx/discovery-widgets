@@ -219,11 +219,11 @@ export class DiscoveryLineComponent {
     const opts: EChartsOption = {
       animation: false,
       grid: {
-        left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
+        left: ((!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin - this.leftMargin + 10
-          : 10,
+          : 10) + (this.innerOptions.unitPosition === 'middle' ? 40 : 0),
         top: 30,
-        bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.showRangeSelector ? 40 : 0),
+        bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.showRangeSelector ? 40 : 0) + (this.innerOptions.xUnitPosition === 'middle' ? 40 : 0),
         right: 10 + (this.innerOptions.showYRangeSelector ? 40 : 0),
         containLabel: true,
       },
@@ -239,7 +239,11 @@ export class DiscoveryLineComponent {
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
           return obj;
         },
-        formatter: (params: any[]) =>
+        show: !(this.type === 'scatter' && this.innerOptions.hideTooltip),
+        formatter: (params: any[]) => {
+          if (this.type === 'scatter' && this.innerOptions.hideTooltip === true) {
+            return '';
+          }
           `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
             ? params[0].value[0]
             : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
@@ -247,7 +251,8 @@ export class DiscoveryLineComponent {
               .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
                ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
             <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
-          ).join('<br>')}`,
+          ).join('<br>')}`
+        },
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor
             ? 'cross'
@@ -501,6 +506,12 @@ export class DiscoveryLineComponent {
             show: !!this.innerOptions.showValues,
             position: 'top',
             textStyle: { color: Utils.getLabelColor(this.el), fontSize: 14 },
+            formatter: function (d) {
+              return d.data.length === 4 ? d.data[3] : '';
+            }
+          },
+          labelLayout: {
+            hideOverlap: this.innerOptions.hideOverlap ?? false
           },
           itemStyle: isBubble || this.innerOptions.dotSize > 10 ? {
             opacity: 0.8,
@@ -727,9 +738,12 @@ export class DiscoveryLineComponent {
     }
     return {
       type: this.innerOptions.yLabelsMapping ? 'category' : 'value',
-      name: unit ?? this.unit ?? this.innerOptions.unit,
+      name: unit ?? (this.unit !== undefined && this.unit !== '' ? this.unit : this.innerOptions.unit),
       show: !this.innerOptions.hideYAxis,
-      nameTextStyle: { color: color ?? Utils.getLabelColor(this.el) },
+      nameTextStyle: {
+        color: color ?? Utils.getLabelColor(this.el),
+        fontSize: 16
+      },
       splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLine: { show: true, lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       axisLabel: {
@@ -742,11 +756,21 @@ export class DiscoveryLineComponent {
       scale: !(this.innerOptions.bounds && this.innerOptions.bounds.yRanges && this.innerOptions.bounds.yRanges.length > 0),
       min: (this.innerOptions?.bounds?.yRanges ?? [])[0],
       max: (this.innerOptions?.bounds?.yRanges ?? [])[1],
+      ...(this.innerOptions.unitPosition === 'middle' ? {
+        nameLocation: "middle",
+        nameRotate: 90,
+        nameGap: 30,
+      } : {})
     };
   }
 
   private getXAxis(color?: string): CartesianAxisOption {
     return {
+      name: this.innerOptions.xUnit ?? '',
+      nameTextStyle: {
+        color: color ?? Utils.getLabelColor(this.el),
+        fontSize: 16
+      },
       type: this.innerOptions.timeMode === 'date' ? 'time' : 'value',
       show: !this.innerOptions.hideXAxis,
       splitNumber: this.innerOptions.timeMode === 'date' ? undefined : Math.max(Math.floor(Utils.getContentBounds(this.el.parentElement).w / 200) - 1, 1),
@@ -767,12 +791,16 @@ export class DiscoveryLineComponent {
         ? this.innerOptions.timeMode === 'date'
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
           : this.innerOptions.bounds.minDate
-        : undefined,
+        : (this.innerOptions?.bounds?.xRanges ?? [])[0],
       max: this.innerOptions.bounds?.maxDate !== undefined
         ? this.innerOptions.timeMode === 'date'
           ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
           : this.innerOptions.bounds.maxDate
-        : undefined,
+        : (this.innerOptions?.bounds?.xRanges ?? [])[1],
+      ...(this.innerOptions.xUnitPosition === 'middle' ? {
+        nameLocation: "middle",
+        nameGap: 30,
+      } : {})
     };
   }
 
