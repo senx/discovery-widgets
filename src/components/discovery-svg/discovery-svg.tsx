@@ -196,7 +196,16 @@ export class DiscoverySvgComponent {
         if (!nsXpath.startsWith('svg:svg')) {
           nsXpath = '//' + nsXpath;
         }
-        const iterator = svgDoc.evaluate(nsXpath, svgDoc, prefix => prefix === 'svg' ? 'http://www.w3.org/2000/svg' : null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+        let nsr: XPathNSResolver = prefix => {
+          if (prefix === 'svg') {
+            return 'http://www.w3.org/2000/svg';
+          } else if (prefix === 'inkscape') {   // allow an easy use of inkscape:label for example, in the xpath. '//*[@inkscape:label="text2"]' 
+            return 'http://www.inkscape.org/namespaces/inkscape';
+          } else {
+            return null;
+          }
+        }
+        const iterator = svgDoc.evaluate(nsXpath, svgDoc, nsr, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
         let elem = iterator.iterateNext();
         const elemsToReplace: SVGElement[] = [];
         while (elem) {
