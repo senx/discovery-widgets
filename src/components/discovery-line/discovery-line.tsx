@@ -239,7 +239,6 @@ export class DiscoveryLineComponent {
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
           return obj;
         },
-        show: !this.innerOptions.hideTooltip,
         formatter: (params: any[]) => {
           if (this.innerOptions.hideTooltip === true) {
             return '';
