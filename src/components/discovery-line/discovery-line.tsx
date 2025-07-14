@@ -223,7 +223,7 @@ export class DiscoveryLineComponent {
           ? this.innerOptions.leftMargin - this.leftMargin + 10
           : 10) + (this.innerOptions.unitPosition === 'middle' ? 40 : 0),
         top: 30,
-        bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.showRangeSelector ? 40 : 0) + (this.innerOptions.xUnitPosition === 'middle' ? 40 : 0),
+        bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.showRangeSelector ? 40 : 0) + (this.innerOptions.xUnit ? 40 : 0),
         right: 10 + (this.innerOptions.showYRangeSelector ? 40 : 0),
         containLabel: true,
       },
@@ -239,12 +239,12 @@ export class DiscoveryLineComponent {
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
           return obj;
         },
-        show: !(this.type === 'scatter' && this.innerOptions.hideTooltip),
+        show: !this.innerOptions.hideTooltip,
         formatter: (params: any[]) => {
-          if (this.type === 'scatter' && this.innerOptions.hideTooltip === true) {
+          if (this.innerOptions.hideTooltip === true) {
             return '';
           }
-          `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
+          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
             ? params[0].value[0]
             : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
               this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
@@ -742,7 +742,7 @@ export class DiscoveryLineComponent {
       show: !this.innerOptions.hideYAxis,
       nameTextStyle: {
         color: color ?? Utils.getLabelColor(this.el),
-        fontSize: 16
+        fontSize: this.innerOptions.unitFontSize
       },
       splitLine: { show: false, lineStyle: { color: Utils.getGridColor(this.el) } },
       axisLine: { show: true, lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
@@ -769,7 +769,7 @@ export class DiscoveryLineComponent {
       name: this.innerOptions.xUnit ?? '',
       nameTextStyle: {
         color: color ?? Utils.getLabelColor(this.el),
-        fontSize: 16
+        fontSize: this.innerOptions.xUnitFontSize
       },
       type: this.innerOptions.timeMode === 'date' ? 'time' : 'value',
       show: !this.innerOptions.hideXAxis,
@@ -787,17 +787,21 @@ export class DiscoveryLineComponent {
       },
       axisTick: { lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       scale: !(this.innerOptions.bounds && (this.innerOptions.bounds.minDate || this.innerOptions.bounds.maxDate)),
-      min: this.innerOptions.bounds?.minDate !== undefined
-        ? this.innerOptions.timeMode === 'date'
-          ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
-          : this.innerOptions.bounds.minDate
-        : (this.innerOptions?.bounds?.xRanges ?? [])[0],
-      max: this.innerOptions.bounds?.maxDate !== undefined
-        ? this.innerOptions.timeMode === 'date'
-          ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
-          : this.innerOptions.bounds.maxDate
-        : (this.innerOptions?.bounds?.xRanges ?? [])[1],
-      ...(this.innerOptions.xUnitPosition === 'middle' ? {
+      min: this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+        ? this.innerOptions?.bounds?.xRanges[0]
+        : this.innerOptions.bounds?.minDate !== undefined
+          ? this.innerOptions.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.minDate, this.divider, this.innerOptions.timeZone)
+            : this.innerOptions.bounds.minDate
+          : undefined,
+      max: this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+        ? this.innerOptions?.bounds?.xRanges[1]
+        : this.innerOptions.bounds?.maxDate !== undefined
+          ? this.innerOptions.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
+            : this.innerOptions.bounds.maxDate
+          : undefined,
+      ...(this.innerOptions.xUnit ? {
         nameLocation: "middle",
         nameGap: 30,
       } : {})

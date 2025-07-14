@@ -216,7 +216,8 @@ export class Param {
   extra?: any;
   hideOverlap?: boolean;
   xUnit?: string;
-  xUnitPosition: string;
   unitPosition: string;
   hideTooltip: boolean;
+  unitFontSize = 16;
+  xUnitFontSize = 16;
 }
