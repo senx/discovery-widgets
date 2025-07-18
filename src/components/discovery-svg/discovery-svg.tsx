@@ -189,7 +189,7 @@ export class DiscoverySvgComponent {
 
   private sanitize(svg: string, xpath?: string, replacement?: string | { [k: string]: string }) {
     try {
-      const svgDoc = Utils.parseXML(svg, 'image/svg+xml');
+      const svgDoc = Utils.parseXML(svg.trim(), 'image/svg+xml'); // trim to avoid weird bugs with spaces before xml processing instruction <? ?> (forbidden)
       const el = svgDoc.getElementsByTagName('svg').item(0);
       if (xpath) {
         let nsXpath = xpath.split('/').filter(e => !!e).map(e => 'svg:' + e).join('/');
