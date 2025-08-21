@@ -8,7 +8,7 @@ let md =
 
 `;
 
-let tagList = execSync('git tag -l --sort=-v:refname | head -n 1000');
+let tagList = execSync('git tag -l --sort=-v:refname | head -n 1000 | grep -v "list"');
 tagList = tagList.toString().split('\n').filter(i => i !== '');
 tagList = semverSort.desc(tagList);
 let lastTag = tagList[0];

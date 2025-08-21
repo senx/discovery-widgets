@@ -1,6 +1,32 @@
 Discovery
 ---
 
+## v1.2.40
+
+> +  2025/08/21  | v1.2.40 
+> +  2025/08/21  | introduce discoveryExecutionTrigger warpscript variable, to get the trigger event easily 
+
+## v1.2.39
+
+> +  2025/07/18  | version bump 
+> +  2025/07/18  | v1.2.39 
+> +  2025/07/18  | fix small svg bug 
+
+## v1.2.38
+
+> +  2025/07/18  | v1.2.38 
+
+## v1.2.37
+
+> +  2025/07/15  | version bump 
+> +  2025/07/14  | main : fix code review requested changes 
+> +  2025/07/14  | main : fix code review requested changes 
+> +  2025/06/17  | allow inkscape namespace in svg xpath 
+> +  2025/06/15  | scatter chart : - add formatter for label of each point - add xUnit field to add label on x axes - add unitPosition field to modify the position of the y axis label - add xUnitPosition field to modify the position of the x axis label - add bounds.xRanges field to add bound on x axis - add hideOverlap field to hide label on point when label are at the same place - add hideTooltip field to hide tooltip 
+> +  2025/05/23  | [input:date] Fix style in dark mode 
+> +  2025/05/14  | update list 
+> +  2025/05/13  | changelog 
+
 ## v1.2.36
 
 > +  2025/05/13  | v1.2.36 
@@ -31,9 +57,15 @@ Discovery
 > +  2025/04/25  | Fix popup firing issue on equals selected values 
 > +  2025/04/25  | Fix StreamServer SW registration issue by replacing StreamSaver by a more native mechanism. 
 > +  2025/04/25  | Fix regexp handling for Event mechanism 
+
+## v1.2.32
+
 > +  2025/04/17  | v1.2.32 
 > +  2025/04/17  | fix scrolling bug with chips 
 > +  2025/04/17  | auto reordered deps 
+
+## v1.2.31
+
 > +  2025/04/17  | v1.2.31 
 > +  2025/04/17  | fuzzy search available in list multi cb too. fuzzy filter do not filter out events. 
 > +  2025/04/17  | delimiters configurable, space delimiter no more default 
@@ -180,6 +212,9 @@ Discovery
 > +  2025/01/24  | [input:button] Fix label change with globalVars 
 > +  2025/01/23  | [input:button] Fix error handling 
 > +  2025/01/21  | NPE fix 
+
+## v1.2.15
+
 > +  2025/01/20  | Fix build 
 > +  2025/01/20  | Fix build 
 > +  2025/01/20  | changelog 
