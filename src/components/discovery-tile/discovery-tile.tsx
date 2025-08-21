@@ -116,7 +116,10 @@ export class DiscoveryTileComponent {
     if (res.vars) {
       this.innerVars = Utils.clone({ ...(this.innerVars ?? {}), ...res.vars });
       if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-        await this.exec(true);
+        let origin = { ...event.detail };
+        delete origin['source'];  // these internals should not be exposed to warpscript var
+        delete origin['eventId'];
+        await this.exec(true, {event:origin});
       }
     }
     if (res.selected) {
@@ -124,7 +127,10 @@ export class DiscoveryTileComponent {
       if (!Utils.deepEqual(this.innerVars ?? {}, vars)) {
         this.innerVars = Utils.clone(vars);
         if (!(this.innerOptions.mutedVars ?? []).includes(event.detail.selector)) {
-          await this.exec(true);
+          let origin = { ...event.detail };
+          delete origin['source'];
+          delete origin['eventId'];
+          await this.exec(true, {event:origin});
         }
       }
     }
@@ -207,7 +213,7 @@ export class DiscoveryTileComponent {
 
   async componentDidLoad() {
     if (!this.firstExec) {
-      await this.exec();
+      await this.exec(false, {'initialization':true});
     }
   }
 
@@ -233,12 +239,20 @@ export class DiscoveryTileComponent {
   }
 
   @Method()
-  async exec(refresh = false) {
+  async exec(refresh = false, executionOrigin = {}) {
     return new Promise(resolve => {
       const script = this.script ?? this.el?.innerHTML;
       if (script !== undefined) {
         if (!refresh) {
           setTimeout(() => this.loaded = false);
+        }
+        // add a specific var that contains the event that triggered the execution, when defined
+        // {initialization:true} when the tile is initialized
+        // {event:{...}} when a discovery event is received
+        if (executionOrigin) {
+          this.innerVars['discoveryExecutionTrigger'] = executionOrigin;
+        } else {
+          this.innerVars['discoveryExecutionTrigger'] = {};
         }
         this.ws = LangUtils.prepare(
           Utils.unsescape(script),
