@@ -119,6 +119,7 @@ export class DiscoveryTileComponent {
         let origin = { ...event.detail };
         delete origin['source'];  // these internals should not be exposed to warpscript var
         delete origin['eventId'];
+        origin['initialization']=false;
         await this.exec(true, {event:origin});
       }
     }
@@ -130,6 +131,7 @@ export class DiscoveryTileComponent {
           let origin = { ...event.detail };
           delete origin['source'];
           delete origin['eventId'];
+          origin['initialization']=false;
           await this.exec(true, {event:origin});
         }
       }
@@ -303,7 +305,11 @@ export class DiscoveryTileComponent {
                 let autoRefreshFeedBack = rws.globalParams?.autoRefresh ?? -1;
                 const fadeOutAfter = rws.globalParams?.fadeOutAfter;
                 if (rws.localvars) {
-                  Utils.mergeDeep(this.innerVars, rws.localvars);
+                  // for each localvars, add them to innerVars
+                  // mergeDeep is confusing when handling lists, leading to issues.
+                  for (const [key, value] of Object.entries(rws.localvars)) {
+                    this.innerVars[key] = value;
+                  } 
                 }
                 if (autoRefreshFeedBack < 0) {
                   autoRefreshFeedBack = undefined;
