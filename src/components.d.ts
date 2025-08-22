@@ -390,7 +390,7 @@ export namespace Components {
         "chartDescription": string;
         "chartTitle": string;
         "debug": boolean;
-        "exec": (refresh?: boolean) => Promise<unknown>;
+        "exec": (refresh?: boolean, executionOrigin?: {}) => Promise<unknown>;
         "export": (type?: "png" | "svg") => Promise<{ dataUrl: string; bgColor: string; }>;
         "hide": (regexp: string) => Promise<void>;
         "hideById": (id: number) => Promise<void>;
