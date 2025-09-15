@@ -163,7 +163,7 @@ export class DiscoveryButtonComponent {
     }
     this.innerStyle = Utils.clone({ ...this.innerStyle, ...this.innerOptions?.customStyles ?? {} });
     setTimeout(() => this.active = (this.innerResult?.data || []).find((v: any) => v.active)?.value);
-    if (GTSLib.isArray(this.innerResult.data) && this.type === 'button:group') {
+    if (this.type === 'button:group') {
       (this.innerResult.data ?? []).forEach((macro: any, i: number) => {
         this.macros.push({
           macro,
@@ -173,43 +173,56 @@ export class DiscoveryButtonComponent {
           },
         });
       });
+    } else {
+      this.macros.push({
+        macro: this.innerResult.data[0] // the GTSLib.getData returns an array with the object
+      })
+    }
+  }
+
+  private processEvents(result: any) {
+    if (result) {
+      for (const e of (result.events ?? [])) {
+        this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e });
+        if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {
+          e.value = [e.value];
+        }
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
+      }
     }
   }
 
   private handleClick(macro?: any, index?: number) {
-    this.loading = true;
-    this.loadingBtnGrp[index ?? 0] = true;
-    const ws = LangUtils.prepare(
-      `${macro ? macro.macro : this.innerResult.data} EVAL`,
-      this.innerVars ?? {},
-      this.innerOptions?.skippedVars ?? [],
-      this.type,
-      this.language);
-    Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders)
-      .then(res => {
-        this.LOG?.debug(['handleClick', 'res.data'], res.data);
-        const result = GTSLib.getData(res.data);
-        this.LOG?.debug(['handleClick', 'getData'], result);
-        if (result) {
-          for (const e of (result.events ?? [])) {
-            this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e });
-            if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {
-              e.value = [e.value];
-            }
-            this.discoveryEvent.emit({ ...e, source: this.el.id });
-          }
-        }
-        this.loading = false;
-        this.loadingBtnGrp[index ?? 0] = false;
-        this.execResult.emit(res.data);
-      })
-      .catch(e => {
-        this.loading = false;
-        this.loadingBtnGrp[index ?? 0] = false;
-        this.statusError.emit(e);
-        this.execError.emit(e);
-        this.LOG?.error(['exec'], e);
-      });
+    // if macro is a js object, we don't need to do a ws execution, it is already the result. real macros are rendered as strings by Warp 10.
+    if (typeof macro.macro === 'object') {
+      this.processEvents(macro.macro);
+    } else {
+      this.loading = true;
+      this.loadingBtnGrp[index ?? 0] = true;
+      const ws = LangUtils.prepare(
+        `${macro ? macro.macro : this.innerResult.data} EVAL`, // inside a ``, js arrays of string are rendered as concatenated strings
+        this.innerVars ?? {},
+        this.innerOptions?.skippedVars ?? [],
+        this.type,
+        this.language);
+      Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders)
+        .then(res => {
+          this.LOG?.debug(['handleClick', 'res.data'], res.data);
+          const result = GTSLib.getData(res.data);
+          this.LOG?.debug(['handleClick', 'getData'], result);
+          this.processEvents(result);
+          this.loading = false;
+          this.loadingBtnGrp[index ?? 0] = false;
+          this.execResult.emit(res.data);
+        })
+        .catch(e => {
+          this.loading = false;
+          this.loadingBtnGrp[index ?? 0] = false;
+          this.statusError.emit(e);
+          this.execError.emit(e);
+          this.LOG?.error(['exec'], e);
+        });
+    }
   }
 
   private toggle(value: string) {
@@ -242,7 +255,7 @@ export class DiscoveryButtonComponent {
           }}
                     disabled={this.isLoading(0)}
                     innerHTML={this.label}
-                    onClick={() => this.handleClick()}></button>
+                    onClick={() => this.handleClick(this.macros[0])}></button>
           : ''}
         {this.type === 'button:radio'
           ? <div class="discovery-btn-radio">
