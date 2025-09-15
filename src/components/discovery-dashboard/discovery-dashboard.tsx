@@ -41,6 +41,7 @@ export class DiscoveryDashboardComponent {
   @Prop() cellHeight = 220;
   @Prop() cols = 12;
   @Prop() type: 'scada' | 'dashboard' | 'flex' = 'dashboard';
+  @Prop() language: 'warpscript' | 'flows' | 'json' = 'warpscript';
   @Prop() vars: any = '{}';
   @Prop() inTile: boolean = false;
 
@@ -243,6 +244,56 @@ export class DiscoveryDashboardComponent {
     return { ...new Dashboard(), ...result };
   }
 
+  private processExecutionResult(res: any, stackRepresentation:boolean) {
+    const result = new JsonLib().parse(res.data as string);
+    let tmpResult: Dashboard;
+    if (stackRepresentation) {
+      tmpResult = result.length > 0 ? result[0] ?? new Dashboard() : new Dashboard();
+    } else {
+      tmpResult = result;
+    }
+    this.innerOptions = Utils.clone({ ...this.innerOptions, ...(tmpResult?.options ?? {}) });
+    this.headers = res.headers;
+    if (res.status) {
+      this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
+    }
+    this.statusHeaders.emit(this.headers);
+    this.loaded = true;
+    this.start = new Date().getTime();
+    if (this.autoRefresh !== this.innerOptions.autoRefresh) {
+      this.autoRefresh = this.innerOptions.autoRefresh;
+      if (this.timer) {
+        window.clearInterval(this.timer);
+      }
+      if (this.autoRefresh && this.autoRefresh > 0) {
+        this.timer = window.setInterval(() => this.exec(), this.autoRefresh * 1000);
+      }
+    }
+    this.innerType = tmpResult?.type ?? this.type ?? 'dashboard';
+    if (typeof tmpResult?.tiles === 'string') {
+      this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
+      const ws = LangUtils.prepare(
+        Utils.unsescape(tmpResult.tiles + ' EVAL'),
+        this.innerVars || {},
+        this.innerOptions?.skippedVars ?? [],
+        'dashboard', 'warpscript');
+      Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders).then((t: any) => {
+        this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
+        this.renderedTiles = new JsonLib().parse(t.data as string)[0] ?? [];
+        this.sanitizeTiles();
+        this.processResult(tmpResult);
+      }).catch(e => {
+        this.LOG?.error(['exec'], e);
+        tmpResult.tiles = [];
+        this.processResult(tmpResult);
+      });
+    } else {
+      this.renderedTiles = tmpResult?.tiles ?? [];
+      this.sanitizeTiles();
+      this.processResult(tmpResult);
+    }
+  }
+
   exec() {
     this.ws = this.warpscript ?? Utils.unsescape(this.el.innerHTML);
     this.hasError = false;
@@ -250,58 +301,24 @@ export class DiscoveryDashboardComponent {
     if (this.ws !== undefined && this.ws !== '' && this.ws !== 'undefined' && this.firstLoad) {
       this.loaded = false;
       this.done = {};
-      Utils.httpPost(Utils.getUrl(this.url), this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', this.innerOptions.httpHeaders)
-        .then((res: any) => {
-          const result = new JsonLib().parse(res.data as string);
-          const tmpResult: Dashboard = result.length > 0 ? result[0] ?? new Dashboard() : new Dashboard();
-          this.innerOptions = Utils.clone({ ...this.innerOptions, ...(tmpResult?.options ?? {}) });
-          this.headers = res.headers;
-          this.headers.statusText = `Your script execution took ${GTSLib.formatElapsedTime(res.status.elapsed)} serverside, fetched ${res.status.fetched} datapoints and performed ${res.status.ops}  WarpLib operations.`;
-          this.statusHeaders.emit(this.headers);
-          this.loaded = true;
-          this.start = new Date().getTime();
-          if (this.autoRefresh !== this.innerOptions.autoRefresh) {
-            this.autoRefresh = this.innerOptions.autoRefresh;
-            if (this.timer) {
-              window.clearInterval(this.timer);
-            }
-            if (this.autoRefresh && this.autoRefresh > 0) {
-              this.timer = window.setInterval(() => this.exec(), this.autoRefresh * 1000);
-            }
+      if (this.language !== 'json') {
+        Utils.httpPost(Utils.getUrl(this.url), this.ws + ' DUP TYPEOF \'MACRO\' == <% EVAL %> IFT', this.innerOptions.httpHeaders)
+          .then((res: any) => {
+            this.processExecutionResult(res,true)
           }
-          this.innerType = tmpResult?.type ?? this.type ?? 'dashboard';
+          ).catch(e => {
+            this.loaded = true;
+            this.statusError.emit(e);
+            if (!this.inTile) {
+              this.hasError = !!this.innerOptions.showErrors;
+              this.errorMessage = e.message ?? e.statusText;
+            }
+            this.LOG?.error(['exec'], e);
+          });
+      } else {
+        this.processExecutionResult({ data: this.ws, headers: {} },false)
+      }
 
-          if (typeof tmpResult?.tiles === 'string') {
-            this.LOG?.debug(['exec', 'macroTiles'], tmpResult.tiles);
-            const ws = LangUtils.prepare(
-              Utils.unsescape(tmpResult.tiles + ' EVAL'),
-              this.innerVars || {},
-              this.innerOptions?.skippedVars ?? [],
-              'dashboard', 'warpscript');
-            Utils.httpPost(this.url, ws, this.innerOptions.httpHeaders).then((t: any) => {
-              this.LOG?.debug(['exec', 'macroTiles', 'res'], t);
-              this.renderedTiles = new JsonLib().parse(t.data as string)[0] ?? [];
-              this.sanitizeTiles();
-              this.processResult(tmpResult);
-            }).catch(e => {
-              this.LOG?.error(['exec'], e);
-              tmpResult.tiles = [];
-              this.processResult(tmpResult);
-            });
-          } else {
-            this.renderedTiles = tmpResult?.tiles ?? [];
-            this.sanitizeTiles();
-            this.processResult(tmpResult);
-          }
-        }).catch(e => {
-        this.loaded = true;
-        this.statusError.emit(e);
-        if (!this.inTile) {
-          this.hasError = !!this.innerOptions.showErrors;
-          this.errorMessage = e.message ?? e.statusText;
-        }
-        this.LOG?.error(['exec'], e);
-      });
     } else if (this.inTile) {
       // TODO: dashboard within a dashboard: this hacky delay ensure to have the right innerOptions to avoid the first requests that will end in 403.
       setTimeout(() => this.parseResult(), 1000);
