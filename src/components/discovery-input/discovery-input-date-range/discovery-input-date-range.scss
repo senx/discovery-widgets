@@ -455,6 +455,8 @@
     text-align: left;
     margin: 0;
     flex-grow: 1;
+    max-height: 350px;
+    overflow: auto;
 
     ul {
       width: 100%;
