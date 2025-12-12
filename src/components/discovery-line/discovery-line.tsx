@@ -749,6 +749,14 @@ export class DiscoveryLineComponent {
         hideOverlap: true,
         color: color ?? Utils.getLabelColor(this.el),
         show: !this.innerOptions.hideYAxis,
+        formatter: (x) => {
+          // very close to echarts addCommas() source, but with a thin space
+          if (typeof x === 'string') {
+            return x;
+          }
+          var parts = (x + '').split('.');
+          return parts[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1 ') + (parts.length > 1 ? '.' + parts[1] : '');
+        }
       },
       axisTick: { show: true, lineStyle: { color: color ?? Utils.getGridColor(this.el) } },
       data: this.innerOptions.yLabelsMapping ? Object.keys(this.innerOptions.yLabelsMapping).map(k => this.innerOptions.yLabelsMapping[k]) : undefined,
