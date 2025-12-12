@@ -147,7 +147,7 @@
     }
 
     &.with-range {
-      width: 669px;
+      width: 811px;
 
       .ranges {
         display: block;
@@ -456,6 +456,7 @@
     margin: 0;
     flex-grow: 1;
     max-height: 350px;
+    max-width: 270px;
     overflow: auto;
 
     ul {
