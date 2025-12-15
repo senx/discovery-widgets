@@ -243,14 +243,69 @@ export class DiscoveryLineComponent {
           if (this.innerOptions.hideTooltip === true) {
             return '';
           }
-          return `<div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${this.innerOptions.timeMode !== 'date'
-            ? params[0].value[0]
-            : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-              this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-              .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}</div>
-               ${params.map(s => `${s.marker} <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${GTSLib.getName(s.seriesName)}</span>
-            <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${s.value[1]}</span>`,
-          ).join('<br>')}`
+          const tooltipWidth = Math.floor(this.innerWidth / 2);
+          const contentWidth = tooltipWidth - 40; // Account for padding and margins
+          let maxTxtSize = 0;
+          params.forEach(s => {  // TODO: should not be done at each tooltip rendering
+            maxTxtSize = Math.max(GTSLib.getName(s.seriesName).length, maxTxtSize);
+          });
+          return `
+            <style>
+              @keyframes scrollText {
+                0% { margin-left: 0; }
+                10% { margin-left: 0; }
+                90% { margin-left: -95%; }
+                100% { margin-left: -95%; }
+                
+              }
+              .tooltip-scroll {
+                white-space: nowrap;
+                overflow: hidden;
+                display: inline-block;
+                
+                vertical-align: middle;
+              }
+              .tooltip-marker {
+                flex-shrink: 0; 
+              }
+              .tooltip-value {
+                flex-shrink: 0;
+                text-align: right;
+                margin-left:auto;
+                font-weight:900;
+                padding-left:10px;
+              }
+              .tooltip-scroll-container {
+                overflow:hidden;
+              }
+              .tooltip-scroll span {
+                ${maxTxtSize > 100 ? "animation: scrollText 15s linear infinite alternate;" : ""}                
+                display: inline-block;
+                width: fit-content;
+              }
+            </style>
+            <div style="max-width:${tooltipWidth}px;overflow:hidden;">
+              <div style="font-size:14px;color:#666;font-weight:400;line-height:1.4;padding:8px;white-space:nowrap;">
+                ${this.innerOptions.timeMode !== 'date' 
+                  ? params[0].value[0] 
+                  : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+                    this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                      .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
+              </div>
+              ${params.map(s => `
+                <div style="display:flex;align-items:center;padding:4px 8px;line-height:1.4;">
+                  <span class="tooltip-marker">${s.marker}</span>
+                  <div class="tooltip-scroll-container">
+                    <div class="tooltip-scroll" >
+                      <span>${GTSLib.getName(s.seriesName)}</span>
+                    </div>
+                  </div>
+                  <div class="tooltip-value">
+                    ${s.value[1]}
+                  </div>
+                </div>`
+              ).join('')}
+            </div>`
         },
         axisPointer: {
           type: !!this.innerOptions.yCursor && !!this.innerOptions.xCursor
