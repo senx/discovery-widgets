@@ -249,7 +249,7 @@ export class DiscoverySvgComponent {
       if (el.getAttribute('preserveAspectRatio')) {
         el.removeAttribute('preserveAspectRatio');
       }
-      el.setAttribute('preserveAspectRatio', 'xMinYMin meet');
+      el.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       return new XMLSerializer().serializeToString(svgDoc);
     } catch (e) {
       this.LOG?.error(['exec'], e);

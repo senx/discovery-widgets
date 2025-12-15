@@ -31,13 +31,10 @@
       height: 100%;
 
       svg {
-        display: inline-block;
-        position: relative;
-        width: auto;
-        margin: auto;
+        display: block;
         overflow: hidden;
         height: 100%;
-        max-width: 100%;
+        width: 100%;
       }
     }
   }
