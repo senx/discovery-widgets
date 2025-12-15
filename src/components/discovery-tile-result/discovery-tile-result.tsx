@@ -102,6 +102,7 @@ export class DiscoveryTileResultComponent {
     opts = Utils.mergeDeep<Param>(opts ?? {} as Param, (this.innerResult as unknown as DataModel)?.globalParams ?? {});
     if (!Utils.deepEqual(opts, this.innerOptions)) {
       this.innerOptions = Utils.clone(opts);
+      this.handleCSSColors();
       this.LOG?.debug(['optionsUpdate 2'], this.type, { options: this.innerOptions, newValue, oldValue });
     }
   }
@@ -691,6 +692,7 @@ export class DiscoveryTileResultComponent {
   }
 
   render() {
+    this.handleCSSColors();
     return [
       <style>{this.generateStyle(this.innerStyle)}</style>,
       <div class="discovery-tile"
