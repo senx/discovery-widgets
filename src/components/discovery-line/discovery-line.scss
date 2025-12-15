@@ -14,6 +14,9 @@
  *   limitations under the License.
  */
 
+ @import "../../scss/vars";
+ @import "../../scss/gts";
+
 :host {
   & > div {
     width: 100%;
@@ -32,4 +35,29 @@
       word-wrap: anywhere;
     }
   }
+  
+  .gts-classname {
+    font-size: var(--warp-view-font-size, 14px);
+  }
+
+  .gts-labelname {
+    font-size: var(--warp-view-font-size, 14px);
+  }
+
+  .gts-attrname {
+    font-size: var(--warp-view-font-size, 14px);
+  }
+
+  .gts-separator {
+    font-size: var(--warp-view-font-size, 14px);
+  }
+
+  .gts-labelvalue {
+    font-size: var(--warp-view-font-size, 14px);
+  }
+
+  .gts-attrvalue {
+    font-size: var(--warp-view-font-size, 14px);
+  }
+
 }

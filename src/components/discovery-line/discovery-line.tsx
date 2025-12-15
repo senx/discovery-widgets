@@ -278,7 +278,7 @@ export class DiscoveryLineComponent {
               .tooltip-scroll-container {
                 overflow:hidden;
               }
-              .tooltip-scroll span {
+              .tooltip-scroll div {
                 ${maxTxtSize > 100 ? "animation: scrollText 15s linear infinite alternate;" : ""}                
                 display: inline-block;
                 width: fit-content;
@@ -293,11 +293,11 @@ export class DiscoveryLineComponent {
                       .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
               </div>
               ${params.map(s => `
-                <div style="display:flex;align-items:center;padding:4px 8px;line-height:1.4;">
+                <div style="display:flex;align-items:center;padding:1px 8px;line-height:1.4;">
                   <span class="tooltip-marker">${s.marker}</span>
                   <div class="tooltip-scroll-container">
                     <div class="tooltip-scroll" >
-                      <span>${GTSLib.getName(s.seriesName)}</span>
+                      <div>${GTSLib.formatLabel(GTSLib.getName(s.seriesName))}</div>
                     </div>
                   </div>
                   <div class="tooltip-value">

@@ -364,8 +364,7 @@ export class GTSLib {
         labels.forEach((l, i) => {
           const label = l.split('=');
           if (l.length > 1) {
-            display += `<span><span class='gts-labelname'>${label[0]}</span>
-<span class='gts-separator'>=</span><span class='gts-labelvalue'>${label.slice(1).join('')}</span>`;
+            display += `<span><span class='gts-labelname'>${label[0]}</span><span class='gts-separator'>=</span><span class='gts-labelvalue'>${label.slice(1).join('')}</span>`;
             if (i !== labels.length - 1) {
               display += '<span>, </span>';
             }
@@ -381,8 +380,7 @@ export class GTSLib {
         labels.forEach((l, i) => {
           const label = l.split('=');
           if (l.length > 1) {
-            display += `<span><span class='gts-attrname'>${label[0]}</span>
-<span class='gts-separator'>=</span><span class='gts-attrvalue'>${label.slice(1).join('')}</span>`;
+            display += `<span><span class='gts-attrname'>${label[0]}</span><span class='gts-separator'>=</span><span class='gts-attrvalue'>${label.slice(1).join('')}</span>`;
             if (i !== labels.length - 1) {
               display += '<span>, </span>';
             }
