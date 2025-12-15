@@ -35,15 +35,16 @@
 
 ## Methods
 
-### `exec(refresh?: boolean) => Promise<unknown>`
+### `exec(refresh?: boolean, executionOrigin?: {}) => Promise<unknown>`
 
 
 
 #### Parameters
 
-| Name      | Type      | Description |
-| --------- | --------- | ----------- |
-| `refresh` | `boolean` |             |
+| Name              | Type      | Description |
+| ----------------- | --------- | ----------- |
+| `refresh`         | `boolean` |             |
+| `executionOrigin` | `{}`      |             |
 
 #### Returns
 
@@ -59,7 +60,7 @@ Type: `Promise<unknown>`
 
 | Name   | Type             | Description |
 | ------ | ---------------- | ----------- |
-| `type` | `"svg" \| "png"` |             |
+| `type` | `"png" \| "svg"` |             |
 
 #### Returns
 

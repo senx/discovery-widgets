@@ -7,20 +7,21 @@
 
 ## Properties
 
-| Property         | Attribute         | Description | Type                               | Default       |
-| ---------------- | ----------------- | ----------- | ---------------------------------- | ------------- |
-| `autoRefresh`    | `auto-refresh`    |             | `number`                           | `-1`          |
-| `cellHeight`     | `cell-height`     |             | `number`                           | `220`         |
-| `cols`           | `cols`            |             | `number`                           | `12`          |
-| `dashboardTitle` | `dashboard-title` |             | `string`                           | `undefined`   |
-| `data`           | `data`            |             | `Dashboard \| string`              | `undefined`   |
-| `debug`          | `debug`           |             | `boolean`                          | `false`       |
-| `inTile`         | `in-tile`         |             | `boolean`                          | `false`       |
-| `options`        | `options`         |             | `Param \| string`                  | `new Param()` |
-| `type`           | `type`            |             | `"dashboard" \| "flex" \| "scada"` | `'dashboard'` |
-| `url`            | `url`             |             | `string`                           | `undefined`   |
-| `vars`           | `vars`            |             | `any`                              | `'{}'`        |
-| `warpscript`     | `warpscript`      |             | `string`                           | `undefined`   |
+| Property         | Attribute         | Description | Type                                | Default        |
+| ---------------- | ----------------- | ----------- | ----------------------------------- | -------------- |
+| `autoRefresh`    | `auto-refresh`    |             | `number`                            | `-1`           |
+| `cellHeight`     | `cell-height`     |             | `number`                            | `220`          |
+| `cols`           | `cols`            |             | `number`                            | `12`           |
+| `dashboardTitle` | `dashboard-title` |             | `string`                            | `undefined`    |
+| `data`           | `data`            |             | `Dashboard \| string`               | `undefined`    |
+| `debug`          | `debug`           |             | `boolean`                           | `false`        |
+| `inTile`         | `in-tile`         |             | `boolean`                           | `false`        |
+| `language`       | `language`        |             | `"flows" \| "json" \| "warpscript"` | `'warpscript'` |
+| `options`        | `options`         |             | `Param \| string`                   | `new Param()`  |
+| `type`           | `type`            |             | `"dashboard" \| "flex" \| "scada"`  | `'dashboard'`  |
+| `url`            | `url`             |             | `string`                            | `undefined`    |
+| `vars`           | `vars`            |             | `any`                               | `'{}'`         |
+| `warpscript`     | `warpscript`      |             | `string`                            | `undefined`    |
 
 
 ## Events
