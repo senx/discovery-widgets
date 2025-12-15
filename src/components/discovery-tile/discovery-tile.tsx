@@ -320,7 +320,7 @@ export class DiscoveryTileComponent {
                     window.clearInterval(this.timer);
                   }
                   if (this.autoRefresh && this.autoRefresh > 0) {
-                    this.timer = window.setInterval(() => void this.exec(true), this.autoRefresh * 1000);
+                    this.timer = window.setTimeout(() => { this.refreshAction(); }, this.autoRefresh * 1000);                    
                   }
                 }
                 if (fadeOutAfter) {
@@ -383,6 +383,20 @@ export class DiscoveryTileComponent {
       }
     });
   }
+
+  refreshAction() {
+    let p = 0;
+    if (document.visibilityState === 'visible') {
+      this.exec(true);
+      console.log('auto-refresh executed');
+      p = this.autoRefresh * 1000;
+    } else {
+      console.log('auto-refresh waiting to come back to front')
+      p = 1000;
+    }
+    window.clearInterval(this.timer);    
+    this.timer = window.setTimeout(() => this.refreshAction(), p);
+  };
 
   @Method()
   async setZoom(dataZoom: { start: number, end: number }) {

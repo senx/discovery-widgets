@@ -244,6 +244,21 @@ export class DiscoveryDashboardComponent {
     return { ...new Dashboard(), ...result };
   }
 
+  refreshAction() {
+    let p = 0;
+    if (document.visibilityState === 'visible') {
+      this.exec();
+      console.log('dashboard auto-refresh executed');
+      p = this.autoRefresh * 1000;
+    } else {
+      console.log('dashboard auto-refresh waiting to come back to front')
+      p = 1000;
+    }
+    window.clearInterval(this.timer);    
+    this.timer = window.setTimeout(() => this.refreshAction(), p);
+  };
+
+
   private processExecutionResult(res: any, stackRepresentation:boolean) {
     const result = new JsonLib().parse(res.data as string);
     let tmpResult: Dashboard;
@@ -266,7 +281,8 @@ export class DiscoveryDashboardComponent {
         window.clearInterval(this.timer);
       }
       if (this.autoRefresh && this.autoRefresh > 0) {
-        this.timer = window.setInterval(() => this.exec(), this.autoRefresh * 1000);
+        //this.timer = window.setInterval(() => this.exec(), this.autoRefresh * 1000);
+        this.timer = window.setTimeout(() => { this.refreshAction(); }, this.autoRefresh * 1000);    
       }
     }
     this.innerType = tmpResult?.type ?? this.type ?? 'dashboard';
