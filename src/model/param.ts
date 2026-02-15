@@ -59,6 +59,19 @@ export class Param {
   responsive?: boolean;
   autoRefresh?: number;
   showControls = false;
+  controls = {
+    dataView: false,
+    saveAsImage: false,
+    saveAsCSV: false,
+    restore: false
+  };
+  customsControls?: {
+    name?: string;
+    show?: boolean;
+    title?: string;
+    icon?: string;
+    onclick?: (() => void) | string;
+  }[];
   discontinue = false;
   actions?: {
     title?: string,

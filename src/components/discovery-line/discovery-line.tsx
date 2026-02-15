@@ -275,11 +275,41 @@ export class DiscoveryLineComponent {
         hideDelay: this.innerOptions.tooltipDelay ?? 100,
       },
       toolbox: {
-        show: this.innerOptions.showControls,
+        show: this.innerOptions.showControls || this.innerOptions.controls.saveAsImage || this.innerOptions.controls.saveAsCSV || this.innerOptions.controls.restore || this.innerOptions.controls.dataView,
         feature: {
-          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
-          restore: { show: true },
+          saveAsImage: {
+            type: 'png',
+            excludeComponents: ['toolbox'],
+            show: this.innerOptions.showControls || this.innerOptions.controls.saveAsImage
+          },
+          myCsvExport: {
+            name: 'myCsvExport',
+            show: this.innerOptions.showControls || this.innerOptions.controls.saveAsCSV,
+            title: 'Export CSV',
+            icon: 'path://M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M12,19L8,15H10.5V12H13.5V15H16M13,9V3.5L18.5,9H13Z',
+            onclick: () => {
+              const csv = this.dataToCSV(data);
+              const blob = new Blob([csv], {type: 'text/csv'});
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = (this.innerOptions.title ? this.innerOptions.title : 'export') + '.csv';
+              a.click();
+              window.URL.revokeObjectURL(url);
+            }
+          },
+          restore: {
+            show: this.innerOptions.showControls || this.innerOptions.controls.restore
+          },
           dataZoom: {},
+          dataView: {
+            show: this.innerOptions.showControls || this.innerOptions.controls.dataView,
+            optionToContent: () => this.dataToHTMLTable(data),
+            textColor: Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'white'),
+            backgroundColor: Utils.getCSSColor(this.el, '--warp-view-data-view-bg-color', 'white'),
+            buttonColor: Utils.getCSSColor(this.el, '--warp-view-data-view-button-color', 'rgb(194, 53, 49)'),
+            buttonTextColor: Utils.getCSSColor(this.el, '--warp-view-data-view-button-text-color', 'black'),
+          }
         },
       },
       legend: {
@@ -1156,5 +1186,187 @@ export class DiscoveryLineComponent {
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el} onMouseOver={() => this.hideMarkers()}></div>
     </div>;
+  }
+
+  private buildSeriesData(data: DataModel): {
+    series: any[],
+    categories: string[],
+    unit: string,
+    isColumnsFormat: boolean,
+    columns?: string[],
+    rows?: any[][]
+  } {
+    const series = [];
+    const unit = this.unit || this.innerOptions?.unit || "";
+
+    if (!Array.isArray(data.data)) {
+      return {series: [], categories: [], unit, isColumnsFormat: false};
+    }
+
+    if (data.data[0] && data.data[0].columns) {
+      return {
+        series: [],
+        categories: [],
+        unit,
+        isColumnsFormat: true,
+        columns: data.data[0].columns,
+        rows: data.data[0].rows
+      };
+    }
+
+    data.data.forEach((gts, index) => {
+      let name = 'Série';
+      if (data.params && data.params[index] && data.params[index].key) {
+        name = data.params[index].key;
+      } else if (gts.c) {
+        name = gts.c;
+      } else if (gts.id) {
+        name = gts.id;
+      }
+      const dataMap = {};
+      (gts.v || []).forEach((point) => {
+        const ts = Math.floor(point[0] / 1000);
+        dataMap[ts] = point[point.length - 1];
+      });
+      series.push({name, dataMap});
+    });
+
+    if (series.length === 0) {
+      return {series: [], categories: [], unit, isColumnsFormat: false};
+    }
+
+    const categoriesSet = new Set<string>();
+    series.forEach((s) => {
+      for (const ts in s.dataMap) {
+        if (s.dataMap.hasOwnProperty(ts)) {
+          categoriesSet.add(ts);
+        }
+      }
+    });
+
+    const categories = Array.from(categoriesSet).sort((a, b) => {
+      return Number(a) - Number(b);
+    });
+
+    return {series, categories, unit, isColumnsFormat: false};
+  }
+
+  dataToCSV(data: DataModel): string {
+    let csv = "";
+    const {series, categories, unit, isColumnsFormat, columns, rows} = this.buildSeriesData(data);
+
+    if (isColumnsFormat && columns && rows) {
+      csv += ";";
+      columns.forEach((column) => {
+        csv += column + (unit ? ' (' + unit + ')' : '') + ";";
+      });
+      csv += "\n";
+      rows.forEach((row) => {
+        row.forEach((cell) => {
+          if (typeof cell === "number") {
+            csv += cell.toString().replace(".", ",") + ";";
+          } else {
+            csv += cell + ";";
+          }
+        });
+        csv += "\n";
+      });
+      return csv;
+    }
+
+    csv = ";";
+
+    if (series.length === 0) {
+      return csv;
+    }
+
+    series.forEach((s) => {
+      csv += s.name + (unit ? ' (' + unit + ')' : '') + ";";
+    });
+    csv += "\n";
+
+    categories.forEach((category) => {
+      csv += category + ";";
+      series.forEach((s) => {
+        const value = s.dataMap[category];
+        if (typeof value === "number") {
+          csv += value.toString().replace(".", ",") + ";";
+        } else if (value !== null && value !== undefined) {
+          csv += value + ";";
+        } else {
+          csv += ";";
+        }
+      });
+      csv += "\n";
+    });
+
+    return csv;
+  }
+
+  dataToHTMLTable(data: DataModel): string {
+    const {series, categories, unit, isColumnsFormat, columns, rows} = this.buildSeriesData(data);
+
+    const textColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'black');
+    const textAreaColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-area-color', 'white');
+    const textAreaBorderColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-area-border-color', '#ccc');
+
+    let table = `<table style="width:100%; border-collapse: collapse; font-family: monospace; color: ${textColor}; background-color: ${textAreaColor};">`;
+    table += `<thead><tr style="border-bottom: 2px solid ${textAreaBorderColor};">`;
+
+    if (isColumnsFormat && columns && rows) {
+      table += `<th style="text-align:left; padding: 8px; color: ${textColor};"></th>`;
+      columns.forEach((column) => {
+        table += `<th style="text-align:left; padding: 8px; color: ${textColor};">${column}${unit ? ' (' + unit + ')' : ''}</th>`;
+      });
+      table += '</tr></thead><tbody>';
+
+      rows.forEach((row) => {
+        table += `<tr style="border-bottom: 1px solid ${textAreaBorderColor};">`;
+        row.forEach((cell) => {
+          let formatted = '';
+          if (typeof cell === 'number') {
+            formatted = cell.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+          } else {
+            formatted = String(cell);
+          }
+          table += `<td style="text-align:left; padding: 8px; color: ${textColor};">${formatted}</td>`;
+        });
+        table += '</tr>';
+      });
+
+      table += '</tbody></table>';
+      return table;
+    }
+
+    if (series.length === 0) {
+      return '<p>Aucune donnée à afficher</p>';
+    }
+
+    table += `<th style="text-align:left; padding: 8px; color: ${textColor};">Timestamp</th>`;
+
+    series.forEach((s) => {
+      table += `<th style="text-align:right; padding: 8px; color: ${textColor};">${s.name}${unit ? ' (' + unit + ')' : ''}</th>`;
+    });
+    table += '</tr></thead><tbody>';
+
+    categories.forEach((category) => {
+      table += `<tr style="border-bottom: 1px solid ${textAreaBorderColor};">`;
+      table += `<td style="text-align:left; padding: 8px; white-space: nowrap; color: ${textColor};">${category}</td>`;
+
+      series.forEach((s) => {
+        const value = s.dataMap[category];
+        let formatted = '';
+        if (typeof value === 'number') {
+          formatted = value.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+        } else if (value !== null && value !== undefined) {
+          formatted = String(value);
+        }
+        table += `<td style="text-align:right; padding: 8px; color: ${textColor};">${formatted}</td>`;
+      });
+      table += '</tr>';
+    });
+
+    table += '</tbody></table>';
+    return table;
   }
 }
