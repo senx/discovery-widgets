@@ -275,18 +275,27 @@ export class DiscoveryLineComponent {
         hideDelay: this.innerOptions.tooltipDelay ?? 100,
       },
       toolbox: {
-        show: this.innerOptions.showControls || this.innerOptions.controls.saveAsImage || this.innerOptions.controls.saveAsCSV || this.innerOptions.controls.restore || this.innerOptions.controls.dataView,
+        show: typeof this.innerOptions.showControls === 'boolean'
+          ? this.innerOptions.showControls
+          : (this.innerOptions.showControls.saveAsImage ?? false) || (this.innerOptions.showControls.saveAsCSV ?? false) || (this.innerOptions.showControls.restore ?? false) || (this.innerOptions.showControls.dataZoom ?? false) || (this.innerOptions.showControls.dataView ?? false),
         feature: {
           saveAsImage: {
             type: 'png',
             excludeComponents: ['toolbox'],
-            show: this.innerOptions.showControls || this.innerOptions.controls.saveAsImage
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.saveAsImage ?? false
           },
           myCsvExport: {
             name: 'myCsvExport',
-            show: this.innerOptions.showControls || this.innerOptions.controls.saveAsCSV,
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.saveAsCSV ?? false,
             title: 'Export CSV',
-            icon: 'path://M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M12,19L8,15H10.5V12H13.5V15H16M13,9V3.5L18.5,9H13Z',
+            icon: 'path://M15.29 1H3v11h1V2h10v6h6v14H4v-3H3v4h18V6.709zM20 7h-5V2h.2L20 6.8zm-4.96 11l2.126-5H16.08l-1.568 3.688L12.966 13h-1.084l2.095 5zM7 14.349v.302A1.35 1.35 0 0 0 8.349 16H9.65a.349.349 0 0 1 .349.349v.302A.349.349 0 0 1 9.65 17H7v1h2.651A1.35 1.35 0 0 0 11 16.651v-.302A1.35 1.35 0 0 0 9.651 15H8.35a.349.349 0 0 1-.35-.349v-.302A.349.349 0 0 1 8.349 14H11v-1H8.349A1.35 1.35 0 0 0 7 14.349zm-5 .692v.918A2.044 2.044 0 0 0 4.041 18H6v-1H4.041A1.042 1.042 0 0 1 3 15.959v-.918A1.042 1.042 0 0 1 4.041 14H6v-1H4.041A2.044 2.044 0 0 0 2 15.041z',
+            iconStyle: {
+              borderWidth: 0.5
+            },
             onclick: () => {
               const csv = this.dataToCSV(data);
               const blob = new Blob([csv], {type: 'text/csv'});
@@ -299,11 +308,20 @@ export class DiscoveryLineComponent {
             }
           },
           restore: {
-            show: this.innerOptions.showControls || this.innerOptions.controls.restore
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.restore ?? false
           },
-          dataZoom: {},
+          dataZoom: {
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.dataZoom ?? false
+          },
           dataView: {
-            show: this.innerOptions.showControls || this.innerOptions.controls.dataView,
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.dataView ?? false,
+            lang: [' ', 'Close', 'Refresh'],
             optionToContent: () => this.dataToHTMLTable(data),
             textColor: Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'white'),
             backgroundColor: Utils.getCSSColor(this.el, '--warp-view-data-view-bg-color', 'white'),
@@ -1214,18 +1232,23 @@ export class DiscoveryLineComponent {
       };
     }
 
-    data.data.forEach((gts, index) => {
+    const gtsList = [
+      ...GTSLib.flattenGtsIdArray(GTSLib.flatDeep([data.data] as any[]), 0).res,
+      ...GTSLib.flatDeep([data.data] as any[]).filter(g => !!g && g.values && g.label),
+    ];
+
+    gtsList.forEach((gts) => {
       let name = 'Série';
-      if (data.params && data.params[index] && data.params[index].key) {
-        name = data.params[index].key;
+      if (data.params && data.params[gts.id] && data.params[gts.id].key) {
+        name = data.params[gts.id].key;
       } else if (gts.c) {
         name = gts.c;
-      } else if (gts.id) {
-        name = gts.id;
+      } else if (gts.id !== undefined && gts.id !== null) {
+        name = `Série ${gts.id}`;
       }
       const dataMap = {};
       (gts.v || []).forEach((point) => {
-        const ts = Math.floor(point[0] / 1000);
+        const ts = point[0];
         dataMap[ts] = point[point.length - 1];
       });
       series.push({name, dataMap});
@@ -1286,7 +1309,11 @@ export class DiscoveryLineComponent {
     csv += "\n";
 
     categories.forEach((category) => {
-      csv += category + ";";
+      const ts = Number(category);
+      const formattedDate = this.innerOptions.timeMode === 'date'
+        ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone)
+        : category;
+      csv += formattedDate + ";";
       series.forEach((s) => {
         const value = s.dataMap[category];
         if (typeof value === "number") {
@@ -1310,13 +1337,13 @@ export class DiscoveryLineComponent {
     const textAreaColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-area-color', 'white');
     const textAreaBorderColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-area-border-color', '#ccc');
 
-    let table = `<table style="width:100%; border-collapse: collapse; font-family: monospace; color: ${textColor}; background-color: ${textAreaColor};">`;
+    let table = `<div style="padding: 16px;"><table style="width:100%; border-collapse: collapse; color: ${textColor}; background-color: ${textAreaColor};">`;
     table += `<thead><tr style="border-bottom: 2px solid ${textAreaBorderColor};">`;
 
     if (isColumnsFormat && columns && rows) {
-      table += `<th style="text-align:left; padding: 8px; color: ${textColor};"></th>`;
+      table += `<th style="text-align:left; padding: 12px 16px; color: ${textColor};"></th>`;
       columns.forEach((column) => {
-        table += `<th style="text-align:left; padding: 8px; color: ${textColor};">${column}${unit ? ' (' + unit + ')' : ''}</th>`;
+        table += `<th style="text-align:left; padding: 12px 16px; color: ${textColor};">${column}${unit ? ' (' + unit + ')' : ''}</th>`;
       });
       table += '</tr></thead><tbody>';
 
@@ -1329,12 +1356,12 @@ export class DiscoveryLineComponent {
           } else {
             formatted = String(cell);
           }
-          table += `<td style="text-align:left; padding: 8px; color: ${textColor};">${formatted}</td>`;
+          table += `<td style="text-align:left; padding: 12px 16px; color: ${textColor};">${formatted}</td>`;
         });
         table += '</tr>';
       });
 
-      table += '</tbody></table>';
+      table += '</tbody></table></div>';
       return table;
     }
 
@@ -1342,16 +1369,22 @@ export class DiscoveryLineComponent {
       return '<p>Aucune donnée à afficher</p>';
     }
 
-    table += `<th style="text-align:left; padding: 8px; color: ${textColor};">Timestamp</th>`;
+    table += `<th style="text-align:left; padding: 12px 16px; color: ${textColor};">Timestamp</th>`;
 
     series.forEach((s) => {
-      table += `<th style="text-align:right; padding: 8px; color: ${textColor};">${s.name}${unit ? ' (' + unit + ')' : ''}</th>`;
+      table += `<th style="text-align:right; padding: 12px 16px; color: ${textColor};">${s.name}${unit ? ' (' + unit + ')' : ''}</th>`;
     });
     table += '</tr></thead><tbody>';
 
     categories.forEach((category) => {
+      const ts = Number(category);
+      const formattedDate = this.innerOptions.timeMode === 'date'
+        ? (GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone,
+          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) ?? '')
+          .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+        : category;
       table += `<tr style="border-bottom: 1px solid ${textAreaBorderColor};">`;
-      table += `<td style="text-align:left; padding: 8px; white-space: nowrap; color: ${textColor};">${category}</td>`;
+      table += `<td style="text-align:left; padding: 12px 16px; white-space: nowrap; color: ${textColor};">${formattedDate}</td>`;
 
       series.forEach((s) => {
         const value = s.dataMap[category];
@@ -1361,12 +1394,12 @@ export class DiscoveryLineComponent {
         } else if (value !== null && value !== undefined) {
           formatted = String(value);
         }
-        table += `<td style="text-align:right; padding: 8px; color: ${textColor};">${formatted}</td>`;
+        table += `<td style="text-align:right; padding: 12px 16px; color: ${textColor};">${formatted}</td>`;
       });
       table += '</tr>';
     });
 
-    table += '</tbody></table>';
+    table += '</tbody></table></div>';
     return table;
   }
 }

@@ -58,20 +58,13 @@ export class Param {
   fullDateDisplay = false;
   responsive?: boolean;
   autoRefresh?: number;
-  showControls = false;
-  controls = {
-    dataView: false,
-    saveAsImage: false,
-    saveAsCSV: false,
-    restore: false
-  };
-  customsControls?: {
-    name?: string;
-    show?: boolean;
-    title?: string;
-    icon?: string;
-    onclick?: (() => void) | string;
-  }[];
+  showControls: boolean | {
+    dataView?: boolean;
+    saveAsImage?: boolean;
+    saveAsCSV?: boolean;
+    restore?: boolean;
+    dataZoom?: boolean;
+  } = false;
   discontinue = false;
   actions?: {
     title?: string,
