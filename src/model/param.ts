@@ -59,7 +59,7 @@ export class Param {
   responsive?: boolean;
   autoRefresh?: number;
   showControls: boolean | {
-    dataView?: boolean;
+    dataView?: boolean | { show: boolean; lang: [string, string, string] };
     saveAsImage?: boolean;
     saveAsCSV?: boolean;
     restore?: boolean;

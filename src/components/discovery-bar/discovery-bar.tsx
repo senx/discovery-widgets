@@ -328,7 +328,7 @@ export class DiscoveryBarComponent {
       toolbox: {
         show: typeof this.innerOptions.showControls === 'boolean'
           ? this.innerOptions.showControls
-          : (this.innerOptions.showControls.saveAsImage ?? false) || (this.innerOptions.showControls.saveAsCSV ?? false) || (this.innerOptions.showControls.restore ?? false) || (this.innerOptions.showControls.dataView ?? false),
+          : (this.innerOptions.showControls.saveAsImage ?? false) || (this.innerOptions.showControls.saveAsCSV ?? false) || (this.innerOptions.showControls.restore ?? false) || (typeof this.innerOptions.showControls.dataView === 'boolean' ? this.innerOptions.showControls.dataView : this.innerOptions.showControls.dataView?.show ?? false),
         feature: {
           saveAsImage: {
             type: 'png',
@@ -366,8 +366,12 @@ export class DiscoveryBarComponent {
           dataView: {
             show: typeof this.innerOptions.showControls === 'boolean'
               ? this.innerOptions.showControls
-              : this.innerOptions.showControls.dataView ?? false,
-            lang: [' ', 'Close', 'Refresh'],
+              : typeof this.innerOptions.showControls.dataView === 'boolean'
+                ? this.innerOptions.showControls.dataView
+                : this.innerOptions.showControls.dataView?.show ?? false,
+            lang: typeof this.innerOptions.showControls === 'object' && typeof this.innerOptions.showControls.dataView === 'object' && this.innerOptions.showControls.dataView?.lang
+              ? this.innerOptions.showControls.dataView.lang
+              : ['Data view', 'Close', 'Refresh'],
             optionToContent: () => this.dataToHTMLTable(data),
             textColor: Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'white'),
             backgroundColor: Utils.getCSSColor(this.el, '--warp-view-data-view-bg-color', 'white'),
@@ -981,6 +985,9 @@ export class DiscoveryBarComponent {
       let name = 'Série';
       if (data.params && data.params[index] && data.params[index].key) {
         name = data.params[index].key;
+      } else if (gts.l && Object.keys(gts.l).length > 0 && gts.c) {
+        const labels = Object.entries(gts.l).map(([k, v]) => `${k}=${v}`).join(',');
+        name = `${gts.c}{${labels}}`;
       } else if (gts.c) {
         name = gts.c;
       } else if (gts.id !== undefined && gts.id !== null) {
