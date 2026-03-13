@@ -59,6 +59,7 @@ export class DiscoveryInputComponent {
   @State() innerResult: DataModel;
   @State() label = 'Ok';
   @State() selectedValue: any;
+  private selectedValueIndex: number = 0;
   @State() values = [];
 
   private defOptions: Param = { ...new Param(), input: { caseSensitive: true, onlyFromAutocomplete: true } };
@@ -77,6 +78,7 @@ export class DiscoveryInputComponent {
   private innerStyles: any;
   private oldValue: any;
   private filter: string;
+  private filterPreviousValue: string;
 
   @Listen('discoveryEvent', { target: 'window' })
   discoveryEventHandler(event: CustomEvent<DiscoveryEvent>) {
@@ -449,7 +451,9 @@ export class DiscoveryInputComponent {
 
   private selectAll(e: any) {
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
+      console.log("selectAll", this.checkBoxes)
       Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
+        .filter((o: HTMLInputElement) => !o.hidden)
         .filter((o: HTMLInputElement) => !o.checked)
         .forEach((o: HTMLInputElement) => o.checked = true);
         if (this.innerOptions?.input?.fuzzySearch) {
@@ -462,7 +466,8 @@ export class DiscoveryInputComponent {
   private selectNone(e: any) {
     if (this.type === 'input:multi-cb' && this.checkBoxes) {
       Array.from(this.checkBoxes.querySelectorAll('input[type="checkbox"]'))
-        .filter((o: HTMLInputElement) => o.checked)
+        .filter((o: HTMLInputElement) => !o.hidden)
+        .filter((o: HTMLInputElement) => o.checked)        
         .forEach((o: HTMLInputElement) => o.checked = false);
       if (this.innerOptions?.input?.fuzzySearch) {
         this.initialValues.map(o => o.checked = false)
@@ -473,23 +478,73 @@ export class DiscoveryInputComponent {
 
   private handleFilter(e: any) {
     e.stopPropagation();
-    if (this.type === 'input:multi-cb' && this.checkBoxes) {
+    if ((this.type === 'input:multi-cb' && this.checkBoxes) || (this.type==='input:list')) {
       this.filter = e.target.value ?? e.detail ?? '';
+      console.log("pppp filter",this.filter)
       if (this.innerOptions?.input?.fuzzySearch) {
-        if (this.filter == '') {
-          this.values = this.initialValues;
-        } else {
-          let r = fuzzysort.go(this.filter, this.initialValues, { key: 'v' }).toSorted((a, b) => b.score - a.score).map(r => r.obj);
-          r.push(...this.initialValues);
-          this.values = r;
+        if ( this.filterPreviousValue !== this.filter) {
+          if (this.filter == '') {
+            this.values = this.initialValues;
+          } else {
+            let r = fuzzysort.go(this.filter, this.initialValues, { key: 'v' }).toSorted((a, b) => b.score - a.score).map(r => r.obj);
+            if (this.type==='input:multi-cb') {r.push(...this.initialValues);}
+            this.values = r;
+          }
         }
       } else {
-        this.values = this.values.map(v => ({
-          ...v,
-          h: !new RegExp(`.*${this.filter}.*`, 'gi').test(v.v),
-        }));
+        let fr = new RegExp(`.*${this.filter}.*`, 'gi');
+        //let r = this.initialValues.filter(v => fr.test(v.v));
+        if (this.type === 'input:multi-cb'){
+          this.values = this.values.map(v => ({
+            ...v,
+            h: !fr.test(v.v),
+          }));
+        }
+        if (this.type === 'input:list'){
+          this.values = this.initialValues.filter(v => fr.test(v.v));
+        }
+
+        console.log("ppppp after search",this.values, this.filter, this.initialValues)
+      }
+    }    
+
+    // better if we handle keyboard too, from the filter input.
+    if (this.type==='input:list') {
+      if (e.key === 'Enter') {
+        console.log("ppppp enter",this.filter)
+        this.handleClickRT();
+      } else if (e.key === 'ArrowDown') {      
+        console.log(Array.from(this.inputField.querySelectorAll('option')))
+        if (this.selectedValueIndex < this.values.length - 1) {
+          this.selectedValueIndex++;
+        } else {
+          this.selectedValueIndex = 0;
+        }
+        this.selectedValue = this.values[this.selectedValueIndex].v;
+        this.value = this.selectedValue; // value is a state, it will redraw the list
+      } else if (e.key === 'ArrowUp') {
+        if (this.selectedValueIndex > 0) {
+          this.selectedValueIndex--;
+        } else {
+          this.selectedValueIndex = 0;
+        }
+        this.selectedValue = this.values[this.selectedValueIndex].v;
+        this.value = this.selectedValue;
+      } else if (this.filter !== this.filterPreviousValue) {
+        this.selectedValueIndex = 0;
+        this.selectedValue = this.values[this.selectedValueIndex].v;
+        this.value = this.selectedValue;
+      }
+
+      // any change to the filter input trigger an event, if there is no ok button
+      if(!this.innerOptions.input?.showButton){
+        setTimeout(() => {
+          this.handleClick();
+        }, 100);
       }
     }
+
+    this.filterPreviousValue = this.filter;
   }
 
   private handleAutoComplete(input: string) {
@@ -591,12 +646,34 @@ export class DiscoveryInputComponent {
           />
         </div>;
       case 'list':
-        return <select class={this.getClass()} onInput={e => this.handleSelect(e)}
-                       required={this.innerOptions?.input?.validation}
-                       disabled={this.innerOptions?.input?.disabled}
-                       ref={el => this.inputField = el}>
-          {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
-        </select>;
+        const listElement = <select class={this.getClass()} onInput={e => this.handleSelect(e)}
+                        required={this.innerOptions?.input?.validation}
+                        disabled={this.innerOptions?.input?.disabled}
+                        ref={el => this.inputField = el}>
+            {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
+          </select>
+          console.log("ppppp rebuild list", this.values)
+        if (this.innerOptions.input?.showFilter) {
+          return  <div class="filtered-list-wrapper">
+                    <div class="filtered-list-filter">
+                        <input type="text" placeholder='...' class={this.getClass()} onKeyUp={e => this.handleFilter(e)} />
+                    </div>
+                    <div class="filtered-list-line">
+                      <div class="filtered-list-list">
+                        {listElement}
+                      </div>
+                      {this.innerOptions.input?.showButton ?
+                      <div class="discovery-input-btn-wrapper">
+                        <button class="discovery-btn"
+                                disabled={this.innerOptions?.input?.disabled || this.disabled}
+                                type="button"
+                                onClick={() => this.handleClickRT()} innerHTML={this.label}></button>
+                      </div> : ''}
+                    </div>
+                  </div>
+        } else {
+          return listElement
+        }
       case 'multi':
         return <select class={this.getClass()} onInput={e => this.handleSelect(e)} multiple
                        required={this.innerOptions?.input?.validation}
@@ -621,7 +698,7 @@ export class DiscoveryInputComponent {
                          checked={this.innerOptions?.input?.fuzzySearch ? v.checked : (this.value as string[] ?? []).includes(v.k)}
                          onInput={e => this.handleSelect(e)}
                          disabled={this.innerOptions?.input?.disabled}
-                         name={v.v} />
+                         name={v.v} hidden={v.h}/>
                   <label htmlFor={v.id}>{v.v}</label>
                 </div>))}
             </div>
@@ -670,7 +747,7 @@ export class DiscoveryInputComponent {
       <div ref={el => this.root = el}>
         <div class={'discovery-input-wrapper type-' + this.subType}>
           {this.getInput()}
-          {this.innerOptions.input?.showButton && this.type !== 'input:multi-cb' ?
+          {this.innerOptions.input?.showButton && this.type !== 'input:multi-cb' && !(this.type === 'input:list' && this.innerOptions.input?.showFilter) ?
             <div class={'discovery-input-btn-wrapper ' + this.subType}>
               <button
                 class="discovery-btn"
