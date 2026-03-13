@@ -330,11 +330,63 @@ export class DiscoveryLineComponent {
         hideDelay: this.innerOptions.tooltipDelay ?? 100,
       },
       toolbox: {
-        show: this.innerOptions.showControls,
+        show: typeof this.innerOptions.showControls === 'boolean'
+          ? this.innerOptions.showControls
+          : (this.innerOptions.showControls.saveAsImage ?? false) || (this.innerOptions.showControls.saveAsCSV ?? false) || (this.innerOptions.showControls.restore ?? false) || (this.innerOptions.showControls.dataZoom ?? false) || (typeof this.innerOptions.showControls.dataView === 'boolean' ? this.innerOptions.showControls.dataView : this.innerOptions.showControls.dataView?.show ?? false),
         feature: {
-          saveAsImage: { type: 'png', excludeComponents: ['toolbox'] },
-          restore: { show: true },
-          dataZoom: {},
+          saveAsImage: {
+            type: 'png',
+            excludeComponents: ['toolbox'],
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.saveAsImage ?? false
+          },
+          myCsvExport: {
+            name: 'myCsvExport',
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.saveAsCSV ?? false,
+            title: 'Export CSV',
+            icon: 'path://M15.29 1H3v11h1V2h10v6h6v14H4v-3H3v4h18V6.709zM20 7h-5V2h.2L20 6.8zm-4.96 11l2.126-5H16.08l-1.568 3.688L12.966 13h-1.084l2.095 5zM7 14.349v.302A1.35 1.35 0 0 0 8.349 16H9.65a.349.349 0 0 1 .349.349v.302A.349.349 0 0 1 9.65 17H7v1h2.651A1.35 1.35 0 0 0 11 16.651v-.302A1.35 1.35 0 0 0 9.651 15H8.35a.349.349 0 0 1-.35-.349v-.302A.349.349 0 0 1 8.349 14H11v-1H8.349A1.35 1.35 0 0 0 7 14.349zm-5 .692v.918A2.044 2.044 0 0 0 4.041 18H6v-1H4.041A1.042 1.042 0 0 1 3 15.959v-.918A1.042 1.042 0 0 1 4.041 14H6v-1H4.041A2.044 2.044 0 0 0 2 15.041z',
+            iconStyle: {
+              borderWidth: 0.5
+            },
+            onclick: () => {
+              const csv = this.dataToCSV(data);
+              const blob = new Blob([csv], {type: 'text/csv'});
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = (this.innerOptions.title ? this.innerOptions.title : 'export') + '.csv';
+              a.click();
+              window.URL.revokeObjectURL(url);
+            }
+          },
+          restore: {
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.restore ?? false
+          },
+          dataZoom: {
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : this.innerOptions.showControls.dataZoom ?? false
+          },
+          dataView: {
+            show: typeof this.innerOptions.showControls === 'boolean'
+              ? this.innerOptions.showControls
+              : typeof this.innerOptions.showControls.dataView === 'boolean'
+                ? this.innerOptions.showControls.dataView
+                : this.innerOptions.showControls.dataView?.show ?? false,
+            lang: typeof this.innerOptions.showControls === 'object' && typeof this.innerOptions.showControls.dataView === 'object' && this.innerOptions.showControls.dataView?.lang
+              ? this.innerOptions.showControls.dataView.lang
+              : ['Data view', 'Close', 'Refresh'],
+            optionToContent: () => this.dataToHTMLTable(data),
+            textColor: Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'white'),
+            backgroundColor: Utils.getCSSColor(this.el, '--warp-view-data-view-bg-color', 'white'),
+            buttonColor: Utils.getCSSColor(this.el, '--warp-view-data-view-button-color', 'rgb(194, 53, 49)'),
+            buttonTextColor: Utils.getCSSColor(this.el, '--warp-view-data-view-button-text-color', 'black'),
+          }
         },
       },
       legend: {
@@ -1219,5 +1271,205 @@ export class DiscoveryLineComponent {
       {this.rendering ? <discovery-spinner>Rendering data...</discovery-spinner> : ''}
       <div ref={(el) => this.graph = el} onMouseOver={() => this.hideMarkers()}></div>
     </div>;
+  }
+
+  private buildSeriesData(data: DataModel): {
+    series: any[],
+    categories: string[],
+    unit: string,
+    isColumnsFormat: boolean,
+    columns?: string[],
+    rows?: any[][]
+  } {
+    const series = [];
+    const unit = this.unit || this.innerOptions?.unit || "";
+
+    if (!Array.isArray(data.data)) {
+      return {series: [], categories: [], unit, isColumnsFormat: false};
+    }
+
+    if (data.data[0] && data.data[0].columns) {
+      return {
+        series: [],
+        categories: [],
+        unit,
+        isColumnsFormat: true,
+        columns: data.data[0].columns,
+        rows: data.data[0].rows
+      };
+    }
+
+    const gtsList = [
+      ...GTSLib.flattenGtsIdArray(GTSLib.flatDeep([data.data] as any[]), 0).res,
+      ...GTSLib.flatDeep([data.data] as any[]).filter(g => !!g && g.values && g.label),
+    ];
+
+    gtsList.forEach((gts) => {
+      let name = 'Série';
+      if (data.params && data.params[gts.id] && data.params[gts.id].key) {
+        name = data.params[gts.id].key;
+      } else if (gts.l && Object.keys(gts.l).length > 0 && gts.c) {
+        const labels = Object.entries(gts.l).map(([k, v]) => `${k}=${v}`).join(',');
+        name = `${gts.c}{${labels}}`;
+      } else if (gts.c) {
+        name = gts.c;
+      } else if (gts.id !== undefined && gts.id !== null) {
+        name = `Série ${gts.id}`;
+      }
+      const dataMap = {};
+      (gts.v || []).forEach((point) => {
+        const ts = point[0];
+        dataMap[ts] = point[point.length - 1];
+      });
+      series.push({name, dataMap});
+    });
+
+    if (series.length === 0) {
+      return {series: [], categories: [], unit, isColumnsFormat: false};
+    }
+
+    const categoriesSet = new Set<string>();
+    series.forEach((s) => {
+      for (const ts in s.dataMap) {
+        if (s.dataMap.hasOwnProperty(ts)) {
+          categoriesSet.add(ts);
+        }
+      }
+    });
+
+    const categories = Array.from(categoriesSet).sort((a, b) => {
+      return Number(a) - Number(b);
+    });
+
+    return {series, categories, unit, isColumnsFormat: false};
+  }
+
+  dataToCSV(data: DataModel): string {
+    let csv = "";
+    const {series, categories, unit, isColumnsFormat, columns, rows} = this.buildSeriesData(data);
+
+    if (isColumnsFormat && columns && rows) {
+      csv += ";";
+      columns.forEach((column) => {
+        csv += column + (unit ? ' (' + unit + ')' : '') + ";";
+      });
+      csv += "\n";
+      rows.forEach((row) => {
+        row.forEach((cell) => {
+          if (typeof cell === "number") {
+            csv += cell.toString().replace(".", ",") + ";";
+          } else {
+            csv += cell + ";";
+          }
+        });
+        csv += "\n";
+      });
+      return csv;
+    }
+
+    csv = ";";
+
+    if (series.length === 0) {
+      return csv;
+    }
+
+    series.forEach((s) => {
+      csv += s.name + (unit ? ' (' + unit + ')' : '') + ";";
+    });
+    csv += "\n";
+
+    categories.forEach((category) => {
+      const ts = Number(category);
+      const formattedDate = this.innerOptions.timeMode === 'date'
+        ? GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone)
+        : category;
+      csv += formattedDate + ";";
+      series.forEach((s) => {
+        const value = s.dataMap[category];
+        if (typeof value === "number") {
+          csv += value.toString().replace(".", ",") + ";";
+        } else if (value !== null && value !== undefined) {
+          csv += value + ";";
+        } else {
+          csv += ";";
+        }
+      });
+      csv += "\n";
+    });
+
+    return csv;
+  }
+
+  dataToHTMLTable(data: DataModel): string {
+    const {series, categories, unit, isColumnsFormat, columns, rows} = this.buildSeriesData(data);
+
+    const textColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'black');
+    const textAreaColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-area-color', 'white');
+    const textAreaBorderColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-area-border-color', '#ccc');
+
+    let table = `<div style="padding: 16px;"><table style="width:100%; border-collapse: collapse; color: ${textColor}; background-color: ${textAreaColor};">`;
+    table += `<thead><tr style="border-bottom: 2px solid ${textAreaBorderColor};">`;
+
+    if (isColumnsFormat && columns && rows) {
+      table += `<th style="text-align:left; padding: 12px 16px; color: ${textColor};"></th>`;
+      columns.forEach((column) => {
+        table += `<th style="text-align:left; padding: 12px 16px; color: ${textColor};">${column}${unit ? ' (' + unit + ')' : ''}</th>`;
+      });
+      table += '</tr></thead><tbody>';
+
+      rows.forEach((row) => {
+        table += `<tr style="border-bottom: 1px solid ${textAreaBorderColor};">`;
+        row.forEach((cell) => {
+          let formatted = '';
+          if (typeof cell === 'number') {
+            formatted = cell.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+          } else {
+            formatted = String(cell);
+          }
+          table += `<td style="text-align:left; padding: 12px 16px; color: ${textColor};">${formatted}</td>`;
+        });
+        table += '</tr>';
+      });
+
+      table += '</tbody></table></div>';
+      return table;
+    }
+
+    if (series.length === 0) {
+      return '<p>Aucune donnée à afficher</p>';
+    }
+
+    table += `<th style="text-align:left; padding: 12px 16px; color: ${textColor};">Timestamp</th>`;
+
+    series.forEach((s) => {
+      table += `<th style="text-align:right; padding: 12px 16px; color: ${textColor};">${s.name}${unit ? ' (' + unit + ')' : ''}</th>`;
+    });
+    table += '</tr></thead><tbody>';
+
+    categories.forEach((category) => {
+      const ts = Number(category);
+      const formattedDate = this.innerOptions.timeMode === 'date'
+        ? (GTSLib.toISOString(ts, this.divider, this.innerOptions.timeZone,
+          this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) ?? '')
+          .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')
+        : category;
+      table += `<tr style="border-bottom: 1px solid ${textAreaBorderColor};">`;
+      table += `<td style="text-align:left; padding: 12px 16px; white-space: nowrap; color: ${textColor};">${formattedDate}</td>`;
+
+      series.forEach((s) => {
+        const value = s.dataMap[category];
+        let formatted = '';
+        if (typeof value === 'number') {
+          formatted = value.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+        } else if (value !== null && value !== undefined) {
+          formatted = String(value);
+        }
+        table += `<td style="text-align:right; padding: 12px 16px; color: ${textColor};">${formatted}</td>`;
+      });
+      table += '</tr>';
+    });
+
+    table += '</tbody></table></div>';
+    return table;
   }
 }
