@@ -136,6 +136,7 @@ export namespace Components {
         "getPDF": (save?: boolean, output?: string, a4?: boolean) => Promise<any>;
         "getVars": () => Promise<any>;
         "inTile": boolean;
+        "language": 'warpscript' | 'flows' | 'json';
         "options": Param | string;
         "type": 'scada' | 'dashboard' | 'flex';
         "url": string;
@@ -1292,6 +1293,7 @@ declare namespace LocalJSX {
         "data"?: Dashboard | string;
         "debug"?: boolean;
         "inTile"?: boolean;
+        "language"?: 'warpscript' | 'flows' | 'json';
         "onRendered"?: (event: DiscoveryDashboardCustomEvent<void>) => void;
         "onStatusError"?: (event: DiscoveryDashboardCustomEvent<any>) => void;
         "onStatusHeaders"?: (event: DiscoveryDashboardCustomEvent<string[]>) => void;
