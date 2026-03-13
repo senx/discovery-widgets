@@ -375,8 +375,9 @@ export class DiscoveryBarComponent {
             optionToContent: () => this.dataToHTMLTable(data),
             textColor: Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'white'),
             backgroundColor: Utils.getCSSColor(this.el, '--warp-view-data-view-bg-color', 'white'),
-            buttonColor: Utils.getCSSColor(this.el, '--warp-view-data-view-button-color', 'rgb(194, 53, 49)'),
-            buttonTextColor: Utils.getCSSColor(this.el, '--warp-view-data-view-button-text-color', 'black'),
+            buttonColor: Utils.getCSSColor(this.el, '--warp-view-button-bg-color', '#004eff'),
+            buttonTextColor: Utils.getCSSColor(this.el, '--warp-view-button-label-color', '#ffffff'),
+            readOnly:true
           }
         },
       },
