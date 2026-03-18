@@ -257,7 +257,7 @@ export class GTSLib {
         serializedAttributes.push(this.sanitizeNames(`${key}=${gts.a[key]}`));
       });
     }
-    return `${this.sanitizeNames(gts.c)}{${serializedLabels.join(',')}${serializedAttributes.length > 0 ? ',' : ''}${serializedAttributes.join(',')}}`;
+    return `${this.sanitizeNames(gts.c)}{${serializedLabels.join(',')}${serializedAttributes.length > 0 ? '}{' : ''}${serializedAttributes.join(',')}}`;
   }
 
   static isGts(item: any) {
