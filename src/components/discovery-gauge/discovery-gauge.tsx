@@ -239,6 +239,7 @@ export class DiscoveryGauge {
     const gtsCount = gtsList.length;
     let overallMax = this.innerOptions.maxValue || Number.MIN_VALUE;
     const dataStruct = [];
+    const decimals = this.innerOptions.gauge?.decimals ?? this.innerOptions.decimals;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGts(gts)) {
@@ -248,9 +249,8 @@ export class DiscoveryGauge {
         let value = 0;
         if (val.length > 0) {
           value = val[val.length - 1];
-          if (this.innerOptions.gauge?.decimals) {
-            const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
-            value = Math.round(parseFloat(value + '') * dec) / dec;
+          if(decimals){
+            value=GTSLib.roundValue(value, decimals);
           }
         }
         if (!!data.params && !!data.params[i] && !!data.params[i].maxValue) {
@@ -291,9 +291,8 @@ export class DiscoveryGauge {
         } else {
           value = gts ?? 0;
         }
-        if (this.innerOptions.gauge?.decimals) {
-          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
-          value = Math.round(parseFloat(value + '') * dec) / dec;
+        if (decimals) {
+          value = GTSLib.roundValue(value, decimals);
         }
         dataStruct.push({ key: gts.key ?? '', value, label: gts.label, max, min });
       }

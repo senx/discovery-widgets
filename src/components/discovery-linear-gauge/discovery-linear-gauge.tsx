@@ -76,9 +76,10 @@ export class DiscoveryLinearGauge {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      opts.gauge = { horizontal: true, ...this.innerOptions.gauge };
-      this.innerOptions = Utils.clone(opts);
+      opts.gauge = { horizontal: true, ...opts.gauge };
+      this.innerOptions = { ...opts };
       this.isVertical = !this.innerOptions.gauge?.horizontal;
+      this.convert(this.result as DataModel ?? new DataModel());
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
   }
@@ -180,7 +181,7 @@ export class DiscoveryLinearGauge {
   convert(data: DataModel) {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions || {});
     options = Utils.mergeDeep<Param>(options || {} as Param, data.globalParams);
-    this.innerOptions = Utils.clone(options);
+    this.innerOptions = { ...options };
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit || 'us');
     this.isVertical = !this.innerOptions.gauge?.horizontal;
     if (this.innerOptions.customStyles) {
@@ -208,6 +209,7 @@ export class DiscoveryLinearGauge {
     let overallMax = this.innerOptions.maxValue ?? 0;
     let overallMin = this.innerOptions.minValue ?? 0;
     const dataStruct = [];
+    const decimals = this.innerOptions.gauge?.decimals ?? this.innerOptions.decimals;
     for (let i = 0; i < gtsCount; i++) {
       const c = ColorLib.getColor(i, this.innerOptions.scheme);
       const color = ((data.params || [])[i] || { datasetColor: c }).datasetColor || c;
@@ -239,11 +241,10 @@ export class DiscoveryLinearGauge {
             overallMin = value;
           }
         }
-        if (this.innerOptions.gauge?.decimals) {
-          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
-          value = Math.round(parseFloat(value + '') * dec) / dec;
-          max = Math.round(parseFloat(max + '') * dec) / dec;
-          min = Math.round(parseFloat(min + '') * dec) / dec;
+        if (decimals) {
+          value = GTSLib.roundValue(value, decimals);
+          max = GTSLib.roundValue(max, decimals);
+          min = GTSLib.roundValue(min, decimals);
         }
         dataStruct.push({
           key: ((data.params || [])[i] || { key: undefined }).key || GTSLib.serializeGtsMetadata(gts),
@@ -273,20 +274,18 @@ export class DiscoveryLinearGauge {
         } else {
           value = gts ?? 0;
         }
-        if (this.innerOptions.gauge?.decimals) {
-          const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
-          value = Math.round(parseFloat(value + '') * dec) / dec;
-          max = Math.round(parseFloat(max + '') * dec) / dec;
-          min = Math.round(parseFloat(min + '') * dec) / dec;
+        if (decimals) {
+          value = GTSLib.roundValue(value, decimals);
+          max = GTSLib.roundValue(max, decimals);
+          min = GTSLib.roundValue(min, decimals);
         }
         dataStruct.push({ key: gts.key ?? '', value, max, min, color, unit });
       }
     }
     this.LOG?.debug(['convert', 'dataStruct'], dataStruct);
-    if (this.innerOptions.gauge?.decimals) {
-      const dec = Math.pow(10, this.innerOptions.gauge?.decimals ?? 2);
-      overallMax = Math.round(parseFloat(overallMax + '') * dec) / dec;
-      overallMin = Math.round(parseFloat(overallMin + '') * dec) / dec;
+    if (decimals) {
+      overallMax = GTSLib.roundValue(overallMax, decimals);
+      overallMin = GTSLib.roundValue(overallMin, decimals);
     }
     dataStruct.forEach(d => {
       d.max = Math.max(overallMax, d.max);
