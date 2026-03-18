@@ -279,7 +279,7 @@ export class DiscoveryLineComponent {
                 overflow:hidden;
               }
               .tooltip-scroll div {
-                ${maxTxtSize > 100 ? "animation: scrollText 15s linear infinite alternate;" : ""}                
+                ${maxTxtSize > 100 ? "animation: scrollText "+(maxTxtSize*0.08)+"s linear infinite alternate;" : ""}                
                 display: inline-block;
                 width: fit-content;
               }
@@ -301,7 +301,7 @@ export class DiscoveryLineComponent {
                     </div>
                   </div>
                   <div class="tooltip-value">
-                    ${s.value[1]}
+                    ${this.innerOptions.decimals !== undefined ? GTSLib.roundValue(s.value[1], this.innerOptions.decimals) : s.value[1]}
                   </div>
                 </div>`
               ).join('')}

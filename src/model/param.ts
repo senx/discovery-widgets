@@ -226,4 +226,5 @@ export class Param {
   hideTooltip: boolean;
   unitFontSize = 16;
   xUnitFontSize = 16;
+  decimals?: number;
 }

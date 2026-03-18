@@ -462,4 +462,12 @@ export class GTSLib {
   static setName(id: any, s: string) {
     return `${id}%%%%${s}`;
   }
+
+  static roundValue(v: any, decimals: number): any {
+    // round to a number of decimals. used for tooltips, axis... not for the actual values.
+    if (typeof v === 'number') {
+      return Math.round((v + Number.EPSILON) * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    }
+    return v;
+  }
 }
