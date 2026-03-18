@@ -1309,9 +1309,8 @@ export class DiscoveryLineComponent {
       let name = 'Série';
       if (data.params && data.params[gts.id] && data.params[gts.id].key) {
         name = data.params[gts.id].key;
-      } else if (gts.l && Object.keys(gts.l).length > 0 && gts.c) {
-        const labels = Object.entries(gts.l).map(([k, v]) => `${k}=${v}`).join(',');
-        name = `${gts.c}{${labels}}`;
+      } else if ((Object.keys(gts.l).length > 0 || Object.keys(gts.a).length > 0) && gts.c) {
+        name = GTSLib.serializeGtsMetadata(gts);
       } else if (gts.c) {
         name = gts.c;
       } else if (gts.id !== undefined && gts.id !== null) {
