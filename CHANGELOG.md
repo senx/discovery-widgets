@@ -1,8 +1,50 @@
 Discovery
 ---
 
+## v1.2.45
+
+> +  2026/03/20  | v1.2.45 
+> +  2026/03/20  | v1.2.44 
+
+## v1.2.44
+
+> +  2026/03/18  | generalize decimals, fix existing rounding in gauges 
+> +  2026/03/18  | add decimals parameter to round easily the value displayed in tooltip 
+> +  2026/03/18  | same naming convention with attributes for dataview 
+> +  2026/03/18  | make attributes visible again 
+> +  2026/03/13  | fix dataview button and colors 
+> +  2026/03/13  | json as discovery result 
+> +  2026/03/13  | fix bug all/none, introduce filterable list, with or without fuzzy search 
+> +  2026/02/28  | add possibility to pass object into dataview field (control lang field), modify column labels 
+> +  2026/02/22  | showControls can be a boolean or an object; resolves CSV export in certain specific cases 
+> +  2026/02/15  | add dataView and csv export button on bar chart and line chart 
+> +  2025/12/16  | readme 
+> +  2025/12/15  | 1.2.43 
+
+## v1.2.43
+
+> +  2025/12/15  | autorefreshed paused when backgrounded 
+> +  2025/12/15  | attempt to fix color handling for a background bug. not enough 
+> +  2025/12/15  | readme 
+> +  2025/12/15  | fix svg centering with a different viewport preserveAspectRatio 
+> +  2025/12/15  | fix colors into tooltip 
+> +  2025/12/15  | animated tooltip 
+> +  2025/12/12  | fix the thousands separator on graphs 
+> +  2025/12/12  | fix date range css 
+> +  2025/12/09  | add max height for long list of custom time ranges 
+
+## v1.2.42
+
+> +  2025/10/14  | release new tabular features 
+> +  2025/10/14  | no more line colors by default. use tabular.stripped option. add border and cellAlign everywhere 
+> +  2025/10/11  | tabular component : add new properties in getCellStyle method 
+> +  2025/09/15  | allow button and button groups not to run a macro to send events 
+> +  2025/09/15  | allow json inside discovery-dashboard 
+> +  2025/08/02  | tabular component : add border and cell alignement properties 
+
 ## v1.2.41
 
+> +  2025/08/22  | release 
 > +  2025/08/22  | v1.2.41 
 > +  2025/08/22  | fix localvars merge 
 > +  2025/08/21  | update cl gen 
