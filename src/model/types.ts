@@ -128,6 +128,7 @@ export class DiscoveryEvent {
   selector?: string;
   source: string;
   eventId?: string;  // uuid, put it if two successive same events must fire.
+  delay?:number; // delay in seconds before to fire the event
 }
 
 export class DataModel {

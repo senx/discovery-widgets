@@ -257,8 +257,15 @@ export class DiscoverySvgComponent {
     }
   }
 
-  private triggerEvent(evt: DiscoveryEvent) {
-    this.discoveryEvent.emit({ ...evt, source: this.el.id });
+  private triggerEvent(e: DiscoveryEvent) {
+    const d = (e.delay || 0.0) * 1000; // delay is in seconds. ignore below 1 ms.
+    if (d > 1) {
+      setTimeout(() => {
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
+      }, d);
+    } else {
+      this.discoveryEvent.emit({ ...e, source: this.el.id });
+    }
   }
 
   @Method()

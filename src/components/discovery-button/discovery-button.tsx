@@ -187,7 +187,14 @@ export class DiscoveryButtonComponent {
         if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {
           e.value = [e.value];
         }
-        this.discoveryEvent.emit({ ...e, source: this.el.id });
+        const d = (e.delay || 0.0) * 1000; // delay is in seconds. ignore below 1 ms.
+        if (d > 1) {
+          setTimeout(() => {
+            this.discoveryEvent.emit({ ...e, source: this.el.id });
+          }, d);
+        } else {
+          this.discoveryEvent.emit({ ...e, source: this.el.id });
+        }
       }
     }
   }
@@ -233,7 +240,14 @@ export class DiscoveryButtonComponent {
         e.value = {};
       }
       e.value[e.selector] = value;
-      this.discoveryEvent.emit({ ...e, source: this.el.id });
+      const d = (e.delay || 0.0) * 1000; // delay is in seconds. ignore below 1 ms.
+      if (d > 1) {
+        setTimeout(() => {
+          this.discoveryEvent.emit({ ...e, source: this.el.id });
+        }, d);
+      } else {
+        this.discoveryEvent.emit({ ...e, source: this.el.id });
+      }
     }
   }
 

@@ -255,7 +255,14 @@ export class DiscoveryInputComponent {
         }
         if (valid) {
           this.LOG?.debug(['handleClick', 'emit'], { discoveryEvent: e, subtype: this.subType }, value);
-          this.discoveryEvent.emit({ ...e, source: this.el.id });
+          const d = (e.delay || 0.0) * 1000; // delay is in seconds. ignore below 1 ms.
+          if (d > 1) {
+            setTimeout(() => {
+              this.discoveryEvent.emit({ ...e, source: this.el.id });
+            }, d);
+          } else {
+            this.discoveryEvent.emit({ ...e, source: this.el.id });
+          }
         } else {
           this.LOG?.debug(['handleClick', 'emit'], 'Invalid value');
         }

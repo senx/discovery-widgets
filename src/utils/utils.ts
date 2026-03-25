@@ -388,7 +388,14 @@ export class Utils {
             if (typeof e.value !== 'object' && GTSLib.isArray(e.value)) {
               e.value = [e.value];
             }
-            widget.discoveryEvent.emit({ ...e, source: widget.el.id });
+            const d = (e.delay || 0.0) * 1000; // delay is in seconds. ignore below 1 ms.
+            if (d > 1) {
+              setTimeout(() => {
+                widget.discoveryEvent.emit({ ...e, source: widget.el.id });
+              }, d);
+            } else {
+              widget.discoveryEvent.emit({ ...e, source: widget.el.id });
+            }
           }
         }
       })

@@ -123,7 +123,14 @@ export class DiscoveryModalComponent {
     if (this.showModal) {
       this.showModal = false;
       for (const e of ((this.data as any)?.events ?? [])) {
-        this.discoveryEvent.emit({ ...e, source: this.parentId });
+        const d = (e.delay || 0.0) * 1000; // delay is in seconds. ignore below 1 ms.
+        if (d > 1) {
+          setTimeout(() => {
+            this.discoveryEvent.emit({ ...e, source: this.parentId });
+          }, d);
+        } else {
+          this.discoveryEvent.emit({ ...e, source: this.parentId });
+        }
       }
     }
   }
