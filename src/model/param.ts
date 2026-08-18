@@ -114,6 +114,7 @@ export class Param {
   customStyles?: { [key: string]: string; };
   httpHeaders?: { [key: string]: string; };
   leftMargin = 0;
+  fixedLeftMargin?:number;
   showLoader = false;
   noDataLabel = 'No data';
   tooltipDelay?: number;

@@ -362,10 +362,10 @@ export class DiscoveryAnnotation {
         right: 10,
         top: 20,
         bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
-        left: (this.innerOptions.leftMargin !== undefined && this.innerOptions.leftMargin > this.leftMargin)
+        left: (!!this.innerOptions.fixedLeftMargin) ? this.innerOptions.fixedLeftMargin:( (this.innerOptions.leftMargin !== undefined && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin
-          : this.leftMargin ?? 10,
-        containLabel: true,
+          : this.leftMargin ?? 10),
+        containLabel: !this.innerOptions.fixedLeftMargin,
       },
       throttle: 70,
       tooltip: {

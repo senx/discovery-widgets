@@ -234,13 +234,13 @@ export class DiscoveryLineComponent {
     const opts: EChartsOption = {
       animation: false,
       grid: {
-        left: ((!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
+        left: (!!this.innerOptions.fixedLeftMargin) ? this.innerOptions.fixedLeftMargin: (((!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin - this.leftMargin + 10
-          : 10) + (this.innerOptions.unitPosition === 'middle' ? 40 : 0),
+          : 10) + (this.innerOptions.unitPosition === 'middle' ? 40 : 0)),
         top: 30,
         bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.showRangeSelector ? 40 : 0) + (this.innerOptions.xUnit ? 40 : 0),
         right: 10 + (this.innerOptions.showYRangeSelector ? 40 : 0),
-        containLabel: true,
+        containLabel: !this.innerOptions.fixedLeftMargin,
       },
       responsive: true,
       throttle: 40,
