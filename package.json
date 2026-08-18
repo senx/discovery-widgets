@@ -1,6 +1,6 @@
 {
   "name": "@senx/discovery-widgets",
-  "version": "1.2.45",
+  "version": "1.3.0",
   "description": "Discovery Widgets Elements",
   "keywords": [
     "web",
@@ -49,7 +49,7 @@
     "css-color-names": "^1.0.1",
     "dayjs": "^1.11.13",
     "dom-to-image": "^2.6.0",
-    "echarts": "5.6.0",
+    "echarts": "6.1.0",
     "element-resize-event": "^3.0.6",
     "fitty": "^2.4.2",
     "fuzzysort": "3.1.0",
@@ -87,7 +87,7 @@
     "@types/streamsaver": "^2.0.5",
     "@types/uuid": "^10.0.0",
     "babel-loader": "9.2.1",
-    "browserslist": "^4.24.4",
+    "browserslist": "4.28.2",
     "case": "^1.6.3",
     "eslint": "^9.23.0",
     "eslint-plugin-react": "^7.37.4",

@@ -31,4 +31,7 @@ export const config: Config = {
       serviceWorker: null, // disable service workers
     },
   ],
+  extras: {
+    initializeNextTick:true
+  }
 };
