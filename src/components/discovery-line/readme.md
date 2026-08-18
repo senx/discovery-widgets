@@ -31,6 +31,7 @@
 | `dataZoomY`          |             | `CustomEvent<{ start?: number; end?: number; min?: number; max?: number; orientation?: string; type?: string; }>` |
 | `discoveryEvent`     |             | `CustomEvent<DiscoveryEvent>`                                                                                     |
 | `draw`               |             | `CustomEvent<void>`                                                                                               |
+| `echartLoaded`       |             | `CustomEvent<any>`                                                                                                |
 | `execError`          |             | `CustomEvent<any>`                                                                                                |
 | `leftMarginComputed` |             | `CustomEvent<number>`                                                                                             |
 | `poi`                |             | `CustomEvent<any>`                                                                                                |

@@ -15,7 +15,7 @@
  */
 
 import { Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, DataModel, DiscoveryEvent } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent, groupBoundSyncEvent } from '../../model/types';
 import { Param } from '../../model/param';
 import { Logger } from '../../utils/logger';
 import { Utils } from '../../utils/utils';
@@ -67,6 +67,12 @@ export class DiscoveryTileResultComponent {
   @Event() draw: EventEmitter<void>;
   @Event() selfType: EventEmitter<ChartType>;
   @Event() execError: EventEmitter<any[]>;
+  @Event({
+    eventName:'groupBoundSync',
+    composed: true,
+    bubbles: true,
+    cancelable: false
+  }) groupBoundSync: EventEmitter<groupBoundSyncEvent>;
 
   private LOG: Logger;
   private tileElem: HTMLDivElement;
@@ -192,14 +198,24 @@ export class DiscoveryTileResultComponent {
 
   @Listen('timeBounds', { capture: false })
   onTimeBounds(event: CustomEvent) {
-    ((this.innerResult as unknown as DataModel).events || [])
-      .filter(e => e.type === 'bounds')
-      .forEach(e => this.discoveryEvent.emit({
-        source: this.componentId,
-        type: 'bounds',
-        tags: e.tags,
-        value: event.detail,
-      }));
+    if (event.detail.group) {
+      // when the group is sent, send a new kind of event that all the group members will listen to
+      // but the innerOptions of each component may not be yet defined, so must delay the event.
+      setTimeout(() => {
+        this.groupBoundSync.emit(event.detail as groupBoundSyncEvent);
+      }, 1000);
+      event.stopPropagation();
+    } else {
+      // legacy behavior, sync with bounds event
+      ((this.innerResult as unknown as DataModel).events || [])
+        .filter(e => e.type === 'bounds')
+        .forEach(e => this.discoveryEvent.emit({
+          source: this.componentId,
+          type: 'bounds',
+          tags: e.tags,
+          value: event.detail,
+        }));
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols

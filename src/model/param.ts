@@ -227,4 +227,5 @@ export class Param {
   unitFontSize = 16;
   xUnitFontSize = 16;
   decimals?: number;
+  group?:string;
 }

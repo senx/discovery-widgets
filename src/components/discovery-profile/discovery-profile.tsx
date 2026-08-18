@@ -231,7 +231,7 @@ export class DiscoveryProfile {
     });
   }
 
-  convert(data: DataModel) {
+  convert(data: DataModel):EChartsOption {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
     this.innerOptions = Utils.clone(options);
@@ -490,6 +490,8 @@ export class DiscoveryProfile {
           type: 'line',
           animation: false,
           lineStyle: {
+            width:3,
+            type: 'dotted',
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
           },
         },

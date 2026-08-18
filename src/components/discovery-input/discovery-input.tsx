@@ -487,7 +487,6 @@ export class DiscoveryInputComponent {
     e.stopPropagation();
     if ((this.type === 'input:multi-cb' && this.checkBoxes) || (this.type==='input:list')) {
       this.filter = e.target.value ?? e.detail ?? '';
-      console.log("pppp filter",this.filter)
       if (this.innerOptions?.input?.fuzzySearch) {
         if ( this.filterPreviousValue !== this.filter) {
           if (this.filter == '') {
@@ -511,14 +510,12 @@ export class DiscoveryInputComponent {
           this.values = this.initialValues.filter(v => fr.test(v.v));
         }
 
-        console.log("ppppp after search",this.values, this.filter, this.initialValues)
       }
     }    
 
     // better if we handle keyboard too, from the filter input.
     if (this.type==='input:list') {
       if (e.key === 'Enter') {
-        console.log("ppppp enter",this.filter)
         this.handleClickRT();
       } else if (e.key === 'ArrowDown') {      
         console.log(Array.from(this.inputField.querySelectorAll('option')))
@@ -659,7 +656,6 @@ export class DiscoveryInputComponent {
                         ref={el => this.inputField = el}>
             {this.values.map(v => (<option value={v.k} selected={this.value === v.k}>{v.v}</option>))}
           </select>
-          console.log("ppppp rebuild list", this.values)
         if (this.innerOptions.input?.showFilter) {
           return  <div class="filtered-list-wrapper">
                     <div class="filtered-list-filter">

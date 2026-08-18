@@ -446,7 +446,7 @@ export class DiscoveryDashboardComponent {
   static sanitize(data: any): string | DataModel {
     if (typeof data === 'string' && !data.startsWith('[') && !data.startsWith('{')) return '["' + data + '"]';
     else if (typeof data === 'string') return data;
-    else return GTSLib.isArray(data) ? data : [data];
+    else return GTSLib.isArray(data) ? data : [data] as unknown as DataModel;
   }
 
   private getType(id: number, type: string): string {

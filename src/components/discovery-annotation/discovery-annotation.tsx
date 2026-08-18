@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-import { Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
+import { Component, Element, Event, EventEmitter, h, Host, Method, Prop, State, Watch, Listen } from '@stencil/core';
+import { ChartType, DataModel, DiscoveryEvent, ECharts, groupBoundSyncEvent } from '../../model/types';
 import { Param } from '../../model/param';
 import { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, graphic, init } from 'echarts';
 import { Logger } from '../../utils/logger';
@@ -25,6 +25,7 @@ import { ColorLib } from '../../utils/color-lib';
 import { SeriesOption } from 'echarts/lib/util/types';
 import { v4 } from 'uuid';
 import _ from 'lodash';
+import * as echarts from 'echarts';
 
 @Component({
   tag: 'discovery-annotation',
@@ -78,6 +79,9 @@ export class DiscoveryAnnotation {
   private MAX_MARGIN = 1024;
   private pois: any[] = [];
   private innerVars: any = {};
+  private min = Number.MAX_SAFE_INTEGER;
+  private max = Number.MIN_SAFE_INTEGER;
+  private boundSyncTimer: any;
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -228,9 +232,57 @@ export class DiscoveryAnnotation {
         this.myChart.resize({ width: this.width, height: this.height });
       }
     });
+    // if group is defined, send an event to join a chart group
+    if (this.innerOptions.group) {
+      // this.myChart may not exist yet, delay that
+      setTimeout(() => {
+        this.myChart.group = this.innerOptions.group;
+        echarts.connect(this.innerOptions.group);
+      }, 1000);
+    }
+  }
+  
+  @Listen('groupBoundSync', { target: 'document', passive: true })
+  onGroupBoundSync(event: CustomEvent<groupBoundSyncEvent>) {
+    // problem, innerOptions.group may not be yet defined when receiving event.
+    if (event.detail.group === this.innerOptions.group) {
+      let needUpdate = false;
+      if (event.detail.min < this.min) {
+        this.min = event.detail.min;
+        needUpdate = true;
+      }
+      if (event.detail.max > this.max) {
+        this.max = event.detail.max;
+        needUpdate = true;
+      }
+      if (needUpdate) {
+        if (this.boundSyncTimer) {
+          clearTimeout(this.boundSyncTimer);
+        }
+        this.boundSyncTimer = setTimeout(() => {
+          // cannot just update innerOptions and relaunch convert, not optimal. so, update only axis[0]. TODO: incompatible with multiXaxis
+          let opt: EChartsOption = this.myChart.getOption() as EChartsOption;
+          opt.xAxis[0].dataMin = this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+            ? this.innerOptions?.bounds?.xRanges[0]
+            : this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(this.min, this.divider, this.innerOptions.timeZone)
+              : this.min;
+          opt.xAxis[0].dataMax = this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+            ? this.innerOptions?.bounds?.xRanges[1]
+            : this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(this.max, this.divider, this.innerOptions.timeZone)
+              : this.max;
+          //this.myChart.setOption(opt,true);
+          this.chartOpts = opt;
+          this.myChart.setOption(opt, {
+              replaceMerge: ['xAxis']
+          });
+        }, 1000);
+      }
+    }
   }
 
-  convert(data: DataModel) {
+  convert(data: DataModel):EChartsOption {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options, data.globalParams ?? {});
     this.innerOptions = Utils.clone({ ...options, leftMargin: this.innerOptions.leftMargin });
@@ -243,10 +295,10 @@ export class DiscoveryAnnotation {
     const gtsCount = gtsList.length;
     let linesCount = 1;
     let catId = 0;
-    let min = Number.MAX_SAFE_INTEGER;
-    let max = Number.MIN_SAFE_INTEGER;
+    this.min = Number.MAX_SAFE_INTEGER;
+    this.max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
-    if (max <= 1000 && min >= -1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
+    if (this.max <= 1000 && this.min >= -1000 && this.min !== Number.MAX_SAFE_INTEGER && this.max !== Number.MIN_SAFE_INTEGER) {
       this.innerOptions.timeMode = 'timestamp';
     }
     for (let i = 0; i < gtsCount; i++) {
@@ -258,8 +310,8 @@ export class DiscoveryAnnotation {
           const tuple = gts.v[v];
           const ts = tuple[0];
           const val = tuple[tuple.length - 1];
-          if (ts > max) max = ts;
-          if (ts < min) min = ts;
+          if (ts > this.max) this.max = ts;
+          if (ts < this.min) this.min = ts;
           let startTS = ts;
           startTS = this.innerOptions.timeMode === 'date'
             ? GTSLib.utcToZonedTime(startTS, this.divider, this.innerOptions.timeZone)
@@ -292,8 +344,8 @@ export class DiscoveryAnnotation {
     }
     this.displayExpander = series.length > 1 && !!this.innerOptions.displayExpander;
     if (hasTimeBounds) {
-      this.timeBounds.emit({ min, max });
-      this.bounds = { min, max };
+      this.timeBounds.emit({ min: this.min, max: this.max, group: this.innerOptions.group, exp: Math.random() });
+      this.bounds = { min: this.min, max: this.max };
     }
 
     this.height = 50 + (linesCount * (this.expanded ? 26 : 30)) + (this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
@@ -336,6 +388,8 @@ export class DiscoveryAnnotation {
           type: 'line',
           animation: false,
           lineStyle: {
+            width:3,
+            type: 'dotted',
             color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
           },
         },
@@ -419,11 +473,20 @@ export class DiscoveryAnnotation {
           type: 'slider',
           height: '20px',
           filterMode: 'none',
+          orient: 'horizontal',
         } : undefined,
         {
           type: 'inside',
           filterMode: 'none',
+          orient: 'horizontal',
         },
+        {
+          type: 'inside',
+          realtime: true,
+          filterMode: 'none',
+          orient: 'vertical',
+          zoomOnMouseWheel: 'ctrl',
+        }
       ],
       series,
       ...this.innerOptions?.extra?.chartOpts ?? {},

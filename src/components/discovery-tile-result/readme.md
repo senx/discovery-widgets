@@ -27,12 +27,13 @@
 
 ## Events
 
-| Event            | Description | Type                          |
-| ---------------- | ----------- | ----------------------------- |
-| `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>` |
-| `draw`           |             | `CustomEvent<void>`           |
-| `execError`      |             | `CustomEvent<any[]>`          |
-| `selfType`       |             | `CustomEvent<string>`         |
+| Event            | Description | Type                               |
+| ---------------- | ----------- | ---------------------------------- |
+| `discoveryEvent` |             | `CustomEvent<DiscoveryEvent>`      |
+| `draw`           |             | `CustomEvent<void>`                |
+| `execError`      |             | `CustomEvent<any[]>`               |
+| `groupBoundSync` |             | `CustomEvent<groupBoundSyncEvent>` |
+| `selfType`       |             | `CustomEvent<string>`              |
 
 
 ## Methods

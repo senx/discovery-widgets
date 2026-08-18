@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch, Listen } from '@stencil/core';
 import { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, EChartsOption, init } from 'echarts';
 import { GTSLib } from '../../utils/gts.lib';
 import { SeriesOption } from 'echarts/lib/util/types';
@@ -22,12 +22,14 @@ import { ColorLib } from '../../utils/color-lib';
 import { Utils } from '../../utils/utils';
 import { Param } from '../../model/param';
 import { Logger } from '../../utils/logger';
-import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
+import { ChartType, DataModel, DiscoveryEvent, ECharts, groupBoundSyncEvent } from '../../model/types';
 import { CartesianAxisOption } from 'echarts/lib/coord/cartesian/AxisModel';
 import { GridOption } from 'echarts/lib/coord/cartesian/GridModel';
 import 'moment/min/locales.js';
 import { throttle, uniq } from 'lodash';
 import { v4 } from 'uuid';
+import * as echarts from 'echarts';
+
 
 @Component({
   tag: 'discovery-line',
@@ -77,6 +79,8 @@ export class DiscoveryLineComponent {
   }) discoveryEvent: EventEmitter<DiscoveryEvent>;
   @Event() execError: EventEmitter;
 
+  @Event() echartLoaded: EventEmitter;
+
   @State() parsing = false;
   @State() rendering = false;
   @State() innerOptions: Param;
@@ -97,6 +101,9 @@ export class DiscoveryLineComponent {
   private zoomXInfo: any = {};
   private zoomYInfo: any = {};
   private innerVars: any = {};
+  private min = Number.MAX_SAFE_INTEGER;
+  private max = Number.MIN_SAFE_INTEGER;
+  private boundSyncTimer: any;
 
   @Watch('type')
   updateType(newValue: string, oldValue: string) {
@@ -206,9 +213,17 @@ export class DiscoveryLineComponent {
         }
       });
     }
+    // if group is defined, send an event to join a chart group
+    if (this.innerOptions.group) {
+      // this.myChart may not exist yet, delay that
+      setTimeout(() => {
+        this.myChart.group = this.innerOptions.group;
+        echarts.connect(this.innerOptions.group);
+      }, 1000);
+    }
   }
 
-  convert(data: DataModel) {
+  convert(data: DataModel): EChartsOption {
     this.innerOptions.timeMode = this.innerOptions.timeMode ?? 'date';
     this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
     const gtsList = [
@@ -279,18 +294,18 @@ export class DiscoveryLineComponent {
                 overflow:hidden;
               }
               .tooltip-scroll div {
-                ${maxTxtSize > 100 ? "animation: scrollText "+(maxTxtSize*0.08)+"s linear infinite alternate;" : ""}                
+                ${maxTxtSize > 100 ? "animation: scrollText " + (maxTxtSize * 0.08) + "s linear infinite alternate;" : ""}                
                 display: inline-block;
                 width: fit-content;
               }
             </style>
             <div style="max-width:${tooltipWidth}px;overflow:hidden;">
               <div style="font-size:14px;color:#666;font-weight:400;line-height:1.4;padding:8px;white-space:nowrap;">
-                ${this.innerOptions.timeMode !== 'date' 
-                  ? params[0].value[0] 
-                  : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
-                    this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
-                      .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
+                ${this.innerOptions.timeMode !== 'date'
+              ? params[0].value[0]
+              : (GTSLib.toISOString(GTSLib.zonedTimeToUtc(params[0].value[0], 1, this.innerOptions.timeZone), 1, this.innerOptions.timeZone,
+                this.innerOptions.fullDateDisplay ? this.innerOptions.timeFormat : undefined) || '')
+                .replace('T', ' ').replace(/\+[0-9]{2}:[0-9]{2}$/gi, '')}
               </div>
               ${params.map(s => `
                 <div style="display:flex;align-items:center;padding:1px 8px;line-height:1.4;">
@@ -304,7 +319,7 @@ export class DiscoveryLineComponent {
                     ${this.innerOptions.decimals !== undefined ? GTSLib.roundValue(s.value[1], this.innerOptions.decimals) : s.value[1]}
                   </div>
                 </div>`
-              ).join('')}
+                ).join('')}
             </div>`
         },
         axisPointer: {
@@ -318,6 +333,8 @@ export class DiscoveryLineComponent {
           lineStyle: !this.innerOptions.yCursor && !this.innerOptions.xCursor
             ? undefined
             : {
+              width: 3,
+              type: 'dotted',
               color: Utils.getCSSColor(this.el, '--warp-view-bar-color', 'red'),
             },
           crossStyle: this.innerOptions.yCursor
@@ -353,7 +370,7 @@ export class DiscoveryLineComponent {
             },
             onclick: () => {
               const csv = this.dataToCSV(data);
-              const blob = new Blob([csv], {type: 'text/csv'});
+              const blob = new Blob([csv], { type: 'text/csv' });
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement("a");
               a.href = url;
@@ -386,7 +403,7 @@ export class DiscoveryLineComponent {
             backgroundColor: Utils.getCSSColor(this.el, '--warp-view-data-view-bg-color', 'white'),
             buttonColor: Utils.getCSSColor(this.el, '--warp-view-button-bg-color', '#004eff'),
             buttonTextColor: Utils.getCSSColor(this.el, '--warp-view-button-label-color', '#ffffff'),
-            readOnly:true
+            readOnly: true
           }
         },
       },
@@ -430,8 +447,8 @@ export class DiscoveryLineComponent {
       series: [],
       ...this.innerOptions?.extra?.chartOpts ?? {},
     };
-    let min = Number.MAX_SAFE_INTEGER;
-    let max = Number.MIN_SAFE_INTEGER;
+    this.min = Number.MAX_SAFE_INTEGER;
+    this.max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
     (this.innerOptions.actions ?? []).forEach((action) => {
       if (action.macro) {
@@ -481,8 +498,8 @@ export class DiscoveryLineComponent {
           const tuple = gts.v[v];
           const ts = tuple[0];
           const val = tuple[tuple.length - 1];
-          if (ts > max) max = ts;
-          if (ts < min) min = ts;
+          if (ts > this.max) this.max = ts;
+          if (ts < this.min) this.min = ts;
           dataSet.push([
             this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(ts, this.divider, this.innerOptions.timeZone)
@@ -715,8 +732,8 @@ export class DiscoveryLineComponent {
       (opts.series as any[]).push(s);
     });
     if (hasTimeBounds) {
-      this.timeBounds.emit({ min, max });
-      this.bounds = { min, max };
+      this.timeBounds.emit({ min: this.min, max: this.max, group: this.innerOptions.group, exp: Math.random() + 1 });
+      this.bounds = { min: this.min, max: this.max };
     }
     // multi Y
     if (!multiY) {
@@ -770,26 +787,26 @@ export class DiscoveryLineComponent {
           yAxis: t.from || 0,
         }];
       }),
-      ...(this.innerOptions.markers || [])
-        .filter(t => !!t.fill)
-        .map(t => {
-          return [{
-            itemStyle: {
-              color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
-              borderType: t.type || 'dashed',
-            },
-            label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
-            name: t.name || t.value || 0,
-            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+    ...(this.innerOptions.markers || [])
+      .filter(t => !!t.fill)
+      .map(t => {
+        return [{
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
+            borderType: t.type || 'dashed',
           },
-            {
-              itemStyle: {
-                color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
-                borderType: t.type || 'dashed',
-              },
-              xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
-            }];
-        }),
+          label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
+          name: t.name || t.value || 0,
+          xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+        },
+        {
+          itemStyle: {
+            color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
+            borderType: t.type || 'dashed',
+          },
+          xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+        }];
+      }),
     ];
 
     const markLine = [
@@ -923,6 +940,42 @@ export class DiscoveryLineComponent {
     };
   }
 
+
+  @Listen('groupBoundSync', { target: 'document', passive: true })
+  onGroupBoundSync(event: CustomEvent<groupBoundSyncEvent>) {
+    if (event.detail.group === this.innerOptions.group) {
+      let needUpdate = false;
+      if (event.detail.min < this.min) {
+        this.min = event.detail.min;
+        needUpdate = true;
+      }
+      if (event.detail.max > this.max) {
+        this.max = event.detail.max;
+        needUpdate = true;
+      }
+      if (needUpdate) {
+        if (this.boundSyncTimer) {
+          clearTimeout(this.boundSyncTimer);
+        }
+        this.boundSyncTimer = setTimeout(() => {
+          // cannot just update innerOptions and relaunch convert, not optimal. so, update only axis[0]. TODO: incompatible with multiXaxis
+          let opt: echarts.EChartsOption = this.myChart.getOption() as EChartsOption;
+          opt.xAxis[0].dataMin = this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+            ? this.innerOptions?.bounds?.xRanges[0]
+            : this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(this.min, this.divider, this.innerOptions.timeZone)
+              : this.min;
+          opt.xAxis[0].dataMax = this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+            ? this.innerOptions?.bounds?.xRanges[1]
+            : this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(this.max, this.divider, this.innerOptions.timeZone)
+              : this.max;
+          this.myChart.setOption(opt, true);
+        }, 1000);
+      }
+    }
+  }
+
   static getStepShape(type: ChartType) {
     switch (type) {
       case 'line':
@@ -969,30 +1022,30 @@ export class DiscoveryLineComponent {
       16, { leading: true, trailing: true });
 
     const focusHandler = throttle((type: string, event: any) => {
-        if (this.hasFocus) {
-          switch (type) {
-            case 'mouseover':
-              const c = event.data.coord || event.data;
-              this.dataPointOver.emit({ date: c[0], name: event.seriesName, value: c[1], meta: {} });
-              break;
-            case 'highlight':
-              let ts: number;
-              for (const b of (event.batch ?? [])) {
-                const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
-                ts = s.data[b.dataIndex][0];
-                ts = this.innerOptions.timeMode === 'date'
-                  ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
-                  : ts;
-              }
-              if (ts !== undefined) {
-                this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
-              }
-              break;
-            default:
-              break;
-          }
+      if (this.hasFocus) {
+        switch (type) {
+          case 'mouseover':
+            const c = event.data.coord || event.data;
+            this.dataPointOver.emit({ date: c[0], name: event.seriesName, value: c[1], meta: {} });
+            break;
+          case 'highlight':
+            let ts: number;
+            for (const b of (event.batch ?? [])) {
+              const s = (this.myChart.getOption() as EChartsOption).series[b.seriesIndex];
+              ts = s.data[b.dataIndex][0];
+              ts = this.innerOptions.timeMode === 'date'
+                ? GTSLib.zonedTimeToUtc(ts * this.divider, this.divider, this.innerOptions.timeZone || 'UTC') * this.divider
+                : ts;
+            }
+            if (ts !== undefined) {
+              this.dataPointOver.emit({ date: ts, name: '.*', meta: {} });
+            }
+            break;
+          default:
+            break;
         }
-      },
+      }
+    },
       200, { leading: true, trailing: true });
 
     setTimeout(() => {
@@ -1286,7 +1339,7 @@ export class DiscoveryLineComponent {
     const unit = this.unit || this.innerOptions?.unit || "";
 
     if (!Array.isArray(data.data)) {
-      return {series: [], categories: [], unit, isColumnsFormat: false};
+      return { series: [], categories: [], unit, isColumnsFormat: false };
     }
 
     if (data.data[0] && data.data[0].columns) {
@@ -1321,11 +1374,11 @@ export class DiscoveryLineComponent {
         const ts = point[0];
         dataMap[ts] = point[point.length - 1];
       });
-      series.push({name, dataMap});
+      series.push({ name, dataMap });
     });
 
     if (series.length === 0) {
-      return {series: [], categories: [], unit, isColumnsFormat: false};
+      return { series: [], categories: [], unit, isColumnsFormat: false };
     }
 
     const categoriesSet = new Set<string>();
@@ -1341,12 +1394,12 @@ export class DiscoveryLineComponent {
       return Number(a) - Number(b);
     });
 
-    return {series, categories, unit, isColumnsFormat: false};
+    return { series, categories, unit, isColumnsFormat: false };
   }
 
   dataToCSV(data: DataModel): string {
     let csv = "";
-    const {series, categories, unit, isColumnsFormat, columns, rows} = this.buildSeriesData(data);
+    const { series, categories, unit, isColumnsFormat, columns, rows } = this.buildSeriesData(data);
 
     if (isColumnsFormat && columns && rows) {
       csv += ";";
@@ -1401,7 +1454,7 @@ export class DiscoveryLineComponent {
   }
 
   dataToHTMLTable(data: DataModel): string {
-    const {series, categories, unit, isColumnsFormat, columns, rows} = this.buildSeriesData(data);
+    const { series, categories, unit, isColumnsFormat, columns, rows } = this.buildSeriesData(data);
 
     const textColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-color', 'black');
     const textAreaColor = Utils.getCSSColor(this.el, '--warp-view-data-view-text-area-color', 'white');
@@ -1422,7 +1475,7 @@ export class DiscoveryLineComponent {
         row.forEach((cell) => {
           let formatted = '';
           if (typeof cell === 'number') {
-            formatted = cell.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+            formatted = cell.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
           } else {
             formatted = String(cell);
           }
@@ -1460,7 +1513,7 @@ export class DiscoveryLineComponent {
         const value = s.dataMap[category];
         let formatted = '';
         if (typeof value === 'number') {
-          formatted = value.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+          formatted = value.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
         } else if (value !== null && value !== undefined) {
           formatted = String(value);
         }

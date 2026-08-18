@@ -131,6 +131,13 @@ export class DiscoveryEvent {
   delay?:number; // delay in seconds before to fire the event
 }
 
+export class groupBoundSyncEvent {
+  group:string;
+  min: number;
+  max: number;
+  exp: number;
+}
+
 export class DataModel {
   data: any;
   params?: Param[];

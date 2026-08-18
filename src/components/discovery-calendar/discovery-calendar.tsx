@@ -188,7 +188,7 @@ export class DiscoveryCalendar {
     });
   }
 
-  convert(data: DataModel) {
+  convert(data: DataModel):EChartsOption {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
     this.innerOptions = { ...options };
