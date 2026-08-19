@@ -5,9 +5,9 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, Tile } from "./model/types";
+import { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, groupBoundSyncEvent, Tile } from "./model/types";
 import { Param } from "./model/param";
-export { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, Tile } from "./model/types";
+export { ChartType, Dashboard, DataModel, Dataset, DiscoveryEvent, groupBoundSyncEvent, Tile } from "./model/types";
 export { Param } from "./model/param";
 export namespace Components {
     interface DiscoveryAnnotation {
@@ -899,6 +899,7 @@ declare global {
         "timeBounds": any;
         "discoveryEvent": DiscoveryEvent;
         "execError": any;
+        "echartLoaded": any;
     }
     interface HTMLDiscoveryLineElement extends Components.DiscoveryLine, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryLineElementEventMap>(type: K, listener: (this: HTMLDiscoveryLineElement, ev: DiscoveryLineCustomEvent<HTMLDiscoveryLineElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1121,6 +1122,7 @@ declare global {
         "draw": void;
         "selfType": ChartType;
         "execError": any[];
+        "groupBoundSync": groupBoundSyncEvent;
     }
     interface HTMLDiscoveryTileResultElement extends Components.DiscoveryTileResult, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDiscoveryTileResultElementEventMap>(type: K, listener: (this: HTMLDiscoveryTileResultElement, ev: DiscoveryTileResultCustomEvent<HTMLDiscoveryTileResultElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1426,6 +1428,7 @@ declare namespace LocalJSX {
   }>) => void;
         "onDiscoveryEvent"?: (event: DiscoveryLineCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryLineCustomEvent<void>) => void;
+        "onEchartLoaded"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onExecError"?: (event: DiscoveryLineCustomEvent<any>) => void;
         "onLeftMarginComputed"?: (event: DiscoveryLineCustomEvent<number>) => void;
         "onPoi"?: (event: DiscoveryLineCustomEvent<any>) => void;
@@ -1585,6 +1588,7 @@ declare namespace LocalJSX {
         "onDiscoveryEvent"?: (event: DiscoveryTileResultCustomEvent<DiscoveryEvent>) => void;
         "onDraw"?: (event: DiscoveryTileResultCustomEvent<void>) => void;
         "onExecError"?: (event: DiscoveryTileResultCustomEvent<any[]>) => void;
+        "onGroupBoundSync"?: (event: DiscoveryTileResultCustomEvent<groupBoundSyncEvent>) => void;
         "onSelfType"?: (event: DiscoveryTileResultCustomEvent<ChartType>) => void;
         "options"?: Param | string;
         "result"?: DataModel | string;

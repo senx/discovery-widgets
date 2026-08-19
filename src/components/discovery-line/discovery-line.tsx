@@ -797,14 +797,14 @@ export class DiscoveryLineComponent {
           },
           label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
           name: t.name || t.value || 0,
-          xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+          xAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.value, this.divider, this.innerOptions.timeZone): t.value) || 0),
         },
         {
           itemStyle: {
             color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
             borderType: t.type || 'dashed',
           },
-          xAxis: ((t.start / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+          xAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.start, this.divider, this.innerOptions.timeZone): t.start) || 0),
         }];
       }),
     ];
@@ -815,7 +815,7 @@ export class DiscoveryLineComponent {
           name: t.name || t.value || 0,
           label: { color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}' },
           lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
-          yAxis: t.value || 0,
+          yAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.value, this.divider, this.innerOptions.timeZone): t.value) || 0),
         };
       }),
       ...(this.innerOptions.markers || [])
@@ -830,7 +830,7 @@ export class DiscoveryLineComponent {
               show: !!t.name,
             },
             lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
-            xAxis: ((t.value / (this.innerOptions.timeMode === 'date' ? this.divider : 1)) || 0),
+            xAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.value, this.divider, this.innerOptions.timeZone): t.value) || 0),
           };
         })];
     if (markArea.length > 0 || markLine.length > 0) {
