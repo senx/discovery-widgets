@@ -1,6 +1,16 @@
 Discovery
 ---
 
+## v1.3.2
+
+> +  2026/08/19  | fix timezone bug for markers 
+> +  2026/08/18  | v1.3.1 
+> +  2026/08/18  | fix bug of redraw when no focus points 
+> +  2026/08/18  | v1.3.0 
+> +  2026/08/18  | add a fixedLeftMargin to override it 
+> +  2026/08/18  | add a new group feature, for easy sync of zoom and cursor, using echart native functions 
+> +  2026/03/25  | introduction of delayed events 
+
 ## v1.2.45
 
 > +  2026/03/20  | v1.2.45 
