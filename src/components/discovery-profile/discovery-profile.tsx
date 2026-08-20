@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
-import { ChartType, DataModel, DiscoveryEvent, ECharts } from '../../model/types';
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State, Watch, Listen } from '@stencil/core';
+import { ChartType, DataModel, DiscoveryEvent, ECharts, groupBoundSyncEvent } from '../../model/types';
 import { Param } from '../../model/param';
 import {
   CustomSeriesRenderItemAPI,
@@ -30,6 +30,7 @@ import { GTSLib } from '../../utils/gts.lib';
 import { Utils } from '../../utils/utils';
 import { ColorLib } from '../../utils/color-lib';
 import { v4 } from 'uuid';
+import * as echarts from 'echarts';
 
 @Component({
   tag: 'discovery-profile',
@@ -81,6 +82,9 @@ export class DiscoveryProfile {
   private focusDate: number;
   private bounds: { min: number; max: number };
   private innerVars: any = {};
+  private min = Number.MAX_SAFE_INTEGER;
+  private max = Number.MIN_SAFE_INTEGER;
+  private boundSyncTimer: any;
 
   private static renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const y = +api.value(0);
@@ -229,8 +233,51 @@ export class DiscoveryProfile {
       this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
       this.myChart.resize({ width: this.width, height: this.height });
     });
+    // if group is defined, send an event to join a chart group
+    if (this.innerOptions.group) {
+      // this.myChart may not exist yet, delay that
+      setTimeout(() => {
+        this.myChart.group = this.innerOptions.group;
+        echarts.connect(this.innerOptions.group);
+      }, 1000);
+    }
   }
 
+  @Listen('groupBoundSync', { target: 'document', passive: true })
+  onGroupBoundSync(event: CustomEvent<groupBoundSyncEvent>) {
+    if (event.detail.group === this.innerOptions.group) {
+      let needUpdate = false;
+      if (event.detail.min < this.min) {
+        this.min = event.detail.min;
+        needUpdate = true;
+      }
+      if (event.detail.max > this.max) {
+        this.max = event.detail.max;
+        needUpdate = true;
+      }
+      if (needUpdate) {
+        if (this.boundSyncTimer) {
+          clearTimeout(this.boundSyncTimer);
+        }
+        this.boundSyncTimer = setTimeout(() => {
+          // cannot just update innerOptions and relaunch convert, not optimal. so, update only axis[0]. TODO: incompatible with multiXaxis
+          let opt: echarts.EChartsOption = this.myChart.getOption() as EChartsOption;
+          opt.xAxis[0].dataMin = this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+            ? this.innerOptions?.bounds?.xRanges[0]
+            : this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(this.min, this.divider, this.innerOptions.timeZone)
+              : this.min;
+          opt.xAxis[0].dataMax = this.innerOptions?.bounds?.xRanges && Array.isArray(this.innerOptions?.bounds?.xRanges) && this.innerOptions?.bounds?.xRanges.length === 2
+            ? this.innerOptions?.bounds?.xRanges[1]
+            : this.innerOptions.timeMode === 'date'
+              ? GTSLib.utcToZonedTime(this.max, this.divider, this.innerOptions.timeZone)
+              : this.max;
+          this.myChart.setOption(opt, true);
+        }, 1000);
+      }
+    }
+  }
+  
   convert(data: DataModel):EChartsOption {
     let options = Utils.mergeDeep<Param>(this.defOptions, this.innerOptions ?? {});
     options = Utils.mergeDeep<Param>(options ?? {} as Param, data.globalParams);
@@ -242,17 +289,17 @@ export class DiscoveryProfile {
     this.gtsList = [];
     this.LOG?.debug(['convert'], { options: this.innerOptions, gtsList });
     const gtsCount = gtsList.length;
-    let min = Number.MAX_SAFE_INTEGER;
-    let max = Number.MIN_SAFE_INTEGER;
+    this.min = Number.MAX_SAFE_INTEGER;
+    this.max = Number.MIN_SAFE_INTEGER;
     let hasTimeBounds = false;
     for (let i = 0; i < gtsCount; i++) {
       const gts = gtsList[i];
       if (GTSLib.isGtsToPlot(gts)) {
-        min = Math.min(min, ...gts.v.map((v: any[]) => v[0]));
-        max = Math.max(max, ...gts.v.map((v: any[]) => v[0]));
+        this.min = Math.min(this.min, ...gts.v.map((v: any[]) => v[0]));
+        this.max = Math.max(this.max, ...gts.v.map((v: any[]) => v[0]));
       }
     }
-    if (max <= 1000 && min >= -1000 && min !== Number.MAX_SAFE_INTEGER && max !== Number.MIN_SAFE_INTEGER) {
+    if (this.max <= 1000 && this.min >= -1000 && this.min !== Number.MAX_SAFE_INTEGER && this.max !== Number.MIN_SAFE_INTEGER) {
       this.innerOptions.timeMode = 'timestamp';
     }
     let linesCount = 1;
@@ -427,7 +474,8 @@ export class DiscoveryProfile {
     }
     this.displayExpander = series.length > 1 && !!this.innerOptions.displayExpander;
     if (hasTimeBounds) {
-      this.timeBounds.emit({ min, max });
+      this.timeBounds.emit({ min: this.min, max: this.max, group: this.innerOptions.group, exp: Math.random() + 1 });
+      this.bounds = { min: this.min, max: this.max };
     }
 
     this.height = 50 + (linesCount * (this.expanded ? 26 : 35)) + (this.innerOptions.showLegend ? 30 : 0) + (this.innerOptions.fullDateDisplay ? 50 : 0);
@@ -445,10 +493,10 @@ export class DiscoveryProfile {
         right: 10,
         top: 20,
         bottom: (this.innerOptions.showLegend ? 30 : 10) + (this.innerOptions.fullDateDisplay ? 0 : 0),
-        left: (!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
+        left: (!!this.innerOptions.fixedLeftMargin) ? this.innerOptions.fixedLeftMargin: ((!!this.innerOptions.leftMargin && this.innerOptions.leftMargin > this.leftMargin)
           ? this.innerOptions.leftMargin - this.leftMargin + 10
-          : 10,
-        containLabel: true,
+          : 10),
+        containLabel: !this.innerOptions.fixedLeftMargin,
       },
       throttle: 70,
       tooltip: {

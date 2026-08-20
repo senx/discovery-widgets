@@ -77,7 +77,9 @@ export class Param {
     value?: number;
     from?: number;
     name?: string,
-    type?: 'solid' | 'dashed' | 'dotted'
+    type?: 'solid' | 'dashed' | 'dotted',
+    extra?: any,
+    fromExtra?: any
   }[];
   markers?: {
     color?: string;
@@ -88,6 +90,8 @@ export class Param {
     type?: 'solid' | 'dashed' | 'dotted',
     alpha?: number;
     position?: 'top' | 'left' | 'right' | 'bottom' | 'inside' | 'insideLeft' | 'insideRight' | 'insideTop' | 'insideBottom' | 'insideTopLeft' | 'insideBottomLeft' | 'insideTopRight' | 'insideBottomRight',
+    extra?: any,
+    startExtra?: any,
   }[];
   pieces?: { color?: string; lte?: number; gte?: number }[];
   yLabelsMapping?: { [key: number]: string };
