@@ -1,6 +1,12 @@
 Discovery
 ---
 
+## v1.3.3
+
+> +  2026/08/20  | profile can also join group and fixed margin 
+> +  2026/08/20  | add extra power user options on markers and zones 
+> +  2026/08/19  | add changelog 
+
 ## v1.3.2
 
 > +  2026/08/19  | fix timezone bug for markers 
