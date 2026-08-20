@@ -87,6 +87,7 @@ export class Param {
     name?: string,
     type?: 'solid' | 'dashed' | 'dotted',
     alpha?: number;
+    position?: 'top' | 'left' | 'right' | 'bottom' | 'inside' | 'insideLeft' | 'insideRight' | 'insideTop' | 'insideBottom' | 'insideTopLeft' | 'insideBottomLeft' | 'insideTopRight' | 'insideBottomRight',
   }[];
   pieces?: { color?: string; lte?: number; gte?: number }[];
   yLabelsMapping?: { [key: number]: string };
@@ -114,7 +115,7 @@ export class Param {
   customStyles?: { [key: string]: string; };
   httpHeaders?: { [key: string]: string; };
   leftMargin = 0;
-  fixedLeftMargin?:number;
+  fixedLeftMargin?: number;
   showLoader = false;
   noDataLabel = 'No data';
   tooltipDelay?: number;
@@ -135,7 +136,7 @@ export class Param {
     backdropColor?: string;
     fontColor?: string;
   };
-// components specific params
+  // components specific params
   bar?: {
     horizontal?: boolean,
     groupedTooltip?: boolean,
@@ -195,7 +196,7 @@ export class Param {
     immediate?: boolean,
     caseSensitive?: boolean,
     onlyFromAutocomplete?: boolean,
-    fuzzySearch?:boolean,
+    fuzzySearch?: boolean,
     locale?: string,
     delayRequest?: number,
     accept?: string,
@@ -228,5 +229,5 @@ export class Param {
   unitFontSize = 16;
   xUnitFontSize = 16;
   decimals?: number;
-  group?:string;
+  group?: string;
 }

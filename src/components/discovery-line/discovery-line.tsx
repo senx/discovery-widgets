@@ -778,6 +778,7 @@ export class DiscoveryLineComponent {
             name: t.name || t.value || 0,
           },
           yAxis: t.value || 0,
+          ...t.extra
         }, {
           itemStyle: t.from ? {
             color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? 0.5 : 0),
@@ -785,6 +786,7 @@ export class DiscoveryLineComponent {
             name: t.name || t.value || 0,
           } : undefined,
           yAxis: t.from || 0,
+          ...t.fromExtra
         }];
       }),
     ...(this.innerOptions.markers || [])
@@ -795,9 +797,10 @@ export class DiscoveryLineComponent {
             color: ColorLib.transparentize(t.color || '#D81B60', t.fill ? t.alpha || 0.5 : 0),
             borderType: t.type || 'dashed',
           },
-          label: { color: t.color || '#D81B60', position: 'insideTop', distance: 5, show: !!t.name },
+          label: { color: t.color || '#D81B60', position: t.position || 'insideTop', distance: 5, show: !!t.name },
           name: t.name || t.value || 0,
           xAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.value, this.divider, this.innerOptions.timeZone): t.value) || 0),
+          ...t.extra  // extra will override previous ones. for echarts power users...
         },
         {
           itemStyle: {
@@ -805,6 +808,7 @@ export class DiscoveryLineComponent {
             borderType: t.type || 'dashed',
           },
           xAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.start, this.divider, this.innerOptions.timeZone): t.start) || 0),
+          ...t.startExtra  // startExtra will override previous ones. for echarts power users...
         }];
       }),
     ];
@@ -816,6 +820,7 @@ export class DiscoveryLineComponent {
           label: { color: t.color || '#D81B60', position: 'insideEndTop', formatter: '{b}' },
           lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
           yAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.value, this.divider, this.innerOptions.timeZone): t.value) || 0),
+          ...t.extra
         };
       }),
       ...(this.innerOptions.markers || [])
@@ -831,6 +836,7 @@ export class DiscoveryLineComponent {
             },
             lineStyle: { color: t.color || '#D81B60', type: t.type || 'dashed' },
             xAxis: ((this.innerOptions.timeMode === 'date' ? GTSLib.utcToZonedTime(t.value, this.divider, this.innerOptions.timeZone): t.value) || 0),
+            ...t.extra
           };
         })];
     if (markArea.length > 0 || markLine.length > 0) {
