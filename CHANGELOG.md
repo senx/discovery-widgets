@@ -1,6 +1,11 @@
 Discovery
 ---
 
+## v1.3.4
+
+> +  2026/08/20  | fix zoom bug on profile 
+> +  2026/08/20  | v1.3.3 
+
 ## v1.3.3
 
 > +  2026/08/20  | profile can also join group and fixed margin 
