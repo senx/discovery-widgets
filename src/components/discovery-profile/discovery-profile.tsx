@@ -629,11 +629,20 @@ export class DiscoveryProfile {
           type: 'slider',
           height: '20px',
           filterMode: 'none',
+          orient: 'horizontal',
         } : undefined,
         {
           type: 'inside',
           filterMode: 'none',
+          orient: 'horizontal',
         },
+        {
+          type: 'inside',
+          realtime: true,
+          filterMode: 'none',
+          orient: 'vertical',
+          zoomOnMouseWheel: 'ctrl',
+        }
       ],
       series,
       ...this.innerOptions?.extra?.chartOpts ?? {},
