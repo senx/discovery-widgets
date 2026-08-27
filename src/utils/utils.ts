@@ -404,4 +404,24 @@ export class Utils {
         widget.LOG?.error(['exec'], e);
       });
   }
+
+  static getXBreaks(opts: Param, divider: number): any {
+    if (opts.xBreaks) {
+      let gap = opts.xBreakGap.toString() + '%'; // default to 1.0 % in Params definition
+      let breaks = opts.xBreaks.map(v => {
+        return {
+          start: opts.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(v.start, divider, opts.timeZone)
+            : v.start,
+          end: opts.timeMode === 'date'
+            ? GTSLib.utcToZonedTime(v.end, divider, opts.timeZone)
+            : v.end,
+          gap
+        }
+      });
+      return breaks;
+    } else {
+      return undefined;
+    }
+  }
 }
