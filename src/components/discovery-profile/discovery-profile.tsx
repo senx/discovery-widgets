@@ -122,7 +122,7 @@ export class DiscoveryProfile {
     this.chartOpts = this.convert(GTSLib.getData(this.result) ?? new DataModel());
     this.LOG?.debug(['updateRes'], { chartOpts: this.chartOpts });
     if (this.myChart) {
-      setTimeout(() => this.setOpts(true));
+      setTimeout(() => this.setOpts());
     }
   }
 
@@ -139,7 +139,7 @@ export class DiscoveryProfile {
       this.divider = GTSLib.getDivider(this.innerOptions.timeUnit ?? 'us');
       if (this.myChart) {
         this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
-        setTimeout(() => this.setOpts(true));
+        setTimeout(() => this.setOpts());
       }
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue }, this.chartOpts);
     }
@@ -230,7 +230,7 @@ export class DiscoveryProfile {
       this.chartOpts.title = { ...this.chartOpts.title ?? {}, show: false };
     }
     setTimeout(() => {
-      this.myChart.setOption(this.chartOpts ?? {}, notMerge, true);
+      this.myChart.setOption(this.chartOpts ?? {}, notMerge);
       this.myChart.resize({ width: this.width, height: this.height });
     });
     // if group is defined, send an event to join a chart group
@@ -272,6 +272,7 @@ export class DiscoveryProfile {
             : this.innerOptions.timeMode === 'date'
               ? GTSLib.utcToZonedTime(this.max, this.divider, this.innerOptions.timeZone)
               : this.max;
+          this.chartOpts = opt;
           this.myChart.setOption(opt, true);
         }, 1000);
       }
@@ -599,6 +600,7 @@ export class DiscoveryProfile {
             ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
             : this.innerOptions.bounds.maxDate
           : undefined,
+        breaks: Utils.getXBreaks(this.innerOptions, this.divider)
       },
       yAxis: {
         show: !this.innerOptions.hideYAxis,
@@ -828,9 +830,10 @@ export class DiscoveryProfile {
   }
 
   private hideMarkers() {
-    if (!this.myChart) return;
-    (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
-    this.setOpts();
+    if (!!this.myChart && ((this.chartOpts?.series ?? []) as any[]).some(s => !!s.markPoint)) {
+      (this.chartOpts.series as any[]).forEach(s => s.markPoint = undefined);
+      this.setOpts();
+    }
   }
 
   render() {
@@ -866,6 +869,6 @@ export class DiscoveryProfile {
   private toggle() {
     this.expanded = !this.expanded;
     this.chartOpts = this.convert(this.result as DataModel ?? new DataModel());
-    setTimeout(() => this.setOpts(true));
+    setTimeout(() => this.setOpts());
   }
 }

@@ -1,6 +1,11 @@
 Discovery
 ---
 
+## v1.3.5
+
+> +  2026/08/27  | add break support in line, annotation, profile 
+> +  2026/08/20  | v1.3.4 
+
 ## v1.3.4
 
 > +  2026/08/20  | fix zoom bug on profile 

@@ -942,7 +942,8 @@ export class DiscoveryLineComponent {
       ...(this.innerOptions.xUnit ? {
         nameLocation: "middle",
         nameGap: 30,
-      } : {})
+      } : {}),
+      breaks: Utils.getXBreaks(this.innerOptions, this.divider)
     };
   }
 

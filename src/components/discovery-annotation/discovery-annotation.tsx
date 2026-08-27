@@ -443,6 +443,7 @@ export class DiscoveryAnnotation {
             ? GTSLib.utcToZonedTime(this.innerOptions.bounds.maxDate, this.divider, this.innerOptions.timeZone)
             : this.innerOptions.bounds.maxDate
           : undefined,
+        breaks: Utils.getXBreaks(this.innerOptions, this.divider)
       },
       yAxis: {
         show: true,

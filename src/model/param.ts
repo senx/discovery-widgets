@@ -234,4 +234,9 @@ export class Param {
   xUnitFontSize = 16;
   decimals?: number;
   group?: string;
+  xBreaks?: {
+    start:number,
+    end:number
+  }[];
+  xBreakGap = 1.0;
 }
